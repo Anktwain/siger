@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12/05/2015 01:10:39 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="prueba" name="dto.Direcciones" optimistic-lock="version" table="direcciones">
+    <id name="idDireccion" type="java.lang.Integer">
+      <column name="id_direccion"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Sujetos" fetch="select" name="sujetos">
+      <column name="sujetos_id_sujeto" not-null="true"/>
+    </many-to-one>
+    <property name="calle" type="string">
+      <column length="45" name="calle"/>
+    </property>
+    <property name="colonia" type="string">
+      <column length="45" name="colonia"/>
+    </property>
+    <property name="municipio" type="string">
+      <column length="45" name="municipio"/>
+    </property>
+    <property name="estado" type="string">
+      <column length="45" name="estado"/>
+    </property>
+    <property name="codigoPostal" type="string">
+      <column length="45" name="codigo_postal"/>
+    </property>
+    <property name="tipo" type="string">
+      <column length="45" name="tipo"/>
+    </property>
+  </class>
+</hibernate-mapping>

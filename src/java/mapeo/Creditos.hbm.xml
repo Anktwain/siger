@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12/05/2015 01:10:39 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="prueba" name="dto.Creditos" optimistic-lock="version" table="creditos">
+    <id name="idCredito" type="java.lang.Integer">
+      <column name="id_credito"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Clientes" fetch="select" name="clientes">
+      <column name="clientes_id_cliente" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Empresas" fetch="select" name="empresas">
+      <column name="empresas_id_empresa" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Gestores" fetch="select" name="gestores">
+      <column name="gestores_id_gestor" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Productos" fetch="select" name="productos">
+      <column name="productos_id_producto" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Subproductos" fetch="select" name="subproductos">
+      <column name="subproductos_id_subproducto"/>
+    </many-to-one>
+    <property name="numeroCredito" type="string">
+      <column length="30" name="numero_credito" not-null="true"/>
+    </property>
+    <property name="fechaInicio" type="date">
+      <column length="10" name="fecha_inicio"/>
+    </property>
+    <property name="fechaFin" type="date">
+      <column length="10" name="fecha_fin"/>
+    </property>
+    <property name="fechaQuebranto" type="date">
+      <column length="10" name="fecha_quebranto"/>
+    </property>
+    <property name="monto" type="java.lang.Float">
+      <column name="monto" precision="12" scale="0"/>
+    </property>
+    <property name="mensualidad" type="java.lang.Float">
+      <column name="mensualidad" precision="12" scale="0"/>
+    </property>
+    <property name="tasaInteres" type="java.lang.Float">
+      <column name="tasa_interes" precision="12" scale="0"/>
+    </property>
+    <property name="diasMora" type="java.lang.Integer">
+      <column name="dias_mora"/>
+    </property>
+    <property name="numeroCuenta" type="string">
+      <column length="30" name="numero_cuenta"/>
+    </property>
+    <property name="tipoCredito" type="int">
+      <column name="tipo_credito" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="lineases" table="lineas">
+      <key>
+        <column name="creditos_id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Lineas"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="creditosRemesases" table="creditos_remesas">
+      <key>
+        <column name="creditos_id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.CreditosRemesas"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="gestioneses" table="gestiones">
+      <key>
+        <column name="creditos_id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Gestiones"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="autoses" table="autos">
+      <key>
+        <column name="creditos_id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Autos"/>
+    </set>
+  </class>
+</hibernate-mapping>

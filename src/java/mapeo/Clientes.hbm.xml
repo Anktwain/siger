@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12/05/2015 01:10:39 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="prueba" name="dto.Clientes" optimistic-lock="version" table="clientes">
+    <id name="idCliente" type="java.lang.Integer">
+      <column name="id_cliente"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Sujetos" fetch="select" name="sujetos">
+      <column name="sujetos_id_sujeto" not-null="true"/>
+    </many-to-one>
+    <property name="numeroCliente" type="string">
+      <column length="25" name="numero_cliente"/>
+    </property>
+    <property name="curp" type="string">
+      <column length="20" name="curp"/>
+    </property>
+    <property name="numeroSeguroSocial" type="string">
+      <column length="20" name="numero_seguro_social"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="creditoses" table="creditos">
+      <key>
+        <column name="clientes_id_cliente" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Creditos"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="contactoses" table="contactos">
+      <key>
+        <column name="clientes_id_cliente" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Contactos"/>
+    </set>
+  </class>
+</hibernate-mapping>

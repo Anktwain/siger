@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12/05/2015 01:10:39 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="prueba" name="dto.Credito" optimistic-lock="version" table="credito">
+    <id name="numeroCredito" type="string">
+      <column length="45" name="numero_credito"/>
+      <generator class="assigned"/>
+    </id>
+    <property name="fechaInicio" type="string">
+      <column length="45" name="fecha_inicio"/>
+    </property>
+    <property name="fechaFin" type="string">
+      <column length="45" name="fecha_fin"/>
+    </property>
+    <property name="fechaQuebranto" type="string">
+      <column length="45" name="fecha_quebranto"/>
+    </property>
+    <property name="fechaUltimoPago" type="string">
+      <column length="45" name="fecha_ultimo_pago"/>
+    </property>
+    <property name="monto" type="string">
+      <column length="45" name="monto"/>
+    </property>
+    <property name="numeroCuenta" type="string">
+      <column length="45" name="numero_cuenta"/>
+    </property>
+    <property name="tasa" type="string">
+      <column length="45" name="tasa"/>
+    </property>
+    <property name="telefono" type="string">
+      <column length="45" name="telefono"/>
+    </property>
+  </class>
+</hibernate-mapping>

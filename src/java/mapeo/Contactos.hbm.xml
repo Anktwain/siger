@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 12/05/2015 01:10:39 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="prueba" name="dto.Contactos" optimistic-lock="version" table="contactos">
+    <id name="idContacto" type="int">
+      <column name="id_contacto"/>
+      <generator class="assigned"/>
+    </id>
+    <many-to-one class="dto.Clientes" fetch="select" name="clientes">
+      <column name="clientes_id_cliente" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Sujetos" fetch="select" name="sujetos">
+      <column name="sujetos_id_sujeto" not-null="true"/>
+    </many-to-one>
+    <property name="observaciones" type="string">
+      <column length="45" name="observaciones"/>
+    </property>
+  </class>
+</hibernate-mapping>
