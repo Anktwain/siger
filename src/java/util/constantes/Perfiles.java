@@ -9,8 +9,8 @@ package util.constantes;
  *
  * @author brionvega
  */
-public enum PerfilesEnum {
-    ADMINISTRADOR,
-    GESTOR,
-    ELIMINADO;
+public class Perfiles {
+    public static final int ELIMINADO = 0;
+    public static final int ADMINISTRADOR = 1;
+    public static final int GESTOR = 2;
 }
