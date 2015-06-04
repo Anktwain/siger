@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+    <h:head>
+        <meta charset="utf-8"></meta>
+        <title>SigerWeb</title>
+        <link rel="stylesheet" type="text/css" href="css/recuperarContraseña.css" />
+        <link rel="shortcut icon" href="img/iconos/icono.ico" type="image/x-icon" />
+    </h:head>
+    <h:body>
+        <div id="pagina">
+            <div id="formulario">
+                <a href="index.xhtml" title="Volver al inicio">
+                    <div id="encabezadoForm">
+                    </div>
+                </a>
+                <div id="cuerpoForm">
+                    <h:form name="recuperar">
+                        <div id="letrero">
+                            SOLICITUD DE RECUPERACION DE CONTRASEÑA
+                        </div>
+                        <div id="texto">                            
+                            Por favor complete el siguiente formulario con sus datos:
+                        </div>
+                        <div id="entrada">
+                            Usuario:
+                            <br />
+                            <p:inputText id="usuario" type="text" maxlength="50" required="true" requiredMessage="Debe escribir un nombre de usuario" />
+                        </div>
+                        <div id="entrada">
+                            Correo Electronico:
+                            <br />
+                            <p:inputText id="mail" type="mail" maxlength="50" required="true" requiredMessage="Debe escribir su correo electronico" />
+                        </div>
+                        En construccion la puta madre
+                        <!-- en construccion la puta madre
+                        <div id="captcha">
+                            <h:form>
+                                <p:messages showDetail="true" />
+                                <p:captcha label="Captcha" />
+                                <p:commandButton value="Check" ajax="false" icon="ui-icon-check" />
+                            </h:form>
+                        </div>
+                        -->
+                        <div id="btnEnviar">
+                            <p:commandButton value="Enviar" id="botonLogin" icon="ui-icon-check" />
+                        </div>                        
+                    </h:form>                        
+                </div>             
+            </div>            
+        </div>
+    </h:body>
+</html>
