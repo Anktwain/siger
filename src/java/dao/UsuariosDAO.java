@@ -17,5 +17,7 @@ public interface UsuariosDAO {
     public boolean editar(Usuarios usuario);
     public boolean eliminar(Usuarios usuario);
     public Usuarios buscar(int idUsuario);
+    public Usuarios buscar(String nombre, String password);
+    public Usuarios buscarPorCorreo(String nombreLogin, String correo);
     public List<Usuarios> buscarTodo();
 }
