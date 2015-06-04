@@ -17,7 +17,7 @@
                 <div id="encabezadoForm">
                 </div>    
                 <div id="cuerpoForm">
-                    <h:form name="login">
+                    <h:form >
                         <div id="entrada">
                             Usuario:
                             <br />
@@ -28,7 +28,7 @@
                             <br />
                             <p:inputText id="pswd" type="password" maxlength="20" required="true" requiredMessage="Debe escribir su contraseña" value="#{LoginBean.password}"/>
                         </div>
-                        <hr class="style-eight" />
+                        <hr class="style-eight" /> 
                         <div id="tabla">
                             <table>
                                 <tr>
@@ -52,5 +52,7 @@
                 </div>             
             </div>            
         </div>
+        <br />
+        <h:link outcome="welcomePrimefaces" value="Primefaces welcome page" />
     </h:body>
 </html>
