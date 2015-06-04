@@ -8,7 +8,7 @@ package impl;
 import dao.UsuariosDAO;
 import dto.Usuarios;
 import java.util.List;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -21,7 +21,7 @@ import util.log.Logs;
  * @author brionvega
  */
 public class UsuariosIMPL implements UsuariosDAO {
-    private static Logger log = Logger.getLogger(Logs.class);
+ //   private static Logger log = Logger.getLogger(Logs.class);
     
     public static void main(String[] args) {
         System.out.println("Guardando un nuevo usuario...");
@@ -76,7 +76,7 @@ public class UsuariosIMPL implements UsuariosDAO {
             if(tx != null)
                 tx.rollback();
             //he.printStackTrace();
-            log.error(he.getMessage());
+   //         log.error(he.getMessage());
         } finally {
             cerrar(sesion);
         }
