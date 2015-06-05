@@ -12,5 +12,7 @@
 hs_err_pid*
 
 # otros:
+hibernate.cfg.xml
+hibernate.reveng.xml
 
 *~
