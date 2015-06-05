@@ -3,6 +3,7 @@ package beans;
 import java.io.Serializable;
 import dto.Usuarios;
 import impl.UsuariosIMPL;
+import dao.UsuariosDAO;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -15,11 +16,11 @@ public class IndexBean implements Serializable {
     private String nombreUsuario; // viene de la vista
     private String password; // viene de la vista
     private Usuarios usuario;
-    private static UsuariosIMPL usuariosImpl;
+//    private static UsuariosIMPL usuariosDAO;
 
     IndexBean() {
         usuario = new Usuarios();
-        usuariosImpl = new UsuariosIMPL();
+//        usuariosDAO = new UsuariosIMPL();
     }
 
     /**
@@ -64,14 +65,13 @@ public class IndexBean implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
-//    public static void main(String args[]) {
-//        UsuariosIMPL usuariosImpl = new UsuariosIMPL();
-//        List<Usuarios> listaUsuarios = usuariosImpl.buscarTodo();
-//        System.out.println("Desplegando lista de usuarios traidos de la base de datos:");
-//        for (Usuarios usr : listaUsuarios) {
-//            System.out.println(usr.getNombreLogin());
-//        }
-//        System.out.println("Despliegue terminado.");
-//    }
+    public static void main(String args[]) {
+        UsuariosDAO usuariosDAO = new UsuariosIMPL();
+        List<Usuarios> listaUsuarios = usuariosDAO.buscarTodo();
+        System.out.println("Desplegando lista de usuarios traidos de la base de datos:");
+        for (Usuarios usr : listaUsuarios) {
+            System.out.println(usr.toString());
+        }
+        System.out.println("Despliegue terminado.");
+    }
 }
