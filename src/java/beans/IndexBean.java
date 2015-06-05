@@ -43,6 +43,18 @@ public class IndexBean implements Serializable {
         return false;
     }
 
+     /**
+     * Indica si la cadena del atributo {@code password} del bean es válida
+     * según los siguientes parámetros:
+     * <ul>
+     * <li>Si es una cadena no vacía.
+     * <li>Si no contiene algun tipo de espacios en blanco.
+     * <li>Si contiene como máximo 20 caracteres de longitud.
+     * </ul>
+     *
+     * @return {@code true} si la cadena es válida; {@code false} si la cadena
+     * es inválida.
+     */
     public boolean validarPassword() {
         if ((password != null) && (!password.equals(""))) {
             return true;
