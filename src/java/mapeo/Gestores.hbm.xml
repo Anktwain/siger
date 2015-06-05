@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 12/05/2015 01:10:39 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 5/06/2015 11:37:33 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="prueba" name="dto.Gestores" optimistic-lock="version" table="gestores">
+  <class catalog="sigerbd" name="dto.Gestores" optimistic-lock="version" table="gestores">
     <id name="idGestor" type="java.lang.Integer">
       <column name="id_gestor"/>
       <generator class="identity"/>
     </id>
     <many-to-one class="dto.Usuarios" fetch="select" name="usuarios">
-      <column name="usuarios_id_usuario" not-null="true"/>
+      <column name="id_usuario" not-null="true"/>
     </many-to-one>
     <property name="extension" type="string">
       <column length="15" name="extension"/>
-    </property>
-    <property name="activo" type="boolean">
-      <column name="activo" not-null="true"/>
     </property>
     <set fetch="select" inverse="true" lazy="true" name="creditoses" table="creditos">
       <key>
