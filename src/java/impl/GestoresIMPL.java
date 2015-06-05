@@ -5,10 +5,43 @@
  */
 package impl;
 
+import dao.GestoresDAO;
+import dto.Gestores;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import util.HibernateUtil;
+
 /**
  *
  * @author brionvega
  */
-public class GestoresIMPL {
+public class GestoresIMPL implements GestoresDAO{
+    @Override
+    public boolean insertar(Gestores gestor) {
+                Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        boolean ok;
+                
+        try {
+            sesion.save(gestor);
+            tx.commit();
+            ok = true;
+            //log.info("Se insertó un nuevo usuaario");
+        } catch(HibernateException he){
+            ok = false;
+            if(tx != null)
+                tx.rollback();
+            //he.printStackTrace();
+   //         log.error(he.getMessage());
+        } finally {
+            cerrar(sesion);
+        }
+        return ok;
+    }
     
+    private void cerrar(Session sesion) {
+        if(sesion.isOpen())
+            sesion.close();
+    }
 }

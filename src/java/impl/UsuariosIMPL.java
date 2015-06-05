@@ -23,43 +23,6 @@ import util.log.Logs;
 public class UsuariosIMPL implements UsuariosDAO {
  //   private static Logger log = Logger.getLogger(Logs.class);
     
-    public static void main(String[] args) {
-        System.out.println("Guardando un nuevo usuario...");
-        Usuarios u = new Usuarios();
-        u.setNombre("Martin");
-        u.setPaterno("Garcia");
-        u.setMaterno("Sebastian");
-        u.setNombreLogin("martin");
-        u.setPassword("mar123456");
-        u.setPerfil(Perfiles.GESTOR);
-        
-        UsuariosIMPL dao = new UsuariosIMPL();
-        dao.insertar(u);
-        
-        System.out.println("Buscar al usuario cuyo id es 2");
-        Usuarios u2;
-        u2 = dao.buscar(2);
-        
-        System.out.println("Nombre: " + u2.getNombre());
-        System.out.println("Apellido paterno: " + u2.getPaterno());
-        System.out.println("Apellido materno: " + u2.getMaterno());
-        System.out.println("Login: " + u2.getNombreLogin());
-        
-        System.out.println("Buscar al usuario cuyo login es 'zenen' y su contraseña es 'zen123456'");
-        Usuarios u3;
-        u3 = dao.buscar("zenen", "zen123456");
-        
-        if(u3 != null){
-            System.out.println("Nombre: " + u3.getNombre());
-            System.out.println("Apellido paterno: " + u3.getPaterno());
-            System.out.println("Apellido materno: " + u3.getMaterno());
-            System.out.println("Login: " + u3.getNombreLogin());
-        } else
-            System.out.println("El usuario no existe en la base de datos");
-        
-    }
-
-    
     @Override
     public boolean insertar(Usuarios usuario) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -137,8 +100,9 @@ public class UsuariosIMPL implements UsuariosDAO {
         try {
             usuario = (Usuarios) sesion.get(Usuarios.class, idUsuario);
             // obtuvo el usuario, solo se muestra si no ha sido eliminado:
-            if(usuario.getPerfil() == Perfiles.ELIMINADO)
-                usuario = null;
+            if(usuario != null)
+                if(usuario.getPerfil() == Perfiles.ELIMINADO)
+                    usuario = null;
         } catch(HibernateException he) {
             usuario = null;
             he.printStackTrace();
