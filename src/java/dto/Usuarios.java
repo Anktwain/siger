@@ -45,7 +45,9 @@ public class Usuarios  implements java.io.Serializable {
         this.password = password;
         this.perfil = perfil;
     }
-    public Usuarios(String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagen, Set administrativoses, Set gestoreses) {
+    public Usuarios(String nombre, String paterno, String materno, String nombreLogin,
+            String password, int perfil, String correo, String imagen,
+            Set administrativoses, Set gestoreses) {
        this.nombre = nombre;
        this.paterno = paterno;
        this.materno = materno;
@@ -57,6 +59,16 @@ public class Usuarios  implements java.io.Serializable {
        this.administrativoses = administrativoses;
        this.gestoreses = gestoreses;
     }
+
+    @Override
+    public String toString() {
+        return "Usuarios{" + "idUsuario=" + idUsuario + ", nombre=" + nombre
+                + ", paterno=" + paterno + ", materno=" + materno
+                + ", nombreLogin=" + nombreLogin + ", password=" + password
+                + ", perfil=" + perfil + ", correo=" + correo + ", imagen=" + imagen + '}';
+    }
+    
+    
    
      @Id @GeneratedValue(strategy=IDENTITY)
 
