@@ -21,12 +21,12 @@
                         <div id="entrada">
                             Usuario:
                             <br />
-                            <p:inputText id="usuario" type="text" maxlength="50" required="true" requiredMessage="Debe escribir un nombre de usuario" value="#{LoginBean.nombreUsuario}" />
+                            <p:inputText id="usuario" type="text" maxlength="20" required="true" requiredMessage="Debe escribir un nombre de usuario" value="#{IndexBean.nombreUsuario}" validator="#{IndexBean.validarNombreUsuario}" />
                         </div>
                         <div id="entrada">
                             Contraseña:
                             <br />
-                            <p:inputText id="pswd" type="password" maxlength="20" required="true" requiredMessage="Debe escribir su contraseña" value="#{LoginBean.password}"/>
+                            <p:inputText id="pswd" type="password" maxlength="20" required="true" requiredMessage="Debe escribir su contraseña" value="#{IndexBean.password}" validator="#{IndexBean.validarPassword}" />
                         </div>
                         <hr class="style-eight" /> 
                         <div id="tabla">
@@ -39,7 +39,7 @@
                                     </td>
                                     <td>
                                         <div id="btnEntrar">
-                                            <p:commandButton value="Entrar" id="botonLogin" icon="ui-icon-key" actionListener="#{LoginBean.ingresar()}"/>
+                                            <p:commandButton value="Entrar" id="botonLogin" icon="ui-icon-key" actionListener="#{IndexBean}"/>
                                         </div>                                    
                                     </td>
                                 </tr>
