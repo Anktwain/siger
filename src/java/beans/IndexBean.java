@@ -65,6 +65,7 @@ public class IndexBean implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+    /*
     public static void main(String args[]) {
         UsuariosDAO usuariosDAO = new UsuariosIMPL();
         List<Usuarios> listaUsuarios = usuariosDAO.buscarTodo();
@@ -74,4 +75,5 @@ public class IndexBean implements Serializable {
         }
         System.out.println("Despliegue terminado.");
     }
+    */
 }
