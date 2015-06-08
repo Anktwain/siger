@@ -36,11 +36,8 @@ public class IndexBean implements Serializable {
      * es inválida.
      */
     public boolean validarNombreUsuario() {
-        if ((nombreUsuario != null) && (!nombreUsuario.equals("")) && 
-                (nombreUsuario.length() <= 20) && (!nombreUsuario.matches("[.*\\s*]*"))) {
-            return true;
-        }
-        return false;
+        return (nombreUsuario != null) && (!nombreUsuario.equals("")) && 
+                (nombreUsuario.length() <= 20) && (!nombreUsuario.matches("[.*\\s*]*"));
     }
 
      /**
@@ -56,10 +53,8 @@ public class IndexBean implements Serializable {
      * es inválida.
      */
     public boolean validarPassword() {
-        if ((password != null) && (!password.equals(""))) {
-            return true;
-        }
-        return false;
+        return (password != null) && (!password.equals("")) && 
+                (password.length() <= 20) && (!password.matches("[.*\\s*]*"));
     }
 
     public String getNombreUsuario() {
@@ -77,13 +72,13 @@ public class IndexBean implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-    public static void main(String args[]) {
-        UsuariosDAO usuariosDAO = new UsuariosIMPL();
-        List<Usuarios> listaUsuarios = usuariosDAO.buscarTodo();
-        System.out.println("Desplegando lista de usuarios traidos de la base de datos:");
-        for (Usuarios usr : listaUsuarios) {
-            System.out.println(usr.toString());
-        }
-        System.out.println("Despliegue terminado.");
-    }
+//    public static void main(String args[]) {
+//        UsuariosDAO usuariosDAO = new UsuariosIMPL();
+//        List<Usuarios> listaUsuarios = usuariosDAO.buscarTodo();
+//        System.out.println("Desplegando lista de usuarios traidos de la base de datos:");
+//        for (Usuarios usr : listaUsuarios) {
+//            System.out.println(usr.toString());
+//        }
+//        System.out.println("Despliegue terminado.");
+//    }
 }
