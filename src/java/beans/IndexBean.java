@@ -10,9 +10,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import util.constantes.Constantes;
 import javax.faces.context.FacesContext;
-import util.constantes.Perfiles;
 
-@ManagedBean
+@ManagedBean(name = "indexBean")
 @SessionScoped
 
 public class IndexBean implements Serializable {
@@ -20,7 +19,7 @@ public class IndexBean implements Serializable {
     private String nombreUsuario; // viene de la vista
     private String password; // viene de la vista
 
-    IndexBean() {
+    public IndexBean() {
     }
 
     /**
@@ -91,6 +90,7 @@ public class IndexBean implements Serializable {
      * @throws java.io.IOException
      */
     public void ingresar() throws IOException{
+        System.out.println("#################### Ha entrado a la funcion ingresar\n");
         Usuarios usuario;
         UsuariosDAO usuarioDao = new UsuariosIMPL();
         usuario = usuarioDao.buscar(nombreUsuario, password);
@@ -111,13 +111,13 @@ public class IndexBean implements Serializable {
                     FacesContext.getCurrentInstance().addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelAdministrativo.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("panelAdministrativo.xhtml");
                     break;
                 case 2:
                     FacesContext.getCurrentInstance().addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelGestor.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("panelGestor.xhtml");
                     break;
                 default:
                     FacesContext.getCurrentInstance().addMessage("",
