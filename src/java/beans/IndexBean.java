@@ -4,11 +4,13 @@ import java.io.Serializable;
 import dto.Usuarios;
 import impl.UsuariosIMPL;
 import dao.UsuariosDAO;
+import java.io.IOException;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import util.constantes.Constantes;
 import javax.faces.context.FacesContext;
+import util.constantes.Perfiles;
 
 @ManagedBean
 @SessionScoped
@@ -86,8 +88,9 @@ public class IndexBean implements Serializable {
      * Solicita una búsqueda con las cadenas de nombre de usuario y de password
      * y devuelve el objeto usuario al que correspondan, en su caso, o
      * {@code null} en otro caso.
+     * @throws java.io.IOException
      */
-    public void ingresar() {
+    public void ingresar() throws IOException{
         Usuarios usuario;
         UsuariosDAO usuarioDao = new UsuariosIMPL();
         usuario = usuarioDao.buscar(nombreUsuario, password);
@@ -96,28 +99,30 @@ public class IndexBean implements Serializable {
             switch (usuario.getPerfil()) {
                 case -2:
                     FacesContext.getCurrentInstance().addMessage("",
-                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ha ingresado",
-                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " correctamente."));
+                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
+                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR_NO_CONFIRMADO) correctamente."));
                     break;
                 case 0:
                     FacesContext.getCurrentInstance().addMessage("",
-                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ha ingresado",
-                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " correctamente."));
+                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
+                                    usuario.getNombre() + "No podrá ingresar con el perfil " + usuario.getPerfil() + " (ELIMINADO) porque ha sido desactivado."));
                     break;
                 case 1:
                     FacesContext.getCurrentInstance().addMessage("",
-                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ha ingresado",
-                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " correctamente."));
+                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
+                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelAdministrativo.xhtml");
                     break;
                 case 2:
                     FacesContext.getCurrentInstance().addMessage("",
-                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ha ingresado",
-                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " correctamente."));
+                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
+                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelGestor.xhtml");
                     break;
                 default:
                     FacesContext.getCurrentInstance().addMessage("",
-                            new FacesMessage(FacesMessage.SEVERITY_FATAL, "Perfil inválido",
-                                    usuario.getNombre() + " ha ingresado con un perfil desconocido. (Perfil =" + usuario.getPerfil() + ")."));
+                            new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
+                                    usuario.getNombre() + "Está intentando entrar con un perfil desconocido. (Perfil =" + usuario.getPerfil() + ")."));
                     break;
             }
 
