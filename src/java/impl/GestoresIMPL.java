@@ -32,7 +32,7 @@ public class GestoresIMPL implements GestoresDAO{
             ok = false;
             if(tx != null)
                 tx.rollback();
-            //he.printStackTrace();
+            he.printStackTrace();
    //         log.error(he.getMessage());
         } finally {
             cerrar(sesion);

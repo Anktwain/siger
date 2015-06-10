@@ -38,7 +38,7 @@ public class UsuariosIMPL implements UsuariosDAO {
             ok = false;
             if(tx != null)
                 tx.rollback();
-            //he.printStackTrace();
+            he.printStackTrace();
    //         log.error(he.getMessage());
         } finally {
             cerrar(sesion);
@@ -141,7 +141,7 @@ public class UsuariosIMPL implements UsuariosDAO {
         
         try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
             usuario = (Usuarios) sesion.createQuery("from Usuarios u where "
-                    + "u.perfil != 0 and u.perfil != -2 and u.nombre = '"
+                    + "u.perfil != 0 and u.nombreLogin = '"
                     + nombreLogin + "' and u.correo = '"
                     + correo +"'").uniqueResult();
 
@@ -163,7 +163,9 @@ public class UsuariosIMPL implements UsuariosDAO {
         List<Usuarios> listaUsuarios;
         
         try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
-            listaUsuarios = sesion.createQuery("from Usuarios u where u.perfil != 0 and u.perfil != -2").list();
+            listaUsuarios = sesion.createQuery("from Usuarios u"
+                    + " where u.perfil != " + Perfiles.ELIMINADO
+                    + " and u.perfil != " + Perfiles.GESTOR_NO_CONFIRMADO).list();
         } catch(HibernateException he) {
             listaUsuarios = null;
             he.printStackTrace();
@@ -173,6 +175,48 @@ public class UsuariosIMPL implements UsuariosDAO {
         
         return listaUsuarios;
     }
+
+    @Override
+    public Usuarios buscarNombreLogin(String nombreLogin) {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        Usuarios usuario;
+        
+        try {
+            usuario = (Usuarios) sesion.createQuery("from Usuarios u where "
+                    + "u.perfil != " + Perfiles.ELIMINADO
+                    + " and u.nombreLogin = '" + nombreLogin + "'").uniqueResult();
+        } catch(HibernateException he) {
+            usuario = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        
+        return usuario;
+    }
+
+    @Override
+    public Usuarios buscarCorreo(String correo) {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        Usuarios usuario;
+        
+        try {
+            usuario = (Usuarios) sesion.createQuery("from Usuarios u where "
+                    + "u.perfil != " + Perfiles.ELIMINADO
+                    + " and u.correo = '" + correo + "'").uniqueResult();
+        } catch(HibernateException he) {
+            usuario = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        
+        return usuario;
+    }
+    
+    
 
     private void cerrar(Session sesion) {
         if(sesion.isOpen())

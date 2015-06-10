@@ -20,4 +20,6 @@ public interface UsuariosDAO {
     public Usuarios buscar(String nombre, String password);
     public Usuarios buscarPorCorreo(String nombreLogin, String correo);
     public List<Usuarios> buscarTodo();
+    public Usuarios buscarNombreLogin(String nombreLogin);
+    public Usuarios buscarCorreo(String correo);
 }
