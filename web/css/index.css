@@ -69,19 +69,12 @@ hr.style-eight:after
 
 #olvido a
 {
-	padding-top: 10px;
-	padding-bottom: 15px;
+        padding-top: 15px;
 	color: #81BEF7;
 	text-decoration: none;
 }
 
-#btnEntrar
-{
-	padding: 10px;
-}
-
 table
 {
-	padding-left: 15%;
-	padding-right: 10%;
+        text-align: left;
 }

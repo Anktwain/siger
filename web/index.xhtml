@@ -26,25 +26,25 @@
                         <div id="entrada">
                             Contraseña:
                             <br />
-                            <p:inputText id="pswd" type="password" maxlength="20" required="true" requiredMessage="Debe escribir su contraseña" value="#{indexBean.password}" validator="#{indexBean.validarPassword()}" />
+                            <p:inputText id="pswd" type="password" maxlength="20" required="true" requiredMessage="Debe escribir su contraseña" value="#{indexBean.password}" validator="#{indexBean.validarPassword()}" />                            
                         </div>
+                        <br />
+                        <div id="olvido">
+                            <a href="recuperarContraseña.xhtml">He olvidado mi contraseña...</a>                                    
+                        </div>
+                        <br />
                         <hr class="style-eight" /> 
-                        <div id="tabla">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <div id="olvido">
-                                            <a href="recuperarContraseña.xhtml">He olvidado mi contraseña...</a>                                    
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div id="btnEntrar">
-                                            <p:commandButton value="Entrar" id="botonLogin" icon="ui-icon-key" actionListener="#{indexBean.ingresar()}"/>
-                                        </div>                                    
-                                    </td>
-                                </tr>
-                            </table>                                
-                        </div>
+                        <table align="center">
+                            <tr>
+                                <td>
+                                    <p:commandButton value="Entrar" id="botonLogin" icon="ui-icon-key" actionListener="#{indexBean.ingresar()}" />
+                                </td>
+                                <td>
+                                    <p:commandButton value="Registro" id="botonRegistro" icon="ui-icon-plus" action="altaGestor.xhtml" />
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
                     </h:form>                        
                 </div>             
             </div>            

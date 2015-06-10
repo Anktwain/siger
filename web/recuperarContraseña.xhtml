@@ -9,7 +9,7 @@
         <meta charset="utf-8"></meta>
         <title>SigerWeb</title>
         <link rel="stylesheet" type="text/css" href="css/recuperarContraseña.css" />
-        <link rel="shortcut icon" href="img/iconos/icono.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="img/iconos/icono1.ico" type="image/x-icon" />
     </h:head>
     <h:body>
         <div id="pagina">
@@ -36,22 +36,19 @@
                             <br />
                             <p:inputText id="mail" type="mail" maxlength="50" required="true" requiredMessage="Debe escribir su correo electronico" />
                         </div>
-                        En construccion la puta madre
-                        <!-- en construccion la puta madre
                         <div id="captcha">
                             <h:form>
-                                <p:messages showDetail="true" />
-                                <p:captcha label="Captcha" />
-                                <p:commandButton value="Check" ajax="false" icon="ui-icon-check" />
+                             CAPTCHA:
+                            <div class="g-recaptcha" data-sitekey="6LeBKQgTAAAAAMPEUJ0hWwf7ubawf30er0IIgdPj"></div>
                             </h:form>
                         </div>
-                        -->
                         <div id="btnEnviar">
                             <p:commandButton value="Enviar" id="botonLogin" icon="ui-icon-check" />
-                        </div>                        
-                    </h:form>                        
-                </div>             
-            </div>            
+                        </div>
+                    </h:form>
+                </div>
+            </div>
         </div>
+        <script src='https://www.google.com/recaptcha/api.js'></script>
     </h:body>
 </html>
