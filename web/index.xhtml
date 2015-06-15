@@ -12,6 +12,7 @@
         <link rel="shortcut icon" href="img/iconos/icono1.ico" type="image/x-icon" />
     </h:head>
     <h:body>
+        <p:growl id="growl" showDetail="true" sticky="true" />
         <div id="pagina">
             <div id="formulario">
                 <div id="encabezadoForm">
@@ -26,28 +27,25 @@
                         <div id="entrada">
                             Contraseña:
                             <br />
-                            <p:inputText id="pswd" type="password" maxlength="20" required="true" requiredMessage="Debe escribir su contraseña" value="#{indexBean.password}" validator="#{indexBean.validarPassword()}" />
+                            <p:inputText id="pswd" type="password" maxlength="20" required="true" requiredMessage="Debe escribir su contraseña" value="#{indexBean.password}" validator="#{indexBean.validarPassword()}" />                            
                         </div>
+                        <br />
+                        <div id="olvido">
+                            <a href="recuperarContraseña.xhtml">He olvidado mi contraseña...</a>                                    
+                        </div>
+                        <br />
                         <hr class="style-eight" /> 
-                        <div id="tabla">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <div id="olvido">
-                                            <a href="recuperarContraseña.xhtml">He olvidado mi contraseña...</a>                                    
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div id="btnEntrar">
-                                            <p:commandButton value="Entrar" id="botonLogin" icon="ui-icon-key" actionListener="#{indexBean.ingresar()}"/>
-                                        </div>                                    
-                                    </td>
-                                </tr>
-                            </table>                                
-                        </div>
-                        <div id="prov">
-                            <a href="panelAdministrativo.xhtml">Entrada provisional</a>                                    
-                        </div>
+                        <table align="center">
+                            <tr>
+                                <td>
+                                    <p:commandButton value="Entrar" id="botonLogin" icon="ui-icon-key" actionListener="#{indexBean.ingresar()}" update="growl" />
+                                </td>
+                                <td>
+                                    <p:button value="Registro" id="botonRegistro" icon="ui-icon-plus" outcome="altaGestor" />
+                                </td>
+                            </tr>
+                        </table>
+                        <br />
                     </h:form>                        
                 </div>             
             </div>            
