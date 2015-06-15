@@ -1,7 +1,8 @@
 package dto;
-// Generated 5/06/2015 11:37:33 AM by Hibernate Tools 4.3.1
+// Generated 15/06/2015 12:32:14 PM by Hibernate Tools 4.3.1
 
 
+import dto.Empresas;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
