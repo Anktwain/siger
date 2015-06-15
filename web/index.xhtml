@@ -12,6 +12,7 @@
         <link rel="shortcut icon" href="img/iconos/icono1.ico" type="image/x-icon" />
     </h:head>
     <h:body>
+        <p:growl id="growl" showDetail="true" sticky="true" />
         <div id="pagina">
             <div id="formulario">
                 <div id="encabezadoForm">
@@ -37,10 +38,10 @@
                         <table align="center">
                             <tr>
                                 <td>
-                                    <p:commandButton value="Entrar" id="botonLogin" icon="ui-icon-key" actionListener="#{indexBean.ingresar()}" />
+                                    <p:commandButton value="Entrar" id="botonLogin" icon="ui-icon-key" actionListener="#{indexBean.ingresar()}" update="growl" />
                                 </td>
                                 <td>
-                                    <p:commandButton value="Registro" id="botonRegistro" icon="ui-icon-plus" action="altaGestor.xhtml" />
+                                    <p:button value="Registro" id="botonRegistro" icon="ui-icon-plus" outcome="altaGestor" />
                                 </td>
                             </tr>
                         </table>

@@ -1,52 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:f="http://xmlns.jcp.org/jsf/core" 
       xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
     <h:head>
-        <title>ESTA ES SOLO UNA VISTA DE PRUEBA</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8"></meta>
+        <title>Registrarse</title>
+        <link rel="stylesheet" type="text/css" href="css/altaGestor.css" />
+        <link rel="shortcut icon" href="img/iconos/icono1.ico" type="image/x-icon" />
     </h:head>
     <h:body>
         <p:growl id="growl" showDetail="true" sticky="true" />
-        <div><h3>Alta Gestor</h3></div>
-
-        <h:form>
-            <h:panelGrid columns="2" cellpadding="2">
-
-                <p:outputLabel for="itNombre" value="Nombre(s):" />
-                <p:inputText id="itNombre" value="#{altaGestorBean.nombre}" />
-                
-                <p:outputLabel for="itPaterno" value="Apellido Paterno:" />
-                <p:inputText id="itPaterno" value="#{altaGestorBean.paterno}" />
-                
-                <p:outputLabel for="itMaterno" value="Apellido Materno:" />
-                <p:inputText id="itMaterno" value="#{altaGestorBean.materno}" />
-                
-                <p:outputLabel for="itUsuario" value="Nombre de Usuario:" />
-                <p:inputText id="itUsuario" value="#{altaGestorBean.nombreLogin}" />
-                
-                <p:outputLabel for="itPassword" value="Contraseña:" />
-                <p:password id="itPassword" value="#{altaGestorBean.password}" />
-                
-                <p:outputLabel for="itConfirmePassword" value="Confirme Contraseña:" />
-                <p:password id="itConfirmePassword" value="#{altaGestorBean.confirmePassword}" />
-                
-                <p:outputLabel for="itCorreo" value="E-mail:" />
-                <p:inputText id="itCorreo" value="#{altaGestorBean.correo}" />
-                
-                <p:commandButton id="cbEntrar" value="Aceptar" update="growl"
-                                 actionListener="#{altaGestorBean.insertar}" />
-
-            </h:panelGrid>
-        </h:form>
-        
+        <div id="pagina">
+            <div id="formulario">
+                <a href="index.xhtml" title="Volver al inicio">
+                    <div id="encabezadoForm">
+                    </div>
+                </a>
+                <div id="cuerpoForm">
+                    <h:form>
+                        <div id="letrero">
+                            SOLICITUD DE REGISTRO EN EL SISTEMA
+                        </div>
+                        <div id="texto">                            
+                            Por favor complete el siguiente formulario con sus datos:
+                        </div>
+                        <h:panelGrid columns="2" cellpadding="2">
+                            <div id="entrada">
+                                Nombre(s):
+                                <br />
+                                <p:inputText id="itNombre" value="#{altaGestorBean.nombre}" maxlength="50" required="true" requiredMessage="Debe escribir su(s) nombre(s)" />
+                            </div>
+                            <div id="entrada">
+                                Apellido Paterno:
+                                <br />
+                                <p:inputText id="itPaterno" value="#{altaGestorBean.paterno}" maxlength="30" required="true" requiredMessage="Debe escribir su apellido paterno" />
+                            </div>
+                            <div id="entrada">
+                                Apellido Materno:
+                                <br />
+                                <p:inputText id="itMaterno" value="#{altaGestorBean.materno}" maxlength="30" required="true" requiredMessage="Debe escribir su apellido materno" />
+                            </div>
+                            <div id="entrada">
+                                Nombre de usuario:
+                                <br />
+                                <p:inputText id="itUsuario" value="#{altaGestorBean.nombreLogin}" maxlength="20" required="true" requiredMessage="Debe escribir un nombre de usuario" />
+                            </div>
+                            <div id="entrada">
+                                Contraseña:
+                                <br />
+                                <p:inputText id="itPassword" value="#{altaGestorBean.password}" maxlength="20" required="true" type="password" requiredMessage="Debe escribir una contraseña" />
+                            </div>
+                            <div id="entrada">
+                                Confirme la contraseña:
+                                <br />
+                                <p:inputText id="itConfirmePassword" value="#{altaGestorBean.confirmePassword}" maxlength="20" required="true" type="password" requiredMessage="Debe confirmar la contraseña" />
+                            </div>
+                            <div id="entrada">
+                                Direccion de correo electronico:
+                                <br />
+                                <p:inputText id="itCorreo" value="#{altaGestorBean.correo}" maxlength="50" required="true" requiredMessage="Debe escribir una direccion de correo electronico" />
+                            </div>
+                            <h:form>
+                                <div id="captcha">
+                                    <div class="g-recaptcha" data-sitekey="6LeBKQgTAAAAAMPEUJ0hWwf7ubawf30er0IIgdPj"></div>
+                                </div>
+                            </h:form>
+                            <div id="btnEnviar">
+                                <p:commandButton id="cbEntrar" value="Enviar" update="growl" actionListener="#{altaGestorBean.insertar}" icon="ui-icon-plus" />                                
+                            </div>                            
+                        </h:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+        <script src='https://www.google.com/recaptcha/api.js'></script>
     </h:body>
 </html>
