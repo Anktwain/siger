@@ -107,17 +107,19 @@ public class IndexBean implements Serializable {
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
                                     usuario.getNombre() + "No podrá ingresar con el perfil " + usuario.getPerfil() + " (ELIMINADO) porque ha sido desactivado."));
                     break;
-                case 1:
-                    FacesContext.getCurrentInstance().addMessage("",
-                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
+                case 1:                    
+                    FacesContext mensaje = FacesContext.getCurrentInstance();
+                    mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("panelAdministrativo.xhtml");
+                    System.out.println("ACCESO ADMIN CORRECTO");
                     break;
                 case 2:
                     FacesContext.getCurrentInstance().addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("panelGestor.xhtml");
+                    System.out.println("ACCESO GESTOR CORRECTO");
                     break;
                 default:
                     FacesContext.getCurrentInstance().addMessage("",
@@ -127,7 +129,7 @@ public class IndexBean implements Serializable {
             }
 
         } else {
-
+                System.out.println("USUARIO Y/O CONTRASEÑA INCORRECTOS!!!");
         }
     }
 

@@ -16,7 +16,7 @@ body
 #formulario
 {
 	margin: auto;
-	text-align: center;
+	text-align: left;
 	margin-top: 10%;
 	border: 4px solid white;
 	width: 500px;
@@ -36,45 +36,33 @@ body
 	padding: 10px;
 }
 
+#letrero
+{
+	font-size: larger;
+}
+
+#texto
+{
+	display: inline-block;
+	margin-top: 15px;
+}
+
 #entrada
 {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
 
-hr
+a
 {
-	font-family: Georgia, serif;
-	font-size: 14px;
-}
-
-hr.style-eight
-{
-	padding: 0;
-	border: none;
-	border-top: medium double #FFFFFF;
+	padding-top: 15px;
+	padding-bottom: 15px;
 	color: #FFFFFF;
-	text-align: center;
+        text-decoration: none;
 }
 
-hr.style-eight:after
+#btnEnviar
 {
-	content: "§";
-	display: inline-block;
-	position: relative;
-	top: -0.7em;
-	font-size: 1.5em;
-	padding: 0 0.25em;
-}
-
-#olvido a
-{
-        padding-top: 15px;
-	color: #81BEF7;
-	text-decoration: none;
-}
-
-table
-{
-        text-align: left;
+	margin-left: auto;
+        margin-right: auto;
 }
