@@ -14,6 +14,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import util.MD5;
+import util.constantes.Directorios;
+import util.constantes.Patrones;
 import util.constantes.Perfiles;
 
 /**
@@ -39,17 +42,13 @@ public class AltaGestorBean {
     private Usuarios usuario;
     
     private UsuariosDAO usuarioDao;
-    
-    private static final String RUTA_PERFILES = "/img/usuarios/";
-    private static final String PATRON_EMAIL = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 
     public AltaGestorBean() {
         usuarioDao = new UsuariosIMPL();
         usuario = new Usuarios();
         perfil = Perfiles.GESTOR_NO_CONFIRMADO;
-        imagenPerfil = "sin.png";
+        imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sinImagen.png";
     }
     
     public void insertar() {
@@ -92,10 +91,11 @@ public class AltaGestorBean {
         usuario.setPaterno(paterno);
         usuario.setMaterno(materno);
         usuario.setNombreLogin(nombreLogin);
-        usuario.setPassword(password);
+        usuario.setPassword(MD5.encriptar(password));
         usuario.setPerfil(perfil);
         usuario.setCorreo(correo);
-        usuario.setImagen(imagenPerfil);
+        usuario.setImagenPerfil(imagenPerfil);
+        
         
         // Guarda el objeto en la BD
         if (usuarioDao.insertar(usuario) == false) { // error al guardar
@@ -109,12 +109,11 @@ public class AltaGestorBean {
                             + " sin embargo no podrá ingresar al sistema hasta "
                             + "que sea confirmado por un Administrador"));
         }
-        
     }
     
     private boolean validarCorreo() {
         // Compila la cadena PATRON_EMAIL como un patrón
-        Pattern patron = Pattern.compile(PATRON_EMAIL);
+        Pattern patron = Pattern.compile(Patrones.PATRON_EMAIL);
         
         // Compara el correo con el patrón dado
         Matcher matcher = patron.matcher(correo);

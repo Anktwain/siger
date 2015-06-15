@@ -1,5 +1,5 @@
 package dto;
-// Generated 5/06/2015 11:37:33 AM by Hibernate Tools 4.3.1
+// Generated 15/06/2015 12:32:14 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -31,7 +31,7 @@ public class Usuarios  implements java.io.Serializable {
      private String password;
      private int perfil;
      private String correo;
-     private String imagen;
+     private String imagenPerfil;
      private Set administrativoses = new HashSet(0);
      private Set gestoreses = new HashSet(0);
 
@@ -39,15 +39,14 @@ public class Usuarios  implements java.io.Serializable {
     }
 
 	
-    public Usuarios(String nombre, String nombreLogin, String password, int perfil) {
+    public Usuarios(String nombre, String nombreLogin, String password, int perfil, String correo) {
         this.nombre = nombre;
         this.nombreLogin = nombreLogin;
         this.password = password;
         this.perfil = perfil;
+        this.correo = correo;
     }
-    public Usuarios(String nombre, String paterno, String materno, String nombreLogin,
-            String password, int perfil, String correo, String imagen,
-            Set administrativoses, Set gestoreses) {
+    public Usuarios(String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagenPerfil, Set administrativoses, Set gestoreses) {
        this.nombre = nombre;
        this.paterno = paterno;
        this.materno = materno;
@@ -55,20 +54,10 @@ public class Usuarios  implements java.io.Serializable {
        this.password = password;
        this.perfil = perfil;
        this.correo = correo;
-       this.imagen = imagen;
+       this.imagenPerfil = imagenPerfil;
        this.administrativoses = administrativoses;
        this.gestoreses = gestoreses;
     }
-
-    @Override
-    public String toString() {
-        return "Usuarios{" + "idUsuario=" + idUsuario + ", nombre=" + nombre
-                + ", paterno=" + paterno + ", materno=" + materno
-                + ", nombreLogin=" + nombreLogin + ", password=" + password
-                + ", perfil=" + perfil + ", correo=" + correo + ", imagen=" + imagen + '}';
-    }
-    
-    
    
      @Id @GeneratedValue(strategy=IDENTITY)
 
@@ -123,7 +112,7 @@ public class Usuarios  implements java.io.Serializable {
     }
 
     
-    @Column(name="password", nullable=false, length=20)
+    @Column(name="password", nullable=false, length=45)
     public String getPassword() {
         return this.password;
     }
@@ -143,7 +132,7 @@ public class Usuarios  implements java.io.Serializable {
     }
 
     
-    @Column(name="correo", length=50)
+    @Column(name="correo", nullable=false, length=50)
     public String getCorreo() {
         return this.correo;
     }
@@ -153,13 +142,13 @@ public class Usuarios  implements java.io.Serializable {
     }
 
     
-    @Column(name="imagen", length=10)
-    public String getImagen() {
-        return this.imagen;
+    @Column(name="imagen_perfil", length=30)
+    public String getImagenPerfil() {
+        return this.imagenPerfil;
     }
     
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
+    public void setImagenPerfil(String imagenPerfil) {
+        this.imagenPerfil = imagenPerfil;
     }
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="usuarios")
