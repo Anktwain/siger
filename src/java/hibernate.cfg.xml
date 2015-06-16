@@ -4,9 +4,9 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/prueba?zeroDateTimeBehavior=convertToNull</property>
-    <property name="hibernate.connection.username">root</property>
-    <property name="hibernate.connection.password">root</property>
+    <property name="hibernate.connection.url">jdbc:mysql://10.0.0.26:3306/sigerbd?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.username">cofradia</property>
+    <property name="hibernate.connection.password">cofradiaDB</property>
     <mapping resource="mapeo/Gestiones.hbm.xml"/>
     <mapping resource="mapeo/Creditos.hbm.xml"/>
     <mapping resource="mapeo/CreditosRemesas.hbm.xml"/>
@@ -21,7 +21,6 @@
     <mapping resource="mapeo/Subproductos.hbm.xml"/>
     <mapping resource="mapeo/Clientes.hbm.xml"/>
     <mapping resource="mapeo/Telefonos.hbm.xml"/>
-    <mapping resource="mapeo/Credito.hbm.xml"/>
     <mapping resource="mapeo/Gestores.hbm.xml"/>
     <mapping resource="mapeo/Administrativos.hbm.xml"/>
     <mapping resource="mapeo/Productos.hbm.xml"/>
