@@ -9,6 +9,10 @@ import dao.UsuariosDAO;
 import dto.Usuarios;
 import impl.UsuariosIMPL;
 import java.util.Properties;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -20,6 +24,8 @@ import util.MD5;
  *
  * @author antonio
  */
+@ManagedBean
+@ViewScoped
 public class RecuperarContrasenaBean {
 
     private String usuarioLogin;
@@ -41,7 +47,8 @@ public class RecuperarContrasenaBean {
             System.out.println("Llamando al método crearCorreo");
             crearCorreo();
         } else {
-            System.out.println("No se encontró el dato: " + usuarioLogin + ", " + correo);
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage("ERROR", "El usuario y/o contraseña no existen"));
         }
     }
 
@@ -79,6 +86,8 @@ public class RecuperarContrasenaBean {
             // Se cierra
             t.close();
         } catch (Exception e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage("ERROR", "Hubo un error al envíar el correo"));
             e.printStackTrace();
         }
     }
