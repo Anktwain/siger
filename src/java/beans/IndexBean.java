@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import util.constantes.Constantes;
 import javax.faces.context.FacesContext;
+import util.MD5;
 
 @ManagedBean(name = "indexBean")
 @SessionScoped
@@ -93,7 +94,7 @@ public class IndexBean implements Serializable {
         System.out.println("#################### Ha entrado a la funcion ingresar\n");
         Usuarios usuario;
         UsuariosDAO usuarioDao = new UsuariosIMPL();
-        usuario = usuarioDao.buscar(nombreUsuario, password);
+        usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
         if (usuario != null) {
 
             switch (usuario.getPerfil()) {
@@ -112,14 +113,14 @@ public class IndexBean implements Serializable {
                     mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("panelAdministrativo.xhtml");
-                    System.out.println("ACCESO ADMIN CORRECTO");
+                    System.out.println("#################### ACCESO ADMIN CORRECTO");
                     break;
                 case 2:
                     FacesContext.getCurrentInstance().addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("panelGestor.xhtml");
-                    System.out.println("ACCESO GESTOR CORRECTO");
+                    System.out.println(" #################### ACCESO GESTOR CORRECTO");
                     break;
                 default:
                     FacesContext.getCurrentInstance().addMessage("",
@@ -129,7 +130,7 @@ public class IndexBean implements Serializable {
             }
 
         } else {
-                System.out.println("USUARIO Y/O CONTRASEÑA INCORRECTOS!!!");
+                System.out.println("#################### USUARIO Y/O CONTRASEÑA INCORRECTOS!!!");
         }
     }
 
