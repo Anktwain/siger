@@ -88,15 +88,15 @@ public class IndexBean implements Serializable {
      * Solicita una búsqueda con las cadenas de nombre de usuario y de password
      * y devuelve el objeto usuario al que correspondan, en su caso, o
      * {@code null} en otro caso.
+     *
      * @throws java.io.IOException
      */
-    public void ingresar() throws IOException{
-        System.out.println("#################### Ha entrado a la funcion ingresar\n");
+    public void ingresar() throws IOException {
+        System.out.println("#################### Estamos en la la funcion ingresar\n");
         Usuarios usuario;
         UsuariosDAO usuarioDao = new UsuariosIMPL();
         usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
         if (usuario != null) {
-
             switch (usuario.getPerfil()) {
                 case -2:
                     FacesContext.getCurrentInstance().addMessage("",
@@ -108,10 +108,10 @@ public class IndexBean implements Serializable {
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
                                     usuario.getNombre() + "No podrá ingresar con el perfil " + usuario.getPerfil() + " (ELIMINADO) porque ha sido desactivado."));
                     break;
-                case 1:                    
+                case 1:
                     FacesContext mensaje = FacesContext.getCurrentInstance();
                     mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
-                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
+                            usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("panelAdministrativo.xhtml");
                     System.out.println("#################### ACCESO ADMIN CORRECTO");
                     break;
@@ -126,11 +126,15 @@ public class IndexBean implements Serializable {
                     FacesContext.getCurrentInstance().addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
                                     usuario.getNombre() + "Está intentando entrar con un perfil desconocido. (Perfil =" + usuario.getPerfil() + ")."));
+                    System.out.println("#################### ESTÁS INTENTANDO ENTRAR CON UN PERFIL DESCONOCIDO!!!");
                     break;
             }
 
         } else {
-                System.out.println("#################### USUARIO Y/O CONTRASEÑA INCORRECTOS!!!");
+            FacesContext.getCurrentInstance().addMessage("",
+                    new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
+                            "Verifica que los datos que has introducido son correctos y que el administrador haya dado de alta tu cuenta."));
+            System.out.println("#################### USUARIO NO CONFIRMADO O NOMBRE DE USUARIO O CONTRASEÑA INCORRECTOS!!!");
         }
     }
 
