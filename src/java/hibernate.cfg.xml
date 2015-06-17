@@ -21,7 +21,6 @@
     <mapping resource="mapeo/Subproductos.hbm.xml"/>
     <mapping resource="mapeo/Clientes.hbm.xml"/>
     <mapping resource="mapeo/Telefonos.hbm.xml"/>
-    <mapping resource="mapeo/Credito.hbm.xml"/>
     <mapping resource="mapeo/Gestores.hbm.xml"/>
     <mapping resource="mapeo/Administrativos.hbm.xml"/>
     <mapping resource="mapeo/Productos.hbm.xml"/>
