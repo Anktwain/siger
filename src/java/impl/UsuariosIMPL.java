@@ -121,7 +121,8 @@ public class UsuariosIMPL implements UsuariosDAO {
         
         try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
             usuario = (Usuarios) sesion.createQuery("from Usuarios u where "
-                    + "u.perfil != 0 and u.perfil != -2 and u.nombreLogin = '"
+                    + "u.perfil != " + Perfiles.ELIMINADO + " and u.perfil != " 
+                    + Perfiles.GESTOR_NO_CONFIRMADO + " and u.nombreLogin = '"
                     + nombreLogin + "' and u.password = '"
                     + password +"'").uniqueResult();
         } catch(HibernateException he) {
@@ -141,7 +142,7 @@ public class UsuariosIMPL implements UsuariosDAO {
         
         try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
             usuario = (Usuarios) sesion.createQuery("from Usuarios u where "
-                    + "u.perfil != 0 and u.nombreLogin = '"
+                    + "u.perfil != " + Perfiles.ELIMINADO + " and u.nombreLogin = '"
                     + nombreLogin + "' and u.correo = '"
                     + correo +"'").uniqueResult();
 

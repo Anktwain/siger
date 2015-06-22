@@ -53,7 +53,7 @@
                 <ul class="nav-notification clearfix">                    
                     <li class="profile dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <strong>Luis Morales</strong>
+                            <strong><p:outputLabel value="Luis Morales" /></strong>
                             <span><i class="fa fa-chevron-down"></i></span>
                         </a>
                         <ul class="dropdown-menu">
@@ -236,14 +236,7 @@
                         </div><!-- /.col -->
                     </div>
                     <div class="row">
-                        <h:form>
-                            <p:panel>
-                                <!-- Grafica de primefaces -->
-                                <p:chart type="line" model="#{chartView.zoomModel}" style="height:300px;" widgetVar="chart" />
-                                <!-- Solo sirve el puto boton de mierda -->
-                                <p:commandButton type="button" value="Reset" icon="ui-icon-refresh" onclick="PF('chart').resetZoom()" />
-                            </p:panel>
-                        </h:form>
+
                     </div><!-- /.row -->
                 </div><!-- /.padding-md -->
             </div><!-- /main-container -->

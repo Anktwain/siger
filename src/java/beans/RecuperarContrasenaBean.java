@@ -44,7 +44,6 @@ public class RecuperarContrasenaBean {
         usuario = usuarioDao.buscarPorCorreo(usuarioLogin, correo);
 
         if (usuario != null) {
-            System.out.println("Llamando al método crearCorreo");
             crearCorreo();
         } else {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -72,17 +71,21 @@ public class RecuperarContrasenaBean {
 //            mensaje.addRecipient(Message.RecipientType.CC, new InternetAddress("eduardo.chavez@corporativodelrio.com"));
             mensaje.setSubject("Recuperar Contraseña");
             mensaje.setText(generarMensaje(), "ISO-8859-1", "html");
-            
+
             // Se envía el correo
-            System.out.println("... Se envía el correo a " + usuario.getCorreo() );
+            System.out.println("... Se envía el correo a " + usuario.getCorreo());
             Transport t = sesion.getTransport("smtp");
             t.connect("servicios.cofradia@gmail.com", "@Cofradia&");
             t.sendMessage(mensaje, mensaje.getAllRecipients());
-            
+
             // Cambia la contraseña
             usuario.setPassword(MD5.encriptar(generarNuevoPassword()));
             usuarioDao.editar(usuario);
-            
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage("ENVIANDO MENSAJE",
+                    "Revise su correo electrónico, se ha enviado un mensaje para la recuperación de su contraseña"));
+
             // Se cierra
             t.close();
         } catch (Exception e) {
@@ -91,7 +94,7 @@ public class RecuperarContrasenaBean {
             e.printStackTrace();
         }
     }
-    
+
     private String generarMensaje() {
         String mensaje;
         mensaje = "<font color=\"black\"><i>Usted recibe este mensaje porque ha olvidado su contraseña "
@@ -102,10 +105,10 @@ public class RecuperarContrasenaBean {
         mensaje += "<font size=2 color =\"red\"><b>IMPORTANTE:</b></font><br/>";
         mensaje += "<font color=\"red\">Esta contraseña es provisional, cámbiela inmediatamente "
                 + "desde el menú <i>Configuración</i> de SigerWeb.<br /></font>";
-        
+
         return mensaje;
     }
-    
+
     private String generarNuevoPassword() {
         return usuario.getPassword().substring(0, 10);
     }
