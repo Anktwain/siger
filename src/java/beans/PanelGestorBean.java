@@ -8,7 +8,6 @@ package beans;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
@@ -23,8 +22,7 @@ public class PanelGestorBean implements Serializable{
 //    private IndexBean indexBean;
     
     ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-//    IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
-    private IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+    IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
     
     private String nombreUsuario;
     private String imagenDePerfil;
@@ -36,8 +34,6 @@ public class PanelGestorBean implements Serializable{
         nombreUsuario = indexBean.getUsuario().getNombreLogin();
         imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
         correo = indexBean.getUsuario().getCorreo();
-        System.out.println(nombreUsuario);
-        System.out.println(imagenDePerfil);
     }
 
     public String getNombreUsuario() {
@@ -71,8 +67,6 @@ public class PanelGestorBean implements Serializable{
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-    
-    
 
     public IndexBean getIndexBean() {
         return indexBean;

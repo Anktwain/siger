@@ -8,25 +8,36 @@
     <h:head>
         <meta charset="utf-8"></meta>
         <title>SigerWeb - Panel Gestores</title>
-        <!-- Bootstrap core CSS -->
-        <link href="EndlessStuff/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-        <!-- Font Awesome -->
-        <link href="EndlessStuff/css/font-awesome.min.css" rel="stylesheet" />
-        <!-- Pace -->
-        <link href="EndlessStuff/css/pace.css" rel="stylesheet" />
-        <!-- Color box -->
-        <link href="EndlessStuff/css/colorbox/colorbox.css" rel="stylesheet" />
-        <!-- Morris -->
-        <link href="EndlessStuff/css/morris.css" rel="stylesheet" />
-        <!-- Endless --> 
-        <link href="EndlessStuff/css/endless.min.css" rel="stylesheet" />
-        <link href="EndlessStuff/css/endless-skin.css" rel="stylesheet" />
-        <!-- Icono -->
-        <link rel="shortcut icon" href="img/icono1.ico" type="image/x-icon" />
+        <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+        <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
+        <h:outputStylesheet library="css" name="pace.css" />
+        <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
+        <h:outputStylesheet library="css" name="morris.css" />
+        <h:outputStylesheet library="css" name="endless.min.css" />
+        <h:outputStylesheet library="css" name="endless-skin.css" />
+        
+        
+        <h:outputScript library="js" name="jquery-1.10.2.min.js" />
+        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
+        <h:outputScript library="js" name="jquery.flot.min.js" />
+        <h:outputScript library="js" name="rapheal.min.js" />
+        <h:outputScript library="js" name="morris.min.js" />
+        <h:outputScript library="js" name="jquery.colorbox.min.js" />
+        <h:outputScript library="js" name="jquery.sparkline.min.js" />
+        <h:outputScript library="js" name="/uncompressed/pace.js" />
+        <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
+        <h:outputScript library="js" name="jquery.slimscroll.min.js" />
+        <h:outputScript library="js" name="modernizr.min.js" />
+        <h:outputScript library="js" name="jquery.cookie.min.js" />
+        <h:outputScript library="js" name="/endless/endless_dashboard.js" />
+        <h:outputScript library="js" name="/endless/endless.js" />
+        
+        
     </h:head>
-    <body class="overflow-hidden">
+    <h:body class="overflow-hidden">
         <!-- Overlay Div -->
         <div id="overlay" class="transparent"></div>
+
         <div id="theme-setting">
             <div class="title">
                 <strong class="no-margin">Skin Color</strong>
@@ -53,16 +64,16 @@
                 <ul class="nav-notification clearfix">                    
                     <li class="profile dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <strong><p:outputLabel value="Luis Morales" /></strong>
+                            <strong><p:outputLabel value="#{panelGestorBean.nombre}" /></strong>
                             <span><i class="fa fa-chevron-down"></i></span>
                         </a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="clearfix" href="#">
-                                    <img src="img/usuarios/3.jpg" />
+                                    <h:graphicImage library="img" name="#{panelGestorBean.imagenDePerfil}" />
                                     <div class="detail">
-                                        <strong>Luis Morales</strong>
-                                        <p class="grey">luis.morales@corporativodelrio.com</p> 
+                                        <strong><p:outputLabel value="#{panelGestorBean.nombreUsuario}"/></strong>
+                                        <p class="grey"><p:outputLabel value="#{panelGestorBean.correo}" /></p> 
                                     </div>
                                 </a>
                             </li>
@@ -77,14 +88,14 @@
             <aside class="fixed skin-6">
                 <div class="sidebar-inner scrollable-sidebar">
                     <div class="user-block clearfix">
-                        <img src="img/usuarios/3.jpg" />                            
+                        <h:graphicImage library="img" name="#{panelGestorBean.imagenDePerfil}" />                            
                     </div><!-- /user-block -->
                     <div class="search-block">
                         <div class="input-group">
                             <input type="text" class="form-control input-sm" placeholder="Numero de credito..." />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default btn-sm" type="button"><i class="fa fa-search"></i></button>
-                                </span>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default btn-sm" type="button"><i class="fa fa-search"></i></button>
+                            </span>
                         </div><!-- /input-group -->
                     </div><!-- /search-block -->
                     <div class="main-menu">
@@ -98,7 +109,7 @@
                                     <span class="menu-hover"></span>
                                 </a>
                             </li>
-                            
+
                             <li class="openable">
                                 <a href="cuentas.xhtml">
                                     <span class="menu-icon">
@@ -181,8 +192,8 @@
                     </ul><!-- /page-stats -->
                 </div><!-- /main-header -->
                 <div class="grey-container shortcut-wrapper">
-                    
-                    
+
+
                 </div><!-- /grey-container -->
                 <div class="padding-md">
                     <div class="row">
@@ -254,32 +265,5 @@
             </footer><!-- /footer -->
         </div><!-- /wrapper -->
         <a href="" id="scroll-to-top" class="hidden-print"><i class="fa fa-chevron-up"></i></a>
-        <!-- Javascript placed at the end of the document so the pages load faster -->
-        <!-- Jquery -->
-        <script src="EndlessStuff/js/jquery-1.10.2.min.js"></script>
-        <!-- Bootstrap -->
-        <script src="EndlessStuff/bootstrap/js/bootstrap.js"></script>
-        <!-- Flot -->
-        <script src='EndlessStuff/js/jquery.flot.min.js'></script>
-        <!-- Morris -->
-        <script src='EndlessStuff/js/rapheal.min.js'></script>
-        <script src='EndlessStuff/js/morris.min.js'></script>
-        <!-- Colorbox -->
-        <script src='EndlessStuff/js/jquery.colorbox.min.js'></script>
-        <!-- Sparkline -->
-        <script src='EndlessStuff/js/jquery.sparkline.min.js'></script>
-        <!-- Pace -->
-        <script src='EndlessStuff/js/uncompressed/pace.js'></script>
-        <!-- Popup Overlay -->
-        <script src='EndlessStuff/js/jquery.popupoverlay.min.js'></script>
-        <!-- Slimscroll -->
-        <script src='EndlessStuff/js/jquery.slimscroll.min.js'></script>
-        <!-- Modernizr -->
-        <script src='EndlessStuff/js/modernizr.min.js'></script>
-        <!-- Cookie -->
-        <script src='EndlessStuff/js/jquery.cookie.min.js'></script>
-        <!-- Endless -->
-        <script src="EndlessStuff/js/endless/endless_dashboard.js"></script>
-        <script src="EndlessStuff/js/endless/endless.js"></script>
-    </body>
+    </h:body>
 </html>

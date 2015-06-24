@@ -19,8 +19,13 @@ public class IndexBean implements Serializable {
 
     private String nombreUsuario; // viene de la vista
     private String password; // viene de la vista
+    
+    private Usuarios usuario;
+    private UsuariosDAO usuarioDao;
 
     public IndexBean() {
+        usuario = new Usuarios();
+        usuarioDao = new UsuariosIMPL();
     }
 
     /**
@@ -59,21 +64,7 @@ public class IndexBean implements Serializable {
                 && (password.length() <= Constantes.longPassword) && (!password.matches("[.*\\s*]*"));
     }
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
 
-    public void setNombreUsuario(String nomUsuario) {
-        this.nombreUsuario = nomUsuario;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 //    public static void main(String args[]) {
 //        UsuariosDAO usuariosDAO = new UsuariosIMPL();
 //        List<Usuarios> listaUsuarios = usuariosDAO.buscarTodo();
@@ -93,8 +84,7 @@ public class IndexBean implements Serializable {
      */
     public void ingresar() throws IOException {
         System.out.println("#################### Estamos en la la funcion ingresar\n");
-        Usuarios usuario;
-        UsuariosDAO usuarioDao = new UsuariosIMPL();
+        
         usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
         if (usuario != null) {
             switch (usuario.getPerfil()) {
@@ -112,14 +102,14 @@ public class IndexBean implements Serializable {
                     FacesContext mensaje = FacesContext.getCurrentInstance();
                     mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                             usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("panelAdministrativo.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelAdministrativo.xhtml");
                     System.out.println("#################### ACCESO ADMIN CORRECTO");
                     break;
                 case 2:
                     FacesContext.getCurrentInstance().addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("panelGestor.xhtml");
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelGestor.xhtml");
                     System.out.println(" #################### ACCESO GESTOR CORRECTO");
                     break;
                 default:
@@ -136,6 +126,26 @@ public class IndexBean implements Serializable {
                             "Verifica que los datos que has introducido son correctos y que el administrador haya dado de alta tu cuenta."));
             System.out.println("#################### USUARIO NO CONFIRMADO O NOMBRE DE USUARIO O CONTRASEÑA INCORRECTOS!!!");
         }
+    }
+    
+        public String getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(String nomUsuario) {
+        this.nombreUsuario = nomUsuario;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Usuarios getUsuario() {
+        return usuario;
     }
 
 }
