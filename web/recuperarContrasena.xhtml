@@ -8,10 +8,12 @@
     <h:head>
         <meta charset="utf-8"></meta>
         <title>Recuperar contraseña</title>
-        <link rel="stylesheet" type="text/css" href="css/recuperarContraseña.css" />
+        <!--<link rel="stylesheet" type="text/css" href="css/recuperarContraseña.css" />-->
+        <h:outputStylesheet library="css" name="recuperarContrasena.css" />
         <link rel="shortcut icon" href="img/iconos/icono1.ico" type="image/x-icon" />
     </h:head>
     <h:body>
+        <p:growl id="growl" showDetail="true" sticky="true" />
         <div id="pagina">
             <div id="formulario">
                 <a href="index.xhtml" title="Volver al inicio">
@@ -29,12 +31,14 @@
                         <div id="entrada">
                             Usuario:
                             <br />
-                            <p:inputText id="usuario" type="text" maxlength="50" required="true" requiredMessage="Debe escribir un nombre de usuario" />
+                            <p:inputText id="usuario" type="text" maxlength="50" required="true"
+                                         requiredMessage="Debe escribir un nombre de usuario" value="#{recuperarContrasenaBean.usuarioLogin}" />
                         </div>
                         <div id="entrada">
                             Correo Electronico:
                             <br />
-                            <p:inputText id="mail" type="mail" maxlength="50" required="true" requiredMessage="Debe escribir su correo electronico" />
+                            <p:inputText id="mail" type="mail" maxlength="50" required="true"
+                                         requiredMessage="Debe escribir su correo electronico" value="#{recuperarContrasenaBean.correo}" />
                         </div>
                         <div id="captcha">
                             <h:form>
@@ -42,7 +46,7 @@
                             </h:form>
                         </div>
                         <div id="btnEnviar">
-                            <p:commandButton value="Enviar" id="botonLogin" icon="ui-icon-check" />
+                            <p:commandButton value="Enviar" id="botonLogin" icon="ui-icon-check" actionListener="#{recuperarContrasenaBean.recuperar}" update="growl" />
                         </div>
                     </h:form>
                 </div>
