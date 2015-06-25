@@ -99,11 +99,16 @@ public class IndexBean implements Serializable {
                                     usuario.getNombre() + "No podrá ingresar con el perfil " + usuario.getPerfil() + " (ELIMINADO) porque ha sido desactivado."));
                     break;
                 case 1:
-                    FacesContext mensaje = FacesContext.getCurrentInstance();
-                    mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
-                            usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
+//                    FacesContext mensaje = FacesContext.getCurrentInstance();
+//                    mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
+//                            usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
+//                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelAdministrativo.xhtml");
+//                    System.out.println("#################### ACCESO ADMIN CORRECTO");
+//                    FacesContext.getCurrentInstance().addMessage("",
+//                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
+//                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelAdministrativo.xhtml");
-                    System.out.println("#################### ACCESO ADMIN CORRECTO");
+                    System.out.println(" #################### ACCESO ADMIN CORRECTO");
                     break;
                 case 2:
                     FacesContext.getCurrentInstance().addMessage("",

@@ -8,10 +8,13 @@ package beans;
 import dao.UsuariosDAO;
 import dto.Usuarios;
 import impl.UsuariosIMPL;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Properties;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.mail.Message;
 import javax.mail.Session;
@@ -26,7 +29,7 @@ import util.MD5;
  */
 @ManagedBean
 @ViewScoped
-public class RecuperarContrasenaBean {
+public class RecuperarContrasenaBean implements Serializable{
 
     private String usuarioLogin;
     private String correo;
@@ -39,12 +42,13 @@ public class RecuperarContrasenaBean {
         usuarioDao = new UsuariosIMPL();
     }
 
-    public void recuperar() {
+    public void recuperar() throws IOException {
         // verifica que el usuario y correo existan en la BD
         usuario = usuarioDao.buscarPorCorreo(usuarioLogin, correo);
 
         if (usuario != null) {
             crearCorreo();
+            //FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
         } else {
             FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(null, new FacesMessage("ERROR", "El usuario y/o contraseña no existen"));
@@ -83,8 +87,11 @@ public class RecuperarContrasenaBean {
             usuarioDao.editar(usuario);
 
             FacesContext context = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = context.getExternalContext();
             context.addMessage(null, new FacesMessage("ENVIANDO MENSAJE",
                     "Revise su correo electrónico, se ha enviado un mensaje para la recuperación de su contraseña"));
+            externalContext.getFlash().setKeepMessages(true);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
 
             // Se cierra
             t.close();

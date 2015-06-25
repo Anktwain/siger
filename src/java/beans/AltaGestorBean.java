@@ -48,7 +48,7 @@ public class AltaGestorBean {
         usuarioDao = new UsuariosIMPL();
         usuario = new Usuarios();
         perfil = Perfiles.GESTOR_NO_CONFIRMADO;
-        imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sinImagen.png";
+        imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
     }
     
     public void insertar() {
