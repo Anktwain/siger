@@ -21,8 +21,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+//import util.CaptchaView;
 import util.MD5;
-
 /**
  *
  * @author antonio
@@ -33,7 +33,6 @@ public class RecuperarContrasenaBean implements Serializable{
 
     private String usuarioLogin;
     private String correo;
-
     Usuarios usuario;
     UsuariosDAO usuarioDao;
 
@@ -45,6 +44,8 @@ public class RecuperarContrasenaBean implements Serializable{
     public void recuperar() throws IOException {
         // verifica que el usuario y correo existan en la BD
         usuario = usuarioDao.buscarPorCorreo(usuarioLogin, correo);
+        //CaptchaView.submit();
+        
 
         if (usuario != null) {
             crearCorreo();
