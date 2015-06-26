@@ -14,6 +14,13 @@
     </h:head>
     <h:body>
         <p:growl id="growl" showDetail="true" sticky="true" />
+        
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+        
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false" >
+            <p:graphicImage library="img" name="loadingBarra.gif" /></p:dialog>
+        
         <div id="pagina">
             <div id="formulario">
                 <a href="index.xhtml" title="Volver al inicio">
@@ -42,7 +49,7 @@
                             <div id="entrada">
                                 Apellido Materno:
                                 <br />
-                                <p:inputText id="itMaterno" value="#{altaGestorBean.materno}" maxlength="30" required="true" requiredMessage="Debe escribir su apellido materno" />
+                                <p:inputText id="itMaterno" value="#{altaGestorBean.materno}" maxlength="30" />
                             </div>
                             <div id="entrada">
                                 Nombre de usuario:
@@ -64,11 +71,6 @@
                                 <br />
                                 <p:inputText id="itCorreo" value="#{altaGestorBean.correo}" maxlength="50" required="true" requiredMessage="Debe escribir una direccion de correo electronico" />
                             </div>
-                            <h:form>
-                                <div id="captcha">
-                                    <div class="g-recaptcha" data-sitekey="6LeBKQgTAAAAAMPEUJ0hWwf7ubawf30er0IIgdPj"></div>
-                                </div>
-                            </h:form>
                             <div id="btnEnviar">
                                 <p:commandButton id="cbEntrar" value="Enviar" update="growl" actionListener="#{altaGestorBean.insertar}" icon="ui-icon-plus" />                                
                             </div>                            
@@ -77,6 +79,5 @@
                 </div>
             </div>
         </div>
-        <script src='https://www.google.com/recaptcha/api.js'></script>
     </h:body>
 </html>

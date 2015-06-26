@@ -8,11 +8,13 @@ package beans;
 import dao.UsuariosDAO;
 import dto.Usuarios;
 import impl.UsuariosIMPL;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import util.MD5;
 import util.constantes.Directorios;
@@ -51,20 +53,24 @@ public class AltaGestorBean {
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
     }
     
-    public void insertar() {
+    public void insertar() throws IOException {
         // Valida correo
         if (!validarCorreo()) {
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage(null, new FacesMessage("ERROR", "El correo no es válido"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+                    "El formato de correo electrónico no es válido."));
         } else if(!passwordsCoinciden()) {
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage(null, new FacesMessage("ERROR", "Las contraseñas deben coincidir"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+                    "Las contraseñas no coinciden, vuelva a escribirlas."));
         } else if(!nombreLoginEsUnico()) {
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage(null, new FacesMessage("ERROR", "Ya se encuentra registrado ese nombre de usuario"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+                    "El nombre de usuario ya existe, elija otro."));
         } else if(!correoEsUnico()) {
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage(null, new FacesMessage("ERROR", "Ya se encuentra regitrada esa dirección de correo electrónico"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+                    "La dirección de correo electrónico ya se encuentra registrada."));
         } else {
             insertarUsuario();
         }
@@ -85,7 +91,7 @@ public class AltaGestorBean {
         return true;
     }
     
-    private void insertarUsuario() {
+    private void insertarUsuario() throws IOException {
         // Crea objeto de tipo Usuario:
         usuario.setNombre(nombre);
         usuario.setPaterno(paterno);
@@ -100,14 +106,18 @@ public class AltaGestorBean {
         // Guarda el objeto en la BD
         if (usuarioDao.insertar(usuario) == false) { // error al guardar
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage(null, new FacesMessage("ERROR", "No se pudo insertar el usuario"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "No se pudo agregar el usuario",
+                    "Error al guardar en BD, repórtese con Soporte Técnico."));
         }
         else {
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage(null, new FacesMessage("EXITO",
+            ExternalContext externalContext = context.getExternalContext();
+            context.addMessage(null, new FacesMessage("SE AGREGÓ NUEVO USUARIO",
                     "Se ha agregado un nuevo gestor,"
                             + " sin embargo no podrá ingresar al sistema hasta "
                             + "que sea confirmado por un Administrador"));
+            externalContext.getFlash().setKeepMessages(true);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
         }
     }
     
