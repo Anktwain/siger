@@ -15,6 +15,12 @@
     <h:body>        
         <!--<h:outputScript library="js" name="resources/js/verificaCaptcha.js" />-->
         <p:growl id="growl" showDetail="true" sticky="true" />
+
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false" >
+            <p:graphicImage library="img" name="loadingBarra.gif" /></p:dialog>
         <div id="pagina">
             <div id="formulario">
                 <a href="index.xhtml" title="Volver al inicio">
@@ -36,10 +42,10 @@
                                          requiredMessage="Debe escribir un nombre de usuario" value="#{recuperarContrasenaBean.usuarioLogin}" />
                         </div>
                         <div id="entrada">
-                            Correo Electronico:
+                            Correo Electrónico:
                             <br />
                             <p:inputText id="mail" type="mail" maxlength="50" required="true"
-                                         requiredMessage="Debe escribir su correo electronico" value="#{recuperarContrasenaBean.correo}" />
+                                         requiredMessage="Debe escribir su correo electrónico" value="#{recuperarContrasenaBean.correo}" />
                         </div>
                         <!--
                         <div id="captcha">

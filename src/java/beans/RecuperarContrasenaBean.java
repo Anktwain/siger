@@ -52,7 +52,8 @@ public class RecuperarContrasenaBean implements Serializable{
             //FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
         } else {
             FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage(null, new FacesMessage("ERROR", "El usuario y/o contraseña no existen"));
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "NO SE PUEDE RECUPERAR CONTRASEÑA",
+                    "Los datos proporcionados no son correctos"));
         }
     }
 
