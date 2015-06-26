@@ -10,9 +10,10 @@
         <title>Recuperar contraseña</title>
         <!--<link rel="stylesheet" type="text/css" href="css/recuperarContraseña.css" />-->
         <h:outputStylesheet library="css" name="recuperarContrasena.css" />
-        <link rel="shortcut icon" href="img/iconos/icono1.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />        
     </h:head>
-    <h:body>
+    <h:body>        
+        <!--<h:outputScript library="js" name="resources/js/verificaCaptcha.js" />-->
         <p:growl id="growl" showDetail="true" sticky="true" />
         <div id="pagina">
             <div id="formulario">
@@ -40,18 +41,25 @@
                             <p:inputText id="mail" type="mail" maxlength="50" required="true"
                                          requiredMessage="Debe escribir su correo electronico" value="#{recuperarContrasenaBean.correo}" />
                         </div>
+                        <!--
                         <div id="captcha">
                             <h:form>
-                            <div class="g-recaptcha" data-sitekey="6LeBKQgTAAAAAMPEUJ0hWwf7ubawf30er0IIgdPj"></div>
+                                <div class="g-recaptcha" data-sitekey="6LeBKQgTAAAAAMPEUJ0hWwf7ubawf30er0IIgdPj"></div>
+                            </h:form>
+                            <h:form>
+                                <p:messages showDetail="true"/>
+                                <p:captcha label="Captcha" required="true" requiredMessage="Resuelva el CAPTCHA" />
                             </h:form>
                         </div>
-                        <div id="btnEnviar">
-                            <p:commandButton value="Enviar" id="botonLogin" icon="ui-icon-check" actionListener="#{recuperarContrasenaBean.recuperar}" update="growl" />
-                        </div>
+                        -->
+                        <h:form id="botonLogin">
+                            <div id="btnEnviar">
+                                <p:commandButton value="Enviar" id="botonLogin" icon="ui-icon-check" actionListener="#{recuperarContrasenaBean.recuperar}" update="growl" />
+                            </div>
+                        </h:form>                        
                     </h:form>
                 </div>
             </div>
         </div>
-        <script src='https://www.google.com/recaptcha/api.js'></script>
     </h:body>
 </html>
