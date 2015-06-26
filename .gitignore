@@ -12,6 +12,11 @@
 hs_err_pid*
 
 # otros:
+hibernate.cfg.xml
+hibernate.reveng.xml
 /nbproject/private/
 /build/
 /dist/
+/src/java/beans/InicioBean.java
+/web/inicio.xhtml
+nblibraries.properties
