@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 15/06/2015 12:32:15 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Facs" optimistic-lock="version" table="facs">
+    <id name="idFac" type="java.lang.Integer">
+      <column name="id_fac"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Remesas" fetch="select" name="remesas">
+      <column name="remesas_id_remesa" not-null="true"/>
+    </many-to-one>
+    <property name="mes" type="java.lang.Integer">
+      <column name="mes"/>
+    </property>
+    <property name="anio" type="java.lang.Integer">
+      <column name="anio"/>
+    </property>
+    <property name="facPor" type="java.lang.Float">
+      <column name="fac_por" precision="12" scale="0"/>
+    </property>
+    <property name="facMes" type="string">
+      <column length="100" name="fac_mes"/>
+    </property>
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+    <h:head>
+        <meta charset="utf-8"></meta>
+        <title>Registrarse</title>
+        <!--<link rel="stylesheet" type="text/css" href="css/altaGestor.css" />-->
+        <h:outputStylesheet library="css" name="altaGestor.css" />
+        <link rel="shortcut icon" href="img/iconos/icono1.ico" type="image/x-icon" />
+    </h:head>
+    <h:body>
+        <p:growl id="growl" showDetail="true" sticky="true" />
+        
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+        
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false" >
+            <p:graphicImage library="img" name="loadingBarra.gif" /></p:dialog>
+        
+        <div id="pagina">
+            <div id="formulario">
+                <a href="index.xhtml" title="Volver al inicio">
+                    <div id="encabezadoForm">
+                    </div>
+                </a>
+                <div id="cuerpoForm">
+                    <h:form>
+                        <div id="letrero">
+                            SOLICITUD DE REGISTRO EN EL SISTEMA
+                        </div>
+                        <div id="texto">                            
+                            Por favor complete el siguiente formulario con sus datos:
+                        </div>
+                        <h:panelGrid columns="2" cellpadding="2">
+                            <div id="entrada">
+                                Nombre(s):
+                                <br />
+                                <p:inputText id="itNombre" value="#{altaGestorBean.nombre}" maxlength="50" required="true" requiredMessage="Debe escribir su(s) nombre(s)" />
+                            </div>
+                            <div id="entrada">
+                                Apellido Paterno:
+                                <br />
+                                <p:inputText id="itPaterno" value="#{altaGestorBean.paterno}" maxlength="30" required="true" requiredMessage="Debe escribir su apellido paterno" />
+                            </div>
+                            <div id="entrada">
+                                Apellido Materno:
+                                <br />
+                                <p:inputText id="itMaterno" value="#{altaGestorBean.materno}" maxlength="30" />
+                            </div>
+                            <div id="entrada">
+                                Nombre de usuario:
+                                <br />
+                                <p:inputText id="itUsuario" value="#{altaGestorBean.nombreLogin}" maxlength="20" required="true" requiredMessage="Debe escribir un nombre de usuario" />
+                            </div>
+                            <div id="entrada">
+                                Contraseña:
+                                <br />
+                                <p:inputText id="itPassword" value="#{altaGestorBean.password}" maxlength="20" required="true" type="password" requiredMessage="Debe escribir una contraseña" />
+                            </div>
+                            <div id="entrada">
+                                Confirme la contraseña:
+                                <br />
+                                <p:inputText id="itConfirmePassword" value="#{altaGestorBean.confirmePassword}" maxlength="20" required="true" type="password" requiredMessage="Debe confirmar la contraseña" />
+                            </div>
+                            <div id="entrada">
+                                Dirección de correo electrónico:
+                                <br />
+                                <p:inputText id="itCorreo" value="#{altaGestorBean.correo}" maxlength="50" required="true" requiredMessage="Debe escribir una direccion de correo electronico" />
+                            </div>
+                            <div id="btnEnviar">
+                                <p:commandButton id="cbEntrar" value="Enviar" update="growl" actionListener="#{altaGestorBean.insertar}" icon="ui-icon-plus" />                                
+                            </div>                            
+                        </h:panelGrid>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>
