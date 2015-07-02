@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 15/06/2015 12:32:15 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Usuarios" optimistic-lock="version" table="usuarios">
+    <id name="idUsuario" type="java.lang.Integer">
+      <column name="id_usuario"/>
+      <generator class="identity"/>
+    </id>
+    <property name="nombre" type="string">
+      <column length="45" name="nombre" not-null="true"/>
+    </property>
+    <property name="paterno" type="string">
+      <column length="45" name="paterno"/>
+    </property>
+    <property name="materno" type="string">
+      <column length="45" name="materno"/>
+    </property>
+    <property name="nombreLogin" type="string">
+      <column length="20" name="nombre_login" not-null="true"/>
+    </property>
+    <property name="password" type="string">
+      <column length="45" name="password" not-null="true"/>
+    </property>
+    <property name="perfil" type="int">
+      <column name="perfil" not-null="true"/>
+    </property>
+    <property name="correo" type="string">
+      <column length="50" name="correo" not-null="true"/>
+    </property>
+    <property name="imagenPerfil" type="string">
+      <column length="30" name="imagen_perfil"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="administrativoses" table="administrativos">
+      <key>
+        <column name="id_usuario" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Administrativos"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="gestoreses" table="gestores">
+      <key>
+        <column name="id_usuario" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Gestores"/>
+    </set>
+  </class>
+</hibernate-mapping>

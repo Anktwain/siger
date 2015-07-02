@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 15/06/2015 12:32:15 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Autos" optimistic-lock="version" table="autos">
+    <id name="idAuto" type="int">
+      <column name="id_auto"/>
+      <generator class="assigned"/>
+    </id>
+    <many-to-one class="dto.Creditos" fetch="select" name="creditos">
+      <column name="creditos_id_credito" not-null="true"/>
+    </many-to-one>
+    <property name="clave" type="string">
+      <column length="30" name="clave"/>
+    </property>
+    <property name="marca" type="string">
+      <column length="25" name="marca"/>
+    </property>
+    <property name="modelo" type="string">
+      <column length="25" name="modelo"/>
+    </property>
+    <property name="color" type="string">
+      <column length="25" name="color"/>
+    </property>
+    <property name="valor" type="java.lang.Float">
+      <column name="valor" precision="12" scale="0"/>
+    </property>
+  </class>
+</hibernate-mapping>
