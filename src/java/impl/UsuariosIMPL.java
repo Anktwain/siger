@@ -176,6 +176,26 @@ public class UsuariosIMPL implements UsuariosDAO {
         
         return listaUsuarios;
     }
+    
+    @Override
+    public List<Usuarios> buscarUsuariosNoConfirmados() {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        List<Usuarios> listaUsuariosNoConfirmados;
+        
+        try { // Buscamos únicamente a los no confirmados
+            listaUsuariosNoConfirmados = sesion.createQuery("from Usuarios u"
+                    + " where u.perfil == " + Perfiles.GESTOR_NO_CONFIRMADO).list();
+        } catch(HibernateException he) {
+            listaUsuariosNoConfirmados = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        
+        return listaUsuariosNoConfirmados;
+    }
+    
 
     @Override
     public Usuarios buscarNombreLogin(String nombreLogin) {
@@ -223,5 +243,5 @@ public class UsuariosIMPL implements UsuariosDAO {
         if(sesion.isOpen())
             sesion.close();
     }
-    
+
 }
