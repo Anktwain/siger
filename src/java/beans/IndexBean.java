@@ -19,7 +19,7 @@ public class IndexBean implements Serializable {
 
     private String nombreUsuario; // viene de la vista
     private String password; // viene de la vista
-    
+
     private Usuarios usuario;
     private UsuariosDAO usuarioDao;
 
@@ -64,7 +64,6 @@ public class IndexBean implements Serializable {
                 && (password.length() <= Constantes.longPassword) && (!password.matches("[.*\\s*]*"));
     }
 
-
 //    public static void main(String args[]) {
 //        UsuariosDAO usuariosDAO = new UsuariosIMPL();
 //        List<Usuarios> listaUsuarios = usuariosDAO.buscarTodo();
@@ -74,7 +73,6 @@ public class IndexBean implements Serializable {
 //        }
 //        System.out.println("Despliegue terminado.");
 //    }
-
     /**
      * Solicita una búsqueda con las cadenas de nombre de usuario y de password
      * y devuelve el objeto usuario al que correspondan, en su caso, o
@@ -84,7 +82,7 @@ public class IndexBean implements Serializable {
      */
     public void ingresar() throws IOException {
         System.out.println("#################### Estamos en la la funcion ingresar\n");
-        
+
         usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
         if (usuario != null) {
             switch (usuario.getPerfil()) {
@@ -97,6 +95,7 @@ public class IndexBean implements Serializable {
                     FacesContext.getCurrentInstance().addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
                                     usuario.getNombre() + "No podrá ingresar con el perfil " + usuario.getPerfil() + " (ELIMINADO) porque ha sido desactivado."));
+                    System.err.println("#################### NOT OK. ACCESO DENEGADO(U0)"); // linea de depuracion
                     break;
                 case 1:
 //                    FacesContext mensaje = FacesContext.getCurrentInstance();
@@ -108,20 +107,20 @@ public class IndexBean implements Serializable {
 //                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
 //                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelAdministrativo.xhtml");
-                    System.out.println(" #################### ACCESO ADMIN CORRECTO");
+                    System.out.println("#################### OK. ACCESO ADMIN CORRECTO"); // linea de depuracion
                     break;
                 case 2:
                     FacesContext.getCurrentInstance().addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelGestor.xhtml");
-                    System.out.println(" #################### ACCESO GESTOR CORRECTO");
+                    System.out.println("#################### OK. ACCESO GESTOR CORRECTO"); // linea de depuracion
                     break;
                 default:
                     FacesContext.getCurrentInstance().addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
                                     usuario.getNombre() + "Está intentando entrar con un perfil desconocido. (Perfil =" + usuario.getPerfil() + ")."));
-                    System.out.println("#################### ESTÁS INTENTANDO ENTRAR CON UN PERFIL DESCONOCIDO!!!");
+                    System.out.println("#################### OK. ESTÁS INTENTANDO ENTRAR CON UN PERFIL DESCONOCIDO!!!"); // linea de depuracion
                     break;
             }
 
@@ -129,11 +128,11 @@ public class IndexBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage("",
                     new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
                             "Verifica que los datos que has introducido son correctos y que el administrador haya dado de alta tu cuenta."));
-            System.out.println("#################### USUARIO NO CONFIRMADO O NOMBRE DE USUARIO O CONTRASEÑA INCORRECTOS!!!");
+            System.out.println("#################### OK. USUARIO NO CONFIRMADO O NOMBRE DE USUARIO O CONTRASEÑA INCORRECTOS!!!"); // linea de depuracion
         }
     }
-    
-        public String getNombreUsuario() {
+
+    public String getNombreUsuario() {
         return nombreUsuario;
     }
 
