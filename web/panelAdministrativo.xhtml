@@ -8,15 +8,13 @@
     <h:head>
         <meta charset="utf-8"></meta>
         <title>SigerWeb - Panel Administativo</title>
-                <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+        <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
         <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
         <h:outputStylesheet library="css" name="pace.css" />
         <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
         <h:outputStylesheet library="css" name="morris.css" />
         <h:outputStylesheet library="css" name="endless.min.css" />
         <h:outputStylesheet library="css" name="endless-skin.css" />
-        
-        
         <h:outputScript library="js" name="jquery-1.10.2.min.js" />
         <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
         <h:outputScript library="js" name="jquery.flot.min.js" />
@@ -31,6 +29,7 @@
         <h:outputScript library="js" name="jquery.cookie.min.js" />
         <h:outputScript library="js" name="/endless/endless_dashboard.js" />
         <h:outputScript library="js" name="/endless/endless.js" />
+        <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
     </h:head>
     <body class="overflow-hidden">
         <p:growl id="growl" showDetail="true" sticky="true" />
@@ -86,7 +85,7 @@
             <aside class="fixed skin-6">
                 <div class="sidebar-inner scrollable-sidebar">
                     <div class="user-block clearfix">
-                        <h:graphicImage library="img" name="#{panelAdministrativoBean.imagenDePerfil}" />                            
+                        <h:graphicImage library="img" name="#{panelAdministrativoBean.imagenDePerfil}" />
                     </div><!-- /user-block -->
                     <div class="search-block">
                         <div class="input-group">
@@ -214,6 +213,8 @@
                     <a href="usuarios.xhtml" class="shortcut-link">
                         <span class="shortcut-icon">
                             <i class="fa fa-user"></i>
+                            <!-- AQUI VA EL PINCHE BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->
+                            <span class="shortcut-alert">5</span>
                         </span>
                         <span class="text">Usuarios</span>
                     </a>
