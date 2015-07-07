@@ -12,6 +12,7 @@ import util.constantes.Constantes;
 import javax.faces.context.FacesContext;
 import util.MD5;
 import util.Usuario;
+import java.util.Calendar;
 
 @ManagedBean(name = "indexBean")
 @SessionScoped
@@ -86,6 +87,7 @@ public class IndexBean implements Serializable {
         System.out.println("#################### Estamos en la la funcion ingresar\n");
 
         usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
+        Calendar cal = Calendar.getInstance();
         if (usuario != null) {
             switch (usuario.getPerfil()) {
                 case -2:
@@ -112,8 +114,8 @@ public class IndexBean implements Serializable {
 //                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelAdministrativo.xhtml");
                     System.out.println("#################### OK. ACCESO ADMIN CORRECTO"); // linea de depuracion
-                    beanDeSesion.setHoraInicio("");
-                    beanDeSesion.setHoraFin("");
+                    beanDeSesion.setHoraInicio(cal.getTime());
+                    beanDeSesion.setHoraFin(cal.getTime());
                     beanDeSesion.setSesionActiva(true);
                     beanDeSesion.setUsuarioActivo(new Usuario(
                             usuario.getIdUsuario(), usuario.getNombre(), usuario.getPaterno(),
@@ -126,8 +128,8 @@ public class IndexBean implements Serializable {
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
                     FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelGestor.xhtml");
                     System.out.println("#################### OK. ACCESO GESTOR CORRECTO"); // linea de depuracion
-                    beanDeSesion.setHoraInicio("");
-                    beanDeSesion.setHoraFin("");
+                    beanDeSesion.setHoraInicio(cal.getTime());
+                    beanDeSesion.setHoraFin(cal.getTime());
                     beanDeSesion.setSesionActiva(true);
                     beanDeSesion.setUsuarioActivo(new Usuario(
                             usuario.getIdUsuario(), usuario.getNombre(), usuario.getPaterno(),
