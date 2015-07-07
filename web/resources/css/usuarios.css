@@ -1,0 +1,17 @@
+#opciones
+{
+    padding-top: 50px;
+    padding-left: 25%;
+    padding-right: 25%;
+}
+
+#botonazo
+{
+    padding: 5px;
+    text-align: left;
+}
+
+#confirmagestores, #nuevousuario
+{
+    margin-bottom: 50px;
+}

@@ -7,7 +7,7 @@
       xmlns="http://www.w3.org/1999/xhtml">
     <h:head>
         <meta charset="utf-8"></meta>
-        <title>SigerWeb - Usuarios</title>
+        <title>SigerWeb - Confirmar Usuarios</title>
         <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
         <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
         <h:outputStylesheet library="css" name="pace.css" />
@@ -32,7 +32,8 @@
         <h:outputScript library="js" name="/endless/endless.js" />
         <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
     </h:head>
-    <body class="overflow-hidden">        
+    <body class="overflow-hidden">
+        <p:growl id="msg" showDetail="true" escape="false" />
         <!-- Overlay Div -->
         <div id="overlay" class="transparent"></div>
         <div id="theme-setting">
@@ -200,60 +201,14 @@
                         <span class="text">Devolucion</span>
                     </a>
                 </div><!-- /grey-container -->
-                <div id="opciones">
-                    <h:form>
-                        <div id="confirmagestores" class="panel bg-danger">
-                            <div class="panel-body">
-                                <h4>Confirmar gestores</h4>
-                                <div id="botonazo">
-                                    <p:button value="Confirmar" type="button" styleClass="btn btn-default" outcome="confirmarGestores" />
-                                    <!--
-                                    <p:commandButton value="Confirmar" type="button" styleClass="btn btn-default" onclick="PF('confirmargestores').show();" />
-                                    -->
-                                </div>
-                                <strong class="pull-left m-top-xs">5 gestores por confirmar.</strong>
-                            </div>
-                        </div>
-                    </h:form>
-                    <h:form>
-                        <div id="nuevousuario" class="panel bg-info">
-                            <div class="panel-body">
-                                <h4>Registrar nuevo usuario</h4>
-                                <div id="botonazo">
-                                    <p:commandButton value="Nuevo usuario" type="button" styleClass="btn btn-default" onclick="PF('nuevousuario').show();" />
-                                </div>
-                                <strong class="pull-left m-top-xs">Agregue un gestor o administrativo al sistema.</strong>
-                            </div>
-                        </div>
-                    </h:form>
-                    <h:form>
-                        <div id="buscausuarios" class="panel bg-primary">
-                            <div class="panel-body">
-                                <h4>Buscar usuarios</h4>
-                                <div id="botonazo">
-                                    <p:commandButton value="Buscar" type="button" styleClass="btn btn-default" onclick="PF('busquedausuarios').show();" />
-                                </div>
-                                <strong class="pull-left m-top-xs">Administre a los usuarios del sistema.</strong>
-                            </div>
-                        </div>
-                    </h:form>                    
+                <div id="listagestores">
+                    <h1>
+                        EN CONSTRUCCION LA PUTA MADRE QUE ME REMIL PARIO!!!
+                    </h1>
+                    <h3>
+                        Se ideo la posibilidad de que si fuera posible en la medida de lo posible se utilizara si es que asi se quisiese un picklist de primefaces
+                    </h3>
                 </div>
-                <!-- DIALOGOS -->
-                <p:dialog widgetVar="confirmargestores" modal="true" draggable="false" resizable="false" showHeader="false" appendToBody="true" height="100" visible="true">
-                    <h:form>
-                        <p:inputText value="Vayanse todos al carajo!" />
-                    </h:form>
-                </p:dialog>
-                <p:dialog widgetVar="nuevousuario" modal="true" draggable="false" resizable="false" showHeader="false" appendToBody="true" height="100" visible="true">
-                    <h:form>
-                        <p:inputText value="Vayanse todos al carajo!" />
-                    </h:form>                    
-                </p:dialog>
-                <p:dialog widgetVar="busquedausuarios" modal="true" draggable="false" resizable="false" showHeader="false" appendToBody="true" height="100" visible="true">
-                    <h:form>
-                        <p:inputText value="Vayanse todos al carajo!" />
-                    </h:form>
-                </p:dialog>
             </div><!-- /main-container -->
             <!-- Footer ================================================== -->
             <footer>
