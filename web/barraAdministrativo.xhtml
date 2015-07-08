@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+    <h:head>
+        <meta charset="utf-8"></meta>
+        <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+        <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
+        <h:outputStylesheet library="css" name="pace.css" />
+        <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
+        <h:outputStylesheet library="css" name="morris.css" />
+        <h:outputStylesheet library="css" name="endless.min.css" />
+        <h:outputStylesheet library="css" name="endless-skin.css" />
+        <h:outputScript library="js" name="jquery-1.10.2.min.js" />
+        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
+        <h:outputScript library="js" name="jquery.flot.min.js" />
+        <h:outputScript library="js" name="rapheal.min.js" />
+        <h:outputScript library="js" name="morris.min.js" />
+        <h:outputScript library="js" name="jquery.colorbox.min.js" />
+        <h:outputScript library="js" name="jquery.sparkline.min.js" />
+        <h:outputScript library="js" name="/uncompressed/pace.js" />
+        <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
+        <h:outputScript library="js" name="jquery.slimscroll.min.js" />
+        <h:outputScript library="js" name="modernizr.min.js" />
+        <h:outputScript library="js" name="jquery.cookie.min.js" />
+        <h:outputScript library="js" name="/endless/endless_dashboard.js" />
+        <h:outputScript library="js" name="/endless/endless.js" />
+        <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
+    </h:head>
+    <h:body>
+        <div class="main-header clearfix">
+            <div class="page-title">
+                <h3 class="no-margin">Panel de control Administrativo</h3>
+                <span>Bienvenid@</span>
+            </div><!-- /page-title -->
+            <ul class="page-stats">
+                <li>
+                    <div class="value">
+                        <span>Gestiones hoy:</span>
+                        <h4 id="currentVisitor">4256</h4>
+                    </div>
+                    <span id="visits" class="sparkline"></span>
+                </li>
+                <li>
+                    <div class="value">
+                        <span>Saldo aprobado hoy:</span>
+                        <h4>$<strong id="currentBalance">32153</strong></h4>
+                    </div>
+                    <span id="balances" class="sparkline"></span>
+                </li>
+                <li>
+                    <div class="value">
+                        <span>Gestor del dia:</span>
+                        <h4 id="currentPromoter">Hector</h4>
+                    </div>
+                    <span id="visits" class="sparkline"></span>
+                </li>
+            </ul><!-- /page-stats -->
+        </div><!-- /main-header -->
+        <div class="grey-container shortcut-wrapper">
+            <a href="carga.xhtml" class="shortcut-link">
+                <span class="shortcut-icon">
+                    <i class="fa fa-cloud-upload"></i>
+                </span>
+                <span class="text">Carga</span>
+            </a>
+            <a href="cuentas.xhtml" class="shortcut-link">
+                <span class="shortcut-icon">
+                    <i class="fa fa-list"></i>
+                </span>
+                <span class="text">Cuentas</span>
+            </a>
+            <a href="gestiones.xhtml" class="shortcut-link">
+                <span class="shortcut-icon">
+                    <i class="fa fa-file-excel-o"></i>
+                </span>
+                <span class="text">Gestiones</span>
+            </a>
+            <a href="pagos.xhtml" class="shortcut-link">
+                <span class="shortcut-icon">
+                    <i class="fa fa-usd"></i>
+                </span>
+                <span class="text">Pagos</span>
+            </a>
+            <a href="usuarios.xhtml" class="shortcut-link">
+                <span class="shortcut-icon">
+                    <i class="fa fa-user"></i>
+                    <!-- AQUI VA EL PINCHE BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->
+                    <span class="shortcut-alert">5</span>
+                </span>
+                <span class="text">Usuarios</span>
+            </a>
+            <a href="marcaje.xhtml" class="shortcut-link">
+                <span class="shortcut-icon">
+                    <i class="fa fa-thumb-tack"></i></span>
+                <span class="text">Marcaje</span>
+            </a>
+            <a href="devolucion.xhtml" class="shortcut-link">
+                <span class="shortcut-icon">
+                    <i class="fa fa-refresh"></i></span>
+                <span class="text">Devolucion</span>
+            </a>
+        </div><!-- /grey-container -->
+    </h:body>
+</html>
