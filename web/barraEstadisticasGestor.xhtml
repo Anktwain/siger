@@ -7,7 +7,6 @@
       xmlns="http://www.w3.org/1999/xhtml">
     <h:head>
         <meta charset="utf-8"></meta>
-        <title>SigerWeb - Panel gestores</title>
         <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
         <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
         <h:outputStylesheet library="css" name="pace.css" />
@@ -15,7 +14,6 @@
         <h:outputStylesheet library="css" name="morris.css" />
         <h:outputStylesheet library="css" name="endless.min.css" />
         <h:outputStylesheet library="css" name="endless-skin.css" />
-        <h:outputStylesheet library="css" name="usuarios.css" />
         <h:outputScript library="js" name="jquery-1.10.2.min.js" />
         <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
         <h:outputScript library="js" name="jquery.flot.min.js" />
@@ -30,18 +28,30 @@
         <h:outputScript library="js" name="jquery.cookie.min.js" />
         <h:outputScript library="js" name="/endless/endless_dashboard.js" />
         <h:outputScript library="js" name="/endless/endless.js" />
-        <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
-    </h:head> 
-    <body class="overflow-hidden">
-        <!-- Overlay Div -->
-        <div id="overlay" class="transparent"></div>
-        <ui:include src="barraSuperior.xhtml" />
-        <ui:include src="barraLateral.xhtml" />
-        <div id="main-container">
-            <ui:include src="barraEstadisticasGestor.xhtml" />
-            <ui:include src="barraProgresoGestor.xhtml" />
-        </div><!-- /main-container -->
-        <!-- Footer ================================================== -->
-        <ui:include src="barraInferior.xhtml" />
-    </body>
+        <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
+    </h:head>
+    <h:body>
+        <div class="main-header clearfix">
+            <div class="page-title">
+                <h3 class="no-margin">Panel de control Gestores</h3>
+                <span>Bienvenid@</span>
+            </div><!-- /page-title -->
+            <ul class="page-stats">
+                <li>
+                    <div class="value">
+                        <span>Gestiones hoy:</span>
+                        <h4 id="currentVisitor">3</h4>
+                    </div>
+                    <span id="visits" class="sparkline"></span>
+                </li>
+                <li>
+                    <div class="value">
+                        <span>Saldo aprobado hoy:</span>
+                        <h4>$<strong id="currentBalance">0</strong></h4>
+                    </div>
+                    <span id="balances" class="sparkline"></span>
+                </li>
+            </ul><!-- /page-stats -->
+        </div><!-- /main-header -->
+    </h:body>
 </html>

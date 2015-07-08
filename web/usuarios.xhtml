@@ -34,90 +34,55 @@
     </h:head>
     <h:body class="overflow-hidden">        
         <!-- Overlay Div -->
-        <div id="overlay" class="transparent"></div>
-        <div id="theme-setting">
-            <div class="title">
-                <strong class="no-margin">Skin Color</strong>
-            </div>
-            <div class="theme-box">
-                <a class="theme-color" style="background:#323447" id="default"></a>
-                <a class="theme-color" style="background:#efefef" id="skin-1"></a>
-                <a class="theme-color" style="background:#a93922" id="skin-2"></a>
-                <a class="theme-color" style="background:#3e6b96" id="skin-3"></a>
-                <a class="theme-color" style="background:#635247" id="skin-4"></a>
-                <a class="theme-color" style="background:#3a3a3a" id="skin-5"></a>
-                <a class="theme-color" style="background:#495B6C" id="skin-6"></a>
-            </div>
-            <div class="title">
-                <strong class="no-margin">Menu</strong>
-            </div>
-        </div>
-            <ui:include src="barraSuperior.xhtml" />
-            <ui:include src="barraLateral.xhtml" />
-            <div id="main-container">
-                <ui:include src="barraAdministrativo.xhtml" />
-                <div id="opciones">
-                    <h:form>
-                        <div id="confirmagestores" class="panel bg-danger">
-                            <div class="panel-body">
-                                <h4>Confirmar gestores</h4>
-                                <div id="botonazo">
-                                    <p:button value="Confirmar" styleClass="btn btn-default" outcome="confirmarGestores" />
-                                    <!--
-                                    <p:commandButton value="Confirmar" type="button" styleClass="btn btn-default" onclick="PF('confirmargestores').show();" />
-                                    -->
-                                </div>
-                                <strong class="pull-left m-top-xs">5 gestores por confirmar.</strong>
+        <div id="overlay" class="transparent"></div>        
+        <ui:include src="barraSuperior.xhtml" />
+        <ui:include src="barraLateral.xhtml" />
+        <div id="main-container">
+            <ui:include src="barraAdministrativo.xhtml" />
+            <div id="opciones">
+                <h:form>
+                    <div id="confirmagestores" class="panel bg-danger">
+                        <div class="panel-body">
+                            <h4>Confirmar gestores</h4>
+                            <div id="botonazo">
+                                <p:button value="Confirmar" styleClass="btn btn-default" outcome="confirmarGestores" />
+                                <!--
+                                <p:commandButton value="Confirmar" type="button" styleClass="btn btn-default" onclick="PF('confirmargestores').show();" />
+                                -->
                             </div>
                             <strong class="pull-left m-top-xs">5 gestores por confirmar.</strong>
                         </div>
-                    </h:form>
-                    <h:form>
-                        <div id="nuevousuario" class="panel bg-info">
-                            <div class="panel-body">
-                                <h4>Registrar nuevo usuario</h4>
-                                <div id="botonazo">
-                                    <p:commandButton value="Nuevo usuario" type="button" styleClass="btn btn-default" onclick="PF('nuevousuario').show()" />
-                                </div>
-                                <strong class="pull-left m-top-xs">Agregue un gestor o administrativo al sistema.</strong>
-                            </div>
-                            <strong class="pull-left m-top-xs">Agregue un gestor o administrativo al sistema.</strong>
-                        </div>
+                        <strong class="pull-left m-top-xs">5 gestores por confirmar.</strong>
                     </div>
                 </h:form>
                 <h:form>
-                    <div id="buscausuarios" class="panel bg-primary">
+                    <div id="nuevousuario" class="panel bg-info">
                         <div class="panel-body">
-                            <h4>Buscar usuarios</h4>
+                            <h4>Registrar nuevo usuario</h4>
                             <div id="botonazo">
-                                <p:commandButton value="Buscar" type="button" styleClass="btn btn-default" onclick="PF('busquedausuarios').show();" />
+                                <p:commandButton value="Nuevo usuario" type="button" styleClass="btn btn-default" onclick="PF('nuevousuario').show()" />
                             </div>
-                            <strong class="pull-left m-top-xs">Administre a los usuarios del sistema.</strong>
+                            <strong class="pull-left m-top-xs">Agregue un gestor o administrativo al sistema.</strong>
                         </div>
-                    </h:form>                    
+                        <strong class="pull-left m-top-xs">Agregue un gestor o administrativo al sistema.</strong>
+                    </div>
+            </h:form>
+            <h:form>
+                <div id="buscausuarios" class="panel bg-primary">
+                    <div class="panel-body">
+                        <h4>Buscar usuarios</h4>
+                        <div id="botonazo">
+                            <p:commandButton value="Buscar" type="button" styleClass="btn btn-default" onclick="PF('busquedausuarios').show();" />
+                        </div>
+                        <strong class="pull-left m-top-xs">Administre a los usuarios del sistema.</strong>
+                    </div>
                 </div>
-                <!-- DIALOGOS -->
-                <p:dialog widgetVar="confirmargestores" modal="true" draggable="false" resizable="false" showHeader="false" height="100" visible="true">
-                    <h:form>
-                        <p:inputText value="Vayanse todos al carajo!" />
-                    </h:form>
-                </p:dialog>
-                <p:dialog widgetVar="nuevousuario" modal="true" draggable="false" resizable="false" showHeader="false" height="100" visible="true">
-                    <h:form>
-                        <p:panel>
-                        <p:inputText value="Vayanse todos al carajo!" />    
-                        </p:panel>
-                        
-                    </h:form>                    
-                </p:dialog>
-                <p:dialog widgetVar="busquedausuarios" modal="true" draggable="false" resizable="false" showHeader="false" height="100" visible="true">
-                    <h:form>
-                        <p:inputText value="Vayanse todos al carajo!" />
-                    </h:form>
-                </p:dialog>
-            </div><!-- /main-container -->
-            <!-- Footer ================================================== -->
-            <ui:include src="barraInferior.xhtml" />
+            </h:form>                    
+        </div>
+        
+        </div><!-- /main-container -->
+        <!-- Footer ================================================== -->
+        <ui:include src="barraInferior.xhtml" />
         <!-- /wrapper -->        
     </h:body>
 </html>
