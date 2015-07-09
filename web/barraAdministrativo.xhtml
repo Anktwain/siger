@@ -31,35 +31,6 @@
         <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
     </h:head>
     <h:body>
-        <div class="main-header clearfix">
-            <div class="page-title">
-                <h3 class="no-margin">Panel de control Administrativo</h3>
-                <span>Bienvenid@</span>
-            </div><!-- /page-title -->
-            <ul class="page-stats">
-                <li>
-                    <div class="value">
-                        <span>Gestiones hoy:</span>
-                        <h4 id="currentVisitor">4256</h4>
-                    </div>
-                    <span id="visits" class="sparkline"></span>
-                </li>
-                <li>
-                    <div class="value">
-                        <span>Saldo aprobado hoy:</span>
-                        <h4>$<strong id="currentBalance">32153</strong></h4>
-                    </div>
-                    <span id="balances" class="sparkline"></span>
-                </li>
-                <li>
-                    <div class="value">
-                        <span>Gestor del dia:</span>
-                        <h4 id="currentPromoter">Hector</h4>
-                    </div>
-                    <span id="visits" class="sparkline"></span>
-                </li>
-            </ul><!-- /page-stats -->
-        </div><!-- /main-header -->
         <div class="grey-container shortcut-wrapper">
             <a href="carga.xhtml" class="shortcut-link">
                 <span class="shortcut-icon">
@@ -88,7 +59,7 @@
             <a href="usuarios.xhtml" class="shortcut-link">
                 <span class="shortcut-icon">
                     <i class="fa fa-user"></i>
-                    <!-- AQUI VA EL PINCHE BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->
+                    <!-- AQUI VA EL PINCHE VALOR DEL BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->
                     <span class="shortcut-alert">5</span>
                 </span>
                 <span class="text">Usuarios</span>
@@ -102,6 +73,10 @@
                 <span class="shortcut-icon">
                     <i class="fa fa-refresh"></i></span>
                 <span class="text">Devolucion</span>
+            </a>
+            <a href="#" class="shortcut-link">
+                <span class="shortcut-icon"><p:outputLabel value="#{indexBean.contar()}" /></span>
+                <span class="text">Gestores por confirmar: </span>
             </a>
         </div><!-- /grey-container -->
     </h:body>
