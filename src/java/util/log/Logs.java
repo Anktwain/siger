@@ -12,27 +12,34 @@ import org.apache.log4j.Logger;
  * @author brionvega
  */
 public class Logs {
-    private static Logger log = Logger.getLogger(Logs.class);
-    
+    /* Los loggers son los componentes más esenciales de un proceso de logging.
+     Son los responsables de capturar la información de logging.
+     */
+    /* Se instancia un Logger estático global para la clase, basado en el nombre
+     de la clase.
+     */
+
+    public static final Logger log = Logger.getLogger(Logs.class);
+
     public static void main(String[] args) {
-        if(log.isTraceEnabled()) {
-            log.trace("mensaje de trace");
+        if (log.isTraceEnabled()) {
+            log.trace("mensaje de TRACE");
         }
-        
-        if(log.isDebugEnabled()) {
-            log.debug("mensaje de debug");
+
+        if (log.isDebugEnabled()) {
+            log.debug("mensaje de DEBUG");
         }
-        
-        if(log.isInfoEnabled()) {
-            log.info("mensaje de info");
+
+        if (log.isInfoEnabled()) {
+            log.info("mensaje de INFO");
         }
+
         
-        log.warn("mensaje de warn");
-        log.error("mensaje de error");
-        log.fatal("mensaje de fatal");
+        log.warn("mensaje de WARN");
+        log.error("mensaje de ERROR");
+        log.fatal("mensaje de FATAL");
     }
 }
-
 
 // Referencias:
 // http://www.javatutoriales.com/2011/04/log4j-para-creacion-de-eventos-de-log.html
