@@ -19,7 +19,8 @@ public class PruebaBean implements Serializable{
     private String nombre;
 
     public void mostrar(){
-        System.out.println(nombre);
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println("SE DIO DE ALTA A: " + nombre + " EN EL SISTEMA");
     }
     public String getNombre() {
         return nombre;
