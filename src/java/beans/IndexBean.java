@@ -155,14 +155,17 @@ public class IndexBean implements Serializable {
             beanDeSesion.setSesionActiva(false);
         }
     }
-    // CREO QUE ESTOY MUY PENDEJO PARA JAVA =(
-    // O PARA ENTENDER EL MVC
+    
+    /** CREO QUE ESTOY MUY PENDEJO PARA JAVA =(
+     O PARA ENTENDER EL MVC
+     * @since 2015 (C) El Cisne Software
+    */
     public String contar()
     {
         sinConfirmar = usuarioDao.buscarUsuariosNoConfirmados();
         int cuenta = sinConfirmar.size();
         String total = Integer.toString(cuenta);
-        System.out.println("Existen " + total + " gestores no confirmados en el sistema");
+        System.out.println("###########################Existen " + total + " gestores no confirmados en el sistema");
         return total;
     }
 
