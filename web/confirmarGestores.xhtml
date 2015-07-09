@@ -53,176 +53,20 @@
                 <strong class="no-margin">Menu</strong>
             </div>
         </div>
-        
-            <div id="top-nav" class="fixed skin-6">
-                <a href="#" class="brand">
-                    <span>Siger</span>
-                    <span class="text-toggle"> Web</span>
-                </a><!-- /brand -->
-                <ul class="nav-notification clearfix">                    
-                    <li class="profile dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <strong><p:outputLabel value="#{panelAdministrativoBean.nombre}" /></strong>
-                            <span><i class="fa fa-chevron-down"></i></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="clearfix" href="#">
-                                    <h:graphicImage library="img" name="#{panelAdministrativoBean.imagenDePerfil}" />
-                                    <div class="detail">
-                                        <strong><p:outputLabel value="#{panelAdministrativoBean.nombre}" /></strong>
-                                        <p class="grey"><p:outputLabel value="#{panelAdministrativoBean.correo}" /></p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a tabindex="-1" href="gallery.html" class="main-link"><i class="fa fa-picture-o fa-lg"></i> Cambiar foto</a></li>
-                            <li><a tabindex="-1" href="profile.html" class="main-link"><i class="fa fa-power-off fa-lg"></i> Cerrar sesion</a></li>
-                            <li class="divider"></li>                            
-                        </ul>
-                    </li>
-                </ul>
-            </div><!-- /top-nav-->
-            <aside class="fixed skin-6">
-                <div class="sidebar-inner scrollable-sidebar">
-                    <div class="user-block clearfix">
-                        <h:graphicImage library="img" name="#{panelAdministrativoBean.imagenDePerfil}" />
-                    </div><!-- /user-block -->
-                    <div class="search-block">
-                        <div class="input-group">
-                            <input type="text" class="form-control input-sm" placeholder="Numero de credito..." />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default btn-sm" type="button"><i class="fa fa-search"></i></button>
-                                </span>
-                        </div><!-- /input-group -->
-                    </div><!-- /search-block -->
-                    <div class="main-menu">
-                        <ul>
-                            <li class="openable">
-                                <a href="panelAdministrativo.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-desktop fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Panel de control</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="empresas.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-envelope fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Empresas</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="visitas.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-tag fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Visitas</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="correos.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-book fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Correos</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="busqueda.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-search-plus fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Busqueda Avanzada</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="estatusInformativo.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-info-circle fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Estatus Informativo</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div><!-- /main-menu -->
-                </div><!-- /sidebar-inner -->
-            </aside>
-            <div id="main-container">
-                <div class="grey-container shortcut-wrapper">
-                    <a href="carga.xhtml" class="shortcut-link">
-                        <span class="shortcut-icon">
-                            <i class="fa fa-cloud-upload"></i>
-                        </span>
-                        <span class="text">Carga</span>
-                    </a>
-                    <a href="cuentas.xhtml" class="shortcut-link">
-                        <span class="shortcut-icon">
-                            <i class="fa fa-list"></i>
-                        </span>
-                        <span class="text">Cuentas</span>
-                    </a>
-                    <a href="gestiones.xhtml" class="shortcut-link">
-                        <span class="shortcut-icon">
-                            <i class="fa fa-file-excel-o"></i>
-                        </span>
-                        <span class="text">Gestiones</span>
-                    </a>
-                    <a href="pagos.xhtml" class="shortcut-link">
-                        <span class="shortcut-icon">
-                            <i class="fa fa-usd"></i>
-                        </span>
-                        <span class="text">Pagos</span>
-                    </a>
-                    <a href="#" class="shortcut-link">
-                        <span class="shortcut-icon">
-                            <i class="fa fa-user"></i>
-                            <!-- AQUI VA EL PINCHE BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->
-                            <span class="shortcut-alert">5</span>
-                        </span>
-                        <span class="text">Usuarios</span>
-                    </a>
-                    <a href="marcaje.xhtml" class="shortcut-link">
-                        <span class="shortcut-icon">
-                            <i class="fa fa-thumb-tack"></i></span>
-                        <span class="text">Marcaje</span>
-                    </a>
-                    <a href="devolucion.xhtml" class="shortcut-link">
-                        <span class="shortcut-icon">
-                            <i class="fa fa-refresh"></i></span>
-                        <span class="text">Devolucion</span>
-                    </a>
-                </div><!-- /grey-container -->
-                <div id="listagestores">
-                    <h1>
-                        EN CONSTRUCCION LA PUTA MADRE QUE ME REMIL PARIO!!!
-                    </h1>
-                    <h3>
-                        Se ideo la posibilidad de que si fuera posible en la medida de lo posible se utilizara si es que asi se quisiese un picklist de primefaces
-                    </h3>
-                </div>
-            </div><!-- /main-container -->
-            <!-- Footer ================================================== -->
-            <footer>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <span class="footer-brand">
-                            <strong class="text-danger">Siger</strong> Web
-                        </span>
-                        <p class="no-margin">
-                            &copy; 2015 <strong>Corporativo Del Rio &amp; Asociados</strong>. Todos los derechos reservados. 
-                        </p>
-                    </div><!-- /.col -->
-                </div><!-- /.row-->
-            </footer>            
-        <!-- /wrapper -->        
+        <ui:include src="barraSuperior.xhtml" />
+        <ui:include src="barraLateral.xhtml" />
+        <div id="main-container">
+            <ui:include src="barraAdministrativo.xhtml" />
+            <div id="listagestores">
+                <h1>
+                    EN CONSTRUCCION LA PUTA MADRE QUE ME REMIL PARIO!!!
+                </h1>
+                <h3>
+                    Se ideo la posibilidad de que si fuera posible en la medida de lo posible se utilizara si es que asi se quisiese un picklist de primefaces
+                </h3>
+            </div>
+        </div><!-- /main-container -->
+        <!-- Footer ================================================== -->
+        <ui:include src="barraInferior.xhtml" />
     </body>
 </html>
