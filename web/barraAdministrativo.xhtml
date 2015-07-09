@@ -59,7 +59,7 @@
             <a href="usuarios.xhtml" class="shortcut-link">
                 <span class="shortcut-icon">
                     <i class="fa fa-user"></i>
-                    <!-- AQUI VA EL PINCHE BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->
+                    <!-- AQUI VA EL PINCHE VALOR DEL BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->
                     <span class="shortcut-alert">5</span>
                 </span>
                 <span class="text">Usuarios</span>
@@ -73,6 +73,10 @@
                 <span class="shortcut-icon">
                     <i class="fa fa-refresh"></i></span>
                 <span class="text">Devolucion</span>
+            </a>
+            <a href="#" class="shortcut-link">
+                <span class="shortcut-icon"><p:outputLabel value="#{indexBean.contar()}" /></span>
+                <span class="text">Gestores por confirmar: </span>
             </a>
         </div><!-- /grey-container -->
     </h:body>
