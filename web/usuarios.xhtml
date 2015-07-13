@@ -48,9 +48,8 @@
                                 <a href="#formModalConfirmaGestores" role="button" data-toggle="modal" class="btn btn-default btn-sm">Confirmar</a>
                             </div>
                             <!-- AQUI VA EL PINCHE VALOR DEL BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->                            
-                            <strong class="pull-left m-top-xs">5 gestores por confirmar.</strong>
+                            <strong class="pull-left m-top-xs"><p:outputLabel value="#{barraAdministrativoBean.contar()}" /> gestores por confirmar.</strong>
                         </div>
-                        <strong class="pull-left m-top-xs">5 gestores por confirmar.</strong>
                     </div>
                 </h:form>
                 <h:form>
@@ -62,7 +61,6 @@
                             </div>
                             <strong class="pull-left m-top-xs">Agregue un gestor o administrativo al sistema.</strong>
                         </div>
-                        <strong class="pull-left m-top-xs">Agregue un gestor o administrativo al sistema.</strong>
                     </div>
                 </h:form>
                 <h:form>
@@ -79,7 +77,7 @@
             </div>
         </div><!-- /main-container -->
         <!-- ESTE ES EL DIALOGO QUE SE ABRE CUANDO PRESIONAMOS EL BOTON DE CONFIRMAR GESTORES -->
-        <div class="modal fade" id="formModalNuevoUsuario">
+        <div class="modal fade" id="formModalConfirmaGestores">
             <div class="modal-dialog">
                 <h:form>
                     <div class="modal-content">

@@ -185,7 +185,7 @@ public class UsuariosIMPL implements UsuariosDAO {
         
         try { // Buscamos únicamente a los no confirmados
             listaUsuariosNoConfirmados = sesion.createQuery("from Usuarios u"
-                    + " where u.perfil == " + Perfiles.GESTOR_NO_CONFIRMADO).list();
+                    + " where u.perfil = " + Perfiles.GESTOR_NO_CONFIRMADO).list();
         } catch(HibernateException he) {
             listaUsuariosNoConfirmados = null;
             he.printStackTrace();
