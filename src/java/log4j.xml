@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    
+    <!--    Crea appender de tipo org.apache.log4j.ConsoleAppender y lo llama 'consola'
+    Asocia un layout de tipo org.apache.log4j.EnhancedPatternLayout al appender
+    Finalmente agrega un patrón de conversión al layout-->
+
+<appender name="consola" class="org.apache.log4j.ConsoleAppender">
+    <param name="target" value="System.out" />
+    <layout class="org.apache.log4j.EnhancedPatternLayout">
+        <param name="ConversionPattern" value="%d{dd MMM yyyy - HH:mm:ss} [%-5p] - %m%n" />
+    </layout>
+</appender>
+    
+<appender name="archivo" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="file" value="Logs/archivo.log" />
+    <!--Rota el archivo a la media noche todos los días-->
+    <param name="DatePattern" value="'.'yyyy-MM-dd" />
+    <layout class="org.apache.log4j.EnhancedPatternLayout">
+        <param name="ConversionPattern" value="%d{dd MMM yyyy - HH:mm:ss} [%-5p] - %m%n" />
+    </layout>
+</appender>
+    
+<!--    Crea los loggers necesarios para cada appender. root indica el logger principal, y
+el otro especifica el que se ha creado en util.log-->
+<logger name="util.log.Logs">
+    <level value="info" />
+    <appender-ref ref="archivo" />
+</logger>
+    
+<root>
+    <priority value="trace" />
+    <appender-ref ref="consola" />
+</root>
+
+</log4j:configuration>

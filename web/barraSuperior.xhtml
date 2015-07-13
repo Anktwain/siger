@@ -45,16 +45,24 @@
                     <ul class="dropdown-menu">
                         <li>
                             <a class="clearfix" href="#">
+                                <!--
                                 <h:graphicImage library="images" name="#{panelGestorBean.imagenDePerfil}" />
+                                -->
                                 <div class="detail">
-                                    <strong><p:outputLabel value="#{panelGestorBean.nombreUsuario}"/></strong>
-                                    <p class="grey"><p:outputLabel value="#{panelGestorBean.correo}" /></p> 
+                                    <strong><p:outputLabel value="#{panelGestorBean.nombreUsuario}" style="font-family: 'Open Sans',sans-serif; font-size: 14px;" /></strong>
+                                    <p class="grey"><p:outputLabel value="#{panelGestorBean.correo}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></p> 
                                 </div>
                             </a>
                         </li>
                         <li>
-                            <a tabindex="-1" href="foto.xhtml" class="main-link"><i class="fa fa-picture-o fa-lg"></i> Cambiar foto</a></li>
-                        <li><a tabindex="-1" href="index.xhtml" class="main-link"><i class="fa fa-power-off fa-lg"></i> Cerrar sesion</a></li>
+                            <a tabindex="-1" href="foto.xhtml" class="main-link"><i class="fa fa-picture-o fa-lg"></i> Cambiar foto</a>
+                        </li>
+                        <li>
+                            <a tabindex="-1" href="pswd.xhtml" class="main-link"><i class="fa fa-unlock-alt fa-lg"></i> Cambiar contraseña</a>
+                        </li>
+                        <li>
+                            <a tabindex="-1" href="index.xhtml" class="main-link"><i class="fa fa-power-off fa-lg"></i> Cerrar sesion</a>
+                        </li>
                         <li class="divider"></li>                            
                     </ul>
                 </li>
