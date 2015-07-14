@@ -70,7 +70,7 @@
                             <div id="botonazo">
                                 <a href="#formModalBuscarUsuarios" role="button" data-toggle="modal" class="btn btn-default btn-sm">Buscar</a>
                             </div>
-                            <strong class="pull-left m-top-xs">Administre a los usuarios del sistema.</strong>
+                            <strong class="pull-left m-top-xs">Consulte y modificar a los usuarios del sistema.</strong>
                         </div>
                     </div>
                 </h:form>                    
@@ -117,6 +117,89 @@
                 </h:form>
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+
+        <div class="modal fade" id="formModalBuscarUsuarios">
+            <div class="modal-dialog" id="dialogoBuscarUsuarios">
+                <h:form>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4>Buscar usuarios</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <h:form>
+                                    <p:dataTable var="car" value="#{dtFilterView.cars}" widgetVar="carsTable"
+                                                 emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda" filteredValue="#{dtFilterView.filteredCars}">
+
+                                        <f:facet name="header">
+                                            <p:outputPanel>
+                                                <h:outputText value="Buscar en todos los campos:" />
+                                                <p:inputText id="globalFilter" onkeyup="PF('carsTable').filter()" style="width:150px" placeholder="Usuario a buscar"/>
+                                            </p:outputPanel>
+                                        </f:facet>
+
+                                        <p:column filterBy="#{car.id}" headerText="Nombre" footerText="contains" filterMatchMode="contains">
+                                            <h:outputText value="#{car.id}" />
+                                        </p:column>
+
+                                        <p:column filterBy="#{car.year}" headerText="Ap. paterno" footerText="lte" filterMatchMode="lte">
+                                            <f:facet name="filter">
+                                                <p:spinner onchange="PF('carsTable').filter()" styleClass="year-spinner">
+                                                    <f:converter converterId="javax.faces.Integer" />
+                                                </p:spinner>
+                                            </f:facet>
+                                            <h:outputText value="#{car.year}" />
+                                        </p:column>
+
+                                        <p:column filterBy="#{car.brand}" headerText="Ap. materno" footerText="exact" filterMatchMode="exact">
+                                            <f:facet name="filter">
+                                                <p:selectOneMenu onchange="PF('carsTable').filter()" >
+                                                    <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true" />
+                                                    <f:selectItems value="#{dtFilterView.brands}" />
+                                                </p:selectOneMenu>
+                                            </f:facet>
+                                            <h:outputText value="#{car.brand}" />
+                                        </p:column>
+
+                                        <p:column filterBy="#{car.color}" headerText="Nombre login" footerText="in" filterMatchMode="in">
+                                            <f:facet name="filter">
+                                                <p:selectCheckboxMenu label="Colors" onchange="PF('carsTable').filter()" panelStyle="width:125px" scrollHeight="150">
+                                                    <f:selectItems value="#{dtFilterView.colors}" />
+                                                </p:selectCheckboxMenu>
+                                            </f:facet>
+                                            <h:outputText value="#{car.color}" />
+                                        </p:column>
+
+                                        <p:column filterBy="#{car.sold}" headerText="Perfil" footerText="equals" filterMatchMode="equals">
+                                            <f:facet name="filter">
+                                                <p:selectOneButton onchange="PF('carsTable').filter()">
+                                                    <f:converter converterId="javax.faces.Boolean" />
+                                                    <f:selectItem itemLabel="All" itemValue="" />
+                                                    <f:selectItem itemLabel="Sold" itemValue="true" />
+                                                    <f:selectItem itemLabel="Sale" itemValue="false" />
+                                                </p:selectOneButton>
+                                            </f:facet>
+                                            <h:outputText value="#{car.sold ? 'Sold': 'Sale'}" />
+                                        </p:column>
+
+                                        <p:column filterBy="#{car.price}" headerText="Correo" footerText="custom (min)" filterFunction="#{dtFilterView.filterByPrice}">
+                                            <h:outputText value="#{car.price}">
+                                                <f:convertNumber currencySymbol="$" type="currency"/>
+                                            </h:outputText>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:form>
+                            </div><!-- /form-group -->
+                        </div>
+                        <div class="modal-footer">
+                            <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{pruebaBean.mostrar()}" value="Aceptar" />
+                        </div>
+                    </div><!-- /.modal-content -->
+                </h:form>
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
         <!-- Footer ================================================== -->
         <ui:include src="barraInferior.xhtml" />
         <!-- /wrapper -->        
