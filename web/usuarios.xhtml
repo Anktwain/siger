@@ -139,11 +139,11 @@
                                             </p:outputPanel>
                                         </f:facet>
 
-                                        <p:column filterBy="#{car.id}" headerText="Nombre" footerText="contains" filterMatchMode="contains">
+                                        <p:column headerText="Nombre">
                                             <h:outputText value="#{car.id}" />
                                         </p:column>
 
-                                        <p:column filterBy="#{car.year}" headerText="Ap. paterno" footerText="lte" filterMatchMode="lte">
+                                        <p:column headerText="Apellido paterno">
                                             <f:facet name="filter">
                                                 <p:spinner onchange="PF('carsTable').filter()" styleClass="year-spinner">
                                                     <f:converter converterId="javax.faces.Integer" />
@@ -152,7 +152,7 @@
                                             <h:outputText value="#{car.year}" />
                                         </p:column>
 
-                                        <p:column filterBy="#{car.brand}" headerText="Ap. materno" footerText="exact" filterMatchMode="exact">
+                                        <p:column headerText="Apellido materno">
                                             <f:facet name="filter">
                                                 <p:selectOneMenu onchange="PF('carsTable').filter()" >
                                                     <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true" />
@@ -162,7 +162,7 @@
                                             <h:outputText value="#{car.brand}" />
                                         </p:column>
 
-                                        <p:column filterBy="#{car.color}" headerText="Nombre login" footerText="in" filterMatchMode="in">
+                                        <p:column headerText="Nombre login">
                                             <f:facet name="filter">
                                                 <p:selectCheckboxMenu label="Colors" onchange="PF('carsTable').filter()" panelStyle="width:125px" scrollHeight="150">
                                                     <f:selectItems value="#{dtFilterView.colors}" />
@@ -171,7 +171,7 @@
                                             <h:outputText value="#{car.color}" />
                                         </p:column>
 
-                                        <p:column filterBy="#{car.sold}" headerText="Perfil" footerText="equals" filterMatchMode="equals">
+                                        <p:column headerText="Perfil">
                                             <f:facet name="filter">
                                                 <p:selectOneButton onchange="PF('carsTable').filter()">
                                                     <f:converter converterId="javax.faces.Boolean" />
@@ -183,7 +183,7 @@
                                             <h:outputText value="#{car.sold ? 'Sold': 'Sale'}" />
                                         </p:column>
 
-                                        <p:column filterBy="#{car.price}" headerText="Correo" footerText="custom (min)" filterFunction="#{dtFilterView.filterByPrice}">
+                                        <p:column headerText="Correo">
                                             <h:outputText value="#{car.price}">
                                                 <f:convertNumber currencySymbol="$" type="currency"/>
                                             </h:outputText>
