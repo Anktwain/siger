@@ -20,25 +20,6 @@ public class Logs {
      */
 
     public static final Logger log = Logger.getLogger(Logs.class);
-
-    public static void main(String[] args) {
-        if (log.isTraceEnabled()) {
-            log.trace("mensaje de TRACE");
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("mensaje de DEBUG");
-        }
-
-        if (log.isInfoEnabled()) {
-            log.info("mensaje de INFO");
-        }
-
-        
-        log.warn("mensaje de WARN");
-        log.error("mensaje de ERROR");
-        log.fatal("mensaje de FATAL");
-    }
 }
 
 // Referencias:
