@@ -13,7 +13,6 @@ import javax.faces.context.FacesContext;
 import util.MD5;
 import util.Usuario;
 import java.util.Calendar;
-import java.util.List;
 
 @ManagedBean(name = "indexBean")
 @SessionScoped
@@ -25,7 +24,6 @@ public class IndexBean implements Serializable {
     private Usuarios usuario;
     private UsuariosDAO usuarioDao;
     private SesionBean beanDeSesion;
-    private List<Usuarios> sinConfirmar;
 
     public IndexBean() {
         usuario = new Usuarios();
@@ -155,17 +153,7 @@ public class IndexBean implements Serializable {
             beanDeSesion.setSesionActiva(false);
         }
     }
-    // CREO QUE ESTOY MUY PENDEJO PARA JAVA =(
-    // O PARA ENTENDER EL MVC
-    public String contar()
-    {
-        sinConfirmar = usuarioDao.buscarUsuariosNoConfirmados();
-        int cuenta = sinConfirmar.size();
-        String total = Integer.toString(cuenta);
-        System.out.println("Existen " + total + " gestores no confirmados en el sistema");
-        return total;
-    }
-
+    
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -186,11 +174,7 @@ public class IndexBean implements Serializable {
         return usuario;
     }
     
-    public void setSinConfirmar(List sinConfirmar){
-        this.sinConfirmar = sinConfirmar;
-    }
-    
-    public List getSinConfirmar(){
-        return sinConfirmar;
+    public void setUsuario(Usuarios usuario) {
+        this.usuario = usuario;
     }
 }
