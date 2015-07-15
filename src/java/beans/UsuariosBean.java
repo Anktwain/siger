@@ -10,6 +10,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import org.primefaces.model.SelectableDataModel;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
@@ -43,12 +47,16 @@ public class UsuariosBean implements Serializable {
     private SesionBean sesion;
     private List<Usuarios> gestoresNoConfirmados;
     private List<Usuarios> usuariosEncontrados;
+    
+    private UsuariosDAO usuarioDao;
+    private List<Usuarios> usuariosSeleccionados;
 
     public UsuariosBean() {
         usuarioDao = new UsuariosIMPL();
         usuario = new Usuarios();
         perfil = Perfiles.GESTOR_NO_CONFIRMADO;
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
+        gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
     }
 
     public SesionBean getSesion() {
@@ -133,6 +141,15 @@ public class UsuariosBean implements Serializable {
     private boolean passwordsCoinciden() {
         return password.equals(confirmePassword);
     }
+    
+    public void confirmarGestores(List<Usuarios> usuariosSeleccionados){
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
+            // CAMBIAR SU PERFIL EN LA BASE DE DATOS. DE -2 A 2
+            // MOSTRAR EN CONSOLA LO QUE SE CAMBIO
+            System.out.println("SE CONFIRMO AL USUARIO: " + usuariosSeleccionados.get(i).toString());
+        }
+    }
 
     public void setSesion(SesionBean sesion) {
         this.sesion = sesion;
@@ -156,6 +173,22 @@ public class UsuariosBean implements Serializable {
 
     public Usuarios getUsuario() {
         return usuario;
+    }
+    
+    public List<Usuarios> getUsuariosSeleccionados() {
+        return usuariosSeleccionados;
+    }
+ 
+    public void setUsuariosSeleccionados(List<Usuarios> usuariosSeleccionados) {
+        this.usuariosSeleccionados = usuariosSeleccionados;
+    }
+    
+    public void onRowSelect(SelectEvent event) {
+        System.out.println("Se selecciono un registro");
+    }
+ 
+    public void onRowUnselect(UnselectEvent event) {
+        System.out.println("Se deselecciono un registro");
     }
 
     public void setUsuario(Usuarios usuario) {
