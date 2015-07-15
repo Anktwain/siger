@@ -31,7 +31,6 @@ public class UsuariosBean implements Serializable {
     private UsuariosDAO usuarioDao;
 
     private int perfil;
-
     private String nombre;
     private String paterno;
     private String materno;
