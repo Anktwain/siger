@@ -77,8 +77,51 @@
                 </h:form>                    
             </div>
         </div><!-- /main-container -->
+        
         <!-- ESTE ES EL DIALOGO QUE SE ABRE CUANDO PRESIONAMOS EL BOTON DE CONFIRMAR GESTORES -->
+        <!-- CISNE SOURCECODE -->
         <div class="modal fade" id="formModalConfirmaGestores">
+            <div class="modal-dialog">
+                <h:form id="formNuevoUsuario">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4>Nuevo Usuario</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <h:form>
+                                <p:dataTable id="checkboxDT" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombre}" paginator="true" rows="10" >
+                                    <f:facet name="header">
+                                        Usuarios no confirmados
+                                    </f:facet>
+                                    <p:column selectionMode="single" style="width:35px;text-align:left"/>
+                                    <p:column headerText="Nombre del usuario">
+                                        <h:outputText value="#{usuarios.nombre}" />
+                                    </p:column>
+                                    <p:column headerText="Apellido Paterno">
+                                        <h:outputText value="#{usuarios.paterno}" />
+                                    </p:column>
+                                    <p:column headerText="Apellido Materno">
+                                        <h:outputText value="#{usuarios.materno}" />
+                                    </p:column>
+                                    <p:column headerText="Correo" style="width:250px;">
+                                        <h:outputText value="#{usuarios.correo}" />
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <p:commandButton process="checkboxDT" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosSeleccionados)}" />
+                                    </f:facet>
+                                </p:dataTable>
+                            </h:form>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </h:form>
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->                            
+        
+        <!-- DAR DE ALTA UN NUEVO USUARIO -->
+        <div class="modal fade" id="formModalNuevoUsuario">
             <div class="modal-dialog">
                 <h:form id="formNuevoUsuario">
                     <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
@@ -146,9 +189,6 @@
                             <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{usuariosBean.insertar}" value="Aceptar"/>
                             <p:commandButton styleClass="btn btn-success btn-sm tooltip-test" type="reset" value="Agregar Otro" />
                         </div>
-
-
-
                     </div><!-- /.modal-content -->
                 </h:form>
             </div><!-- /.modal-dialog -->
