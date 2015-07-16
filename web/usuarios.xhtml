@@ -32,7 +32,7 @@
         <h:outputScript library="js" name="/endless/endless.js" />
         <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
     </h:head>
-    <h:body class="overflow-hidden">
+    <h:body>
         <p:growl id="growl" showDetail="true" sticky="true" />
         <!-- Overlay Div -->
         <div id="overlay" class="transparent"></div>        
@@ -90,13 +90,11 @@
                             <h4>Nuevo Usuario</h4>
                         </div>
                         <div class="modal-body">
-
                             <h:form>
-                                <p:dataTable id="checkboxDT" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombre}" paginator="true" rows="10" >
+                                <p:dataTable id="checkboxDT" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" >
                                     <f:facet name="header">
                                         Usuarios no confirmados
                                     </f:facet>
-                                    <p:column selectionMode="single" style="width:35px;text-align:left"/>
                                     <p:column headerText="Nombre del usuario">
                                         <h:outputText value="#{usuarios.nombre}" />
                                     </p:column>
@@ -109,9 +107,9 @@
                                     <p:column headerText="Correo" style="width:250px;">
                                         <h:outputText value="#{usuarios.correo}" />
                                     </p:column>
-                                    <f:facet name="footer">
-                                        <p:commandButton process="checkboxDT" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosSeleccionados)}" />
-                                    </f:facet>
+                                    <p:column headerText="Confirmar" style="width:130px;">
+                                        <p:commandButton icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuarios.idUsuario)}" />
+                                    </p:column>
                                 </p:dataTable>
                             </h:form>
                         </div>
