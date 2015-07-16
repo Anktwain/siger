@@ -48,6 +48,7 @@ public class UsuariosBean implements Serializable {
     private SesionBean sesion;
     private List<Usuarios> gestoresNoConfirmados;
     private List<Usuarios> usuariosEncontrados;
+    private List<Usuarios> todosUsuarios;
 
     public UsuariosBean() {
         usuarioDao = new UsuariosIMPL();
@@ -55,6 +56,13 @@ public class UsuariosBean implements Serializable {
         perfil = Perfiles.GESTOR_NO_CONFIRMADO;
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
         gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
+        todosUsuarios = usuarioDao.buscarTodo();
+        
+        System.out.println("\n*************************** todosUsuarios:");
+        int i = 0;
+        for (Usuarios usuarioActual : todosUsuarios) {
+            System.out.println("***U." + (++i) +": "+ usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
+        }
     }
 
     public SesionBean getSesion() {
@@ -140,21 +148,21 @@ public class UsuariosBean implements Serializable {
         return password.equals(confirmePassword);
     }
 
-    public void confirmarGestores(int idUsuario) {
-        if (usuarioDao.confirmarGestor(usuario) == false) { // error al guardar
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo confirmar el usuario",
-                            "Error al guardar en BD, notifíquelo a un administrador."));
-        } else {
-            Logs.log.info("Administrador ha confirmado al gestor " + usuario.getIdUsuario());
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Se confirmo el usuario",
-                            "Se ha confirmado correctamente: " + usuario.getNombre()
-                            + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
-            System.out.println("************ CONSOLA SIGERWEB ****************");
-            System.out.println("El usuario con id " + idUsuario + " se ha confirmado");
-        }
-    }
+//    public void confirmarGestores(int idUsuario) {
+//        if (usuarioDao.confirmarGestor(usuario) == false) { // error al guardar
+//            FacesContext.getCurrentInstance().addMessage(null,
+//                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo confirmar el usuario",
+//                            "Error al guardar en BD, notifíquelo a un administrador."));
+//        } else {
+//            Logs.log.info("Administrador ha confirmado al gestor " + usuario.getIdUsuario());
+//            FacesContext.getCurrentInstance().addMessage(null,
+//                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Se confirmo el usuario",
+//                            "Se ha confirmado correctamente: " + usuario.getNombre()
+//                            + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
+//            System.out.println("************ CONSOLA SIGERWEB ****************");
+//            System.out.println("El usuario con id " + idUsuario + " se ha confirmado");
+//        }
+//    }
 
     public void setSesion(SesionBean sesion) {
         this.sesion = sesion;

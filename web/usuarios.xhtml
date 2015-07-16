@@ -203,8 +203,8 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <h:form>
-                                    <p:dataTable var="usuario" value="#usuariosBean.todosUsuarios}" widgetVar="usersTable"
-                                                 emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda" filteredValue="#{dtFilterView.filteredCars}">
+                                    <p:dataTable var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usersTable"
+                                                 emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda" filteredValue="#{usuariosBean.usuariosEncontrados}">
 
                                         <f:facet name="header">
                                             <p:outputPanel>
@@ -214,7 +214,7 @@
                                         </f:facet>
 
                                         <p:column headerText="Nombre">
-                                            <h:outputText value="#{car.id}" />
+                                            <h:outputText value="#{usuario.nombre}" />
                                         </p:column>
 
                                         <p:column headerText="Apellido paterno">
@@ -223,7 +223,7 @@
                                                     <f:converter converterId="javax.faces.Integer" />
                                                 </p:spinner>
                                             </f:facet>
-                                            <h:outputText value="#{car.year}" />
+                                            <h:outputText value="#{usuario.paterno}" />
                                         </p:column>
 
                                         <p:column headerText="Apellido materno">
@@ -233,7 +233,7 @@
                                                     <f:selectItems value="#{dtFilterView.brands}" />
                                                 </p:selectOneMenu>
                                             </f:facet>
-                                            <h:outputText value="#{car.brand}" />
+                                            <h:outputText value="#{usuario.materno}" />
                                         </p:column>
 
                                         <p:column headerText="Nombre login">
@@ -242,7 +242,7 @@
                                                     <f:selectItems value="#{dtFilterView.colors}" />
                                                 </p:selectCheckboxMenu>
                                             </f:facet>
-                                            <h:outputText value="#{car.color}" />
+                                            <h:outputText value="#{usuario.nombreLogin}" />
                                         </p:column>
 
                                         <p:column headerText="Perfil">
@@ -254,11 +254,11 @@
                                                     <f:selectItem itemLabel="Sale" itemValue="false" />
                                                 </p:selectOneButton>
                                             </f:facet>
-                                            <h:outputText value="#{car.sold ? 'Sold': 'Sale'}" />
+                                            <h:outputText value="#{usuario.perfil ? 'Sold': 'Sale'}" />
                                         </p:column>
 
                                         <p:column headerText="Correo">
-                                            <h:outputText value="#{car.price}">
+                                            <h:outputText value="#{usuario.correo}">
                                                 <f:convertNumber currencySymbol="$" type="currency"/>
                                             </h:outputText>
                                         </p:column>
