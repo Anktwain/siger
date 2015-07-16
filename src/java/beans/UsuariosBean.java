@@ -5,6 +5,7 @@ import dto.Usuarios;
 import impl.UsuariosIMPL;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +28,7 @@ import util.log.Logs;
  *
  * @author Pablo
  */
-@ManagedBean
+@ManagedBean(name = "usuariosBean")
 @ViewScoped
 public class UsuariosBean implements Serializable {
 
@@ -35,7 +36,6 @@ public class UsuariosBean implements Serializable {
     private UsuariosDAO usuarioDao;
 
     private int perfil;
-
     private String nombre;
     private String paterno;
     private String materno;
@@ -48,8 +48,6 @@ public class UsuariosBean implements Serializable {
     private SesionBean sesion;
     private List<Usuarios> gestoresNoConfirmados;
     private List<Usuarios> usuariosEncontrados;
-    
-    private UsuariosDAO usuarioDao;
     private List<Usuarios> usuariosSeleccionados;
 
     public UsuariosBean() {
@@ -117,13 +115,13 @@ public class UsuariosBean implements Serializable {
         if (usuarioDao.insertar(usuario) == false) { // error al guardar
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
-                            "Error al guardar en BD, notifíquelo a un administrador." ));
+                            "Error al guardar en BD, notifíquelo a un administrador."));
         } else {
             Logs.log.info("Administrador ha agregado al gestor " + usuario.getIdUsuario());
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Se agregó un nuevo usuario",
                             "Se ha agregó correctamente: " + usuario.getNombre()
-                                    + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
+                            + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
 
         }
 
@@ -142,13 +140,32 @@ public class UsuariosBean implements Serializable {
     private boolean passwordsCoinciden() {
         return password.equals(confirmePassword);
     }
-    
-    public void confirmarGestores(List<Usuarios> usuariosSeleccionados){
-        System.out.println("************ CONSOLA SIGERWEB ****************");
+
+    public void confirmarGestores(List<Usuarios> usuariosSeleccionados) {
         for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
-            // CAMBIAR SU PERFIL EN LA BASE DE DATOS. DE -2 A 2
-            // MOSTRAR EN CONSOLA LO QUE SE CAMBIO
-            System.out.println("SE CONFIRMO AL USUARIO: " + usuariosSeleccionados.get(i).toString());
+            // CAMBIAR SU PERFIL EN LA BASE DE DATOS. DE -2 A 2            
+            usuario = usuariosSeleccionados.get(i);
+            usuario.setPerfil(Perfiles.GESTOR);
+            usuarioDao.editar(usuario);
+            if (usuarioDao.editar(usuario) == false) { // error al guardar
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo confirmar el usuario",
+                                "Error al guardar en BD, notifíquelo a un administrador."));
+            } else {
+                // SE BORRA EL CONFIRMADO DE LA LISTA PARA CONFIRMAR
+                gestoresNoConfirmados.remove(usuario);
+                RequestContext.getCurrentInstance().update("noConfirmados");
+                //LOG
+                Logs.log.info("Se confirmo al gestor con id " + usuario.getIdUsuario());
+                // MENSAJE EN VISTA
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Se confirmo un nuevo usuario",
+                                "Se ha confirmado al usuario: " + usuario.getNombre()
+                                + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
+                // AVISO
+                System.out.println("************ CONSOLA SIGERWEB ****************");
+                System.out.println("Se ha confirmado al usuario: " + usuariosSeleccionados.get(i).getNombreLogin());
+            }
         }
     }
 
@@ -175,19 +192,19 @@ public class UsuariosBean implements Serializable {
     public Usuarios getUsuario() {
         return usuario;
     }
-    
+
     public List<Usuarios> getUsuariosSeleccionados() {
         return usuariosSeleccionados;
     }
- 
+
     public void setUsuariosSeleccionados(List<Usuarios> usuariosSeleccionados) {
         this.usuariosSeleccionados = usuariosSeleccionados;
     }
-    
+
     public void onRowSelect(SelectEvent event) {
         System.out.println("Se selecciono un registro");
     }
- 
+
     public void onRowUnselect(UnselectEvent event) {
         System.out.println("Se deselecciono un registro");
     }
