@@ -5,6 +5,7 @@ import dto.Usuarios;
 import impl.UsuariosIMPL;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +28,7 @@ import util.log.Logs;
  *
  * @author Pablo
  */
-@ManagedBean
+@ManagedBean(name = "usuariosBean")
 @ViewScoped
 public class UsuariosBean implements Serializable {
 
@@ -35,7 +36,6 @@ public class UsuariosBean implements Serializable {
     private UsuariosDAO usuarioDao;
 
     private int perfil;
-
     private String nombre;
     private String paterno;
     private String materno;
@@ -186,6 +186,22 @@ public class UsuariosBean implements Serializable {
 
     public Usuarios getUsuario() {
         return usuario;
+    }
+
+    public List<Usuarios> getUsuariosSeleccionados() {
+        return usuariosSeleccionados;
+    }
+
+    public void setUsuariosSeleccionados(List<Usuarios> usuariosSeleccionados) {
+        this.usuariosSeleccionados = usuariosSeleccionados;
+    }
+
+    public void onRowSelect(SelectEvent event) {
+        System.out.println("Se selecciono un registro");
+    }
+
+    public void onRowUnselect(UnselectEvent event) {
+        System.out.println("Se deselecciono un registro");
     }
 
     public void setUsuario(Usuarios usuario) {

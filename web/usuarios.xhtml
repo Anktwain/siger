@@ -77,7 +77,6 @@
                 </h:form>                    
             </div>
         </div><!-- /main-container -->
-        
         <!-- ESTE ES EL DIALOGO QUE SE ABRE CUANDO PRESIONAMOS EL BOTON DE CONFIRMAR GESTORES -->
         <!-- CISNE SOURCECODE -->
         <div class="modal fade" id="formModalConfirmaGestores">
@@ -87,14 +86,15 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4>Nuevo Usuario</h4>
+                            <h4>Confirmar gestores</h4>
                         </div>
                         <div class="modal-body">
                             <h:form>
-                                <p:dataTable id="checkboxDT" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" >
+                                <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}" paginator="true" rows="10">
                                     <f:facet name="header">
                                         Usuarios no confirmados
                                     </f:facet>
+                                    <p:column selectionMode="multiple" style="width:35px;text-align:left"/>
                                     <p:column headerText="Nombre del usuario">
                                         <h:outputText value="#{usuarios.nombre}" />
                                     </p:column>
@@ -107,9 +107,9 @@
                                     <p:column headerText="Correo" style="width:250px;">
                                         <h:outputText value="#{usuarios.correo}" />
                                     </p:column>
-                                    <p:column headerText="Confirmar" style="width:130px;">
-                                        <p:commandButton icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuarios.idUsuario)}" />
-                                    </p:column>
+                                    <f:facet name="footer">
+                                        <p:commandButton process="noConfirmados" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosBean.usuariosSeleccionados)}" />
+                                    </f:facet>
                                 </p:dataTable>
                             </h:form>
                         </div>
