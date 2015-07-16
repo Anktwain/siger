@@ -17,7 +17,7 @@
         <h:outputStylesheet library="css" name="endless-skin.css" />
         <h:outputStylesheet library="css" name="usuarios.css" />
         <h:outputScript library="js" name="jquery-1.10.2.min.js" />
-        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
+        <!--<h:outputScript library="bootstrap" name="/js/bootstrap.js" />-->
         <h:outputScript library="js" name="jquery.flot.min.js" />
         <h:outputScript library="js" name="rapheal.min.js" />
         <h:outputScript library="js" name="morris.min.js" />
@@ -203,13 +203,13 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <h:form>
-                                    <p:dataTable var="car" value="#{dtFilterView.cars}" widgetVar="carsTable"
+                                    <p:dataTable var="usuario" value="#usuariosBean.todosUsuarios}" widgetVar="usersTable"
                                                  emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda" filteredValue="#{dtFilterView.filteredCars}">
 
                                         <f:facet name="header">
                                             <p:outputPanel>
                                                 <h:outputText value="Buscar en todos los campos:" />
-                                                <p:inputText id="globalFilter" onkeyup="PF('carsTable').filter()" style="width:150px" placeholder="Usuario a buscar"/>
+                                                <p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:150px" placeholder="Usuario a buscar"/>
                                             </p:outputPanel>
                                         </f:facet>
 
@@ -219,7 +219,7 @@
 
                                         <p:column headerText="Apellido paterno">
                                             <f:facet name="filter">
-                                                <p:spinner onchange="PF('carsTable').filter()" styleClass="year-spinner">
+                                                <p:spinner onchange="PF('usersTable').filter()" styleClass="year-spinner">
                                                     <f:converter converterId="javax.faces.Integer" />
                                                 </p:spinner>
                                             </f:facet>
@@ -228,7 +228,7 @@
 
                                         <p:column headerText="Apellido materno">
                                             <f:facet name="filter">
-                                                <p:selectOneMenu onchange="PF('carsTable').filter()" >
+                                                <p:selectOneMenu onchange="PF('usersTable').filter()" >
                                                     <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true" />
                                                     <f:selectItems value="#{dtFilterView.brands}" />
                                                 </p:selectOneMenu>
@@ -238,7 +238,7 @@
 
                                         <p:column headerText="Nombre login">
                                             <f:facet name="filter">
-                                                <p:selectCheckboxMenu label="Colors" onchange="PF('carsTable').filter()" panelStyle="width:125px" scrollHeight="150">
+                                                <p:selectCheckboxMenu label="Colors" onchange="PF('usersTable').filter()" panelStyle="width:125px" scrollHeight="150">
                                                     <f:selectItems value="#{dtFilterView.colors}" />
                                                 </p:selectCheckboxMenu>
                                             </f:facet>
@@ -247,7 +247,7 @@
 
                                         <p:column headerText="Perfil">
                                             <f:facet name="filter">
-                                                <p:selectOneButton onchange="PF('carsTable').filter()">
+                                                <p:selectOneButton onchange="PF('usersTable').filter()">
                                                     <f:converter converterId="javax.faces.Boolean" />
                                                     <f:selectItem itemLabel="All" itemValue="" />
                                                     <f:selectItem itemLabel="Sold" itemValue="true" />
