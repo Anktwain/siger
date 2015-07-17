@@ -26,7 +26,7 @@ import util.log.Logs;
 
 /**
  *
- * @author Pablo
+ * @author 
  */
 @ManagedBean(name = "usuariosBean")
 @ViewScoped
@@ -48,7 +48,16 @@ public class UsuariosBean implements Serializable {
     private SesionBean sesion;
     private List<Usuarios> gestoresNoConfirmados;
     private List<Usuarios> usuariosEncontrados;
+    private List<Usuarios> usuariosSeleccionados;
     private List<Usuarios> todosUsuarios;
+
+    public List<Usuarios> getTodosUsuarios() {
+        return todosUsuarios;
+    }
+
+    public void setTodosUsuarios(List<Usuarios> todosUsuarios) {
+        this.todosUsuarios = todosUsuarios;
+    }
 
     public UsuariosBean() {
         usuarioDao = new UsuariosIMPL();

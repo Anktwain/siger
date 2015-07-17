@@ -16,6 +16,6 @@
     margin-bottom: 50px;
 }
 
-#dialogoBuscarUsuarios, #formModalConfirmaGestores{
-    width: fit-content;
+#dialogoBuscarUsuarios{
+    width: 700px;
 }
