@@ -1,7 +1,13 @@
 package beans;
 
+import dao.AdministradoresDAO;
+import dao.GestoresDAO;
 import dao.UsuariosDAO;
+import dto.Administrativos;
+import dto.Gestores;
 import dto.Usuarios;
+import impl.AdministradoresIMPL;
+import impl.GestoresIMPL;
 import impl.UsuariosIMPL;
 import java.io.IOException;
 import java.io.Serializable;
@@ -44,6 +50,8 @@ public class UsuariosBean implements Serializable {
     private String confirmePassword;
     private String correo;
     private String imagenPerfil;
+
+    private String extension;
 
     private SesionBean sesion;
     private List<Usuarios> gestoresNoConfirmados;
@@ -133,14 +141,41 @@ public class UsuariosBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
                             "Error al guardar en BD, notifíquelo a un administrador."));
         } else {
-            Logs.log.info("Administrador ha agregado al gestor " + usuario.getIdUsuario());
+            insertarUsuarioPorPerfil();
+        }
+
+    }
+
+    private void insertarUsuarioPorPerfil() {
+        Gestores gestor = new Gestores();
+        Administrativos administrador = new Administrativos();
+
+        GestoresDAO gestorDao = new GestoresIMPL();
+        AdministradoresDAO administradorDao = new AdministradoresIMPL();
+
+        // Busca al usuario recién ingresado y guarda un objeto de tipo Gestor o Administrador, según corresponda
+        usuario = usuarioDao.buscarPorCorreo(usuario.getNombreLogin(), usuario.getCorreo());
+
+        if (usuario.getPerfil() == Perfiles.ADMINISTRADOR) {
+            administrador.setUsuarios(usuario);
+            administradorDao.insertar(administrador);
+            Logs.log.info("Administrador ha agregado al administrador: " + usuario.getIdUsuario());
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Se agregó un nuevo usuario",
                             "Se ha agregó correctamente: " + usuario.getNombre()
                             + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
-
         }
 
+        if (usuario.getPerfil() == Perfiles.GESTOR) {
+            gestor.setUsuarios(usuario);
+            gestor.setExtension(extension);
+            gestorDao.insertar(gestor);
+            Logs.log.info("Administrador ha agregado al gestor: " + usuario.getIdUsuario());
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Se agregó un nuevo usuario",
+                            "Se ha agregó correctamente: " + usuario.getNombre()
+                            + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
+        }
     }
 
     private boolean validarCorreo() {
@@ -287,6 +322,14 @@ public class UsuariosBean implements Serializable {
 
     public void setImagenPerfil(String imagenPerfil) {
         this.imagenPerfil = imagenPerfil;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
 }
