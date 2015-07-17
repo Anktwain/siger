@@ -48,7 +48,6 @@ public class UsuariosBean implements Serializable {
     private List<Usuarios> gestoresNoConfirmados;
     private List<Usuarios> usuariosEncontrados;
     
-    private UsuariosDAO usuarioDao;
     private List<Usuarios> usuariosSeleccionados;
 
     public UsuariosBean() {
