@@ -49,8 +49,7 @@
                             <div id="botonazo">
                                 <a href="#formModalConfirmaGestores" role="button" data-toggle="modal" class="btn btn-default btn-sm">Confirmar</a>
                             </div>
-                            <!-- AQUI VA EL PINCHE VALOR DEL BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->                            
-                            <strong class="pull-left m-top-xs"><p:outputLabel value="#{barraAdministrativoBean.contar()}" /> gestores por confirmar.</strong>
+                            <strong class="pull-left m-top-xs">Confirme o elimine a los gestores en espera de acceder al sistema.</strong>
                         </div>
                     </div>
                 </h:form>
@@ -90,19 +89,19 @@
                             <h4>Confirmar gestores</h4>
                         </div>
                         <div class="modal-body">
-                            <h:form>
+                            <h:form id="tabla">
                                 <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}" paginator="true" rows="10">
                                     <f:facet name="header">
                                         Usuarios no confirmados
                                     </f:facet>
-                                    <p:column selectionMode="multiple" style="width:35px;text-align:left"/>
-                                    <p:column headerText="Nombre del usuario">
+                                    <p:column selectionMode="multiple" style="width:35px;text-align:left" />
+                                    <p:column headerText="Nombre del usuario" style="width:120px;">
                                         <h:outputText value="#{usuarios.nombre}" />
                                     </p:column>
-                                    <p:column headerText="Apellido Paterno">
+                                    <p:column headerText="Apellido Paterno" style="width:100px;">
                                         <h:outputText value="#{usuarios.paterno}" />
                                     </p:column>
-                                    <p:column headerText="Apellido Materno">
+                                    <p:column headerText="Apellido Materno" style="width:100px;">
                                         <h:outputText value="#{usuarios.materno}" />
                                     </p:column>
                                     <p:column headerText="Correo" style="width:250px;">
@@ -110,6 +109,7 @@
                                     </p:column>
                                     <f:facet name="footer">
                                         <p:commandButton process="noConfirmados" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosBean.usuariosSeleccionados)}" />
+                                        <p:commandButton process="noConfirmados" icon="ui-icon-trash" value="Eliminar" actionListener="#{usuariosBean.eliminarGestores(usuariosBean.usuariosSeleccionados)}" />
                                     </f:facet>
                                 </p:dataTable>
                             </h:form>
