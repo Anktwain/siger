@@ -73,7 +73,7 @@
                             <div id="botonazo">
                                 <a href="#formModalBuscarUsuarios" role="button" data-toggle="modal" class="btn btn-default btn-sm">Buscar</a>
                             </div>
-                            <strong class="pull-left m-top-xs">Consulte y modificar a los usuarios del sistema.</strong>
+                            <strong class="pull-left m-top-xs">Consulte y modifique a los usuarios del sistema.</strong>
                         </div>
                     </div>
                 </h:form>                    
@@ -215,23 +215,31 @@
                                             </p:outputPanel>
                                         </f:facet>
 
-                                        <p:column headerText="Nombre">
-                                            <h:outputText value="#{usuario.nombre}"/>
+                                        <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
+                                            <h:outputLink value="">
+                                                #{usuario.nombre}
+                                            </h:outputLink>
                                         </p:column>
 
                                         <p:column headerText="Apellido paterno">
-                                            <h:outputText value="#{usuario.paterno}" />
+                                            <h:outputLink value="" >
+                                                #{usuario.paterno}
+                                            </h:outputLink>
                                         </p:column>
 
                                         <p:column headerText="Apellido materno">
-                                            <h:outputText value="#{usuario.materno}" />
+                                            <h:outputLink value="" >
+                                                #{usuario.materno}
+                                            </h:outputLink>
                                         </p:column>
 
                                         <p:column headerText="Nombre login">
-                                            <h:outputText value="#{usuario.nombreLogin}" />
+                                            <h:outputLink value="" >
+                                                #{usuario.nombreLogin}
+                                            </h:outputLink>
                                         </p:column>
                                     </p:dataTable>
-                                    
+
                                 </h:form>
                             </div><!-- /form-group -->
                         </div>
