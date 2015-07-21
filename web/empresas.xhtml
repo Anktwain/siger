@@ -30,6 +30,7 @@
         <h:outputScript library="js" name="jquery.cookie.min.js" />
         <h:outputScript library="js" name="/endless/endless_dashboard.js" />
         <h:outputScript library="js" name="/endless/endless.js" />
+        <h:outputScript library="primefaces" name="jquery.js" />
         <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
     </h:head> 
     <body class="overflow-hidden">
@@ -37,16 +38,70 @@
         <div id="overlay" class="transparent"></div>
         <ui:include src="barraSuperior.xhtml" />
         <ui:include src="barraLateral.xhtml" />
-            <div id="main-container">
-                <h1>
-                    Modulo de empresas
-                </h1>
-                <h3>
-                    En construccion!!!
-                </h3>
-                <h:graphicImage library="img" name="construccion.png" />
-            </div><!-- /main-container -->
-            <!-- Footer ================================================== -->
-            <ui:include src="barraInferior.xhtml" />
+        <div id="main-container">
+            <div id="opciones">
+                <h:form>
+                    <div id="confirmagestores" class="panel bg-danger">
+                        <div class="panel-body">
+                            <h4>Nueva empresa</h4>
+                            <div id="botonazo">
+                                <a href="#formModalNuevaEmpresa" role="button" data-toggle="modal" class="btn btn-default btn-sm">Nueva empresa</a>
+                            </div>
+                            <strong class="pull-left m-top-xs">Agregue una empresa al catalogo del sistema.</strong>
+                        </div>
+                    </div>
+                </h:form>
+                <h:form>
+                    <div id="nuevousuario" class="panel bg-info">
+                        <div class="panel-body">
+                            <h4>Editar empresas</h4>
+                            <div id="botonazo">
+                                <a href="#formModalEditarEmpresa" role="button" data-toggle="modal" class="btn btn-default btn-sm">Editar empresas</a>
+                            </div>
+                            <strong class="pull-left m-top-xs">Modifique los datos de una empresa o eliminela.</strong>
+                        </div>
+                    </div>
+                </h:form>
+            </div>
+        </div><!-- /main-container -->
+        <!-- DIALOGOS MODALES-->
+        <!-- NUEVA EMPRESA -->
+        <div class="modal fade" id="formModalNuevaEmpresa">
+            <div class="modal-dialog">
+                <h:form id="formConfirmarGestores">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4>Nueva empresa</h4>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div><!-- /.modal-content -->
+                </h:form>
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- EDITAR EMPRESAS -->
+        <div class="modal fade" id="formModalEditarEmpresa">
+            <div class="modal-dialog">
+                <h:form id="formNuevoUsuario">
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4>Editar empresas</h4>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div><!-- /.modal-content -->
+                </h:form>
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- Footer ================================================== -->
+        <ui:include src="barraInferior.xhtml" />
     </body>
 </html>
