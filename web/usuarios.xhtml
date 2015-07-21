@@ -16,9 +16,8 @@
         <h:outputStylesheet library="css" name="endless.min.css" />
         <h:outputStylesheet library="css" name="endless-skin.css" />
         <h:outputStylesheet library="css" name="usuarios.css" />
-
         <h:outputScript library="js" name="jquery-1.10.2.min.js" />
-        <!--<h:outputScript library="bootstrap" name="/js/bootstrap.js" />-->
+        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
         <h:outputScript library="js" name="jquery.flot.min.js" />
         <h:outputScript library="js" name="rapheal.min.js" />
         <h:outputScript library="js" name="morris.min.js" />
@@ -31,8 +30,8 @@
         <h:outputScript library="js" name="jquery.cookie.min.js" />
         <h:outputScript library="js" name="/endless/endless_dashboard.js" />
         <h:outputScript library="js" name="/endless/endless.js" />
+        <h:outputScript library="primefaces" name="jquery.js" />
         <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
-
     </h:head>
     <h:body>
         <p:growl id="growl" showDetail="true" sticky="true" />
@@ -91,26 +90,28 @@
                             <h4>Confirmar gestores</h4>
                         </div>
                         <div class="modal-body">
-                            <h:form>
+                            <h:form id="tabla">
                                 <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}" paginator="true" rows="10">
+                                    <!--<p:ajax event="" />-->
                                     <f:facet name="header">
                                         Usuarios no confirmados
                                     </f:facet>
-                                    <p:column selectionMode="multiple" style="width:35px;text-align:left"/>
-                                    <p:column headerText="Nombre del usuario">
+                                    <p:column selectionMode="multiple" style="width:30px;text-align:right" />
+                                    <p:column headerText="Nombre del usuario" style="width:110px;">
                                         <h:outputText value="#{usuarios.nombre}" />
                                     </p:column>
-                                    <p:column headerText="Apellido Paterno">
+                                    <p:column headerText="Apellido Paterno" style="width:100px;">
                                         <h:outputText value="#{usuarios.paterno}" />
                                     </p:column>
-                                    <p:column headerText="Apellido Materno">
+                                    <p:column headerText="Apellido Materno" style="width:100px;">
                                         <h:outputText value="#{usuarios.materno}" />
                                     </p:column>
-                                    <p:column headerText="Correo" style="width:250px;">
+                                    <p:column headerText="Correo" style="width:200px;">
                                         <h:outputText value="#{usuarios.correo}" />
                                     </p:column>
                                     <f:facet name="footer">
                                         <p:commandButton process="noConfirmados" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosBean.usuariosSeleccionados)}" />
+                                        <p:commandButton process="noConfirmados" icon="ui-icon-trash" value="Eliminar" actionListener="#{usuariosBean.eliminarGestores(usuariosBean.usuariosSeleccionados)}" />
                                     </f:facet>
                                 </p:dataTable>
                             </h:form>
@@ -118,8 +119,7 @@
                     </div><!-- /.modal-content -->
                 </h:form>
             </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->                            
-
+        </div><!-- /.modal -->
         <!-- DAR DE ALTA UN NUEVO USUARIO -->
         <div class="modal fade" id="formModalNuevoUsuario">
             <div class="modal-dialog">
@@ -193,7 +193,6 @@
                 </h:form>
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-
         <div class="modal fade" id="formModalBuscarUsuarios">
             <div class="modal-dialog" id="dialogoBuscarUsuarios">
                 <h:form>
@@ -242,7 +241,6 @@
                 </h:form>
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-
         <!-- Footer ================================================== -->
         <ui:include src="barraInferior.xhtml" />
         <!-- /wrapper -->        
