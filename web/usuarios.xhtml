@@ -91,11 +91,12 @@
                         <div class="modal-body">
                             <h:form id="tabla">
                                 <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}" paginator="true" rows="10">
+                                    <p:ajax event="" />
                                     <f:facet name="header">
                                         Usuarios no confirmados
                                     </f:facet>
-                                    <p:column selectionMode="multiple" style="width:35px;text-align:left" />
-                                    <p:column headerText="Nombre del usuario" style="width:120px;">
+                                    <p:column selectionMode="multiple" style="width:30px;text-align:right" />
+                                    <p:column headerText="Nombre del usuario" style="width:110px;">
                                         <h:outputText value="#{usuarios.nombre}" />
                                     </p:column>
                                     <p:column headerText="Apellido Paterno" style="width:100px;">
@@ -104,7 +105,7 @@
                                     <p:column headerText="Apellido Materno" style="width:100px;">
                                         <h:outputText value="#{usuarios.materno}" />
                                     </p:column>
-                                    <p:column headerText="Correo" style="width:250px;">
+                                    <p:column headerText="Correo" style="width:200px;">
                                         <h:outputText value="#{usuarios.correo}" />
                                     </p:column>
                                     <f:facet name="footer">
