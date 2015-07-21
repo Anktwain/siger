@@ -50,7 +50,7 @@
                                 <a href="#formModalConfirmaGestores" role="button" data-toggle="modal" class="btn btn-default btn-sm">Confirmar</a>
                             </div>
                             <!-- AQUI VA EL PINCHE VALOR DEL BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->                            
-                            <strong class="pull-left m-top-xs"><p:outputLabel value="#{barraAdministrativoBean.contar()}" /> gestores por confirmar.</strong>
+                            <strong class="pull-left m-top-xs">Confirme o elimine a los usuarios en espera de ingresar al sistema.</strong>
                         </div>
                     </div>
                 </h:form>
@@ -214,23 +214,30 @@
                                             </p:outputPanel>
                                         </f:facet>
 
-                                        <p:column headerText="Nombre">
-                                            <h:outputText value="#{usuario.nombre}"/>
+                                        <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"  > 
+                                            <h:outputLink value="">
+                                                #{usuario.nombre}
+                                            </h:outputLink>
                                         </p:column>
 
-                                        <p:column headerText="Apellido paterno">
-                                            <h:outputText value="#{usuario.paterno}" />
+                                        <p:column headerText="Apellido paterno" filterBy="#{usuario.nombre}" filterMatchMode="contains">
+                                            <h:outputLink value="" >
+                                                #{usuario.paterno}
+                                            </h:outputLink>
                                         </p:column>
 
-                                        <p:column headerText="Apellido materno">
-                                            <h:outputText value="#{usuario.materno}" />
+                                        <p:column headerText="Apellido materno" filterBy="#{usuario.nombre}" filterMatchMode="contains">
+                                            <h:outputLink value="" >
+                                                #{usuario.materno}
+                                            </h:outputLink>
                                         </p:column>
 
-                                        <p:column headerText="Nombre login">
-                                            <h:outputText value="#{usuario.nombreLogin}" />
+                                        <p:column headerText="Nombre login" filterBy="#{usuario.nombre}" filterMatchMode="contains">
+                                            <h:outputLink value="" >
+                                                #{usuario.nombreLogin}
+                                            </h:outputLink>
                                         </p:column>
                                     </p:dataTable>
-                                    
                                 </h:form>
                             </div><!-- /form-group -->
                         </div>
