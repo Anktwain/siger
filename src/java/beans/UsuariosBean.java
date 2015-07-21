@@ -32,7 +32,7 @@ import util.log.Logs;
 
 /**
  *
- * @author 
+ * @author Cofradia
  */
 @ManagedBean(name = "usuariosBean")
 @ViewScoped
@@ -40,7 +40,6 @@ public class UsuariosBean implements Serializable {
 
     private Usuarios usuario;
     private UsuariosDAO usuarioDao;
-
     private int perfil;
     private String nombre;
     private String paterno;
@@ -50,9 +49,7 @@ public class UsuariosBean implements Serializable {
     private String confirmePassword;
     private String correo;
     private String imagenPerfil;
-
     private String extension;
-
     private SesionBean sesion;
     private List<Usuarios> gestoresNoConfirmados;
     private List<Usuarios> usuariosEncontrados;
@@ -74,11 +71,10 @@ public class UsuariosBean implements Serializable {
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
         gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
         todosUsuarios = usuarioDao.buscarTodo();
-        
         System.out.println("\n*************************** todosUsuarios:");
         int i = 0;
         for (Usuarios usuarioActual : todosUsuarios) {
-            System.out.println("***U." + (++i) +": "+ usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
+            System.out.println("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
         }
     }
 
@@ -134,7 +130,6 @@ public class UsuariosBean implements Serializable {
         usuario.setPerfil(perfil);
         usuario.setCorreo(correo);
         usuario.setImagenPerfil(imagenPerfil);
-
         // Guarda el objeto en la BD
         if (usuarioDao.insertar(usuario) == false) { // error al guardar
             FacesContext.getCurrentInstance().addMessage(null,
@@ -143,19 +138,15 @@ public class UsuariosBean implements Serializable {
         } else {
             insertarUsuarioPorPerfil();
         }
-
     }
 
     private void insertarUsuarioPorPerfil() {
         Gestores gestor = new Gestores();
         Administrativos administrador = new Administrativos();
-
         GestoresDAO gestorDao = new GestoresIMPL();
         AdministradoresDAO administradorDao = new AdministradoresIMPL();
-
         // Busca al usuario recién ingresado y guarda un objeto de tipo Gestor o Administrador, según corresponda
         usuario = usuarioDao.buscarPorCorreo(usuario.getNombreLogin(), usuario.getCorreo());
-
         if (usuario.getPerfil() == Perfiles.ADMINISTRADOR) {
             administrador.setUsuarios(usuario);
             administradorDao.insertar(administrador);
@@ -165,7 +156,6 @@ public class UsuariosBean implements Serializable {
                             "Se ha agregó correctamente: " + usuario.getNombre()
                             + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
         }
-
         if (usuario.getPerfil() == Perfiles.GESTOR) {
             gestor.setUsuarios(usuario);
             gestor.setExtension(extension);
@@ -181,10 +171,8 @@ public class UsuariosBean implements Serializable {
     private boolean validarCorreo() {
         // Compila la cadena PATRON_EMAIL como un patrón
         Pattern patron = Pattern.compile(Patrones.PATRON_EMAIL);
-
         // Compara el correo con el patrón dado
         Matcher matcher = patron.matcher(correo);
-
         return matcher.matches();
     }
 
@@ -192,21 +180,77 @@ public class UsuariosBean implements Serializable {
         return password.equals(confirmePassword);
     }
 
-//    public void confirmarGestores(int idUsuario) {
-//        if (usuarioDao.confirmarGestor(usuario) == false) { // error al guardar
-//            FacesContext.getCurrentInstance().addMessage(null,
-//                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo confirmar el usuario",
-//                            "Error al guardar en BD, notifíquelo a un administrador."));
-//        } else {
-//            Logs.log.info("Administrador ha confirmado al gestor " + usuario.getIdUsuario());
-//            FacesContext.getCurrentInstance().addMessage(null,
-//                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Se confirmo el usuario",
-//                            "Se ha confirmado correctamente: " + usuario.getNombre()
-//                            + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
-//            System.out.println("************ CONSOLA SIGERWEB ****************");
-//            System.out.println("El usuario con id " + idUsuario + " se ha confirmado");
-//        }
-//    }
+    public void confirmarGestores(List<Usuarios> usuariosSeleccionados) {
+        for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
+            // CAMBIAR SU PERFIL EN LA BASE DE DATOS. DE -2 A 2            
+            usuario = usuariosSeleccionados.get(i);
+            usuario.setPerfil(Perfiles.GESTOR);
+            usuarioDao.editar(usuario);
+            if (usuarioDao.editar(usuario) == false) { // error al guardar
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo confirmar el usuario",
+                                "Error al guardar en BD, notifíquelo a un administrador."));
+            } else {
+                // SE INSERTA EL GESTOR EN LA TABLA GESTORES
+                insertarGestor(usuario);
+                // SE BORRA EL CONFIRMADO DE LA LISTA PARA CONFIRMAR
+                gestoresNoConfirmados.remove(usuario);
+                RequestContext.getCurrentInstance().update("noConfirmados");
+                RequestContext.getCurrentInstance().update("circulito");
+                //LOG
+                Logs.log.info("Se confirmo al gestor con id " + usuario.getIdUsuario());
+                // MENSAJE EN VISTA
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Se confirmo un nuevo usuario",
+                                "Se ha confirmado al usuario: " + usuario.getNombre()
+                                + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
+                // AVISO
+                System.out.println("************ CONSOLA SIGERWEB ****************");
+                System.out.println("Se ha confirmado al usuario: " + usuariosSeleccionados.get(i).getNombreLogin());
+                RequestContext.getCurrentInstance().update("noConfirmados");
+                RequestContext.getCurrentInstance().update("circulito");
+            }
+        }
+    }
+
+    public void eliminarGestores(List<Usuarios> usuariosSeleccionados) {
+        for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
+            usuario = usuariosSeleccionados.get(i);
+            usuarioDao.eliminar(usuario);
+            if (usuarioDao.eliminar(usuario) == false) { // error al borrar
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo borrar el usuario",
+                                "Error al guardar en BD, notifíquelo a un administrador."));
+            } else {
+                RequestContext.getCurrentInstance().update("noConfirmados");
+                RequestContext.getCurrentInstance().update("circulito");
+                //LOG
+                Logs.log.info("Se elimino al gestor con id " + usuario.getIdUsuario());
+                // MENSAJE EN VISTA
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN, "Se elimino el usuario",
+                                "Se ha eliminado al usuario: " + usuario.getNombre()
+                                + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
+                // AVISO
+                System.out.println("************ CONSOLA SIGERWEB ****************");
+                System.out.println("Se ha eliminado al usuario: " + usuariosSeleccionados.get(i).getNombreLogin());
+                RequestContext.getCurrentInstance().update("noConfirmados");
+                RequestContext.getCurrentInstance().update("circulito");
+            }
+        }
+    }
+
+    private void insertarGestor(Usuarios usuario) {
+        Gestores gestor = new Gestores();
+        GestoresDAO gestorDao = new GestoresIMPL();
+        gestor.setUsuarios(usuario);
+        gestor.setExtension(extension);
+        gestorDao.insertar(gestor);
+        Logs.log.info("Administrador ha agregado al gestor: " + usuario.getIdUsuario());
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Se agregó un nuevo gestor",
+                        "Se ha agregado correctamente."));
+    }
 
     public void setSesion(SesionBean sesion) {
         this.sesion = sesion;
@@ -331,5 +375,4 @@ public class UsuariosBean implements Serializable {
     public void setExtension(String extension) {
         this.extension = extension;
     }
-
 }
