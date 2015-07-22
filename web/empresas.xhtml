@@ -76,6 +76,7 @@
                             <h4>Nueva empresa</h4>
                         </div>
                         <div class="modal-body">
+
                         </div>
                         <div class="modal-footer">
                         </div>
@@ -94,6 +95,17 @@
                             <h4>Editar empresas</h4>
                         </div>
                         <div class="modal-body">
+                            <h:form>
+                                <p:dataTable var="empresa" value="#{empresasBean.todasEmpresas}" widgetVar="empresasTable"
+                                             emptyMessage="No existen registros" filteredValue="#{empresasBean.empresasEncontradas}">
+                                    <p:column headerText="Nombre de la empresa" filterBy="#{empresa.nombre_corto}" filterMatchMode="contains"  > 
+                                        <h:outputLink value="#{empresa.nombre_corto}" />
+                                    </p:column>
+                                    <p:column headerText="RFC" filterBy="#{empresa.rfc}" filterMatchMode="contains"  > 
+                                        <h:outputLink value="#{empresa.rfc}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
                         </div>
                         <div class="modal-footer">
                         </div>
