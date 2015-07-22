@@ -204,40 +204,65 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <h:form>
-                                    <p:dataTable var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usersTable"
+                                    <p:dataTable var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usersTable" paginator="true" rows="10"
                                                  emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda" filteredValue="#{usuariosBean.usuariosEncontrados}">
 
                                         <f:facet name="header">
                                             <p:outputPanel>
-                                                <h:outputText value="Buscar en todos los usuarios:" />
+                                                <h:outputText value="Buscar en todos los usuarios:  " />
                                                 <p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:150px" placeholder="Palabra clave"/>
                                             </p:outputPanel>
                                         </f:facet>
 
-                                        <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"  > 
+                                        <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
                                             <h:outputLink value="">
                                                 #{usuario.nombre}
                                             </h:outputLink>
                                         </p:column>
 
-                                        <p:column headerText="Apellido paterno" filterBy="#{usuario.nombre}" filterMatchMode="contains">
+                                        <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
                                             <h:outputLink value="" >
                                                 #{usuario.paterno}
                                             </h:outputLink>
                                         </p:column>
 
-                                        <p:column headerText="Apellido materno" filterBy="#{usuario.nombre}" filterMatchMode="contains">
+                                        <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
                                             <h:outputLink value="" >
                                                 #{usuario.materno}
                                             </h:outputLink>
                                         </p:column>
 
-                                        <p:column headerText="Nombre login" filterBy="#{usuario.nombre}" filterMatchMode="contains">
+                                        <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
                                             <h:outputLink value="" >
                                                 #{usuario.nombreLogin}
                                             </h:outputLink>
                                         </p:column>
                                     </p:dataTable>
+
+
+                                    <p:dialog header="Informaci&oacute; de usuario" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                                        <p:outputPanel id="carDetail" style="text-align:center;">
+                                            <p:panelGrid  columns="2" rendered="#{not empty dtContextMenuView.selectedCar}" columnClasses="label,value">
+                                                <f:facet name="header">
+                                                    <p:graphicImage name="demo/images/car/#{dtContextMenuView.selectedCar.brand}-big.gif"/> 
+                                                </f:facet>
+
+                                                <h:outputText value="Id:" />
+                                                <h:outputText value="#{dtContextMenuView.selectedCar.id}" />
+
+                                                <h:outputText value="Year" />
+                                                <h:outputText value="#{dtContextMenuView.selectedCar.year}" />
+
+                                                <h:outputText value="Color:" />
+                                                <h:outputText value="#{dtContextMenuView.selectedCar.color}" style="color:#{dtContextMenuView.selectedCar.color}"/>
+
+                                                <h:outputText value="Price" />
+                                                <h:outputText value="$#{dtContextMenuView.selectedCar.price}" />
+                                            </p:panelGrid>
+                                        </p:outputPanel>
+                                    </p:dialog>
+
+
                                 </h:form>
                             </div><!-- /form-group -->
                         </div>
