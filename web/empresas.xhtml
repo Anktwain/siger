@@ -76,7 +76,59 @@
                             <h4>Nueva empresa</h4>
                         </div>
                         <div class="modal-body">
-
+                            <div class="form-group">
+                                <p:outputLabel value="Nombre(s): " />
+                                <p:inputText id="nombre" type="text" class="form-control input-sm" value="#{usuariosBean.nombre}"
+                                             required="true" requiredMessage="Ingrese un nombre" />
+                            </div><!-- /form-group -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <p:outputLabel value="Apellido Paterno:" />
+                                        <p:inputText id="paterno" type="text" class="form-control input-sm" value="#{usuariosBean.paterno}" />
+                                    </div>
+                                </div><!-- /.col -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <p:outputLabel id="materno" value="Apellido Materno:" />
+                                        <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.materno}" />
+                                    </div>
+                                </div><!-- /.col -->
+                            </div><!-- /.row -->
+                            <div class="form-group">
+                                <p:outputLabel id="nombreUsuario" value="Nombre de Usuario: " />
+                                <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.nombreLogin}"
+                                             required="true" requiredMessage="Ingrese un nombre de usuario" />
+                            </div><!-- /form-group -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <p:outputLabel value="Contraseña:" />
+                                        <p:password id="password" class="form-control input-sm" value="#{usuariosBean.password}"
+                                                    required="true" requiredMessage="Ingrese una contraseña"/>
+                                    </div>
+                                </div><!-- /.col -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <p:outputLabel id="confirmePassword" value="Confirme su Contraseña:" />
+                                        <p:password class="form-control input-sm" value="#{usuariosBean.confirmePassword}" />
+                                    </div>
+                                </div><!-- /.col -->
+                            </div><!-- /.row -->
+                            <div class="form-group">
+                                <p:outputLabel value="E-mail: " />
+                                <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.correo}"
+                                             required="true" requiredMessage="Ingrese una dirección de correo electrónico"/>
+                            </div><!-- /form-group -->
+                            <div class="form-group">
+                                <p:outputLabel value="Perfil: " />
+                                <h:selectOneMenu id="perfil" value="#{usuariosBean.perfil}" class="form-control chzn-select"
+                                                 required="true" requiredMessage="Especifique perfil">
+                                    <f:selectItem itemLabel="Seleccione perfil"/>
+                                    <f:selectItem itemLabel="Administrador" itemValue="1" />
+                                    <f:selectItem itemLabel="Gestor" itemValue="2" />
+                                </h:selectOneMenu>
+                            </div><!-- /form-group -->
                         </div>
                         <div class="modal-footer">
                         </div>
@@ -96,15 +148,46 @@
                         </div>
                         <div class="modal-body">
                             <h:form>
-                                <p:dataTable var="empresa" value="#{empresasBean.todasEmpresas}" widgetVar="empresasTable"
-                                             emptyMessage="No existen registros" filteredValue="#{empresasBean.empresasEncontradas}">
-                                    <p:column headerText="Nombre de la empresa" filterBy="#{empresa.nombre_corto}" filterMatchMode="contains"  > 
-                                        <h:outputLink value="#{empresa.nombre_corto}" />
+                                <p:dataTable var="empresas" value="#{empresasBean.listaEmpresas}" widgetVar="empresasTable" paginator="true" rows="10"
+                                             emptyMessage="No existen registros" filteredValue="#{empresasBean.listaEmpresas}">
+                                    <f:facet name="header">
+                                        Empresas registradas en el sistema
+                                        <p:outputPanel>
+                                            <p:inputText id="globalFilter" onkeyup="PF('empresasTable').filter()" style="width:250px" />
+                                        </p:outputPanel>
+                                    </f:facet>
+                                    <p:column headerText="Nombre de la empresa" filterBy="#{empresas.nombreCorto}" filterMatchMode="contains"> 
+                                        <h:outputText value="#{empresas.nombreCorto}" />
                                     </p:column>
-                                    <p:column headerText="RFC" filterBy="#{empresa.rfc}" filterMatchMode="contains"  > 
-                                        <h:outputLink value="#{empresa.rfc}" />
+                                    <!--
+                                    <p:column headerText="Nombre de la empresa" filterBy="#{empresas.nombreRazonSocial}" filterMatchMode="contains"> 
+                                        <h:outputText value="#{empresas.nombreRazonSocial}" />
+                                    </p:column>
+                                    -->
+                                    <p:column headerText="RFC" filterBy="#{empresas.nombreCorto}" filterMatchMode="contains" style="width:120px;"> 
+                                        <h:outputText value="RPU010101123" />
+                                    </p:column>
+                                    <!--
+                                    <p:column headerText="RFC" filterBy="#{empresas.rfc}" filterMatchMode="contains" style="width:120px;"> 
+                                        <h:outputText value="#{empresas.rfc}" />
+                                    </p:column>
+                                    -->
+                                    <p:column style="width:100px;text-align:right">
+                                        <p:commandButton type="button" value="Editar" icon="ui-icon-pencil" onclick="PF('dlgEditar').show();" process="@this" update="@none" />
+                                    </p:column>
+                                    <p:column style="width:120px;text-align:right"> 
+                                        <p:commandButton type="button" value="Eliminar" icon="ui-icon-minus" onclick="PF('dlgEliminar').show();" process="@this" update="@none" />
                                     </p:column>
                                 </p:dataTable>
+                                <!-- DIALOGOS DE PRIMEFACES -->
+                                <!-- DIALOGO DE EDITAR USUARIO -->
+                                <p:dialog header="Editar usuario" widgetVar="dlgEditar" modal="true" height="100" appendToBody="false">
+                                    <h:outputText value="Aqui se editaran los putos usuarios de mierda" />
+                                </p:dialog>
+                                <!-- DIALOGO DE EDITAR USUARIO -->
+                                <p:dialog header="Eliminar usuario" widgetVar="dlgEliminar" modal="true" height="100" appendToBody="false">
+                                    <h:outputText value="Aqui se eliminaran a tomar por culo los usuarios de mierda" />
+                                </p:dialog>
                             </h:form>
                         </div>
                         <div class="modal-footer">
