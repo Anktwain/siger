@@ -50,7 +50,7 @@
                                 <a href="#formModalConfirmaGestores" role="button" data-toggle="modal" class="btn btn-default btn-sm">Confirmar</a>
                             </div>
                             <!-- AQUI VA EL PINCHE VALOR DEL BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->                            
-                            <strong class="pull-left m-top-xs">Confirme o elimine a los usuarios en espera de ingresar al sistema.</strong>
+                            <strong class="pull-left m-top-xs"><p:outputLabel value="#{barraAdministrativoBean.contar()}" /> gestores por confirmar.</strong>
                         </div>
                     </div>
                 </h:form>
@@ -203,7 +203,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <h:form>
+                                <!--<h:form>-->
                                     <p:dataTable var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usersTable"
                                                  emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda" filteredValue="#{usuariosBean.usuariosEncontrados}">
 
@@ -214,31 +214,24 @@
                                             </p:outputPanel>
                                         </f:facet>
 
-                                        <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"  > 
-                                            <h:outputLink value="">
-                                                #{usuario.nombre}
-                                            </h:outputLink>
+                                        <p:column headerText="Nombre" filterMatchMode="contains">
+                                            <h:outputText value="#{usuario.nombre}" />
                                         </p:column>
 
-                                        <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
-                                            <h:outputLink value="" >
-                                                #{usuario.paterno}
-                                            </h:outputLink>
+                                        <p:column headerText="Apellido paterno">
+                                            <h:outputText value="#{usuario.paterno}" />
                                         </p:column>
 
-                                        <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
-                                            <h:outputLink value="" >
-                                                #{usuario.materno}
-                                            </h:outputLink>
+                                        <p:column headerText="Apellido materno">
+                                            <h:outputText value="#{usuario.materno}" />
                                         </p:column>
 
-                                        <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
-                                            <h:outputLink value="" >
-                                                #{usuario.nombreLogin}
-                                            </h:outputLink>
+                                        <p:column headerText="Nombre login">
+                                            <h:outputText value="#{usuario.nombreLogin}" />
                                         </p:column>
                                     </p:dataTable>
-                                </h:form>
+                                    
+                                <!--</h:form>-->
                             </div><!-- /form-group -->
                         </div>
                         <div class="modal-footer">
@@ -252,4 +245,5 @@
         <ui:include src="barraInferior.xhtml" />
         <!-- /wrapper -->        
     </h:body>
+
 </html>

@@ -131,7 +131,7 @@ public class UsuariosBean implements Serializable {
         usuario.setCorreo(correo);
         usuario.setImagenPerfil(imagenPerfil);
         // Guarda el objeto en la BD
-        if (usuarioDao.insertar(usuario) == false) { // error al guardar
+        if (usuarioDao.insertar(usuario) == 0) { // error al guardar
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
                             "Error al guardar en BD, notifíquelo a un administrador."));

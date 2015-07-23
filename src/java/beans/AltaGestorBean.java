@@ -104,7 +104,7 @@ public class AltaGestorBean {
         
         
         // Guarda el objeto en la BD
-        if (usuarioDao.insertar(usuario) == false) { // error al guardar
+        if (usuarioDao.insertar(usuario) == 0) { // error al guardar
             FacesContext context = FacesContext.getCurrentInstance();
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "No se pudo agregar el usuario",
                     "Error al guardar en BD, repórtese con Soporte Técnico."));

@@ -5,51 +5,52 @@
  */
 package impl;
 
-import dao.SujetosDAO;
-import dto.Sujetos;
+import dao.EmailsDAO;
+import dto.Emails;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.log.Logs;
 
 /**
  *
  * @author brionvega
  */
-public class SujetosIMPL implements SujetosDAO {
+public class EmailsIMPL implements EmailsDAO {
 
     @Override
-    public int insertar(Sujetos sujeto) {
+    public boolean insertar(Emails email) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-        int id;
+        boolean ok;
                 
         try {
-            sesion.save(sujeto);
+            sesion.save(email);
             tx.commit();
-            id = sujeto.getIdSujeto();
+            ok = true;
             //log.info("Se insertó un nuevo usuaario");
         } catch(HibernateException he){
-            id = 0;
+            ok = false;
             if(tx != null)
                 tx.rollback();
-            he.printStackTrace();
-   //         log.error(he.getMessage());
+//            he.printStackTrace();
+            Logs.log.trace(he.getMessage());
         } finally {
             cerrar(sesion);
         }
-        return id;
+        return ok;
     }
 
     @Override
-    public boolean editar(Sujetos sujeto) {
+    public boolean editar(Emails email) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
         
         try {
-            sesion.update(sujeto);
+            sesion.update(email);
             tx.commit();
             ok = true;
         } catch(HibernateException he) {
@@ -65,14 +66,14 @@ public class SujetosIMPL implements SujetosDAO {
     }
 
     @Override
-    public boolean eliminar(Sujetos sujeto) {
+    public boolean eliminar(Emails email) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
         
         try {
             // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
-            sesion.update(sujeto);
+            sesion.update(email);
             tx.commit();
             ok = true;
         } catch(HibernateException he) {
@@ -88,30 +89,13 @@ public class SujetosIMPL implements SujetosDAO {
     }
 
     @Override
-    public Sujetos buscar(int idSujeto) {
-        Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
-        Sujetos sujeto;
-        
-        try {
-            sujeto = (Sujetos) sesion.get(Sujetos.class, idSujeto);
-            // obtuvo el usuario, solo se muestra si no ha sido eliminado:
-            if(sujeto != null)
-               // Colocar algo similar a esto: if(usuario.getPerfil() == Perfiles.ELIMINADO)
-                    sujeto = null;
-        } catch(HibernateException he) {
-            sujeto = null;
-            he.printStackTrace();
-        } finally {
-            cerrar(sesion);
-        }
-        
-        return sujeto;
+    public Emails buscar(int idEmail) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Sujetos> buscarTodo() {
-        return null;
+    public List<Emails> buscarTodo() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     private void cerrar(Session sesion) {
