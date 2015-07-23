@@ -111,7 +111,22 @@ public class SujetosIMPL implements SujetosDAO {
 
     @Override
     public List<Sujetos> buscarTodo() {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        List<Sujetos> listaSujetos;
+        
+        try { // Buscamos todas las empresas.
+            listaSujetos = sesion.createQuery("from Sujetos").list();
+        } catch(HibernateException he) {
+            listaSujetos = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return listaSujetos;
+        /*
         return null;
+        */
     }
     
     private void cerrar(Session sesion) {

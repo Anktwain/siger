@@ -39,6 +39,7 @@ import util.log.Logs;
 public class UsuariosBean implements Serializable {
 
     private Usuarios usuario;
+    private Usuarios usuarioSeleccionado;
     private UsuariosDAO usuarioDao;
     private int perfil;
     private String nombre;
@@ -60,6 +61,14 @@ public class UsuariosBean implements Serializable {
         return todosUsuarios;
     }
 
+    public Usuarios getUsuarioSeleccionado() {
+        return usuarioSeleccionado;
+    }
+
+    public void setUsuarioSeleccionado(Usuarios usuarioSeleccionado) {
+        this.usuarioSeleccionado = usuarioSeleccionado;
+    }
+    
     public void setTodosUsuarios(List<Usuarios> todosUsuarios) {
         this.todosUsuarios = todosUsuarios;
     }
