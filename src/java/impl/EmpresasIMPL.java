@@ -94,7 +94,22 @@ public class EmpresasIMPL implements EmpresasDAO {
 
     @Override
     public List<Empresas> buscarTodo() {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        List<Empresas> listaEmpresas;
+        
+        try { // Buscamos todas las empresas.
+            listaEmpresas = sesion.createQuery("from Empresas").list();
+        } catch(HibernateException he) {
+            listaEmpresas = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return listaEmpresas;
+        /*
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        */
     }
     
     private void cerrar(Session sesion) {
