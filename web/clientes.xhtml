@@ -14,6 +14,7 @@
     <h:body>
         <div id="overlay" class="transparent" style="display: none;"></div>
         <ui:include src="barraLateral.xhtml" />
+        <ui:include src="barraSuperior.xhtml" />
         <div id="main-container">
 
             <div id="breadcrumb">
@@ -50,6 +51,7 @@
             </div>
 
         </div>
+        <ui:include src="barraInferior.xhtml"/>
         <p:dialog widgetVar="ejemplo" width="40%">
             <h:form id="listado">
                 <p:outputLabel value="Agregar nuevo usuario" />
