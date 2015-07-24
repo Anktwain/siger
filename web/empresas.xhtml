@@ -62,21 +62,21 @@
                                         <h4>Nueva empresa</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <!--
+                                        
                                         <h:form>
                                             <p:dataTable var="sujetos" value="#{empresasBean.listaEmpresas}" paginator="true" rows="10">
                                                 <f:facet name="header">
                                                     Empresas registradas en el sistema
                                                 </f:facet>
                                                 <p:column headerText="Nombre de la empresa">
-                                                    <h:outputText value="#{sujetos.nombreRazonSocial}" />
+                                                    <p:outputLabel value="#{sujetos.nombreRazonSocial}"/>
                                                 </p:column>
                                                 <p:column headerText="RFC"> 
                                                     <h:outputText value="#{sujetos.rfc}" />
                                                 </p:column>
                                             </p:dataTable>
                                         </h:form>
-                                        -->
+                                        
                                     </div>
                                     <div class="modal-footer">
                                     </div>

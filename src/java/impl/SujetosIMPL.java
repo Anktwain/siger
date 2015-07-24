@@ -139,7 +139,7 @@ public class SujetosIMPL implements SujetosDAO {
         
         try { // Buscamos todas las empresas.
             //"select e.name, a.city from Employee e INNER JOIN e.address a"
-            listaSujetos = sesion.createQuery("select s.nombreRazonSocial, s.rfc from Sujetos s, Empresas e where s.idSujeto = e.sujetos").list();
+            listaSujetos = sesion.createSQLQuery("select s.* from sujetos s join empresas e on e.sujetos_id_sujeto=s.id_sujeto;").addEntity(Sujetos.class).list();
         } catch(HibernateException he) {
             listaSujetos = null;
             he.printStackTrace();

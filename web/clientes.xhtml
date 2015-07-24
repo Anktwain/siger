@@ -8,12 +8,11 @@
     <h:head>
         <meta charset="utf-8"></meta>
         <title>SigerWeb - Clientes</title>
-        <!--        <h:outputScript library="primefaces" name="dialog.js"/>
-                <h:outputScript library="primefaces" name="jquery.js"/>-->
     </h:head>
     <h:body>
         <div id="overlay" class="transparent" style="display: none;"></div>
         <ui:include src="barraLateral.xhtml" />
+        <ui:include src="barraSuperior.xhtml" />
         <div id="main-container">
 
             <div id="breadcrumb">
@@ -50,9 +49,51 @@
             </div>
 
         </div>
-        <p:dialog widgetVar="ejemplo" width="40%">
-            <h:form id="listado">
-                <p:outputLabel value="Agregar nuevo usuario" />
+        <ui:include src="barraInferior.xhtml"/>
+        <p:dialog widgetVar="ejemplo" width="40%" header="Agregar nuevo usuario" modal="true">
+            <h:form id="nuevoCliente">
+
+                <div class="form-group">
+                    <p:outputLabel value="Nombre o raz&oacute;n social: " />
+                    <p:inputText id="nombre" type="text" class="form-control input-sm"
+                                 required="true" requiredMessage="Ingrese un nombre"/>
+                </div><!-- /form-group -->
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <p:outputLabel value="RFC:" />
+                            <p:inputText class="form-control input-sm" />
+                        </div>
+                    </div><!-- /.col -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <p:outputLabel value="CURP:" />
+                            <p:inputText class="form-control input-sm"/>
+                        </div>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <p:outputLabel value="N&uacute;mero de Seguro Social:" />
+                            <p:inputText class="form-control input-sm" />
+                        </div>
+                    </div><!-- /.col -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <p:outputLabel value="N&uacute;mero de cliente:" />
+                            <p:inputText class="form-control input-sm"/>
+                        </div>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+
+                <div class="modal-footer">
+                    <p:commandButton styleClass="btn btn-danger tooltip-test" value="Aceptar"/>
+                    <p:commandButton styleClass="btn btn-success btn-sm tooltip-test" type="reset" value="Agregar Otro" />
+                </div>
+
             </h:form>
         </p:dialog>
     </h:body>
