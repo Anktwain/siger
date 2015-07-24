@@ -44,9 +44,7 @@
 
             <div id="opciones">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Usuarios
-                    </div>
+                    <div class="panel-heading"> Usuarios </div>
                     <div class="panel-tab clearfix">
                         <ul class="tab-bar">
                             <li class="active"><a href="#tabConfirmar" data-toggle="tab"><i class="fa fa-check-circle-o"></i> Confirmar gestores</a></li>
@@ -57,71 +55,61 @@
                     <div class="panel-body">
                         <div class="tab-content">
                             <div class="tab-pane fade in active" id="tabConfirmar">
-
                                 <h:form>
                                     <div id="confirmagestores" class="panel bg-danger">
                                         <div class="panel-body">
                                             <h4>Confirme o elimine a los usuarios en espera de ingresar al sistema.</h4>
-                                            <!--<div id="botonazo">
-                                                                                            <a href="#formModalConfirmaGestores" role="button" data-toggle="modal" class="btn btn-default btn-sm">Confirmar</a>
-                                                                                        </div>-->
+                                            <!--<div id="botonazo"> <a href="#formModalConfirmaGestores" role="button" data-toggle="modal" class="btn btn-default btn-sm">Confirmar</a> </div>-->
                                             <!-- AQUI VA EL PINCHE VALOR DEL BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->                            
                                             <!--<strong class="pull-left m-top-xs">Confirme o elimine a los usuarios en espera de ingresar al sistema.</strong>-->
                                             <!-- ESTE ES EL DIALOGO QUE SE ABRE CUANDO PRESIONAMOS EL BOTON DE CONFIRMAR GESTORES -->
                                             <!-- CISNE SOURCECODE -->
-                                            <!--<div class="modal fade" id="formModalConfirmaGestores">--><div class="" id="formModalConfirmaGestores">
-                                                <!--<div class="modal-dialog">--><div class="">
-                                                    <h:form id="formConfirmarGestores">
-                                                        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-                                                        <!--<div class="modal-content">--><div class="">
-                                                            <!--<div class="modal-header">
-                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                                <h4>Confirmar gestores</h4>
-                                                            </div>-->
-                                                            <!--<div class="modal-body">--><div class="">
-                                                                <h:form id="tabla">
-                                                                    <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}" paginator="true" rows="10">
-                                                                        <!--<p:ajax event="" />-->
-                                                                        <f:facet name="header">
-                                                                            Usuarios no confirmados
-                                                                        </f:facet>
-                                                                        <p:column selectionMode="multiple" style="width:30px;text-align:right" />
-                                                                        <p:column headerText="Nombre del usuario" style="width:110px;">
-                                                                            <h:outputText value="#{usuarios.nombre}" />
-                                                                        </p:column>
-                                                                        <p:column headerText="Apellido Paterno" style="width:100px;">
-                                                                            <h:outputText value="#{usuarios.paterno}" />
-                                                                        </p:column>
-                                                                        <p:column headerText="Apellido Materno" style="width:100px;">
-                                                                            <h:outputText value="#{usuarios.materno}" />
-                                                                        </p:column>
-                                                                        <p:column headerText="Correo" style="width:200px;">
-                                                                            <h:outputText value="#{usuarios.correo}" />
-                                                                        </p:column>
-                                                                        <f:facet name="footer">
-                                                                            <p:commandButton process="noConfirmados" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosBean.usuariosSeleccionados)}" />
-                                                                            <p:commandButton process="noConfirmados" icon="ui-icon-trash" value="Eliminar" actionListener="#{usuariosBean.eliminarGestores(usuariosBean.usuariosSeleccionados)}" />
-                                                                        </f:facet>
-                                                                    </p:dataTable>
-                                                                </h:form>
-                                                            </div>
-                                                        </div><!-- /.modal-content -->
-                                                    </h:form>
-                                                </div><!-- /.modal-dialog -->
-                                            </div><!-- /.modal -->
-                                        </div>
-                                    </div>
+                                            <!--<div class="modal fade" id="formModalConfirmaGestores">-->
+                                            <!--<div class="modal-dialog">-->
+                                            <h:form id="formConfirmarGestores">
+                                                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                                                <!--<div class="modal-content">-->
+                                                <!--<div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> <h4>Confirmar gestores</h4> </div>-->
+                                                <!--<div class="modal-body">-->
+                                                <h:form id="tabla">
+                                                    <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}" paginator="true" rows="10">
+                                                        <!--<p:ajax event="" />-->
+                                                        <f:facet name="header"> Usuarios no confirmados </f:facet>
+                                                        <p:column selectionMode="multiple" style="width:30px;text-align:right" />
+                                                        <p:column headerText="Nombre del usuario" style="width:110px;">
+                                                            <h:outputText value="#{usuarios.nombre}" />
+                                                        </p:column>
+                                                        <p:column headerText="Apellido Paterno" style="width:100px;">
+                                                            <h:outputText value="#{usuarios.paterno}" />
+                                                        </p:column>
+                                                        <p:column headerText="Apellido Materno" style="width:100px;">
+                                                            <h:outputText value="#{usuarios.materno}" />
+                                                        </p:column>
+                                                        <p:column headerText="Correo" style="width:200px;">
+                                                            <h:outputText value="#{usuarios.correo}" />
+                                                        </p:column>
+                                                        <f:facet name="footer">
+                                                            <p:commandButton process="noConfirmados" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosBean.usuariosSeleccionados)}" />
+                                                            <p:commandButton process="noConfirmados" icon="ui-icon-trash" value="Eliminar" actionListener="#{usuariosBean.eliminarGestores(usuariosBean.usuariosSeleccionados)}" />
+                                                        </f:facet>
+                                                    </p:dataTable>
+                                                </h:form>
+                                                <!-- </div> --> <!-- /.modal-body -->
+                                                <!-- </div> --><!-- /.modal-content -->
+                                            </h:form>
+                                            <!--</div>--> <!-- /.modal-dialog -->
+                                            <!-- </div> --> <!-- /.modal -->
+                                        </div> <!-- /.panel-body -->
+                                    </div> <!-- /#confirmagestores -->
                                 </h:form>                            
-
                             </div>
+
                             <div class="tab-pane fade" id="tabRegistrar">
                                 <h:form>
                                     <div id="nuevousuario" class="panel bg-info">
                                         <div class="panel-body">
                                             <h4>Agregue un gestor o administrativo al sistema.</h4>
-                                            <!--<div id="botonazo">
-                                                                                            <a href="#formModalNuevoUsuario" role="button" data-toggle="modal" class="btn btn-default btn-sm">Nuevo usuario</a>
-                                                                                        </div>-->
+                                            <!--<div id="botonazo"> <a href="#formModalNuevoUsuario" role="button" data-toggle="modal" class="btn btn-default btn-sm">Nuevo usuario</a> </div>-->
                                             <!--<strong class="pull-left m-top-xs">Agregue un gestor o administrativo al sistema.</strong>-->
                                             <!-- DAR DE ALTA UN NUEVO USUARIO -->
                                             <!--<div class="modal fade" id="formModalNuevoUsuario">--><div class="" id="formModalNuevoUsuario">
@@ -129,10 +117,7 @@
                                                     <h:form id="formNuevoUsuario">
                                                         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
                                                         <!--<div class="modal-content">--><div class="">
-                                                            <!--<div class="modal-header">
-                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                                <h4>Nuevo Usuario</h4>
-                                                            </div>-->
+                                                            <!--<div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> <h4>Nuevo Usuario</h4> </div>-->
                                                             <!--<div class="modal-body">--><div class="">
                                                                 <div class="form-group">
                                                                     <p:outputLabel value="Nombre(s): " />
@@ -191,34 +176,29 @@
                                                             <!--<div class="modal-footer">--><div class="">
                                                                 <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{usuariosBean.insertar}" value="Aceptar"/>
                                                                 <p:commandButton styleClass="btn btn-success btn-sm tooltip-test" type="reset" value="Agregar Otro" />
-                                                            </div>
-                                                        </div><!-- /.modal-content -->
-                                                    </h:form>
-                                                </div><!-- /.modal-dialog -->
-                                            </div><!-- /.modal -->
-                                        </div>
-                                    </div>
+                                                            </div> <!-- .modal-footer -->
+                                                        </div> <!-- /.modal-content -->
+                                                    </h:form> <!-- #formNuevoUsuario  -->
+                                                </div> <!-- /.modal-dialog -->
+                                            </div> <!-- /.modal -->
+                                        </div> <!-- .panel-body  -->
+                                    </div> <!-- #nuevousuario  -->
                                 </h:form>
-
-                            </div>
+                            </div> <!-- #tabRegistrar -->
+                            
                             <div class="tab-pane fade" id="tabBuscar">
                                 <h:form>
                                     <div id="buscausuarios" class="panel bg-primary">
                                         <div class="panel-body">
                                             <h4>Consulte y modifique a los usuarios del sistema.</h4>
-                                            <!--<div id="botonazo">
-                                            <a href="#formModalBuscarUsuarios" role="button" data-toggle="modal" class="btn btn-default btn-sm">Buscar</a>
-                                            </div>-->
+                                            <!--<div id="botonazo"> <a href="#formModalBuscarUsuarios" role="button" data-toggle="modal" class="btn btn-default btn-sm">Buscar</a> </div>-->
                                             <!--<strong class="pull-left m-top-xs">Consulte y modificar a los usuarios del sistema.</strong>-->
                                             <!--<div class="modal fade" id="formModalBuscarUsuarios">-->
                                             <!--<div class="modal-dialog" id="dialogoBuscarUsuarios">-->
-                                            <!--                                            <h:form>-->
+                                            <!--<h:form>-->
                                             <!--<div class="modal-content">-->
-                                            <!--<div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                                <h4>Buscar usuarios</h4>
-                                            </div>-->
-                                            <!--    <div class="modal-body">-->
+                                            <!--<div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> <h4>Buscar usuarios</h4> </div>-->
+                                            <!--<div class="modal-body">-->
                                             <div class="form-group">
                                                 <h:form id="form">
                                                     <p:contextMenu for="usuarios">
@@ -289,28 +269,24 @@
                                                     </p:dialog>
 
                                                 </h:form>
-                                            </div><!-- /form-group -->
+                                            </div> <!-- /form-group -->
                                             <!--</div> -->  <!-- .modal-body -->
-                                            <!--<div class="modal-footer">
-                                                 <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{pruebaBean.mostrar()}" value="Aceptar" />
-                                             </div>-->
-                                            <!-- </div> --> <!-- /.modal-content -->
+                                            <!--<div class="modal-footer"> <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{pruebaBean.mostrar()}" value="Aceptar" /> </div>-->
+                                            <!-- </div> --> <!-- .modal-content -->
                                             <!--</h:form>-->
-                                            <!--</div>--> <!-- /.modal-dialog -->
-                                            <!--</div>--> <!-- /.modal -->
+                                            <!--</div>--> <!-- .modal-dialog -->
+                                            <!--</div>--> <!-- .modal -->
                                         </div>
                                     </div>
                                 </h:form>                    
-
-                            </div>
-                        </div>
-                    </div>
+                            </div> <!-- #tabBuscar -->
+                        </div> <!-- .tabContent -->
+                    </div> <!-- .panelbody -->
                 </div><!-- /panel -->
-            </div>
+            </div> <!-- #opciones -->
         </div><!-- /main-container -->
 
         <!-- Footer ================================================== -->
         <ui:include src="barraInferior.xhtml" />
-        <!-- /wrapper -->        
     </h:body>
 </html>
