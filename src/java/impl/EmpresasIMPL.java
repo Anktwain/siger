@@ -99,7 +99,7 @@ public class EmpresasIMPL implements EmpresasDAO {
         List<Empresas> listaEmpresas;
         
         try { // Buscamos todas las empresas.
-            listaEmpresas = sesion.createQuery("from Empresas").list();
+            listaEmpresas = sesion.createSQLQuery("from Empresas").list();
         } catch(HibernateException he) {
             listaEmpresas = null;
             he.printStackTrace();

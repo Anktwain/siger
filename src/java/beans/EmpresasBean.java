@@ -1,13 +1,12 @@
 package beans;
 
-import dao.EmpresasDAO;
-import dto.Empresas;
-import impl.EmpresasIMPL;
+import dao.SujetosDAO;
+import dto.Sujetos;
+import impl.SujetosIMPL;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,25 +17,49 @@ import java.util.List;
 @ViewScoped
 public class EmpresasBean implements Serializable{
 
-    private Empresas empresa;
-    private EmpresasDAO empresaDao;
-    private String nombreCorto;
+    private Sujetos sujeto;
+    private SujetosDAO sujetoDao;
+    private String nombreRazonSocial;
     private String rfc;
-    private List<Empresas> listaEmpresas;
+    private List<Sujetos> listaEmpresas;
 
     public EmpresasBean() {
-        empresaDao = new EmpresasIMPL();
-        empresa = new Empresas();
-        listaEmpresas = empresaDao.buscarTodo();
+        sujetoDao = new SujetosIMPL();
+        sujeto = new Sujetos();
+        listaEmpresas = sujetoDao.buscarEmpresas();
+        /*
         int i;
         System.out.println("************ CONSOLA SIGERWEB ****************");
         System.out.println("Empresas registradas en el sistema:");
         for(i=0; i<(listaEmpresas.size()); i++)
         {
-            System.out.println(listaEmpresas.get(i).getNombreCorto());
+            System.out.println(listaEmpresas.get(i).getNombreRazonSocial());
         }
+        */
     }
-    
+    public Sujetos getSujeto() {
+        return sujeto;
+    }
+
+    public void setSujeto(Sujetos sujeto) {
+        this.sujeto = sujeto;
+    }
+
+    public SujetosDAO getSujetoDao() {
+        return sujetoDao;
+    }
+
+    public void setSujetoDao(SujetosDAO sujetoDao) {
+        this.sujetoDao = sujetoDao;
+    }
+
+    public String getNombreRazonSocial() {
+        return nombreRazonSocial;
+    }
+
+    public void setNombreRazonSocial(String nombreRazonSocial) {
+        this.nombreRazonSocial = nombreRazonSocial;
+    }
     public String getRfc() {
         return rfc;
     }
@@ -44,37 +67,12 @@ public class EmpresasBean implements Serializable{
     public void setRfc(String rfc) {
         this.rfc = rfc;
     }
-
-    public Empresas getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresas empresa) {
-        this.empresa = empresa;
-    }
-
-    public EmpresasDAO getEmpresaDao() {
-        return empresaDao;
-    }
-
-    public void setEmpresaDao(EmpresasDAO empresaDao) {
-        this.empresaDao = empresaDao;
-    }
-
-    public String getNombreCorto() {
-        return nombreCorto;
-    }
-
-    public void setNombreCorto(String nombreCorto) {
-        this.nombreCorto = nombreCorto;
-    }
-
-    public List<Empresas> getListaEmpresas() {
+    
+    public List<Sujetos> getListaEmpresas() {
         return listaEmpresas;
     }
 
-    public void setListaEmpresas(List<Empresas> listaEmpresas) {
+    public void setListaEmpresas(List<Sujetos> listaEmpresas) {
         this.listaEmpresas = listaEmpresas;
     }
-
 }

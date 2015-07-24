@@ -18,4 +18,5 @@ public interface SujetosDAO {
     public boolean eliminar(Sujetos sujeto);
     public Sujetos buscar(int idSujeto);
     public List<Sujetos> buscarTodo();
+    public List<Sujetos> buscarEmpresas();
 }
