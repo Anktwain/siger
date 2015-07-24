@@ -7,6 +7,8 @@ package impl;
 
 import dao.SujetosDAO;
 import dto.Sujetos;
+import dao.EmpresasDAO;
+import dto.Empresas;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -115,8 +117,29 @@ public class SujetosIMPL implements SujetosDAO {
         Transaction tx = sesion.beginTransaction();
         List<Sujetos> listaSujetos;
         
-        try { // Buscamos todas las empresas.
+        try { 
             listaSujetos = sesion.createQuery("from Sujetos").list();
+        } catch(HibernateException he) {
+            listaSujetos = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return listaSujetos;
+        /*
+        return null;
+        */
+    }
+    
+    @Override
+    public List<Sujetos> buscarEmpresas() {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        List<Sujetos> listaSujetos;
+        
+        try { // Buscamos todas las empresas.
+            //"select e.name, a.city from Employee e INNER JOIN e.address a"
+            listaSujetos = sesion.createQuery("select s.nombreRazonSocial, s.rfc from Sujetos s, Empresas e where s.idSujeto = e.sujetos").list();
         } catch(HibernateException he) {
             listaSujetos = null;
             he.printStackTrace();
