@@ -50,7 +50,7 @@
                                 <a href="#formModalConfirmaGestores" role="button" data-toggle="modal" class="btn btn-default btn-sm">Confirmar</a>
                             </div>
                             <!-- AQUI VA EL PINCHE VALOR DEL BEAN PARA VER CUANTOS USUARIOS TIENEN ESTATUS -2 -->                            
-                            <strong class="pull-left m-top-xs">Confirme o elimine a los usuarios en espera de ingresar al sistema.</strong>
+                            <strong class="pull-left m-top-xs"><p:outputLabel value="#{barraAdministrativoBean.contar()}" /> gestores por confirmar.</strong>
                         </div>
                     </div>
                 </h:form>
@@ -203,77 +203,35 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <h:form id="form">
-                                    <p:contextMenu for="usuarios">
-                                        <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()" />
-                                    </p:contextMenu>
-
-                                    <p:dataTable id="usuarios" var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usuarioDataTable" paginator="true" rows="10"
-                                                 emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda." filteredValue="#{usuariosBean.usuariosEncontrados}"
-                                                 rowKey="#{usuario.nombreLogin}" selection="#{usuariosBean.usuarioSeleccionado}" selectionMode="single">
+                                <!--<h:form>-->
+                                    <p:dataTable var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usersTable"
+                                                 emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda" filteredValue="#{usuariosBean.usuariosEncontrados}">
 
                                         <f:facet name="header">
                                             <p:outputPanel>
-                                                <h:outputText value="Buscar en todos los usuarios:  " />
-                                                <p:inputText id="globalFilter" onkeyup="PF('usuarioDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>
+                                                <h:outputText value="Buscar en todos los usuarios:" />
+                                                <p:inputText id="globalFilter" onkeyup="PF('usersTable').filter()" style="width:150px" placeholder="Palabra clave"/>
                                             </p:outputPanel>
                                         </f:facet>
 
-                                        <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
-                                            <h:outputText value="#{usuario.nombre}"/>
+                                        <p:column headerText="Nombre" filterMatchMode="contains">
+                                            <h:outputText value="#{usuario.nombre}" />
                                         </p:column>
 
-                                        <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
-                                            <h:outputLink value="" >
-                                                #{usuario.paterno}
-                                            </h:outputLink>
+                                        <p:column headerText="Apellido paterno">
+                                            <h:outputText value="#{usuario.paterno}" />
                                         </p:column>
 
-                                        <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
-                                            <h:outputLink value="" >
-                                                #{usuario.materno}
-                                            </h:outputLink>
+                                        <p:column headerText="Apellido materno">
+                                            <h:outputText value="#{usuario.materno}" />
                                         </p:column>
 
-                                        <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
-                                            <h:outputLink value="" >
-                                                #{usuario.nombreLogin}
-                                            </h:outputLink>
+                                        <p:column headerText="Nombre login">
+                                            <h:outputText value="#{usuario.nombreLogin}" />
                                         </p:column>
                                     </p:dataTable>
-
-
-                                    <p:dialog header="Informaci&oacute; detallada del usuario" widgetVar="usuarioDialog" modal="false" showEffect="fade" hideEffect="fade" resizable="false">
-                                        <p:outputPanel id="usuarioDetail" style="text-align:center;">
-                                            <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuario}" columnClasses="label,value">
-                                                <f:facet name="header">
-                                                    <p:graphicImage name="demo/images/car/#{usuariosBean.usuarioSeleccionado.imagenPerfil}-big.gif"/> 
-                                                </f:facet>
-
-                                                <h:outputText value="Nombre: " />
-                                                <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombre}" />
-
-                                                <h:outputText value="Apellido paterno: " />
-                                                <h:outputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
-
-                                                <h:outputText value="Apellido materno: " />
-                                                <h:outputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
-
-                                                <h:outputText value="Nombre login: " />
-                                                <h:outputText value="$#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
-
-                                                <h:outputText value="Perfil: " />
-                                                <h:outputText value="$#{usuariosBean.usuarioSeleccionado.perfil}" style="color:red"/>
-
-                                                <h:outputText value="Correo: " />
-                                                <h:outputText value="$#{usuariosBean.usuarioSeleccionado.correo}" />
-
-                                            </p:panelGrid>
-                                        </p:outputPanel>
-                                    </p:dialog>
-
-
-                                </h:form>
+                                    
+                                <!--</h:form>-->
                             </div><!-- /form-group -->
                         </div>
                         <div class="modal-footer">
@@ -287,4 +245,5 @@
         <ui:include src="barraInferior.xhtml" />
         <!-- /wrapper -->        
     </h:body>
+
 </html>

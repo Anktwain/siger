@@ -22,18 +22,18 @@ import util.HibernateUtil;
 public class SujetosIMPL implements SujetosDAO {
 
     @Override
-    public boolean insertar(Sujetos sujeto) {
+    public int insertar(Sujetos sujeto) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-        boolean ok;
+        int id;
                 
         try {
             sesion.save(sujeto);
             tx.commit();
-            ok = true;
+            id = sujeto.getIdSujeto();
             //log.info("Se insertó un nuevo usuaario");
         } catch(HibernateException he){
-            ok = false;
+            id = 0;
             if(tx != null)
                 tx.rollback();
             he.printStackTrace();
@@ -41,7 +41,7 @@ public class SujetosIMPL implements SujetosDAO {
         } finally {
             cerrar(sesion);
         }
-        return ok;
+        return id;
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.List;
  * @author brionvega
  */
 public interface SujetosDAO {
-    public boolean insertar(Sujetos sujeto);
+    public int insertar(Sujetos sujeto);
     public boolean editar(Sujetos sujeto);
     public boolean eliminar(Sujetos sujeto);
     public Sujetos buscar(int idSujeto);

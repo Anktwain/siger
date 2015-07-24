@@ -13,7 +13,7 @@ import java.util.List;
  * @author brionvega
  */
 public interface UsuariosDAO {
-    public boolean insertar(Usuarios usuario);
+    public int insertar(Usuarios usuario);
     public boolean editar(Usuarios usuario);
     public boolean eliminar(Usuarios usuario);
     public Usuarios buscar(int idUsuario);
