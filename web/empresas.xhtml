@@ -15,7 +15,6 @@
         <h:outputStylesheet library="css" name="morris.css" />
         <h:outputStylesheet library="css" name="endless.min.css" />
         <h:outputStylesheet library="css" name="endless-skin.css" />
-        <h:outputStylesheet library="css" name="usuarios.css" />
         <h:outputScript library="js" name="jquery-1.10.2.min.js" />
         <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
         <h:outputScript library="js" name="jquery.flot.min.js" />
@@ -57,21 +56,7 @@
                                         <h4>Nueva empresa</h4>
                                     </div>
                                     <div class="modal-body">
-                                        
-                                        <h:form>
-                                            <p:dataTable var="sujetos" value="#{empresasBean.listaEmpresas}" paginator="true" rows="10">
-                                                <f:facet name="header">
-                                                    Empresas registradas en el sistema
-                                                </f:facet>
-                                                <p:column headerText="Nombre de la empresa">
-                                                    <p:outputLabel value="#{sujetos.nombreRazonSocial}"/>
-                                                </p:column>
-                                                <p:column headerText="RFC"> 
-                                                    <h:outputText value="#{sujetos.rfc}" />
-                                                </p:column>
-                                            </p:dataTable>
-                                        </h:form>
-                                        
+
                                     </div>
                                     <div class="modal-footer">
                                     </div>
@@ -86,6 +71,23 @@
                                         <h4>Editar empresa</h4>
                                     </div>
                                     <div class="modal-body">
+                                        <h:form>
+                                            <p:dataTable id="editarEmpresa" var="sujetos" value="#{empresasBean.listaEmpresas}" selection="#{empresasBean.empresa}" rowKey="#{empresasBean.nombreRazonSocial}" paginator="true" rows="10">
+                                                <f:facet name="header">
+                                                    Empresas registradas en el sistema
+                                                </f:facet>
+                                                <p:column selectionMode="single" style="width:30px;text-align:right" />
+                                                <p:column headerText="Nombre de la empresa">
+                                                    <p:outputLabel value="#{sujetos.nombreRazonSocial}"/>
+                                                </p:column>
+                                                <p:column headerText="RFC"> 
+                                                    <h:outputText value="#{sujetos.rfc}" />
+                                                </p:column>
+                                                <p:column> 
+                                                    <p:commandButton process="editarEmpresa" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.editarEmpresa}" />
+                                                </p:column>
+                                            </p:dataTable>
+                                        </h:form>
                                     </div>
                                     <div class="modal-footer">
                                     </div>
