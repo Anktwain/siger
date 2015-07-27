@@ -8,6 +8,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.List;
+import org.primefaces.model.SelectableDataModel;
 
 /**
  *

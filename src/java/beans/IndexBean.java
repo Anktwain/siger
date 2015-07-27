@@ -116,10 +116,7 @@ public class IndexBean implements Serializable {
                     beanDeSesion.setHoraInicio(cal.getTime());
                     beanDeSesion.setHoraFin(cal.getTime());
                     beanDeSesion.setSesionActiva(true);
-                    beanDeSesion.setUsuarioActivo(new Usuario(
-                            usuario.getIdUsuario(), usuario.getNombre(), usuario.getPaterno(),
-                            usuario.getMaterno(), usuario.getNombreLogin(), usuario.getPerfil(),
-                            usuario.getCorreo(), usuario.getImagenPerfil()));
+
                     break;
                 case 2:
                     FacesContext.getCurrentInstance().addMessage("",
@@ -130,10 +127,7 @@ public class IndexBean implements Serializable {
                     beanDeSesion.setHoraInicio(cal.getTime());
                     beanDeSesion.setHoraFin(cal.getTime());
                     beanDeSesion.setSesionActiva(true);
-                    beanDeSesion.setUsuarioActivo(new Usuario(
-                            usuario.getIdUsuario(), usuario.getNombre(), usuario.getPaterno(),
-                            usuario.getMaterno(), usuario.getNombreLogin(), usuario.getPerfil(),
-                            usuario.getCorreo(), usuario.getImagenPerfil()));
+
                     break;
                 default:
                     FacesContext.getCurrentInstance().addMessage("",
