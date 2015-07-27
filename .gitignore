@@ -16,6 +16,4 @@ hibernate.cfg.xml
 hibernate.reveng.xml
 
 *~
-/nbproject/private/
-/build/
 /dist/

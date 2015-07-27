@@ -7,6 +7,8 @@ package impl;
 
 import dao.SujetosDAO;
 import dto.Sujetos;
+import dao.EmpresasDAO;
+import dto.Empresas;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -20,18 +22,18 @@ import util.HibernateUtil;
 public class SujetosIMPL implements SujetosDAO {
 
     @Override
-    public boolean insertar(Sujetos sujeto) {
+    public int insertar(Sujetos sujeto) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-        boolean ok;
+        int id;
                 
         try {
             sesion.save(sujeto);
             tx.commit();
-            ok = true;
+            id = sujeto.getIdSujeto();
             //log.info("Se insertó un nuevo usuaario");
         } catch(HibernateException he){
-            ok = false;
+            id = 0;
             if(tx != null)
                 tx.rollback();
             he.printStackTrace();
@@ -39,7 +41,7 @@ public class SujetosIMPL implements SujetosDAO {
         } finally {
             cerrar(sesion);
         }
-        return ok;
+        return id;
     }
 
     @Override
@@ -115,8 +117,29 @@ public class SujetosIMPL implements SujetosDAO {
         Transaction tx = sesion.beginTransaction();
         List<Sujetos> listaSujetos;
         
-        try { // Buscamos todas las empresas.
+        try { 
             listaSujetos = sesion.createQuery("from Sujetos").list();
+        } catch(HibernateException he) {
+            listaSujetos = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return listaSujetos;
+        /*
+        return null;
+        */
+    }
+    
+    @Override
+    public List<Sujetos> buscarEmpresas() {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        List<Sujetos> listaSujetos;
+        
+        try { // Buscamos todas las empresas.
+            //"select e.name, a.city from Employee e INNER JOIN e.address a"
+            listaSujetos = sesion.createSQLQuery("select s.* from sujetos s join empresas e on e.sujetos_id_sujeto=s.id_sujeto;").addEntity(Sujetos.class).list();
         } catch(HibernateException he) {
             listaSujetos = null;
             he.printStackTrace();

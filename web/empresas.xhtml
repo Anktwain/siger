@@ -39,163 +39,63 @@
         <ui:include src="barraSuperior.xhtml" />
         <ui:include src="barraLateral.xhtml" />
         <div id="main-container">
-            <div id="opciones">
-                <h:form>
-                    <div id="confirmagestores" class="panel bg-danger">
-                        <div class="panel-body">
-                            <h4>Nueva empresa</h4>
-                            <div id="botonazo">
-                                <a href="#formModalNuevaEmpresa" role="button" data-toggle="modal" class="btn btn-default btn-sm">Nueva empresa</a>
-                            </div>
-                            <strong class="pull-left m-top-xs">Agregue una empresa al catalogo del sistema.</strong>
-                        </div>
-                    </div>
-                </h:form>
-                <h:form>
-                    <div id="nuevousuario" class="panel bg-info">
-                        <div class="panel-body">
-                            <h4>Editar empresas</h4>
-                            <div id="botonazo">
-                                <a href="#formModalEditarEmpresa" role="button" data-toggle="modal" class="btn btn-default btn-sm">Editar empresas</a>
-                            </div>
-                            <strong class="pull-left m-top-xs">Modifique los datos de una empresa o eliminela.</strong>
-                        </div>
-                    </div>
-                </h:form>
-            </div>
-        </div><!-- /main-container -->
-        <!-- DIALOGOS MODALES-->
-        <!-- NUEVA EMPRESA -->
-        <div class="modal fade" id="formModalNuevaEmpresa">
-            <div class="modal-dialog">
-                <h:form id="formConfirmarGestores">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4>Nueva empresa</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <p:outputLabel value="Nombre(s): " />
-                                <p:inputText id="nombre" type="text" class="form-control input-sm" value="#{usuariosBean.nombre}"
-                                             required="true" requiredMessage="Ingrese un nombre" />
-                            </div><!-- /form-group -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p:outputLabel value="Apellido Paterno:" />
-                                        <p:inputText id="paterno" type="text" class="form-control input-sm" value="#{usuariosBean.paterno}" />
+            <div class="panel panel-default">
+                <div class="panel-tab clearfix">
+                    <ul class="tab-bar">
+                        <li><a href="#nueva" data-toggle="tab"><i class="fa fa-plus"></i> Nueva empresa</a></li>
+                        <li><a href="#editar" data-toggle="tab"><i class="fa fa-pencil"></i> Editar empresa</a></li>
+                    </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="nueva">
+                            <h:form id="formNuevaEmpresa">
+                                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4>Nueva empresa</h4>
                                     </div>
-                                </div><!-- /.col -->
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p:outputLabel id="materno" value="Apellido Materno:" />
-                                        <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.materno}" />
+                                    <div class="modal-body">
+                                        
+                                        <h:form>
+                                            <p:dataTable var="sujetos" value="#{empresasBean.listaEmpresas}" paginator="true" rows="10">
+                                                <f:facet name="header">
+                                                    Empresas registradas en el sistema
+                                                </f:facet>
+                                                <p:column headerText="Nombre de la empresa">
+                                                    <p:outputLabel value="#{sujetos.nombreRazonSocial}"/>
+                                                </p:column>
+                                                <p:column headerText="RFC"> 
+                                                    <h:outputText value="#{sujetos.rfc}" />
+                                                </p:column>
+                                            </p:dataTable>
+                                        </h:form>
+                                        
                                     </div>
-                                </div><!-- /.col -->
-                            </div><!-- /.row -->
-                            <div class="form-group">
-                                <p:outputLabel id="nombreUsuario" value="Nombre de Usuario: " />
-                                <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.nombreLogin}"
-                                             required="true" requiredMessage="Ingrese un nombre de usuario" />
-                            </div><!-- /form-group -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p:outputLabel value="Contraseña:" />
-                                        <p:password id="password" class="form-control input-sm" value="#{usuariosBean.password}"
-                                                    required="true" requiredMessage="Ingrese una contraseña"/>
+                                    <div class="modal-footer">
                                     </div>
-                                </div><!-- /.col -->
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <p:outputLabel id="confirmePassword" value="Confirme su Contraseña:" />
-                                        <p:password class="form-control input-sm" value="#{usuariosBean.confirmePassword}" />
-                                    </div>
-                                </div><!-- /.col -->
-                            </div><!-- /.row -->
-                            <div class="form-group">
-                                <p:outputLabel value="E-mail: " />
-                                <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.correo}"
-                                             required="true" requiredMessage="Ingrese una dirección de correo electrónico"/>
-                            </div><!-- /form-group -->
-                            <div class="form-group">
-                                <p:outputLabel value="Perfil: " />
-                                <h:selectOneMenu id="perfil" value="#{usuariosBean.perfil}" class="form-control chzn-select"
-                                                 required="true" requiredMessage="Especifique perfil">
-                                    <f:selectItem itemLabel="Seleccione perfil"/>
-                                    <f:selectItem itemLabel="Administrador" itemValue="1" />
-                                    <f:selectItem itemLabel="Gestor" itemValue="2" />
-                                </h:selectOneMenu>
-                            </div><!-- /form-group -->
-                        </div>
-                        <div class="modal-footer">
-                        </div>
-                    </div><!-- /.modal-content -->
-                </h:form>
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-        <!-- EDITAR EMPRESAS -->
-        <div class="modal fade" id="formModalEditarEmpresa">
-            <div class="modal-dialog">
-                <h:form id="formNuevoUsuario">
-                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4>Editar empresas</h4>
-                        </div>
-                        <div class="modal-body">
-                            <h:form>
-                                <p:dataTable var="empresas" value="#{empresasBean.listaEmpresas}" widgetVar="empresasTable" paginator="true" rows="10"
-                                             emptyMessage="No existen registros" filteredValue="#{empresasBean.listaEmpresas}">
-                                    <f:facet name="header">
-                                        Empresas registradas en el sistema
-                                        <p:outputPanel>
-                                            <p:inputText id="globalFilter" onkeyup="PF('empresasTable').filter()" style="width:250px" />
-                                        </p:outputPanel>
-                                    </f:facet>
-                                    <p:column headerText="Nombre de la empresa" filterBy="#{empresas.nombreCorto}" filterMatchMode="contains"> 
-                                        <h:outputText value="#{empresas.nombreCorto}" />
-                                    </p:column>
-                                    <!--
-                                    <p:column headerText="Nombre de la empresa" filterBy="#{empresas.nombreRazonSocial}" filterMatchMode="contains"> 
-                                        <h:outputText value="#{empresas.nombreRazonSocial}" />
-                                    </p:column>
-                                    -->
-                                    <p:column headerText="RFC" filterBy="#{empresas.nombreCorto}" filterMatchMode="contains" style="width:120px;"> 
-                                        <h:outputText value="RPU010101123" />
-                                    </p:column>
-                                    <!--
-                                    <p:column headerText="RFC" filterBy="#{empresas.rfc}" filterMatchMode="contains" style="width:120px;"> 
-                                        <h:outputText value="#{empresas.rfc}" />
-                                    </p:column>
-                                    -->
-                                    <p:column style="width:100px;text-align:right">
-                                        <p:commandButton type="button" value="Editar" icon="ui-icon-pencil" onclick="PF('dlgEditar').show();" process="@this" update="@none" />
-                                    </p:column>
-                                    <p:column style="width:120px;text-align:right"> 
-                                        <p:commandButton type="button" value="Eliminar" icon="ui-icon-minus" onclick="PF('dlgEliminar').show();" process="@this" update="@none" />
-                                    </p:column>
-                                </p:dataTable>
-                                <!-- DIALOGOS DE PRIMEFACES -->
-                                <!-- DIALOGO DE EDITAR USUARIO -->
-                                <p:dialog header="Editar usuario" widgetVar="dlgEditar" modal="true" height="100" appendToBody="false">
-                                    <h:outputText value="Aqui se editaran los putos usuarios de mierda" />
-                                </p:dialog>
-                                <!-- DIALOGO DE EDITAR USUARIO -->
-                                <p:dialog header="Eliminar usuario" widgetVar="dlgEliminar" modal="true" height="100" appendToBody="false">
-                                    <h:outputText value="Aqui se eliminaran a tomar por culo los usuarios de mierda" />
-                                </p:dialog>
+                                </div><!-- /.modal-content -->
                             </h:form>
                         </div>
-                        <div class="modal-footer">
+                        <div class="tab-pane fade" id="editar">
+                            <h:form id="formEditarEmpresa">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4>Editar empresa</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                    </div>
+                                    <div class="modal-footer">
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </h:form>
                         </div>
-                    </div><!-- /.modal-content -->
-                </h:form>
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+                    </div>
+                </div>
+            </div>
+        </div><!-- /main-container -->
         <!-- Footer ================================================== -->
         <ui:include src="barraInferior.xhtml" />
     </body>
