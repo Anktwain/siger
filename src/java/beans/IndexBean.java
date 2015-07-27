@@ -77,7 +77,7 @@ public class IndexBean implements Serializable {
 //    }
     /**
      * Solicita una búsqueda con las cadenas de nombre de usuario y de password
-     * y devuelve el objeto usuario al que correspondan, en su caso, o
+     * y devuelve el objeto usuario al que correspondan en su caso, o
      * {@code null} en otro caso.
      *
      * @throws java.io.IOException
@@ -117,9 +117,8 @@ public class IndexBean implements Serializable {
                     beanDeSesion.setHoraFin(cal.getTime());
                     beanDeSesion.setSesionActiva(true);
                     beanDeSesion.setUsuarioActivo(new Usuario(
-                            usuario.getIdUsuario(), usuario.getNombre(), usuario.getPaterno(),
-                            usuario.getMaterno(), usuario.getNombreLogin(), usuario.getPerfil(),
-                            usuario.getCorreo(), usuario.getImagenPerfil()));
+                            usuario.getNombre(), usuario.getPaterno(), usuario.getNombreLogin(), 
+                            usuario.getPassword(), usuario.getPerfil(), usuario.getCorreo()));
                     break;
                 case 2:
                     FacesContext.getCurrentInstance().addMessage("",
@@ -131,9 +130,8 @@ public class IndexBean implements Serializable {
                     beanDeSesion.setHoraFin(cal.getTime());
                     beanDeSesion.setSesionActiva(true);
                     beanDeSesion.setUsuarioActivo(new Usuario(
-                            usuario.getIdUsuario(), usuario.getNombre(), usuario.getPaterno(),
-                            usuario.getMaterno(), usuario.getNombreLogin(), usuario.getPerfil(),
-                            usuario.getCorreo(), usuario.getImagenPerfil()));
+                            usuario.getNombre(), usuario.getPaterno(), usuario.getNombreLogin(), 
+                            usuario.getPassword(), usuario.getPerfil(), usuario.getCorreo()));
                     break;
                 default:
                     FacesContext.getCurrentInstance().addMessage("",
