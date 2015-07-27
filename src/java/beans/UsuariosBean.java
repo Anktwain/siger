@@ -1,14 +1,14 @@
 package beans;
 
-import dao.AdministradoresDAO;
-import dao.GestoresDAO;
-import dao.UsuariosDAO;
-import dto.Administrativos;
-import dto.Gestores;
-import dto.Usuarios;
-import impl.AdministradoresIMPL;
-import impl.GestoresIMPL;
-import impl.UsuariosIMPL;
+import dao.AdministradorDAO;
+import dao.GestorDAO;
+import dao.UsuarioDAO;
+import dto.Administrativo;
+import dto.Gestor;
+import dto.Usuario;
+import impl.AdministradorIMPL;
+import impl.GestorIMPL;
+import impl.UsuarioIMPL;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -38,9 +38,9 @@ import util.log.Logs;
 @ViewScoped
 public class UsuariosBean implements Serializable {
 
-    private Usuarios usuario;
-    private Usuarios usuarioSeleccionado;
-    private UsuariosDAO usuarioDao;
+    private Usuario usuario;
+    private Usuario usuarioSeleccionado;
+    private UsuarioDAO usuarioDao;
     private int perfil;
     private String nombre;
     private String paterno;
@@ -52,37 +52,37 @@ public class UsuariosBean implements Serializable {
     private String imagenPerfil;
     private String extension;
     private SesionBean sesion;
-    private List<Usuarios> gestoresNoConfirmados;
-    private List<Usuarios> usuariosEncontrados;
-    private List<Usuarios> usuariosSeleccionados;
-    private List<Usuarios> todosUsuarios;
+    private List<Usuario> gestoresNoConfirmados;
+    private List<Usuario> usuariosEncontrados;
+    private List<Usuario> usuariosSeleccionados;
+    private List<Usuario> todosUsuario;
 
-    public List<Usuarios> getTodosUsuarios() {
-        return todosUsuarios;
+    public List<Usuario> getTodosUsuario() {
+        return todosUsuario;
     }
 
-    public Usuarios getUsuarioSeleccionado() {
+    public Usuario getUsuarioSeleccionado() {
         return usuarioSeleccionado;
     }
 
-    public void setUsuarioSeleccionado(Usuarios usuarioSeleccionado) {
+    public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
         this.usuarioSeleccionado = usuarioSeleccionado;
     }
     
-    public void setTodosUsuarios(List<Usuarios> todosUsuarios) {
-        this.todosUsuarios = todosUsuarios;
+    public void setTodosUsuario(List<Usuario> todosUsuario) {
+        this.todosUsuario = todosUsuario;
     }
 
     public UsuariosBean() {
-        usuarioDao = new UsuariosIMPL();
-        usuario = new Usuarios();
+        usuarioDao = new UsuarioIMPL();
+        usuario = new Usuario();
         perfil = Perfiles.GESTOR_NO_CONFIRMADO;
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
         gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
-        todosUsuarios = usuarioDao.buscarTodo();
-        System.out.println("\n*************************** todosUsuarios:");
+        todosUsuario = usuarioDao.buscarTodo();
+        System.out.println("\n*************************** todosUsuario:");
         int i = 0;
-        for (Usuarios usuarioActual : todosUsuarios) {
+        for (Usuario usuarioActual : todosUsuario) {
             System.out.println("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
         }
     }
@@ -150,14 +150,14 @@ public class UsuariosBean implements Serializable {
     }
 
     private void insertarUsuarioPorPerfil() {
-        Gestores gestor = new Gestores();
-        Administrativos administrador = new Administrativos();
-        GestoresDAO gestorDao = new GestoresIMPL();
-        AdministradoresDAO administradorDao = new AdministradoresIMPL();
+        Gestor gestor = new Gestor();
+        Administrativo administrador = new Administrativo();
+        GestorDAO gestorDao = new GestorIMPL();
+        AdministradorDAO administradorDao = new AdministradorIMPL();
         // Busca al usuario recién ingresado y guarda un objeto de tipo Gestor o Administrador, según corresponda
         usuario = usuarioDao.buscarPorCorreo(usuario.getNombreLogin(), usuario.getCorreo());
         if (usuario.getPerfil() == Perfiles.ADMINISTRADOR) {
-            administrador.setUsuarios(usuario);
+            administrador.setUsuario(usuario);
             administradorDao.insertar(administrador);
             Logs.log.info("Administrador ha agregado al administrador: " + usuario.getIdUsuario());
             FacesContext.getCurrentInstance().addMessage(null,
@@ -166,7 +166,7 @@ public class UsuariosBean implements Serializable {
                             + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
         }
         if (usuario.getPerfil() == Perfiles.GESTOR) {
-            gestor.setUsuarios(usuario);
+            gestor.setUsuario(usuario);
             gestor.setExtension(extension);
             gestorDao.insertar(gestor);
             Logs.log.info("Administrador ha agregado al gestor: " + usuario.getIdUsuario());
@@ -189,7 +189,7 @@ public class UsuariosBean implements Serializable {
         return password.equals(confirmePassword);
     }
 
-    public void confirmarGestores(List<Usuarios> usuariosSeleccionados) {
+    public void confirmarGestor(List<Usuario> usuariosSeleccionados) {
         for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
             // CAMBIAR SU PERFIL EN LA BASE DE DATOS. DE -2 A 2            
             usuario = usuariosSeleccionados.get(i);
@@ -222,7 +222,7 @@ public class UsuariosBean implements Serializable {
         }
     }
 
-    public void eliminarGestores(List<Usuarios> usuariosSeleccionados) {
+    public void eliminarGestor(List<Usuario> usuariosSeleccionados) {
         for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
             usuario = usuariosSeleccionados.get(i);
             usuarioDao.eliminar(usuario);
@@ -249,10 +249,10 @@ public class UsuariosBean implements Serializable {
         }
     }
 
-    private void insertarGestor(Usuarios usuario) {
-        Gestores gestor = new Gestores();
-        GestoresDAO gestorDao = new GestoresIMPL();
-        gestor.setUsuarios(usuario);
+    private void insertarGestor(Usuario usuario) {
+        Gestor gestor = new Gestor();
+        GestorDAO gestorDao = new GestorIMPL();
+        gestor.setUsuario(usuario);
         gestor.setExtension(extension);
         gestorDao.insertar(gestor);
         Logs.log.info("Administrador ha agregado al gestor: " + usuario.getIdUsuario());
@@ -265,31 +265,31 @@ public class UsuariosBean implements Serializable {
         this.sesion = sesion;
     }
 
-    public List<Usuarios> getGestoresNoConfirmados() {
+    public List<Usuario> getGestorNoConfirmados() {
         return gestoresNoConfirmados;
     }
 
-    public void setGestoresNoConfirmados(List<Usuarios> gestoresNoConfirmados) {
+    public void setGestorNoConfirmados(List<Usuario> gestoresNoConfirmados) {
         this.gestoresNoConfirmados = gestoresNoConfirmados;
     }
 
-    public List<Usuarios> getUsuariosEncontrados() {
+    public List<Usuario> getUsuarioEncontrados() {
         return usuariosEncontrados;
     }
 
-    public void setUsuariosEncontrados(List<Usuarios> usuariosEncontrados) {
+    public void setUsuarioEncontrados(List<Usuario> usuariosEncontrados) {
         this.usuariosEncontrados = usuariosEncontrados;
     }
 
-    public Usuarios getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public List<Usuarios> getUsuariosSeleccionados() {
+    public List<Usuario> getUsuarioSeleccionados() {
         return usuariosSeleccionados;
     }
 
-    public void setUsuariosSeleccionados(List<Usuarios> usuariosSeleccionados) {
+    public void setUsuarioSeleccionados(List<Usuario> usuariosSeleccionados) {
         this.usuariosSeleccionados = usuariosSeleccionados;
     }
 
@@ -301,7 +301,7 @@ public class UsuariosBean implements Serializable {
         System.out.println("Se deselecciono un registro");
     }
 
-    public void setUsuario(Usuarios usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 

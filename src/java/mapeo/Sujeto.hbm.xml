@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27/07/2015 11:04:15 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Sujeto" optimistic-lock="version" table="sujeto">
+    <id name="idSujeto" type="java.lang.Integer">
+      <column name="id_sujeto"/>
+      <generator class="identity"/>
+    </id>
+    <property name="nombreRazonSocial" type="string">
+      <column length="100" name="nombre_razon_social" not-null="true"/>
+    </property>
+    <property name="rfc" type="string">
+      <column length="15" name="rfc"/>
+    </property>
+    <property name="eliminado" type="int">
+      <column name="eliminado" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="direccions" table="direccion">
+      <key>
+        <column name="sujetos_id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Direccion"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="emails" table="email">
+      <key>
+        <column name="sujetos_id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Email"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="empresas" table="empresa">
+      <key>
+        <column name="sujetos_id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Empresa"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="clientes" table="cliente">
+      <key>
+        <column name="sujetos_id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Cliente"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="telefonos" table="telefono">
+      <key>
+        <column name="sujetos_id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Telefono"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="contactos" table="contacto">
+      <key>
+        <column name="sujetos_id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Contacto"/>
+    </set>
+  </class>
+</hibernate-mapping>

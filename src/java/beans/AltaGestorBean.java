@@ -5,9 +5,9 @@
  */
 package beans;
 
-import dao.UsuariosDAO;
-import dto.Usuarios;
-import impl.UsuariosIMPL;
+import dao.UsuarioDAO;
+import dto.Usuario;
+import impl.UsuarioIMPL;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,14 +41,14 @@ public class AltaGestorBean {
     private String correo;
     private String imagenPerfil;
     
-    private Usuarios usuario;
+    private Usuario usuario;
     
-    private UsuariosDAO usuarioDao;
+    private UsuarioDAO usuarioDao;
 
 
     public AltaGestorBean() {
-        usuarioDao = new UsuariosIMPL();
-        usuario = new Usuarios();
+        usuarioDao = new UsuarioIMPL();
+        usuario = new Usuario();
         perfil = Perfiles.GESTOR_NO_CONFIRMADO;
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
     }

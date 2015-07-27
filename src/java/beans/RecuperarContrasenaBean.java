@@ -5,9 +5,9 @@
  */
 package beans;
 
-import dao.UsuariosDAO;
-import dto.Usuarios;
-import impl.UsuariosIMPL;
+import dao.UsuarioDAO;
+import dto.Usuario;
+import impl.UsuarioIMPL;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Properties;
@@ -33,12 +33,12 @@ public class RecuperarContrasenaBean implements Serializable{
 
     private String usuarioLogin;
     private String correo;
-    Usuarios usuario;
-    UsuariosDAO usuarioDao;
+    Usuario usuario;
+    UsuarioDAO usuarioDao;
 
     public RecuperarContrasenaBean() {
-        usuario = new Usuarios();
-        usuarioDao = new UsuariosIMPL();
+        usuario = new Usuario();
+        usuarioDao = new UsuarioIMPL();
     }
 
     public void recuperar() throws IOException {

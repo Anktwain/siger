@@ -1,8 +1,8 @@
 package beans;
 
-import dao.SujetosDAO;
-import dto.Sujetos;
-import impl.SujetosIMPL;
+import dao.SujetoDAO;
+import dto.Sujeto;
+import impl.SujetoIMPL;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
@@ -17,39 +17,37 @@ import java.util.List;
 @ViewScoped
 public class EmpresasBean implements Serializable{
 
-    private Sujetos sujeto;
-    private SujetosDAO sujetoDao;
+    private Sujeto sujeto;
+    private SujetoDAO sujetoDao;
     private String nombreRazonSocial;
     private String rfc;
-    private List<Sujetos> listaEmpresas;
+    private List<Sujeto> listaEmpresas;
+    private Sujeto empresa;
 
     public EmpresasBean() {
-        sujetoDao = new SujetosIMPL();
-        sujeto = new Sujetos();
+        sujetoDao = new SujetoIMPL();
+        sujeto = new Sujeto();
         listaEmpresas = sujetoDao.buscarEmpresas();
-        /*
-        int i;
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Empresas registradas en el sistema:");
-        for(i=0; i<(listaEmpresas.size()); i++)
-        {
-            System.out.println(listaEmpresas.get(i).getNombreRazonSocial());
-        }
-        */
     }
-    public Sujetos getSujeto() {
+    
+    public void editarEmpresa(Sujeto empresa){
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println("Se quiere editar la empresa " + empresa.getNombreRazonSocial());
+    }
+    
+    public Sujeto getSujeto() {
         return sujeto;
     }
 
-    public void setSujeto(Sujetos sujeto) {
+    public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
 
-    public SujetosDAO getSujetoDao() {
+    public SujetoDAO getSujetoDao() {
         return sujetoDao;
     }
 
-    public void setSujetoDao(SujetosDAO sujetoDao) {
+    public void setSujetoDao(SujetoDAO sujetoDao) {
         this.sujetoDao = sujetoDao;
     }
 
@@ -68,11 +66,19 @@ public class EmpresasBean implements Serializable{
         this.rfc = rfc;
     }
     
-    public List<Sujetos> getListaEmpresas() {
+    public List<Sujeto> getListaEmpresas() {
         return listaEmpresas;
     }
 
-    public void setListaEmpresas(List<Sujetos> listaEmpresas) {
+    public void setListaEmpresas(List<Sujeto> listaEmpresas) {
         this.listaEmpresas = listaEmpresas;
+    }
+    
+    public Sujeto getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Sujeto empresa) {
+        this.empresa = empresa;
     }
 }
