@@ -22,21 +22,19 @@ public class EmpresasBean implements Serializable{
     private String nombreRazonSocial;
     private String rfc;
     private List<Sujetos> listaEmpresas;
+    private Sujetos empresa;
 
     public EmpresasBean() {
         sujetoDao = new SujetosIMPL();
         sujeto = new Sujetos();
         listaEmpresas = sujetoDao.buscarEmpresas();
-        /*
-        int i;
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Empresas registradas en el sistema:");
-        for(i=0; i<(listaEmpresas.size()); i++)
-        {
-            System.out.println(listaEmpresas.get(i).getNombreRazonSocial());
-        }
-        */
     }
+    
+    public void editarEmpresa(Sujetos empresa){
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println("Se quiere editar la empresa " + empresa.getNombreRazonSocial());
+    }
+    
     public Sujetos getSujeto() {
         return sujeto;
     }
@@ -74,5 +72,13 @@ public class EmpresasBean implements Serializable{
 
     public void setListaEmpresas(List<Sujetos> listaEmpresas) {
         this.listaEmpresas = listaEmpresas;
+    }
+    
+    public Sujetos getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Sujetos empresa) {
+        this.empresa = empresa;
     }
 }

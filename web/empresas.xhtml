@@ -9,15 +9,12 @@
         <meta charset="utf-8"></meta>
         <title>SigerWeb - Empresas</title>
         <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
-        <!--
         <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
         <h:outputStylesheet library="css" name="pace.css" />
         <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
         <h:outputStylesheet library="css" name="morris.css" />
-        -->
         <h:outputStylesheet library="css" name="endless.min.css" />
         <h:outputStylesheet library="css" name="endless-skin.css" />
-        <!--
         <h:outputScript library="js" name="jquery-1.10.2.min.js" />
         <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
         <h:outputScript library="js" name="jquery.flot.min.js" />
@@ -29,13 +26,10 @@
         <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
         <h:outputScript library="js" name="jquery.slimscroll.min.js" />
         <h:outputScript library="js" name="modernizr.min.js" />
-        <h:outputScript library="js" name="jquery.cookie.min.js" 
-        -->
+        <h:outputScript library="js" name="jquery.cookie.min.js" />
         <h:outputScript library="js" name="/endless/endless_dashboard.js" />
-        <!--
         <h:outputScript library="js" name="/endless/endless.js" />
-        <h:outputScript library="primefaces" name="jquery.js" 
-        -->
+        <h:outputScript library="primefaces" name="jquery.js" />
         <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
     </h:head> 
     <body class="overflow-hidden">
@@ -62,21 +56,7 @@
                                         <h4>Nueva empresa</h4>
                                     </div>
                                     <div class="modal-body">
-                                        
-                                        <h:form>
-                                            <p:dataTable var="sujetos" value="#{empresasBean.listaEmpresas}" paginator="true" rows="10">
-                                                <f:facet name="header">
-                                                    Empresas registradas en el sistema
-                                                </f:facet>
-                                                <p:column headerText="Nombre de la empresa">
-                                                    <p:outputLabel value="#{sujetos.nombreRazonSocial}"/>
-                                                </p:column>
-                                                <p:column headerText="RFC"> 
-                                                    <h:outputText value="#{sujetos.rfc}" />
-                                                </p:column>
-                                            </p:dataTable>
-                                        </h:form>
-                                        
+
                                     </div>
                                     <div class="modal-footer">
                                     </div>
@@ -91,6 +71,23 @@
                                         <h4>Editar empresa</h4>
                                     </div>
                                     <div class="modal-body">
+                                        <h:form>
+                                            <p:dataTable id="editarEmpresa" var="sujetos" value="#{empresasBean.listaEmpresas}" selection="#{empresasBean.empresa}" rowKey="#{empresasBean.nombreRazonSocial}" paginator="true" rows="10">
+                                                <f:facet name="header">
+                                                    Empresas registradas en el sistema
+                                                </f:facet>
+                                                <p:column selectionMode="single" style="width:30px;text-align:right" />
+                                                <p:column headerText="Nombre de la empresa">
+                                                    <p:outputLabel value="#{sujetos.nombreRazonSocial}"/>
+                                                </p:column>
+                                                <p:column headerText="RFC"> 
+                                                    <h:outputText value="#{sujetos.rfc}" />
+                                                </p:column>
+                                                <p:column> 
+                                                    <p:commandButton process="editarEmpresa" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.editarEmpresa}" />
+                                                </p:column>
+                                            </p:dataTable>
+                                        </h:form>
                                     </div>
                                     <div class="modal-footer">
                                     </div>
