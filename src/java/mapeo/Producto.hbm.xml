@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27/07/2015 11:04:15 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Producto" optimistic-lock="version" table="producto">
+    <id name="idProducto" type="java.lang.Integer">
+      <column name="id_producto"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Empresa" fetch="select" name="empresa">
+      <column name="empresas_id_empresa" not-null="true"/>
+    </many-to-one>
+    <property name="nombre" type="string">
+      <column length="45" name="nombre" not-null="true"/>
+    </property>
+    <property name="descripcion" type="string">
+      <column length="200" name="descripcion"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="creditos" table="credito">
+      <key>
+        <column name="productos_id_producto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Credito"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="subproductos" table="subproducto">
+      <key>
+        <column name="productos_id_producto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Subproducto"/>
+    </set>
+  </class>
+</hibernate-mapping>

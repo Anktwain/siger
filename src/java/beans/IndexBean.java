@@ -1,9 +1,9 @@
 package beans;
 
 import java.io.Serializable;
-import dto.Usuarios;
-import impl.UsuariosIMPL;
-import dao.UsuariosDAO;
+import dto.Usuario;
+import impl.UsuarioIMPL;
+import dao.UsuarioDAO;
 import java.io.IOException;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -11,7 +11,6 @@ import javax.faces.bean.SessionScoped;
 import util.constantes.Constantes;
 import javax.faces.context.FacesContext;
 import util.MD5;
-import util.Usuario;
 import java.util.Calendar;
 
 @ManagedBean(name = "indexBean")
@@ -21,13 +20,13 @@ public class IndexBean implements Serializable {
 
     private String nombreUsuario; // viene de la vista
     private String password; // viene de la vista
-    private Usuarios usuario;
-    private UsuariosDAO usuarioDao;
+    private Usuario usuario;
+    private UsuarioDAO usuarioDao;
     private SesionBean beanDeSesion;
 
     public IndexBean() {
-        usuario = new Usuarios();
-        usuarioDao = new UsuariosIMPL();
+        usuario = new Usuario();
+        usuarioDao = new UsuarioIMPL();
         beanDeSesion = new SesionBean();
     }
 
@@ -68,10 +67,10 @@ public class IndexBean implements Serializable {
     }
 
 //    public static void main(String args[]) {
-//        UsuariosDAO usuariosDAO = new UsuariosIMPL();
-//        List<Usuarios> listaUsuarios = usuariosDAO.buscarTodo();
+//        UsuarioDAO usuariosDAO = new UsuarioIMPL();
+//        List<Usuario> listaUsuario = usuariosDAO.buscarTodo();
 //        System.out.println("Desplegando lista de usuarios traidos de la base de datos:");
-//        for (Usuarios usr : listaUsuarios) {
+//        for (Usuario usr : listaUsuario) {
 //            System.out.println(usr.toString());
 //        }
 //        System.out.println("Despliegue terminado.");
@@ -170,11 +169,11 @@ public class IndexBean implements Serializable {
         this.password = password;
     }
 
-    public Usuarios getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
     
-    public void setUsuario(Usuarios usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 }

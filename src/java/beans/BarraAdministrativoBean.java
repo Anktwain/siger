@@ -1,9 +1,9 @@
 package beans;
 
 import java.io.Serializable;
-import dto.Usuarios;
-import impl.UsuariosIMPL;
-import dao.UsuariosDAO;
+import dto.Usuario;
+import impl.UsuarioIMPL;
+import dao.UsuarioDAO;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -17,10 +17,10 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 
 public class BarraAdministrativoBean implements Serializable{
-    private UsuariosDAO usuarioDao;
-    private List<Usuarios> sinConfirmar;
+    private UsuarioDAO usuarioDao;
+    private List<Usuario> sinConfirmar;
     public BarraAdministrativoBean() {
-        usuarioDao = new UsuariosIMPL();
+        usuarioDao = new UsuarioIMPL();
     }
     // CREO QUE ESTOY LISTO PARA CERTIFICARME COMO ARQUITECTO JAVA
     public String contar()

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 27/07/2015 11:04:15 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Empresa" optimistic-lock="version" table="empresa">
+    <id name="idEmpresa" type="java.lang.Integer">
+      <column name="id_empresa"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Sujeto" fetch="select" name="sujeto">
+      <column name="sujetos_id_sujeto" not-null="true"/>
+    </many-to-one>
+    <property name="nombreCorto" type="string">
+      <column length="30" name="nombre_corto" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="productos" table="producto">
+      <key>
+        <column name="empresas_id_empresa" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Producto"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="creditos" table="credito">
+      <key>
+        <column name="empresas_id_empresa" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Credito"/>
+    </set>
+  </class>
+</hibernate-mapping>

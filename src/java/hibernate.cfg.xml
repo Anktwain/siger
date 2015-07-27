@@ -7,24 +7,24 @@
     <property name="hibernate.connection.url">jdbc:mysql://10.0.0.26:3306/sigerbd?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">cofradia</property>
     <property name="hibernate.connection.password">cofradiaDB</property>
-    <mapping resource="mapeo/Gestiones.hbm.xml"/>
-    <mapping resource="mapeo/Creditos.hbm.xml"/>
-    <mapping resource="mapeo/CreditosRemesas.hbm.xml"/>
-    <mapping resource="mapeo/Remesas.hbm.xml"/>
-    <mapping resource="mapeo/Lineas.hbm.xml"/>
-    <mapping resource="mapeo/Direcciones.hbm.xml"/>
-    <mapping resource="mapeo/Autos.hbm.xml"/>
-    <mapping resource="mapeo/Sujetos.hbm.xml"/>
-    <mapping resource="mapeo/Contactos.hbm.xml"/>
-    <mapping resource="mapeo/Usuarios.hbm.xml"/>
-    <mapping resource="mapeo/Empresas.hbm.xml"/>
-    <mapping resource="mapeo/Subproductos.hbm.xml"/>
-    <mapping resource="mapeo/Clientes.hbm.xml"/>
-    <mapping resource="mapeo/Telefonos.hbm.xml"/>
-    <mapping resource="mapeo/Gestores.hbm.xml"/>
-    <mapping resource="mapeo/Administrativos.hbm.xml"/>
-    <mapping resource="mapeo/Productos.hbm.xml"/>
-    <mapping resource="mapeo/Facs.hbm.xml"/>
-    <mapping resource="mapeo/Emails.hbm.xml"/>
+    <mapping resource="mapeo/CreditoRemesa.hbm.xml"/>
+    <mapping resource="mapeo/Empresa.hbm.xml"/>
+    <mapping resource="mapeo/Cliente.hbm.xml"/>
+    <mapping resource="mapeo/Fac.hbm.xml"/>
+    <mapping resource="mapeo/Administrativo.hbm.xml"/>
+    <mapping resource="mapeo/Contacto.hbm.xml"/>
+    <mapping resource="mapeo/Telefono.hbm.xml"/>
+    <mapping resource="mapeo/Gestor.hbm.xml"/>
+    <mapping resource="mapeo/Remesa.hbm.xml"/>
+    <mapping resource="mapeo/Subproducto.hbm.xml"/>
+    <mapping resource="mapeo/Credito.hbm.xml"/>
+    <mapping resource="mapeo/Usuario.hbm.xml"/>
+    <mapping resource="mapeo/Auto.hbm.xml"/>
+    <mapping resource="mapeo/Linea.hbm.xml"/>
+    <mapping resource="mapeo/Producto.hbm.xml"/>
+    <mapping resource="mapeo/Sujeto.hbm.xml"/>
+    <mapping resource="mapeo/Direccion.hbm.xml"/>
+    <mapping resource="mapeo/Gestion.hbm.xml"/>
+    <mapping resource="mapeo/Email.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
