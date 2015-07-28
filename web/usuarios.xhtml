@@ -44,7 +44,7 @@
 
             <div id="opciones">
                 <div class="panel panel-default">
-                    <div class="panel-heading"> Usuarios </div>
+                    <div class="panel-heading"> <h1>Usuarios</h1> </div>
                     <div class="panel-tab clearfix">
                         <ul class="tab-bar">
                             <li class="active"><a href="#tabConfirmar" data-toggle="tab"><i class="fa fa-check-circle-o"></i> Confirmar gestores</a></li>
@@ -67,7 +67,7 @@
                                             <!--<div class="modal fade" id="formModalConfirmaGestores">-->
                                             <!--<div class="modal-dialog">-->
                                             <h:form id="formConfirmarGestores">
-                                                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                                                <!--<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />-->
                                                 <!--<div class="modal-content">-->
                                                 <!--<div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> <h4>Confirmar gestores</h4> </div>-->
                                                 <!--<div class="modal-body">-->
@@ -114,78 +114,78 @@
                                             <!-- DAR DE ALTA UN NUEVO USUARIO -->
                                             <!--<div class="modal fade" id="formModalNuevoUsuario">--><div class="" id="formModalNuevoUsuario">
                                                 <!--<div class="modal-dialog">-->
-                                                    <h:form id="formNuevoUsuario">
-                                                        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-                                                        <!--<div class="modal-content">--><div class="">
-                                                            <!--<div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> <h4>Nuevo Usuario</h4> </div>-->
-                                                            <!--<div class="modal-body">--><div class="">
-                                                                <div class="form-group">
-                                                                    <p:outputLabel value="Nombre(s): " />
-                                                                    <p:inputText id="nombre" type="text" class="form-control input-sm" value="#{usuariosBean.nombre}"
-                                                                                 required="true" requiredMessage="Ingrese un nombre"/>
-                                                                </div><!-- /form-group -->
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <p:outputLabel value="Apellido Paterno:" />
-                                                                            <p:inputText id="paterno" type="text" class="form-control input-sm" value="#{usuariosBean.paterno}" />
-                                                                        </div>
-                                                                    </div><!-- /.col -->
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <p:outputLabel id="materno" value="Apellido Materno:" />
-                                                                            <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.materno}" />
-                                                                        </div>
-                                                                    </div><!-- /.col -->
-                                                                </div><!-- /.row -->
-                                                                <div class="form-group">
-                                                                    <p:outputLabel id="nombreUsuario" value="Nombre de Usuario: " />
-                                                                    <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.nombreLogin}"
-                                                                                 required="true" requiredMessage="Ingrese un nombre de usuario" />
-                                                                </div><!-- /form-group -->
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <p:outputLabel value="Contraseña:" />
-                                                                            <p:password id="password" class="form-control input-sm" value="#{usuariosBean.password}"
-                                                                                        required="true" requiredMessage="Ingrese una contraseña"/>
-                                                                        </div>
-                                                                    </div><!-- /.col -->
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <p:outputLabel id="confirmePassword" value="Confirme su Contraseña:" />
-                                                                            <p:password class="form-control input-sm" value="#{usuariosBean.confirmePassword}" />
-                                                                        </div>
-                                                                    </div><!-- /.col -->
-                                                                </div><!-- /.row -->
-                                                                <div class="form-group">
-                                                                    <p:outputLabel value="E-mail: " />
-                                                                    <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.correo}"
-                                                                                 required="true" requiredMessage="Ingrese una dirección de correo electrónico"/>
-                                                                </div><!-- /form-group -->
-                                                                <div class="form-group">
-                                                                    <p:outputLabel value="Perfil: " />
-                                                                    <h:selectOneMenu id="perfil" value="#{usuariosBean.perfil}" class="form-control chzn-select"
-                                                                                     required="true" requiredMessage="Especifique perfil">
-                                                                        <f:selectItem itemLabel="Seleccione perfil"/>
-                                                                        <f:selectItem itemLabel="Administrador" itemValue="1" />
-                                                                        <f:selectItem itemLabel="Gestor" itemValue="2" />
-                                                                    </h:selectOneMenu>
-                                                                </div><!-- /form-group -->
-                                                            </div>
-                                                            <!--<div class="modal-footer">--><div class="">
-                                                                <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{usuariosBean.insertar}" value="Aceptar"/>
-                                                                <p:commandButton styleClass="btn btn-success btn-sm tooltip-test" type="reset" value="Agregar Otro" />
-                                                            </div> <!-- .modal-footer -->
-                                                        </div> <!-- /.modal-content -->
-                                                    </h:form> <!-- #formNuevoUsuario  -->
+                                                <h:form id="formNuevoUsuario">
+                                                    <!--<p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />-->
+                                                    <!--<div class="modal-content">--><div class="">
+                                                        <!--<div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> <h4>Nuevo Usuario</h4> </div>-->
+                                                        <!--<div class="modal-body">--><div class="">
+                                                            <div class="form-group">
+                                                                <p:outputLabel value="Nombre(s): " />
+                                                                <p:inputText id="nombre" type="text" class="form-control input-sm" value="#{usuariosBean.nombre}"
+                                                                             required="true" requiredMessage="Ingrese un nombre"/>
+                                                            </div><!-- /form-group -->
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <p:outputLabel value="Apellido Paterno:" />
+                                                                        <p:inputText id="paterno" type="text" class="form-control input-sm" value="#{usuariosBean.paterno}" />
+                                                                    </div>
+                                                                </div><!-- /.col -->
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <p:outputLabel id="materno" value="Apellido Materno:" />
+                                                                        <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.materno}" />
+                                                                    </div>
+                                                                </div><!-- /.col -->
+                                                            </div><!-- /.row -->
+                                                            <div class="form-group">
+                                                                <p:outputLabel id="nombreUsuario" value="Nombre de Usuario: " />
+                                                                <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.nombreLogin}"
+                                                                             required="true" requiredMessage="Ingrese un nombre de usuario" />
+                                                            </div><!-- /form-group -->
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <p:outputLabel value="Contraseña:" />
+                                                                        <p:password id="password" class="form-control input-sm" value="#{usuariosBean.password}"
+                                                                                    required="true" requiredMessage="Ingrese una contraseña"/>
+                                                                    </div>
+                                                                </div><!-- /.col -->
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <p:outputLabel id="confirmePassword" value="Confirme su Contraseña:" />
+                                                                        <p:password class="form-control input-sm" value="#{usuariosBean.confirmePassword}" />
+                                                                    </div>
+                                                                </div><!-- /.col -->
+                                                            </div><!-- /.row -->
+                                                            <div class="form-group">
+                                                                <p:outputLabel value="E-mail: " />
+                                                                <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.correo}"
+                                                                             required="true" requiredMessage="Ingrese una dirección de correo electrónico"/>
+                                                            </div><!-- /form-group -->
+                                                            <div class="form-group">
+                                                                <p:outputLabel value="Perfil: " />
+                                                                <h:selectOneMenu id="perfil" value="#{usuariosBean.perfil}" class="form-control chzn-select"
+                                                                                 required="true" requiredMessage="Especifique perfil">
+                                                                    <f:selectItem itemLabel="Seleccione perfil"/>
+                                                                    <f:selectItem itemLabel="Administrador" itemValue="1" />
+                                                                    <f:selectItem itemLabel="Gestor" itemValue="2" />
+                                                                </h:selectOneMenu>
+                                                            </div><!-- /form-group -->
+                                                        </div>
+                                                        <!--<div class="modal-footer">--><div class="">
+                                                            <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{usuariosBean.insertar}" value="Aceptar"/>
+                                                            <p:commandButton styleClass="btn btn-success btn-sm tooltip-test" type="reset" value="Agregar Otro" />
+                                                        </div> <!-- .modal-footer -->
+                                                    </div> <!-- /.modal-content -->
+                                                </h:form> <!-- #formNuevoUsuario  -->
                                                 <!--</div>--> <!-- /.modal-dialog -->
                                             </div> <!-- /.modal -->
                                         </div> <!-- .panel-body  -->
                                     </div> <!-- #nuevousuario  -->
                                 </h:form>
                             </div> <!-- #tabRegistrar -->
-                            
+
                             <div class="tab-pane fade" id="tabBuscar">
                                 <h:form>
                                     <div id="buscausuarios" class="panel bg-primary">

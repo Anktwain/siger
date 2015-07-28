@@ -58,15 +58,15 @@ public class UsuariosBean implements Serializable {
     private List<Usuario> gestoresNoConfirmados;
     private List<Usuario> usuariosEncontrados;
     private List<Usuario> usuariosSeleccionados;
-    private List<Usuario> todosUsuario;
+    private List<Usuario> todosUsuarios;
 
     /**
      *
      *
-     * @return
+     * @return 
      */
-    public List<Usuario> getTodosUsuario() {
-        return todosUsuario;
+    public List<Usuario> getTodosUsuarios() {
+        return todosUsuarios;
     }
 
     /**
@@ -81,7 +81,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param usuarioSeleccionado
      */
     public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
         this.usuarioSeleccionado = usuarioSeleccionado;
@@ -90,10 +90,10 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param todosUsuarios
      */
-    public void setTodosUsuario(List<Usuario> todosUsuario) {
-        this.todosUsuario = todosUsuario;
+    public void setTodosUsuarios(List<Usuario> todosUsuarios) {
+        this.todosUsuarios = todosUsuarios;
     }
 
     /**
@@ -106,11 +106,11 @@ public class UsuariosBean implements Serializable {
         perfil = Perfiles.GESTOR_NO_CONFIRMADO;
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
         gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
-        todosUsuario = usuarioDao.buscarTodo();
-        System.out.println("\n*************************** todosUsuario:");
+        todosUsuarios = usuarioDao.buscarTodo();
+        Logs.log.debug("\n*************************** todosUsuario:");
         int i = 0;
-        for (Usuario usuarioActual : todosUsuario) {
-            System.out.println("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
+        for (Usuario usuarioActual : todosUsuarios) {
+            Logs.log.debug("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
         }
     }
 
@@ -125,8 +125,7 @@ public class UsuariosBean implements Serializable {
 
     /**
      *
-     *
-     * @param
+     * @throws java.io.IOException
      */
     public void insertar() throws IOException {
         // Valida correo
@@ -154,7 +153,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @return
+     * @return 
      */
     private boolean nombreLoginEsUnico() {
         if (usuarioDao.buscarNombreLogin(nombreLogin) != null) {
@@ -179,7 +178,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     *
+     * @throws IOException
      */
     private void insertarUsuario() throws IOException {
         // Crea objeto de tipo Usuario:
@@ -259,9 +258,9 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param usuariosSeleccionados
      */
-    public void confirmarGestor(List<Usuario> usuariosSeleccionados) {
+    public void confirmarGestores(List<Usuario> usuariosSeleccionados) {
         for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
             // CAMBIAR SU PERFIL EN LA BASE DE DATOS. DE -2 A 2            
             usuario = usuariosSeleccionados.get(i);
@@ -297,9 +296,9 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param usuariosSeleccionados
      */
-    public void eliminarGestor(List<Usuario> usuariosSeleccionados) {
+    public void eliminarGestores(List<Usuario> usuariosSeleccionados) {
         for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
             usuario = usuariosSeleccionados.get(i);
             usuarioDao.eliminar(usuario);
@@ -346,7 +345,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param sesion
      */
     public void setSesion(SesionBean sesion) {
         this.sesion = sesion;
@@ -357,16 +356,17 @@ public class UsuariosBean implements Serializable {
      *
      * @return
      */
-    public List<Usuario> getGestorNoConfirmados() {
+    public List<Usuario> getGestoresNoConfirmados() {
         return gestoresNoConfirmados;
     }
 
     /**
      *
      *
-     * @param
+     * @param gestoresNoConfirmados
+     *
      */
-    public void setGestorNoConfirmados(List<Usuario> gestoresNoConfirmados) {
+    public void setGestoresNoConfirmados(List<Usuario> gestoresNoConfirmados) {
         this.gestoresNoConfirmados = gestoresNoConfirmados;
     }
 
@@ -375,16 +375,16 @@ public class UsuariosBean implements Serializable {
      *
      * @return
      */
-    public List<Usuario> getUsuarioEncontrados() {
+    public List<Usuario> getUsuariosEncontrados() {
         return usuariosEncontrados;
     }
 
     /**
      *
      *
-     * @param
+     * @param usuariosEncontrados
      */
-    public void setUsuarioEncontrados(List<Usuario> usuariosEncontrados) {
+    public void setUsuariosEncontrados(List<Usuario> usuariosEncontrados) {
         this.usuariosEncontrados = usuariosEncontrados;
     }
 
@@ -402,23 +402,23 @@ public class UsuariosBean implements Serializable {
      *
      * @return
      */
-    public List<Usuario> getUsuarioSeleccionados() {
+    public List<Usuario> getUsuariosSeleccionados() {
         return usuariosSeleccionados;
     }
 
     /**
      *
      *
-     * @param
+     * @param usuariosSeleccionados
      */
-    public void setUsuarioSeleccionados(List<Usuario> usuariosSeleccionados) {
+    public void setUsuariosSeleccionados(List<Usuario> usuariosSeleccionados) {
         this.usuariosSeleccionados = usuariosSeleccionados;
     }
 
     /**
      *
      *
-     * @param
+     * @param event
      */
     public void onRowSelect(SelectEvent event) {
         System.out.println("Se selecciono un registro");
@@ -427,7 +427,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param event
      */
     public void onRowUnselect(UnselectEvent event) {
         System.out.println("Se deselecciono un registro");
@@ -436,7 +436,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param usuario
      */
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
@@ -454,7 +454,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param perfil
      */
     public void setPerfil(int perfil) {
         this.perfil = perfil;
@@ -472,7 +472,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param nombre
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -490,7 +490,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param paterno
      */
     public void setPaterno(String paterno) {
         this.paterno = paterno;
@@ -508,7 +508,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param materno
      */
     public void setMaterno(String materno) {
         this.materno = materno;
@@ -526,7 +526,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param nombreLogin
      */
     public void setNombreLogin(String nombreLogin) {
         this.nombreLogin = nombreLogin;
@@ -544,7 +544,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param password
      */
     public void setPassword(String password) {
         this.password = password;
@@ -562,7 +562,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param confirmePassword
      */
     public void setConfirmePassword(String confirmePassword) {
         this.confirmePassword = confirmePassword;
@@ -580,7 +580,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param correo
      */
     public void setCorreo(String correo) {
         this.correo = correo;
@@ -598,7 +598,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param imagenPerfil
      */
     public void setImagenPerfil(String imagenPerfil) {
         this.imagenPerfil = imagenPerfil;
@@ -616,7 +616,7 @@ public class UsuariosBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param extension
      */
     public void setExtension(String extension) {
         this.extension = extension;
