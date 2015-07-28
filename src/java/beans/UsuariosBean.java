@@ -11,13 +11,11 @@ import impl.GestorIMPL;
 import impl.UsuarioIMPL;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import org.primefaces.model.SelectableDataModel;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -98,6 +96,10 @@ public class UsuariosBean implements Serializable {
         this.todosUsuario = todosUsuario;
     }
 
+    /**
+     * Constructor por defecto. <br/>
+     * Configura ...
+     */
     public UsuariosBean() {
         usuarioDao = new UsuarioIMPL();
         usuario = new Usuario();
