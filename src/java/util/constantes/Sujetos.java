@@ -11,5 +11,7 @@ package util.constantes;
  */
 public interface Sujetos {
     public static final int ELIMINADO = 0;
-    public static final int ACTIVO = 1;    
+    public static final int ACTIVO = 1;
+    
+    public static final int LONGITUD_NOMBRE = 100;
 }

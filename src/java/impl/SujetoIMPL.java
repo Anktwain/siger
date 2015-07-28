@@ -88,6 +88,28 @@ public class SujetoIMPL implements SujetoDAO {
         
         return ok;
     }
+    
+    @Override
+    public boolean eliminarEnSerio(Sujeto sujeto) {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        boolean ok;
+        
+        try {
+            sesion.delete(sujeto);
+            tx.commit();
+            ok = true;
+        } catch(HibernateException he) {
+            ok = false;
+            if(tx != null)
+                tx.rollback();
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        
+        return ok;
+    }
 
     @Override
     public Sujeto buscar(int idSujeto) {

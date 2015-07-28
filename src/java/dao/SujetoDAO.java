@@ -16,6 +16,7 @@ public interface SujetoDAO {
     public int insertar(Sujeto sujeto);
     public boolean editar(Sujeto sujeto);
     public boolean eliminar(Sujeto sujeto);
+    public boolean eliminarEnSerio(Sujeto sujeto);
     public Sujeto buscar(int idSujeto);
     public List<Sujeto> buscarTodo();
     public List<Sujeto> buscarEmpresas();

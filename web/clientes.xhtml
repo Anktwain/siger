@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:f="http://xmlns.jcp.org/jsf/core" 
       xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
@@ -10,6 +11,7 @@
         <title>SigerWeb - Clientes</title>
     </h:head>
     <h:body>
+        <p:growl id="growl" showDetail="true" />
         <div id="overlay" class="transparent" style="display: none;"></div>
         <ui:include src="barraLateral.xhtml" />
         <ui:include src="barraSuperior.xhtml" />
@@ -31,7 +33,8 @@
             <div class="main-header clearfix">
                 <div class="page-title">
                     <h3 class="no-margin">Clientes</h3>
-                    <span>Consulte informaci&oacute;n de clientes, agregue nuevos clientes, elimine o modifique sus datos</span>
+                    <span>Consulte informaci&oacute;n de clientes, agregue nuevos clientes,
+                        elimine o modifique sus datos</span>
                 </div>
             </div>
 
@@ -39,7 +42,8 @@
                 <div class="col-sm-6 col-md-3">
                     <div class="panel-stat3 bg-danger">
                         <h3 class="m-top-none">Nuevo cliente</h3>
-                        <p:commandButton value="Agregar" class="btn btn-danger" onclick="PF('ejemplo').show();"/>
+                        <p:commandButton value="Agregar" class="btn btn-danger"
+                                         onclick="PF('dlgAgregarCliente').show();"/>
 
                         <div class="stat-icon">
                             <i class="fa fa-user-plus fa-2x" />
@@ -50,26 +54,32 @@
 
         </div>
         <ui:include src="barraInferior.xhtml"/>
-        <p:dialog widgetVar="ejemplo" width="40%" header="Agregar nuevo usuario" modal="true">
-            <h:form id="nuevoCliente">
+        <p:dialog widgetVar="dlgAgregarCliente" width="40%" header="Agregar nuevo usuario"
+                  modal="true" showEffect="size" hideEffect="size">
+            <h:form id="frmNuevoCliente">
 
                 <div class="form-group">
                     <p:outputLabel value="Nombre o raz&oacute;n social: " />
-                    <p:inputText id="nombre" type="text" class="form-control input-sm"
-                                 required="true" requiredMessage="Ingrese un nombre"/>
+                    <p:inputText id="nombre" class="form-control input-sm"
+                                 required="true" requiredMessage="Ingrese un nombre o razón social"
+                                 validator="#{clienteBean.nombreEsValido()}"
+                                 validatorMessage="El nombre o razón social no es válido"
+                                 value="#{clienteBean.nombreRazonSocial}"/>
                 </div><!-- /form-group -->
 
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <p:outputLabel value="RFC:" />
-                            <p:inputText class="form-control input-sm" />
+                            <p:inputText id="rfc" class="form-control input-sm"
+                                         value="#{clienteBean.rfc}"/>
                         </div>
                     </div><!-- /.col -->
                     <div class="col-md-6">
                         <div class="form-group">
                             <p:outputLabel value="CURP:" />
-                            <p:inputText class="form-control input-sm"/>
+                            <p:inputText id="curp" class="form-control input-sm"
+                                         value="#{clienteBean.curp}"/>
                         </div>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -78,20 +88,23 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <p:outputLabel value="N&uacute;mero de Seguro Social:" />
-                            <p:inputText class="form-control input-sm" />
+                            <p:inputText id="nss" class="form-control input-sm"
+                                         value="#{clienteBean.numeroSeguroSocial}" />
                         </div>
                     </div><!-- /.col -->
                     <div class="col-md-6">
                         <div class="form-group">
                             <p:outputLabel value="N&uacute;mero de cliente:" />
-                            <p:inputText class="form-control input-sm"/>
+                            <p:inputText id="ncte" class="form-control input-sm"
+                                         value="#{clienteBean.numeroCliente}"/>
                         </div>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
 
                 <div class="modal-footer">
-                    <p:commandButton styleClass="btn btn-danger tooltip-test" value="Aceptar"/>
-                    <p:commandButton styleClass="btn btn-success btn-sm tooltip-test" type="reset" value="Agregar Otro" />
+                    <p:commandButton id="btnAceptar" styleClass="btn btn-danger tooltip-test"
+                                     value="Aceptar" actionListener="#{clienteBean.agregar()}"
+                                     update="growl,frmNuevoCliente"/>
                 </div>
 
             </h:form>
