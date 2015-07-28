@@ -4,7 +4,7 @@ package util;
  *
  * @author Pablo
  */
-public class Usuario {
+class Usuario {
     
     public Usuario(){
     }
