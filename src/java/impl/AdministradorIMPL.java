@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package impl;
 
 import dao.AdministradorDAO;
@@ -13,36 +8,52 @@ import org.hibernate.Transaction;
 import util.HibernateUtil;
 
 /**
+ * La clase {@code AdministradorIMPL} permite ...
  *
+ * @author
+ * @author
  * @author brionvega
+ * @since SigerWeb2.0
  */
 public class AdministradorIMPL implements AdministradorDAO {
 
+    /**
+     *
+     *
+     * @return
+     */
     @Override
     public boolean insertar(Administrativo administrador) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
-                
+
         try {
             sesion.save(administrador);
             tx.commit();
             ok = true;
             //log.info("Se insertó un nuevo usuaario");
-        } catch(HibernateException he){
+        } catch (HibernateException he) {
             ok = false;
-            if(tx != null)
+            if (tx != null) {
                 tx.rollback();
+            }
             he.printStackTrace();
-   //         log.error(he.getMessage());
+            //         log.error(he.getMessage());
         } finally {
             cerrar(sesion);
         }
         return ok;
     }
-    
+
+    /**
+     *
+     *
+     * @param
+     */
     private void cerrar(Session sesion) {
-        if(sesion.isOpen())
+        if (sesion.isOpen()) {
             sesion.close();
+        }
     }
 }

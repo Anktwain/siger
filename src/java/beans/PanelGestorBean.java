@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package beans;
 
 import java.io.Serializable;
@@ -12,18 +7,23 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 /**
+ * La clase {@code PanelGestorBean} permite ... y es el bean correspondiente a
+ * la vista {@code panelGestor.xhtml}
  *
+ * @author
+ * @author
  * @author brionvega
+ * @since SigerWeb2.0
  */
 @ManagedBean
 @SessionScoped
-public class PanelGestorBean implements Serializable{
+public class PanelGestorBean implements Serializable {
 //    @ManagedProperty(value = "indexBean")
 //    private IndexBean indexBean;
-    
+
     ELContext elContext = FacesContext.getCurrentInstance().getELContext();
     IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
-    
+
     private String nombreUsuario;
     private String imagenDePerfil;
     private String nombre;
@@ -36,44 +36,94 @@ public class PanelGestorBean implements Serializable{
         correo = indexBean.getUsuario().getCorreo();
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getNombreUsuario() {
         return nombreUsuario;
     }
 
+    /**
+     *
+     *
+     * @param
+     */
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getImagenDePerfil() {
         return imagenDePerfil;
     }
 
+    /**
+     *
+     *
+     * @param
+     */
     public void setImagenDePerfil(String imagenDePerfil) {
         this.imagenDePerfil = imagenDePerfil;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     *
+     *
+     * @param
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getCorreo() {
         return correo;
     }
 
+    /**
+     *
+     *
+     * @param
+     */
     public void setCorreo(String correo) {
         this.correo = correo;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public IndexBean getIndexBean() {
         return indexBean;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public void setIndexBean(IndexBean indexBean) {
         this.indexBean = indexBean;
     }
-    
+
 }

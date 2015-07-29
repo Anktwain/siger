@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package beans;
 
 import dao.UsuarioDAO;
@@ -23,29 +18,44 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 //import util.CaptchaView;
 import util.MD5;
+
 /**
+ * La clase {@code RecuperarContrasenaBean} permite ... y es el bean
+ * correspondiente a la vista {@code recuperarContrasena.xhtml}
  *
+ * @author
+ * @author
  * @author antonio
+ * @since SigerWeb2.0
  */
 @ManagedBean
 @ViewScoped
-public class RecuperarContrasenaBean implements Serializable{
+public class RecuperarContrasenaBean implements Serializable {
 
     private String usuarioLogin;
     private String correo;
     Usuario usuario;
     UsuarioDAO usuarioDao;
 
+    /**
+     *
+     *
+     *
+     */
     public RecuperarContrasenaBean() {
         usuario = new Usuario();
         usuarioDao = new UsuarioIMPL();
     }
 
+    /**
+     *
+     *
+     * @param
+     */
     public void recuperar() throws IOException {
         // verifica que el usuario y correo existan en la BD
         usuario = usuarioDao.buscarPorCorreo(usuarioLogin, correo);
         //CaptchaView.submit();
-        
 
         if (usuario != null) {
             crearCorreo();
@@ -57,6 +67,11 @@ public class RecuperarContrasenaBean implements Serializable{
         }
     }
 
+    /**
+     *
+     *
+     *
+     */
     private void crearCorreo() {
         try {
             // Propiedades de la conexión
@@ -104,6 +119,11 @@ public class RecuperarContrasenaBean implements Serializable{
         }
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private String generarMensaje() {
         String mensaje;
         mensaje = "<font color=\"black\"><i>Usted recibe este mensaje porque ha olvidado su contraseña "
@@ -118,22 +138,47 @@ public class RecuperarContrasenaBean implements Serializable{
         return mensaje;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private String generarNuevoPassword() {
         return usuario.getPassword().substring(0, 10);
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getUsuarioLogin() {
         return usuarioLogin;
     }
 
+    /**
+     *
+     *
+     * @param
+     */
     public void setUsuarioLogin(String usuarioLogin) {
         this.usuarioLogin = usuarioLogin;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getCorreo() {
         return correo;
     }
 
+    /**
+     *
+     *
+     * @param
+     */
     public void setCorreo(String correo) {
         this.correo = correo;
     }

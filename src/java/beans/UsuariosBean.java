@@ -11,13 +11,11 @@ import impl.GestorIMPL;
 import impl.UsuarioIMPL;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import org.primefaces.model.SelectableDataModel;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -31,8 +29,13 @@ import util.constantes.Perfiles;
 import util.log.Logs;
 
 /**
+ * La clase {@code UsuariosBean} permite ... y es el bean correspondiente a la
+ * vista {@code usuarios.xhtml}
  *
+ * @author
+ * @author
  * @author Cofradia
+ * @since SigerWeb2.0
  */
 @ManagedBean(name = "usuariosBean")
 @ViewScoped
@@ -55,42 +58,75 @@ public class UsuariosBean implements Serializable {
     private List<Usuario> gestoresNoConfirmados;
     private List<Usuario> usuariosEncontrados;
     private List<Usuario> usuariosSeleccionados;
-    private List<Usuario> todosUsuario;
+    private List<Usuario> todosUsuarios;
 
-    public List<Usuario> getTodosUsuario() {
-        return todosUsuario;
+    /**
+     *
+     *
+     * @return 
+     */
+    public List<Usuario> getTodosUsuarios() {
+        return todosUsuarios;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public Usuario getUsuarioSeleccionado() {
         return usuarioSeleccionado;
     }
 
+    /**
+     *
+     *
+     * @param usuarioSeleccionado
+     */
     public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
         this.usuarioSeleccionado = usuarioSeleccionado;
     }
-    
-    public void setTodosUsuario(List<Usuario> todosUsuario) {
-        this.todosUsuario = todosUsuario;
+
+    /**
+     *
+     *
+     * @param todosUsuarios
+     */
+    public void setTodosUsuarios(List<Usuario> todosUsuarios) {
+        this.todosUsuarios = todosUsuarios;
     }
 
+    /**
+     * Constructor por defecto. <br/>
+     * Configura ...
+     */
     public UsuariosBean() {
         usuarioDao = new UsuarioIMPL();
         usuario = new Usuario();
         perfil = Perfiles.GESTOR_NO_CONFIRMADO;
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
         gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
-        todosUsuario = usuarioDao.buscarTodo();
-        System.out.println("\n*************************** todosUsuario:");
+        todosUsuarios = usuarioDao.buscarTodo();
+        Logs.log.debug("\n*************************** todosUsuario:");
         int i = 0;
-        for (Usuario usuarioActual : todosUsuario) {
-            System.out.println("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
+        for (Usuario usuarioActual : todosUsuarios) {
+            Logs.log.debug("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
         }
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public SesionBean getSesion() {
         return sesion;
     }
 
+    /**
+     *
+     * @throws java.io.IOException
+     */
     public void insertar() throws IOException {
         // Valida correo
         if (!validarCorreo()) {
@@ -114,6 +150,11 @@ public class UsuariosBean implements Serializable {
         }
     }
 
+    /**
+     *
+     *
+     * @return 
+     */
     private boolean nombreLoginEsUnico() {
         if (usuarioDao.buscarNombreLogin(nombreLogin) != null) {
             // Error: El usuario ya existe
@@ -122,6 +163,11 @@ public class UsuariosBean implements Serializable {
         return true;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private boolean correoEsUnico() {
         if (usuarioDao.buscarCorreo(correo) != null) {
             return false;
@@ -129,6 +175,11 @@ public class UsuariosBean implements Serializable {
         return true;
     }
 
+    /**
+     *
+     *
+     * @throws IOException
+     */
     private void insertarUsuario() throws IOException {
         // Crea objeto de tipo Usuario:
         usuario.setNombre(nombre);
@@ -149,6 +200,11 @@ public class UsuariosBean implements Serializable {
         }
     }
 
+    /**
+     *
+     *
+     *
+     */
     private void insertarUsuarioPorPerfil() {
         Gestor gestor = new Gestor();
         Administrativo administrador = new Administrativo();
@@ -177,6 +233,11 @@ public class UsuariosBean implements Serializable {
         }
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private boolean validarCorreo() {
         // Compila la cadena PATRON_EMAIL como un patrón
         Pattern patron = Pattern.compile(Patrones.PATRON_EMAIL);
@@ -185,11 +246,21 @@ public class UsuariosBean implements Serializable {
         return matcher.matches();
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private boolean passwordsCoinciden() {
         return password.equals(confirmePassword);
     }
 
-    public void confirmarGestor(List<Usuario> usuariosSeleccionados) {
+    /**
+     *
+     *
+     * @param usuariosSeleccionados
+     */
+    public void confirmarGestores(List<Usuario> usuariosSeleccionados) {
         for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
             // CAMBIAR SU PERFIL EN LA BASE DE DATOS. DE -2 A 2            
             usuario = usuariosSeleccionados.get(i);
@@ -222,7 +293,12 @@ public class UsuariosBean implements Serializable {
         }
     }
 
-    public void eliminarGestor(List<Usuario> usuariosSeleccionados) {
+    /**
+     *
+     *
+     * @param usuariosSeleccionados
+     */
+    public void eliminarGestores(List<Usuario> usuariosSeleccionados) {
         for (int i = 0; i < (usuariosSeleccionados.size()); i++) {
             usuario = usuariosSeleccionados.get(i);
             usuarioDao.eliminar(usuario);
@@ -249,6 +325,11 @@ public class UsuariosBean implements Serializable {
         }
     }
 
+    /**
+     *
+     *
+     * @param
+     */
     private void insertarGestor(Usuario usuario) {
         Gestor gestor = new Gestor();
         GestorDAO gestorDao = new GestorIMPL();
@@ -261,126 +342,282 @@ public class UsuariosBean implements Serializable {
                         "Se ha agregado correctamente."));
     }
 
+    /**
+     *
+     *
+     * @param sesion
+     */
     public void setSesion(SesionBean sesion) {
         this.sesion = sesion;
     }
 
-    public List<Usuario> getGestorNoConfirmados() {
+    /**
+     *
+     *
+     * @return
+     */
+    public List<Usuario> getGestoresNoConfirmados() {
         return gestoresNoConfirmados;
     }
 
-    public void setGestorNoConfirmados(List<Usuario> gestoresNoConfirmados) {
+    /**
+     *
+     *
+     * @param gestoresNoConfirmados
+     *
+     */
+    public void setGestoresNoConfirmados(List<Usuario> gestoresNoConfirmados) {
         this.gestoresNoConfirmados = gestoresNoConfirmados;
     }
 
-    public List<Usuario> getUsuarioEncontrados() {
+    /**
+     *
+     *
+     * @return
+     */
+    public List<Usuario> getUsuariosEncontrados() {
         return usuariosEncontrados;
     }
 
-    public void setUsuarioEncontrados(List<Usuario> usuariosEncontrados) {
+    /**
+     *
+     *
+     * @param usuariosEncontrados
+     */
+    public void setUsuariosEncontrados(List<Usuario> usuariosEncontrados) {
         this.usuariosEncontrados = usuariosEncontrados;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public Usuario getUsuario() {
         return usuario;
     }
 
-    public List<Usuario> getUsuarioSeleccionados() {
+    /**
+     *
+     *
+     * @return
+     */
+    public List<Usuario> getUsuariosSeleccionados() {
         return usuariosSeleccionados;
     }
 
-    public void setUsuarioSeleccionados(List<Usuario> usuariosSeleccionados) {
+    /**
+     *
+     *
+     * @param usuariosSeleccionados
+     */
+    public void setUsuariosSeleccionados(List<Usuario> usuariosSeleccionados) {
         this.usuariosSeleccionados = usuariosSeleccionados;
     }
 
+    /**
+     *
+     *
+     * @param event
+     */
     public void onRowSelect(SelectEvent event) {
         System.out.println("Se selecciono un registro");
     }
 
+    /**
+     *
+     *
+     * @param event
+     */
     public void onRowUnselect(UnselectEvent event) {
         System.out.println("Se deselecciono un registro");
     }
 
+    /**
+     *
+     *
+     * @param usuario
+     */
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public int getPerfil() {
         return perfil;
     }
 
+    /**
+     *
+     *
+     * @param perfil
+     */
     public void setPerfil(int perfil) {
         this.perfil = perfil;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     *
+     *
+     * @param nombre
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getPaterno() {
         return paterno;
     }
 
+    /**
+     *
+     *
+     * @param paterno
+     */
     public void setPaterno(String paterno) {
         this.paterno = paterno;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getMaterno() {
         return materno;
     }
 
+    /**
+     *
+     *
+     * @param materno
+     */
     public void setMaterno(String materno) {
         this.materno = materno;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getNombreLogin() {
         return nombreLogin;
     }
 
+    /**
+     *
+     *
+     * @param nombreLogin
+     */
     public void setNombreLogin(String nombreLogin) {
         this.nombreLogin = nombreLogin;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     *
+     *
+     * @param password
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getConfirmePassword() {
         return confirmePassword;
     }
 
+    /**
+     *
+     *
+     * @param confirmePassword
+     */
     public void setConfirmePassword(String confirmePassword) {
         this.confirmePassword = confirmePassword;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getCorreo() {
         return correo;
     }
 
+    /**
+     *
+     *
+     * @param correo
+     */
     public void setCorreo(String correo) {
         this.correo = correo;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getImagenPerfil() {
         return imagenPerfil;
     }
 
+    /**
+     *
+     *
+     * @param imagenPerfil
+     */
     public void setImagenPerfil(String imagenPerfil) {
         this.imagenPerfil = imagenPerfil;
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     public String getExtension() {
         return extension;
     }
 
+    /**
+     *
+     *
+     * @param extension
+     */
     public void setExtension(String extension) {
         this.extension = extension;
     }
