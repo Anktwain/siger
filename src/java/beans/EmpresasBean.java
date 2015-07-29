@@ -1,14 +1,17 @@
 package beans;
 
+import dao.EmpresaDAO;
 import dao.SujetoDAO;
+import dto.Empresa;
 import dto.Sujeto;
+import impl.EmpresaIMPL;
 import impl.SujetoIMPL;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.List;
-import org.primefaces.model.SelectableDataModel;
+import javax.faces.bean.SessionScoped;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -16,6 +19,7 @@ import org.primefaces.model.SelectableDataModel;
  */
 @ManagedBean(name = "empresasBean")
 @ViewScoped
+@SessionScoped
 public class EmpresasBean implements Serializable{
 
     private Sujeto sujeto;
@@ -24,16 +28,36 @@ public class EmpresasBean implements Serializable{
     private String rfc;
     private List<Sujeto> listaEmpresas;
     private Sujeto empresa;
+    private Empresa empresaSeleccionada;
+    private Sujeto sujetoSeleccionado;
+    private EmpresaDAO empresaDao;
+    private String razonSocial;
+    private String corto;
+    private String auxRfc;
 
     public EmpresasBean() {
         sujetoDao = new SujetoIMPL();
         sujeto = new Sujeto();
         listaEmpresas = sujetoDao.buscarEmpresas();
+        empresaDao = new EmpresaIMPL();
     }
     
-    public void editarEmpresa(Sujeto empresa){
+    public void guardarEmpresa(){
+        empresaSeleccionada = empresaDao.buscarEmpresaPorSujeto(empresa.getIdSujeto());
+        sujetoSeleccionado = sujetoDao.buscar(empresa.getIdSujeto());
+        razonSocial = sujetoSeleccionado.getNombreRazonSocial();
+        corto = empresaSeleccionada.getNombreCorto();
+        auxRfc = sujetoSeleccionado.getRfc();
+    }
+    
+    public void editarEmpresa(){
         System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Se quiere editar la empresa " + empresa.getNombreRazonSocial());
+        System.out.println("Se quiere editar la empresa " + corto);
+    }
+    
+    public void eliminarEmpresa(){
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println("Se quiere eliminar la empresa " + corto);
     }
     
     public Sujeto getSujeto() {
@@ -82,4 +106,53 @@ public class EmpresasBean implements Serializable{
     public void setEmpresa(Sujeto empresa) {
         this.empresa = empresa;
     }
+    
+    public Empresa getEmpresaSeleccionada() {
+        return empresaSeleccionada;
+    }
+
+    public void setEmpresaSeleccionada(Empresa empresaSeleccionada) {
+        this.empresaSeleccionada = empresaSeleccionada;
+    }
+
+    public Sujeto getSujetoSeleccionado() {
+        return sujetoSeleccionado;
+    }
+
+    public void setSujetoSeleccionado(Sujeto sujetoSeleccionado) {
+        this.sujetoSeleccionado = sujetoSeleccionado;
+    }
+
+    public EmpresaDAO getEmpresaDao() {
+        return empresaDao;
+    }
+
+    public void setEmpresaDao(EmpresaDAO empresaDao) {
+        this.empresaDao = empresaDao;
+    }
+
+    public String getRazonSocial() {
+        return razonSocial;
+    }
+
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
+    }
+
+    public String getCorto() {
+        return corto;
+    }
+
+    public void setCorto(String corto) {
+        this.corto = corto;
+    }
+
+    public String getAuxRfc() {
+        return auxRfc;
+    }
+
+    public void setAuxRfc(String auxRfc) {
+        this.auxRfc = auxRfc;
+    }
+
 }

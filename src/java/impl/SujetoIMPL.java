@@ -7,8 +7,6 @@ package impl;
 
 import dao.SujetoDAO;
 import dto.Sujeto;
-import dao.EmpresaDAO;
-import dto.Empresa;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -94,7 +92,7 @@ public class SujetoIMPL implements SujetoDAO {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         Sujeto sujeto;
-        
+        /*
         try {
             sujeto = (Sujeto) sesion.get(Sujeto.class, idSujeto);
             // obtuvo el usuario, solo se muestra si no ha sido eliminado:
@@ -108,6 +106,16 @@ public class SujetoIMPL implements SujetoDAO {
             cerrar(sesion);
         }
         
+        return sujeto;
+        */
+        try { 
+            sujeto = (Sujeto) sesion.createSQLQuery("select * from sujeto where id_sujeto = " + Integer.toString(idSujeto) + ";").addEntity(Sujeto.class).uniqueResult();
+        } catch(HibernateException he) {
+            sujeto = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
         return sujeto;
     }
 
@@ -139,7 +147,7 @@ public class SujetoIMPL implements SujetoDAO {
         
         try { // Buscamos todas las empresas.
             //"select e.name, a.city from Employee e INNER JOIN e.address a"
-            listaSujeto = sesion.createSQLQuery("select s.* from sujeto s join empresa e on e.sujetos_id_sujeto=s.id_sujeto;").addEntity(Sujeto.class).list();
+            listaSujeto = sesion.createSQLQuery("select * from sujeto s join empresa e where s.eliminado = 1 and s.id_sujeto = e.sujetos_id_sujeto;").addEntity(Sujeto.class).list();
         } catch(HibernateException he) {
             listaSujeto = null;
             he.printStackTrace();
