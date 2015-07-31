@@ -36,8 +36,15 @@ public class Usuario implements java.io.Serializable {
     /**
      * Constructor parametrizado. <br/>
      * Configura ...
+     * @param nombre
+     * @param paterno
+     * @param nombreLogin
+     * @param password
+     * @param perfil
+     * @param correo
      */
-    public Usuario(String nombre, String paterno, String nombreLogin, String password, int perfil, String correo) {
+    public Usuario(String nombre, String paterno, String nombreLogin, 
+            String password, int perfil, String correo) {
         this.nombre = nombre;
         this.paterno = paterno;
         this.nombreLogin = nombreLogin;
@@ -49,8 +56,20 @@ public class Usuario implements java.io.Serializable {
     /**
      * Constructor parametrizado. <br/>
      * Configura ...
+     * @param nombre
+     * @param paterno
+     * @param materno
+     * @param nombreLogin
+     * @param password
+     * @param perfil
+     * @param correo
+     * @param imagenPerfil
+     * @param administrativos
+     * @param gestors
      */
-    public Usuario(String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagenPerfil, Set administrativos, Set gestors) {
+    public Usuario(String nombre, String paterno, String materno, String nombreLogin, 
+            String password, int perfil, String correo, String imagenPerfil, 
+            Set administrativos, Set gestors) {
         this.nombre = nombre;
         this.paterno = paterno;
         this.materno = materno;
@@ -75,7 +94,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param idUsuario 
      */
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
@@ -93,7 +112,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param nombre 
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -111,7 +130,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param paterno 
      */
     public void setPaterno(String paterno) {
         this.paterno = paterno;
@@ -129,7 +148,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param materno 
      */
     public void setMaterno(String materno) {
         this.materno = materno;
@@ -147,7 +166,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param nombreLogin 
      */
     public void setNombreLogin(String nombreLogin) {
         this.nombreLogin = nombreLogin;
@@ -165,7 +184,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param password 
      */
     public void setPassword(String password) {
         this.password = password;
@@ -183,7 +202,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param perfil 
      */
     public void setPerfil(int perfil) {
         this.perfil = perfil;
@@ -201,7 +220,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param correo 
      */
     public void setCorreo(String correo) {
         this.correo = correo;
@@ -219,7 +238,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param imagenPerfil 
      */
     public void setImagenPerfil(String imagenPerfil) {
         this.imagenPerfil = imagenPerfil;
@@ -237,7 +256,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param administrativos 
      */
     public void setAdministrativos(Set administrativos) {
         this.administrativos = administrativos;
@@ -255,7 +274,7 @@ public class Usuario implements java.io.Serializable {
     /**
      *
      *
-     * @param
+     * @param gestors 
      */
     public void setGestors(Set gestors) {
         this.gestors = gestors;

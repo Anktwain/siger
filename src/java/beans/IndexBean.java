@@ -12,29 +12,51 @@ import util.constantes.Constantes;
 import javax.faces.context.FacesContext;
 import util.MD5;
 import java.util.Calendar;
+import java.util.Date;
+import javax.faces.bean.ViewScoped;
+import util.constantes.Perfiles;
 import util.log.Logs;
 
 /**
- * La clase {@code IndexBean} permite el manejo del inicio de sesion y es el 
+ * La clase {@code IndexBean} permite el manejo del inicio de sesion y es el
  * bean correspondiente a la vista {@code index.xhtml}
- * 
- * @author  
- * @author  
- * @author  
- * @since   SigerWeb2.0
+ *
+ * @author
+ * @author
+ * @author Cofradia
+ * @since SigerWeb2.0
  */
-
 @ManagedBean(name = "indexBean")
 @SessionScoped
 
-
 public class IndexBean implements Serializable {
 
-    private String nombreUsuario; // viene de la vista
-    private String password; // viene de la vista
+    /**
+     * El atributo en el bean correspondiente al campo usuario de la vista
+     */
+    private String nombreUsuario;
+    /**
+     * El atributo en el bean correspondiente al campo contraseña de la vista
+     */
+    private String password;
     private Usuario usuario;
     private UsuarioDAO usuarioDao;
-    private SesionBean beanDeSesion;
+    /**
+     * Información de la sesión
+     */
+    private Date horaInicio;
+    /**
+     * Información de la sesión
+     */
+    private Date horaFin;
+    /**
+     * Información de la sesión
+     */
+    private Usuario usuarioActivo;
+    /**
+     * Información de la sesión
+     */
+    private boolean sesionActiva;
 
     /**
      * Constructor por defecto. <br/>
@@ -44,7 +66,6 @@ public class IndexBean implements Serializable {
     public IndexBean() {
         usuario = new Usuario();
         usuarioDao = new UsuarioIMPL();
-        beanDeSesion = new SesionBean();
     }
 
     /**
@@ -94,78 +115,70 @@ public class IndexBean implements Serializable {
 //    }
     /**
      * Solicita una búsqueda con las cadenas de nombre de usuario y de password
-     * y devuelve el objeto usuario al que correspondan en su caso, o
+     * y devuelve el objeto {@code Usuario} al que correspondan en su caso, o
      * {@code null} en otro caso.
      *
      * @throws java.io.IOException
      */
     public void ingresar() throws IOException {
-        Logs.log.debug("#################### Estamos en la la funcion ingresar\n");
-
+        Logs.log.debug("########################### Estamos en la la funcion ingresar ###########################\n");
         usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
         Calendar cal = Calendar.getInstance();
+        FacesContext instanciaActual = FacesContext.getCurrentInstance();
         if (usuario != null) {
             switch (usuario.getPerfil()) {
-                case -2:
-                    FacesContext.getCurrentInstance().addMessage("",
-                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
-                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR_NO_CONFIRMADO) correctamente."));
-                    beanDeSesion.setSesionActiva(false);
+                case Perfiles.GESTOR_NO_CONFIRMADO:
+                    instanciaActual.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
+                            usuario.getNombre() + " ha ingresado con el perfil "
+                            + usuario.getPerfil() + " (GESTOR_NO_CONFIRMADO) correctamente."));
+                    Logs.log.info("#################### NOT OK. ACCESO DENEGADO(Gestor no confirmado).");
+                    sesionActiva = false;
                     break;
-                case 0:
-                    FacesContext.getCurrentInstance().addMessage("",
+                case Perfiles.ELIMINADO:
+                    instanciaActual.addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
                                     usuario.getNombre() + "No podrá ingresar con el perfil " + usuario.getPerfil() + " (ELIMINADO) porque ha sido desactivado."));
-                    Logs.log.info("#################### NOT OK. ACCESO DENEGADO(U0)");
-                    beanDeSesion.setSesionActiva(false);
+                    Logs.log.info("#################### NOT OK. ACCESO DENEGADO(Gestor eliminado).");
+                    sesionActiva = false;
                     break;
-                case 1:
+                case Perfiles.ADMINISTRADOR:
 //                    FacesContext mensaje = FacesContext.getCurrentInstance();
-//                    mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
-//                            usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
-//                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelAdministrativo.xhtml");
-//                    System.out.println("#################### ACCESO ADMIN CORRECTO");
-//                    FacesContext.getCurrentInstance().addMessage("",
-//                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
-//                                    usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelAdministrativo.xhtml");
-                    Logs.log.info("#################### OK. ACCESO ADMIN CORRECTO"); // linea de depuracion
-                    beanDeSesion.setHoraInicio(cal.getTime());
-                    beanDeSesion.setHoraFin(cal.getTime());
-                    beanDeSesion.setSesionActiva(true);
-                    beanDeSesion.setUsuarioActivo(new Usuario(
-                            usuario.getNombre(), usuario.getPaterno(), usuario.getNombreLogin(),
-                            usuario.getPassword(), usuario.getPerfil(), usuario.getCorreo()));
+//                    mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.", usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
+//                    FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.", usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
+                    instanciaActual.getExternalContext().redirect("faces/panelAdministrativo.xhtml");
+                    Logs.log.info("#################### OK. ACCESO ADMIN CORRECTO.");
+                    horaInicio = cal.getTime();
+                    horaFin = cal.getTime();
+                    sesionActiva = true;
+                    usuarioActivo = usuario;
                     break;
-                case 2:
-                    FacesContext.getCurrentInstance().addMessage("",
+                case Perfiles.GESTOR:
+                    instanciaActual.addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                                     usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/panelGestor.xhtml");
-                    Logs.log.info("#################### OK. ACCESO GESTOR CORRECTO"); // linea de depuracion
-                    beanDeSesion.setHoraInicio(cal.getTime());
-                    beanDeSesion.setHoraFin(cal.getTime());
-                    beanDeSesion.setSesionActiva(true);
-                    beanDeSesion.setUsuarioActivo(new Usuario(
-                            usuario.getNombre(), usuario.getPaterno(), usuario.getNombreLogin(),
-                            usuario.getPassword(), usuario.getPerfil(), usuario.getCorreo()));
+                    instanciaActual.getExternalContext().redirect("faces/panelGestor.xhtml");
+                    Logs.log.info("#################### OK. ACCESO GESTOR CORRECTO.");
+                    horaInicio = cal.getTime();
+                    horaFin = cal.getTime();
+                    sesionActiva = true;
+                    usuarioActivo = usuario;
                     break;
                 default:
-                    FacesContext.getCurrentInstance().addMessage("",
+                    instanciaActual.addMessage("",
                             new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
                                     usuario.getNombre() + "Está intentando entrar con un perfil desconocido. (Perfil =" + usuario.getPerfil() + ")."));
 
-                    Logs.log.info("#################### NOT OK. ESTÁS INTENTANDO ENTRAR CON UN PERFIL DESCONOCIDO!"); // linea de depuracion
-                    beanDeSesion.setSesionActiva(false);
+                    Logs.log.info("#################### NOT OK. INTENTANDO ENTRAR CON UN PERFIL DESCONOCIDO.");
+                    sesionActiva = false;
                     break;
             }
 
         } else {
-            FacesContext.getCurrentInstance().addMessage("",
+            instanciaActual.addMessage("",
                     new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
                             "Verifica que los datos que has introducido son correctos y que el administrador haya dado de alta tu cuenta."));
-            Logs.log.info("#################### OK. USUARIO NO CONFIRMADO O NOMBRE DE USUARIO O CONTRASEÑA INCORRECTOS!"); // linea de depuracion
-            beanDeSesion.setSesionActiva(false);
+            Logs.log.info("#################### NOT OK. USUARIO NO CONFIRMADO O NOMBRE DE USUARIO O CONTRASEÑA INCORRECTOS!");
+            sesionActiva = false;
         }
     }
 
@@ -181,7 +194,7 @@ public class IndexBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param nomUsuario
      */
     public void setNombreUsuario(String nomUsuario) {
         this.nombreUsuario = nomUsuario;
@@ -199,7 +212,7 @@ public class IndexBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param password
      */
     public void setPassword(String password) {
         this.password = password;
@@ -217,7 +230,7 @@ public class IndexBean implements Serializable {
     /**
      *
      *
-     * @param
+     * @param usuario
      */
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;

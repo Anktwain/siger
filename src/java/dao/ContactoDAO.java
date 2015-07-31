@@ -1,21 +1,50 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dao;
 
 import dto.Contacto;
 import java.util.List;
 
 /**
+ * La interfaz {@code ContactoDAO} contiene los prototipos de las 
+ * funciones que se realizarán sobre la tabla _ de la base de datos.
  *
+ * @author
+ * @author
  * @author brionvega
+ * @since SigerWeb2.0
  */
 public interface ContactoDAO {
+
+    /**
+     *
+     * @param contacto
+     * @return
+     */
     public boolean insertar(Contacto contacto);
+
+    /**
+     *
+     * @param contacto
+     * @return
+     */
     public boolean editar(Contacto contacto);
+
+    /**
+     *
+     * @param contacto
+     * @return
+     */
     public boolean eliminar(Contacto contacto);
+
+    /**
+     *
+     * @param idContacto
+     * @return
+     */
     public Contacto buscar(int idContacto);
+
+    /**
+     *
+     * @return
+     */
     public List<Contacto> buscarTodo();
 }
