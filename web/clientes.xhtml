@@ -76,59 +76,207 @@
         </div>
         <ui:include src="barraInferior.xhtml"/>
 
-        <p:dialog widgetVar="dlgAgregarCliente" width="40%" header="Agregar nuevo usuario"
+        <p:dialog widgetVar="dlgAgregarCliente" width="40%" header="Agregar nuevo deudor"
                   modal="true" showEffect="size" hideEffect="size" resizable="false">
             <h:form id="frmNuevoCliente">
 
-                <div class="form-group">
-                    <p:outputLabel value="Nombre o raz&oacute;n social: " />
-                    <p:inputText id="nombre" class="form-control input-sm"
-                                 required="true" requiredMessage="Ingrese un nombre o razón social"
-                                 validator="#{clienteBean.nombreEsValido()}"
-                                 validatorMessage="El nombre o razón social no es válido"
-                                 value="#{clienteBean.nombreRazonSocial}"/>
-                </div><!-- /form-group -->
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel value="RFC:" />
-                            <p:inputText id="rfc" class="form-control input-sm"
-                                         value="#{clienteBean.rfc}"/>
-                        </div>
-                    </div><!-- /.col -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel value="CURP:" />
-                            <p:inputText id="curp" class="form-control input-sm"
-                                         value="#{clienteBean.curp}"/>
-                        </div>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
+                <div class="panel panel-default">
+                    <div class="panel-tab clearfix">
+                        <ul class="tab-bar">
+                            <li class="active">
+                                <a href="#personales" data-toggle="tab">
+                                    <i class="fa fa-user"></i>
+                                    Datos Personales
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#contacto" data-toggle="tab">
+                                    <i class="fa fa-phone"></i>
+                                    Datos de Contacto
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#contactos" data-toggle="tab">
+                                    <i class="fa fa-users"></i>
+                                    Contactos
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="panel-body">
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active" id="personales">
+                                <div class="form-group">
+                                    <p:outputLabel value="Nombre o raz&oacute;n social: " />
+                                    <p:inputText id="nombre" class="form-control input-sm"
+                                                 required="true" requiredMessage="Ingrese un nombre o razón social"
+                                                 validator="#{clienteBean.nombreEsValido()}"
+                                                 validatorMessage="El nombre o razón social no es válido"
+                                                 value="#{clienteBean.nombreRazonSocial}"/>
+                                </div><!-- /form-group -->
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel value="N&uacute;mero de Seguro Social:" />
-                            <p:inputText id="nss" class="form-control input-sm"
-                                         value="#{clienteBean.numeroSeguroSocial}" />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <p:outputLabel value="RFC:" />
+                                            <p:inputText id="rfc" class="form-control input-sm"
+                                                         value="#{clienteBean.rfc}"/>
+                                        </div>
+                                    </div><!-- /.col -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <p:outputLabel value="CURP:" />
+                                            <p:inputText id="curp" class="form-control input-sm"
+                                                         value="#{clienteBean.curp}"/>
+                                        </div>
+                                    </div><!-- /.col -->
+                                </div><!-- /.row -->
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <p:outputLabel value="N&uacute;mero de Seguro Social:" />
+                                            <p:inputText id="nss" class="form-control input-sm"
+                                                         value="#{clienteBean.numeroSeguroSocial}" />
+                                        </div>
+                                    </div><!-- /.col -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <p:outputLabel value="N&uacute;mero de cliente:" />
+                                            <p:inputText id="ncte" class="form-control input-sm"
+                                                         value="#{clienteBean.numeroCliente}"/>
+                                        </div>
+                                    </div><!-- /.col -->
+                                </div><!-- /.row -->
+                            </div>
+                            
+                            <div class="tab-pane fade" id="contacto">
+                                <div class="panel-body no-padding">
+                                    <div class="tab-left">
+                                        <ul class="tab-bar">
+                                            <li class="active">
+                                                <a href="#tel" data-toggle="tab">
+                                                    <i class="fa fa-phone"/>
+                                                    Tel&eacute;fono
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#mail" data-toggle="tab">
+                                                    <i class="fa fa-envelope"/>
+                                                    E-mail
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#dir" data-toggle="tab">
+                                                    <i class="fa fa-map-marker"/>
+                                                    Direcci&oacute;n
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade in active" id="tel">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <p:outputLabel value="N&uacute;mero:" />
+                                                            <p:inputText id="numero" class="form-control input-sm"/>
+                                                        </div>
+                                                    </div><!-- /.col -->
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <p:outputLabel value="Tipo:" />
+                                                            <p:inputText id="tipo" class="form-control input-sm"/>
+                                                        </div>
+                                                    </div><!-- /.col -->
+                                                </div><!-- /.row -->
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <p:outputLabel value="Extensi&oacute;n:" />
+                                                            <p:inputText id="ext" class="form-control input-sm"/>
+                                                        </div>
+                                                    </div><!-- /.col -->
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <p:outputLabel value="Lada:" />
+                                                            <p:inputText id="lada" class="form-control input-sm"/>
+                                                        </div>
+                                                    </div><!-- /.col -->
+                                                </div><!-- /.row -->
+                                                <div class="form-group">
+                                                    <p:outputLabel value="Horario: " />
+                                                    <p:inputText id="hora" class="form-control input-sm"/>
+                                                </div><!-- /form-group -->
+                                            </div>
+                                            
+                                            <div class="tab-pane fade" id="mail">
+                                                <div class="form-group">
+                                                    <p:outputLabel value="Direcci&oacute;n: " />
+                                                    <p:inputText id="email" class="form-control input-sm"
+                                                                 required="true" requiredMessage="Ingrese una direcci&oacute;n"/>
+                                                </div><!-- /form-group -->
+                                            </div>
+                                            
+                                            <div class="tab-pane fade" id="dir">
+                                                <div class="form-group">
+                                                    <p:outputLabel value="Calle: " />
+                                                    <p:inputText id="calle" class="form-control input-sm"/>
+                                                </div><!-- /form-group -->
+                                                                                                <div class="form-group">
+                                                    <p:outputLabel value="Colonia: " />
+                                                    <p:inputText id="col" class="form-control input-sm"/>
+                                                </div><!-- /form-group -->
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <p:outputLabel value="Municipio:" />
+                                                            <p:inputText id="mpio" class="form-control input-sm"/>
+                                                        </div>
+                                                    </div><!-- /.col -->
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <p:outputLabel value="Estado:" />
+                                                            <p:inputText id="edo" class="form-control input-sm"/>
+                                                        </div>
+                                                    </div><!-- /.col -->
+                                                </div><!-- /.row -->
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <p:outputLabel value="C&oacute;digo postal:" />
+                                                            <p:inputText id="cp" class="form-control input-sm"/>
+                                                        </div>
+                                                    </div><!-- /.col -->
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <p:outputLabel value="Tipo:" />
+                                                            <p:inputText id="tipodir" class="form-control input-sm"/>
+                                                        </div>
+                                                    </div><!-- /.col -->
+                                                </div><!-- /.row -->
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="contactos">
+                                Aquí van los datos de contactos
+                            </div>
                         </div>
-                    </div><!-- /.col -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel value="N&uacute;mero de cliente:" />
-                            <p:inputText id="ncte" class="form-control input-sm"
-                                         value="#{clienteBean.numeroCliente}"/>
-                        </div>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
+                    </div>
+                </div>
+
+
 
                 <div class="modal-footer">
                     <p:commandButton id="btnAceptar" styleClass="btn btn-danger tooltip-test"
                                      value="Aceptar" actionListener="#{clienteBean.agregar()}"
                                      update="growl,frmNuevoCliente,frmListaClientes"/>
                 </div>
-
             </h:form>
         </p:dialog>
 
@@ -138,7 +286,8 @@
             <h:form id="frmListaClientes">
 
                 <p:dataTable id="clientes" var="cliente" value="#{clienteBean.listaDeClientes}"
-                             rowKey="#{cliente.idCliente}" selectionMode="single">
+                             rowKey="#{cliente.idCliente}" selectionMode="single"
+                             class="table table-bordered table-condensed table-hover table-striped">
 
                     <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelect}"
                             oncomplete="PF('dlgDetalle').show()" update="frmListaClientes"/>
@@ -154,7 +303,8 @@
                 <p:dialog header="Detalle de cliente" widgetVar="dlgDetalle"
                           showEffect="size" hideEffect="size">
                     <p:outputPanel id="pnlDetalleCliente">
-                        <p:panelGrid id="pnlgDetalleCliente" columns="2">
+                        <p:panelGrid id="pnlgDetalleCliente" columns="2"
+                                     class="table table-bordered table-condensed table-hover table-striped">
                             <h:outputText value="Nombre o razón social" />
                             <h:inputText value="#{clienteBean.clienteSeleccionado.sujeto.nombreRazonSocial}" />
 
@@ -171,9 +321,9 @@
                             <h:inputText value="#{clienteBean.clienteSeleccionado.numeroCliente}" />
                         </p:panelGrid>
                         <div class="modal-footer">
-                            <p:commandButton value="Guardar cambios" styleClass="btn btn-danger tooltip-test"
+                            <p:commandButton value="Guardar cambios" styleClass="btn btn-xs btn-danger tooltip-test"
                                              actionListener="#{clienteBean.editar()}" update="growl,frmListaClientes"/>
-                            <p:commandButton value="Eliminar" styleClass="btn btn-danger tooltip-test"
+                            <p:commandButton value="Eliminar" styleClass="btn btn-xs btn-danger"
                                              actionListener="#{clienteBean.eliminar()}" update="growl,frmListaClientes">
                                 <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
                                            message="&iquest;Está seguro que desea eliminar este dato?" />
