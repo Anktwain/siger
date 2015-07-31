@@ -12,6 +12,14 @@
     </h:head>
     <h:body>
         <p:growl id="growl" showDetail="true" />
+
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false" >
+            <p:graphicImage library="img" name="loadingBarra.gif" />
+        </p:dialog>
+
         <div id="overlay" class="transparent" style="display: none;"></div>
         <ui:include src="barraLateral.xhtml" />
         <ui:include src="barraSuperior.xhtml" />
@@ -50,12 +58,26 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-sm-6 col-md-3">
+                    <div class="panel-stat3 bg-info">
+                        <h3 class="m-top-none">Consultar clientes</h3>
+                        <p:commandButton value="Consultar" class="btn btn-info"
+                                         onclick="PF('dlgListaClientes').show();"/>
+                        <div class="stat-icon">
+                            <i class="fa fa-list-alt fa-2x" />
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
 
         </div>
         <ui:include src="barraInferior.xhtml"/>
+
         <p:dialog widgetVar="dlgAgregarCliente" width="40%" header="Agregar nuevo usuario"
-                  modal="true" showEffect="size" hideEffect="size">
+                  modal="true" showEffect="size" hideEffect="size" resizable="false">
             <h:form id="frmNuevoCliente">
 
                 <div class="form-group">
@@ -104,8 +126,65 @@
                 <div class="modal-footer">
                     <p:commandButton id="btnAceptar" styleClass="btn btn-danger tooltip-test"
                                      value="Aceptar" actionListener="#{clienteBean.agregar()}"
-                                     update="growl,frmNuevoCliente"/>
+                                     update="growl,frmNuevoCliente,frmListaClientes"/>
                 </div>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="iddlgListaClientes" widgetVar="dlgListaClientes" width="40%"
+                  header="Lista de clientes, seleccione una fila para ver detalle"
+                  showEffect="size" hideEffect="size" draggable="false">
+            <h:form id="frmListaClientes">
+
+                <p:dataTable id="clientes" var="cliente" value="#{clienteBean.listaDeClientes}"
+                             rowKey="#{cliente.idCliente}" selectionMode="single">
+
+                    <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelect}"
+                            oncomplete="PF('dlgDetalle').show()" update="frmListaClientes"/>
+
+                    <p:column headerText="Nombre" width="70%">
+                        <h:outputText value="#{cliente.sujeto.nombreRazonSocial}" />
+                    </p:column>
+                    <p:column headerText="RFC">
+                        <h:outputText value="#{cliente.sujeto.rfc}" />
+                    </p:column>
+                </p:dataTable>
+
+                <p:dialog header="Detalle de cliente" widgetVar="dlgDetalle"
+                          showEffect="size" hideEffect="size">
+                    <p:outputPanel id="pnlDetalleCliente">
+                        <p:panelGrid id="pnlgDetalleCliente" columns="2">
+                            <h:outputText value="Nombre o razón social" />
+                            <h:inputText value="#{clienteBean.clienteSeleccionado.sujeto.nombreRazonSocial}" />
+
+                            <h:outputText value="RFC" />
+                            <h:inputText value="#{clienteBean.clienteSeleccionado.sujeto.rfc}" />
+
+                            <h:outputText value="CURP" />
+                            <h:inputText value="#{clienteBean.clienteSeleccionado.curp}" />
+
+                            <h:outputText value="NSS" />
+                            <h:inputText value="#{clienteBean.clienteSeleccionado.numeroSeguroSocial}" />
+
+                            <h:outputText value="N. Cliente" />
+                            <h:inputText value="#{clienteBean.clienteSeleccionado.numeroCliente}" />
+                        </p:panelGrid>
+                        <div class="modal-footer">
+                            <p:commandButton value="Guardar cambios" styleClass="btn btn-danger tooltip-test"
+                                             actionListener="#{clienteBean.editar()}" update="growl,frmListaClientes"/>
+                            <p:commandButton value="Eliminar" styleClass="btn btn-danger tooltip-test"
+                                             actionListener="#{clienteBean.eliminar()}" update="growl,frmListaClientes">
+                                <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
+                                           message="&iquest;Está seguro que desea eliminar este dato?" />
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="size" hideEffect="size">
+                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </div>
+                    </p:outputPanel>
+                </p:dialog>
 
             </h:form>
         </p:dialog>
