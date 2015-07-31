@@ -40,6 +40,7 @@ public interface SujetoDAO {
      * @param idSujeto
      * @return
      */
+    public boolean eliminarEnSerio(Sujeto sujeto);
     public Sujeto buscar(int idSujeto);
 
     /**

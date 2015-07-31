@@ -2,11 +2,13 @@ package impl;
 
 import dao.ClienteDAO;
 import dto.Cliente;
+import dto.Sujeto;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.Sujetos;
 
 /**
  * La clase {@code ClienteIMPL} permite ...
@@ -121,7 +123,22 @@ public class ClienteIMPL implements ClienteDAO {
      */
     @Override
     public List<Cliente> buscarTodo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        List<Cliente> listaClientes;
+
+        try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
+            listaClientes = sesion.createSQLQuery("select c.* from sujeto s join cliente c"
+                    + " on s.id_sujeto = c.sujetos_id_sujeto"
+                    + " where s.eliminado != " + Sujetos.ELIMINADO).addEntity(Cliente.class).list();
+        } catch (HibernateException he) {
+            listaClientes = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+
+        return listaClientes;
     }
 
     /**

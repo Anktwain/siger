@@ -1,6 +1,7 @@
 package dao;
 
 import dto.Empresa;
+import dto.Sujeto;
 import java.util.List;
 
 /**
@@ -46,5 +47,6 @@ public interface EmpresaDAO {
      *
      * @return
      */
+    public Empresa buscarEmpresaPorSujeto(int idEmpresa);
     public List<Empresa> buscarTodo();    
 }

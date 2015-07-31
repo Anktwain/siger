@@ -1,6 +1,7 @@
 package dao;
 
 import dto.Cliente;
+import dto.Sujeto;
 import java.util.List;
 
 /**
