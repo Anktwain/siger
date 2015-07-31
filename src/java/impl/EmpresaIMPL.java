@@ -113,6 +113,23 @@ public class EmpresaIMPL implements EmpresaDAO {
     public Empresa buscar(int idEmpresa) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    @Override
+    public Empresa buscarEmpresaPorSujeto(int idEmpresa) {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        Empresa empresa;
+        
+        try { 
+            empresa = (Empresa) sesion.createSQLQuery("select * from empresa where sujetos_id_sujeto = " + Integer.toString(idEmpresa) + ";").addEntity(Empresa.class).uniqueResult();
+        } catch(HibernateException he) {
+            empresa = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return empresa;
+    }
 
     /**
      *
