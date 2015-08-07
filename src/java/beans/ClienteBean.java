@@ -7,10 +7,15 @@ package beans;
 
 import dao.ClienteDAO;
 import dao.SujetoDAO;
+import dao.TelefonoDAO;
 import dto.Cliente;
+import dto.Direccion;
+import dto.Email;
 import dto.Sujeto;
+import dto.Telefono;
 import impl.ClienteIMPL;
 import impl.SujetoIMPL;
+import impl.TelefonoIMPL;
 import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -51,6 +56,12 @@ public class ClienteBean implements Serializable {
 
   // Listas
   List<Cliente> listaDeClientes;
+  List<Telefono> listaTelefonos;
+  List<Direccion> listaDirecciones;
+  List<Email> listaEmails;
+  
+  // Otros acceso a datos
+  private TelefonoDAO telefonoDao;
 
   // Objetos seleccionados en la tabla
   private Cliente clienteSeleccionado;
@@ -79,6 +90,8 @@ public class ClienteBean implements Serializable {
     inicializarListaDeClientes();
 
     btnGuardarDeudorDisabled = false;
+    
+    telefonoDao = new TelefonoIMPL();
   }
 
   // Editar datos de un cliente
@@ -208,6 +221,7 @@ public class ClienteBean implements Serializable {
     sujeto = new Sujeto();
     limpiarEntradas();
     habilitarBtnGuardarDeudor();
+    contactoBean.nuevoContacto();
   }
 
   public void terminarProceso() {
@@ -236,6 +250,7 @@ public class ClienteBean implements Serializable {
 
   public void onRowSelect(SelectEvent evento) {
     clienteSeleccionado = (Cliente) evento.getObject();
+    listaTelefonos = telefonoDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
   }
 
   private void inicializarListaDeClientes() {
@@ -345,5 +360,31 @@ public class ClienteBean implements Serializable {
   public void setContactoBean(ContactoBean contactoBean) {
     this.contactoBean = contactoBean;
   }
+
+  public List<Telefono> getListaTelefonos() {
+    return listaTelefonos;
+  }
+
+  public void setListaTelefonos(List<Telefono> listaTelefonos) {
+    this.listaTelefonos = listaTelefonos;
+  }
+
+  public List<Direccion> getListaDirecciones() {
+    return listaDirecciones;
+  }
+
+  public void setListaDirecciones(List<Direccion> listaDirecciones) {
+    this.listaDirecciones = listaDirecciones;
+  }
+
+  public List<Email> getListaEmails() {
+    return listaEmails;
+  }
+
+  public void setListaEmails(List<Email> listaEmails) {
+    this.listaEmails = listaEmails;
+  }
+  
+  
 
 }

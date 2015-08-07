@@ -70,17 +70,8 @@
           </div>
         </div>
       </div>
-
-
-
     </div>
     <ui:include src="barraInferior.xhtml"/>
-
-
-
-
-
-
 
     <p:dialog widgetVar="dlgAgregarCliente" width="40%" header="Agregar nuevo deudor"
               modal="true" showEffect="size" hideEffect="size" resizable="false">
@@ -160,7 +151,8 @@
                                  update="growl,frmListaClientes,btnAceptar"/>
                 <p:commandButton id="btnAgregarOtro" class="btn btn-success btn-xs"
                                  value="Otro" actionListener="#{clienteBean.nuevoCliente()}"
-                                 update="frmNuevoDeudor,btnAceptar"/>
+                                 update="frmNuevoDeudor,btnAceptar,frmNuevoContacto,
+                                 frmNuevoContacto:btnAgregarContacto"/>
               </h:form>
             </div>
 
@@ -298,19 +290,6 @@
                 </div>
               </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
             <div class="tab-pane fade" id="contactos">
               <div class="panel-body no-padding">
                 <div class="tab-left">
@@ -342,7 +321,7 @@
                   </ul>
 
                   <div class="tab-content">
-                    <div class="tab-pane fade" id="datosContacto">
+                    <div class="tab-pane fade in active" id="datosContacto">
                       <h:form id="frmNuevoContacto">
                         <div class="row">
                           <div class="col-md-6">
@@ -381,7 +360,7 @@
                       </h:form>
                     </div>
 
-                    <div class="tab-pane fade in active" id="telContacto">
+                    <div class="tab-pane fade" id="telContacto">
                       <h:form id="frmNuevoTelContacto">
                         <div class="row">
                           <div class="col-md-6">
@@ -486,29 +465,9 @@
                       </h:form>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           </div>
         </div>
 
@@ -524,21 +483,10 @@
 
       </div>
     </p:dialog>
-
-
-
-
-
-
-
-
-
-
-
-
+    
     <p:dialog id="iddlgListaClientes" widgetVar="dlgListaClientes" width="40%"
               header="Lista de clientes, seleccione una fila para ver detalle"
-              showEffect="size" hideEffect="size" draggable="false">
+              showEffect="size" hideEffect="size">
       <h:form id="frmListaClientes">
 
         <p:dataTable id="clientes" var="cliente" value="#{clienteBean.listaDeClientes}"
@@ -546,7 +494,7 @@
                      class="table table-bordered table-condensed table-hover table-striped">
 
           <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelect}"
-                  oncomplete="PF('dlgDetalle').show()" update="frmListaClientes"/>
+                  oncomplete="PF('dlgDetalle').show()" update="frmDetalleCliente,frmDetalleTels"/>
 
           <p:column headerText="Nombre" width="70%">
             <h:outputText value="#{cliente.sujeto.nombreRazonSocial}" />
@@ -555,9 +503,12 @@
             <h:outputText value="#{cliente.sujeto.rfc}" />
           </p:column>
         </p:dataTable>
-
-        <p:dialog header="Detalle de cliente" widgetVar="dlgDetalle"
+      </h:form>
+    </p:dialog>
+    
+            <p:dialog header="Detalle de cliente" widgetVar="dlgDetalle"
                   showEffect="size" hideEffect="size">
+              <h:form id="frmDetalleCliente">
           <p:outputPanel id="pnlDetalleCliente">
             <p:panelGrid id="pnlgDetalleCliente" columns="2"
                          class="table table-bordered table-condensed table-hover table-striped">
@@ -576,6 +527,7 @@
               <h:outputText value="N. Cliente" />
               <h:inputText value="#{clienteBean.clienteSeleccionado.numeroCliente}" />
             </p:panelGrid>
+
             <div class="modal-footer">
               <p:commandButton value="Guardar cambios" styleClass="btn btn-xs btn-danger tooltip-test"
                                actionListener="#{clienteBean.editar()}" update="growl,frmListaClientes"/>
@@ -588,11 +540,41 @@
                 <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                 <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
               </p:confirmDialog>
-            </div>
+                          </div>
           </p:outputPanel>
-        </p:dialog>
+                </h:form>
+              <p:separator />
+              <p:commandButton id="btnTels" icon="fa fa-phone" type="button">
+                <p:overlayPanel id="pnlTels" for="btnTels" hideEffect="size" dynamic="true" style="width: 600px">
+                  <h:form id="frmDetalleTels">
+                  <p:dataTable var="tel" value="#{clienteBean.listaTelefonos}" >
+                    <p:column headerText="Numero">
+                      <h:outputText value="#{tel.numero}" />
+                    </p:column>
+                    <p:column headerText="Extensión">
+                      <h:outputText value="#{tel.extension}" />
+                    </p:column>
+                    <p:column headerText="Horario">
+                      <h:outputText value="#{tel.horario}" />
+                    </p:column>
+                    <p:column headerText="Lada">
+                      <h:outputText value="#{tel.lada}" />
+                    </p:column>
+                    <p:column headerText="Tipo">
+                      <h:outputText value="#{tel.tipo}" />
+                    </p:column>
+                  </p:dataTable>
+                    </h:form>
+                </p:overlayPanel>
+              </p:commandButton>
+              <p:commandButton id="btnMails" icon="fa fa-envelope" type="button">
+                
+              </p:commandButton>
+              <p:commandButton id="btnDirs" icon="fa fa-map-marker" type="button">
+                
+              </p:commandButton>
+                         
 
-      </h:form>
-    </p:dialog>
+        </p:dialog>
   </h:body>
 </html>
