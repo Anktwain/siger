@@ -1,192 +1,598 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:f="http://xmlns.jcp.org/jsf/core" 
       xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <meta charset="utf-8"></meta>
-        <title>SigerWeb - Clientes</title>
-    </h:head>
-    <h:body>
-        <p:growl id="growl" showDetail="true" />
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Clientes</title>
+  </h:head>
+  <h:body>
+    <p:growl id="growl" showDetail="true" />
 
-        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
 
-        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-                  closable="false" resizable="false" showHeader="false" >
-            <p:graphicImage library="img" name="loadingBarra.gif" />
-        </p:dialog>
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+              closable="false" resizable="false" showHeader="false" >
+      <p:graphicImage library="img" name="loadingBarra.gif" />
+    </p:dialog>
 
-        <div id="overlay" class="transparent" style="display: none;"></div>
-        <ui:include src="barraLateral.xhtml" />
-        <ui:include src="barraSuperior.xhtml" />
-        <div id="main-container">
+    <div id="overlay" class="transparent" style="display: none;"></div>
+    <ui:include src="barraLateral.xhtml" />
+    <ui:include src="barraSuperior.xhtml" />
+    <div id="main-container">
 
-            <div id="breadcrumb">
-                <ul class="breadcrumb">
-                    <li>
-                        <i class="fa fa-home">
-                        </i>
-                        <a href="panelAdministrativo.xhtml">Inicio</a>
-                    </li>
-                    <li class="active">
-                        Clientes
-                    </li>
-                </ul>
-            </div>
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="panelAdministrativo.xhtml">Inicio</a>
+          </li>
+          <li class="active">
+            Clientes
+          </li>
+        </ul>
+      </div>
 
-            <div class="main-header clearfix">
-                <div class="page-title">
-                    <h3 class="no-margin">Clientes</h3>
-                    <span>Consulte informaci&oacute;n de clientes, agregue nuevos clientes,
-                        elimine o modifique sus datos</span>
-                </div>
-            </div>
-
-            <div class="padding-md">
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel-stat3 bg-danger">
-                        <h3 class="m-top-none">Nuevo cliente</h3>
-                        <p:commandButton value="Agregar" class="btn btn-danger"
-                                         onclick="PF('dlgAgregarCliente').show();"/>
-
-                        <div class="stat-icon">
-                            <i class="fa fa-user-plus fa-2x" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel-stat3 bg-info">
-                        <h3 class="m-top-none">Consultar clientes</h3>
-                        <p:commandButton value="Consultar" class="btn btn-info"
-                                         onclick="PF('dlgListaClientes').show();"/>
-                        <div class="stat-icon">
-                            <i class="fa fa-list-alt fa-2x" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Clientes</h3>
+          <span>Consulte informaci&oacute;n de clientes, agregue nuevos clientes,
+            elimine o modifique sus datos</span>
         </div>
-        <ui:include src="barraInferior.xhtml"/>
+      </div>
 
-        <p:dialog widgetVar="dlgAgregarCliente" width="40%" header="Agregar nuevo usuario"
-                  modal="true" showEffect="size" hideEffect="size" resizable="false">
-            <h:form id="frmNuevoCliente">
+      <div class="padding-md">
+        <div class="col-sm-6 col-md-3">
+          <div class="panel-stat3 bg-danger">
+            <h3 class="m-top-none">Nuevo cliente</h3>
+            <p:commandButton value="Agregar" class="btn btn-danger"
+                             onclick="PF('dlgAgregarCliente').show();"/>
 
+            <div class="stat-icon">
+              <i class="fa fa-user-plus fa-2x" />
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+          <div class="panel-stat3 bg-info">
+            <h3 class="m-top-none">Consultar clientes</h3>
+            <p:commandButton value="Consultar" class="btn btn-info"
+                             onclick="PF('dlgListaClientes').show();"/>
+            <div class="stat-icon">
+              <i class="fa fa-list-alt fa-2x" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+    <ui:include src="barraInferior.xhtml"/>
+
+
+
+
+
+
+
+    <p:dialog widgetVar="dlgAgregarCliente" width="40%" header="Agregar nuevo deudor"
+              modal="true" showEffect="size" hideEffect="size" resizable="false">
+
+      <div class="panel panel-default">
+        <div class="panel-tab">
+          <ul class="wizard-steps" id="wizardTab">
+            <li class="active">
+              <a href="#personales" data-toggle="tab">
+                <i class="fa fa-user"></i>
+                Datos Personales
+              </a>
+            </li>
+            <li>
+              <a href="#contacto" data-toggle="tab">
+                <i class="fa fa-phone"></i>
+                Datos de Contacto
+              </a>
+            </li>
+            <li>
+              <a href="#contactos" data-toggle="tab">
+                <i class="fa fa-users"></i>
+                Contactos
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="panel-body">
+          <div class="tab-content">
+            <div class="tab-pane fade in active" id="personales">
+              <h:form id="frmNuevoDeudor">
                 <div class="form-group">
-                    <p:outputLabel value="Nombre o raz&oacute;n social: " />
-                    <p:inputText id="nombre" class="form-control input-sm"
-                                 required="true" requiredMessage="Ingrese un nombre o razón social"
-                                 validator="#{clienteBean.nombreEsValido()}"
-                                 validatorMessage="El nombre o razón social no es válido"
-                                 value="#{clienteBean.nombreRazonSocial}"/>
-                </div><!-- /form-group -->
+                  <p:outputLabel value="Nombre o raz&oacute;n social: " />
+                  <p:inputText id="nombre" class="form-control input-sm"
+                               required="true" requiredMessage="Ingrese un nombre o razón social"
+                               validator="#{clienteBean.nombreEsValido()}"
+                               validatorMessage="El nombre o razón social no es válido"
+                               value="#{clienteBean.nombreRazonSocial}"/>
+                </div> <!-- /form-group-->  
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel value="RFC:" />
-                            <p:inputText id="rfc" class="form-control input-sm"
-                                         value="#{clienteBean.rfc}"/>
-                        </div>
-                    </div><!-- /.col -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel value="CURP:" />
-                            <p:inputText id="curp" class="form-control input-sm"
-                                         value="#{clienteBean.curp}"/>
-                        </div>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <p:outputLabel value="RFC:" />
+                      <p:inputText id="rfc" class="form-control input-sm"
+                                   value="#{clienteBean.rfc}"/>
+                    </div>
+                  </div> <!-- /.col-->  
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <p:outputLabel value="CURP:" />
+                      <p:inputText id="curp" class="form-control input-sm"
+                                   value="#{clienteBean.curp}"/>
+                    </div>
+                  </div><!-- /.col-->
+                </div> <!-- /.row-->  
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel value="N&uacute;mero de Seguro Social:" />
-                            <p:inputText id="nss" class="form-control input-sm"
-                                         value="#{clienteBean.numeroSeguroSocial}" />
-                        </div>
-                    </div><!-- /.col -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <p:outputLabel value="N&uacute;mero de cliente:" />
-                            <p:inputText id="ncte" class="form-control input-sm"
-                                         value="#{clienteBean.numeroCliente}"/>
-                        </div>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <p:outputLabel value="N&uacute;mero de Seguro Social:" />
+                      <p:inputText id="nss" class="form-control input-sm"
+                                   value="#{clienteBean.numeroSeguroSocial}" />
+                    </div>
+                  </div> <!-- /.col-->  
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <p:outputLabel value="N&uacute;mero de cliente:" />
+                      <p:inputText id="ncte" class="form-control input-sm"
+                                   value="#{clienteBean.numeroCliente}"/>
+                    </div>
+                  </div> <!-- /.col-->  
+                </div> <!-- /.row-->
+                <p:commandButton id="btnAceptar" class="btn btn-success btn-xs"
+                                 disabled="#{clienteBean.btnGuardarDeudorDisabled}"
+                                 value="Guardar" actionListener="#{clienteBean.agregar()}"
+                                 update="growl,frmListaClientes,btnAceptar"/>
+                <p:commandButton id="btnAgregarOtro" class="btn btn-success btn-xs"
+                                 value="Otro" actionListener="#{clienteBean.nuevoCliente()}"
+                                 update="frmNuevoDeudor,btnAceptar"/>
+              </h:form>
+            </div>
 
-                <div class="modal-footer">
-                    <p:commandButton id="btnAceptar" styleClass="btn btn-danger tooltip-test"
-                                     value="Aceptar" actionListener="#{clienteBean.agregar()}"
-                                     update="growl,frmNuevoCliente,frmListaClientes"/>
+            <div class="tab-pane fade" id="contacto">
+              <div class="panel-body no-padding">
+                <div class="tab-left">
+                  <ul class="tab-bar">
+                    <li class="active">
+                      <a href="#tel" data-toggle="tab">
+                        <i class="fa fa-phone"/>
+                        Tel&eacute;fono
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#mail" data-toggle="tab">
+                        <i class="fa fa-envelope"/>
+                        E-mail
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#dir" data-toggle="tab">
+                        <i class="fa fa-map-marker"/>
+                        Direcci&oacute;n
+                      </a>
+                    </li>
+                  </ul>
+
+                  <div class="tab-content">
+                    <div class="tab-pane fade in active" id="tel">
+                      <h:form id="frmNuevoTelefono">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="N&uacute;mero:" />
+                              <p:inputText id="numero" class="form-control input-sm" required="true"
+                                           requiredMessage="Ingrese un n&uacute;mero telef&oacute;nico"
+                                           value="#{clienteBean.telefonoBean.numero}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Tipo:" />
+                              <p:inputText id="tipo" class="form-control input-sm"
+                                           value="#{clienteBean.telefonoBean.tipo}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                        </div> <!-- /.row-->  
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Extensi&oacute;n:" />
+                              <p:inputText id="ext" class="form-control input-sm"
+                                           value="#{clienteBean.telefonoBean.extension}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Lada:" />
+                              <p:inputText id="lada" class="form-control input-sm"
+                                           value="#{clienteBean.telefonoBean.lada}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                        </div> <!-- /.row-->  
+                        <div class="form-group">
+                          <p:outputLabel value="Horario: " />
+                          <p:inputText id="hora" class="form-control input-sm"
+                                       value="#{clienteBean.telefonoBean.horario}"/>
+                        </div> <!-- /form-group-->  
+                        <p:commandButton id="btnNuevoTel" class="btn btn-xs btn-success btn-sm"
+                                         value="Guardar Tel&eacute;fono" actionListener="#{clienteBean.agregarTelefono()}"
+                                         update="growl,frmListaClientes,frmNuevoTelefono"/>
+                      </h:form>
+                    </div>
+
+                    <div class="tab-pane fade" id="mail">
+                      <h:form id="frmNuevoMail">
+                        <div class="form-group">
+                          <p:outputLabel value="Direcci&oacute;n: " />
+                          <p:inputText id="email" class="form-control input-sm"
+                                       required="true" requiredMessage="Ingrese una direcci&oacute;n"
+                                       value="#{clienteBean.emailBean.direccion}" />
+                        </div> <!-- /form-group-->
+                        <p:commandButton id="btnNuevoMail" class="btn btn-xs btn-success btn-sm"
+                                         value="Guardar E-mail" actionListener="#{clienteBean.agregarEmail()}"
+                                         update="growl,frmListaClientes,frmNuevoMail" />
+                      </h:form>
+                    </div>
+
+                    <div class="tab-pane fade" id="dir">
+                      <h:form id="frmNuevaDir">
+                        <div class="form-group">
+                          <p:outputLabel value="Calle: " />
+                          <p:inputText id="calle" class="form-control input-sm" value="#{clienteBean.direccionBean.calle}"
+                                       required="true" requiredMessage="Ingrese el nombre de la calle"/>
+                        </div> <!-- /form-group-->  
+                        <div class="form-group">
+                          <p:outputLabel value="Colonia: " />
+                          <p:inputText id="col" class="form-control input-sm" value="#{clienteBean.direccionBean.colonia}"/>
+                        </div> <!-- /form-group-->  
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Municipio:" />
+                              <p:inputText id="mpio" class="form-control input-sm" value="#{clienteBean.direccionBean.municipio}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Estado:" />
+                              <p:inputText id="edo" class="form-control input-sm" value="#{clienteBean.direccionBean.estado}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                        </div> <!-- /.row-->  
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="C&oacute;digo postal:" />
+                              <p:inputText id="cp" class="form-control input-sm" value="#{clienteBean.direccionBean.cp}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Tipo:" />
+                              <p:inputText id="tipodir" class="form-control input-sm" value="#{clienteBean.direccionBean.tipo}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                        </div> <!-- /.row-->
+                        <p:commandButton id="btnNuevaDir" class="btn btn-xs btn-success btn-sm"
+                                         value="Guardar Direcci&oacute;n" actionListener="#{clienteBean.agregarDireccion()}"
+                                         update="growl,frmListaClientes,frmNuevaDir" />
+                      </h:form>
+                    </div>
+                  </div>
+
                 </div>
+              </div>
+            </div>
 
-            </h:form>
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="tab-pane fade" id="contactos">
+              <div class="panel-body no-padding">
+                <div class="tab-left">
+                  <ul class="tab-bar">
+                    <li class="active">
+                      <a href="#datosContacto" data-toggle="tab">
+                        <i class="fa fa-user"/>
+                        Persona
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#telContacto" data-toggle="tab">
+                        <i class="fa fa-phone"/>
+                        Tel&eacute;fono
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#mailContacto" data-toggle="tab">
+                        <i class="fa fa-envelope"/>
+                        E-mail
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#dirContacto" data-toggle="tab">
+                        <i class="fa fa-map-marker"/>
+                        Direcci&oacute;n
+                      </a>
+                    </li>
+                  </ul>
+
+                  <div class="tab-content">
+                    <div class="tab-pane fade" id="datosContacto">
+                      <h:form id="frmNuevoContacto">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Nombre o raz&oacute;n social: " />
+                              <p:inputText id="nombre" class="form-control input-sm"
+                                           required="true" requiredMessage="Ingrese un nombre para el contacto"
+                                           validator="#{clienteBean.contactoBean.nombreEsValido()}"
+                                           validatorMessage="El nombre no es válido"
+                                           value="#{clienteBean.contactoBean.nombreRazonSocial}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="RFC:" />
+                              <p:inputText id="rfc" class="form-control input-sm"
+                                           value="#{clienteBean.contactoBean.rfc}"/>
+                            </div>
+                          </div><!-- /.col-->
+                        </div> <!-- /.row--> 
+
+                        <div class="form-group">
+                          <p:outputLabel value="Observaciones" />
+                          <p:inputText id="observaciones" class="form-control input-sm"
+                                       value="#{clienteBean.contactoBean.observaciones}"/>
+
+                        </div> <!-- /form-group--> 
+
+                        <p:commandButton id="btnAgregarContacto" class="btn btn-success btn-xs"
+                                         disabled="#{clienteBean.contactoBean.btnGuardarContactoDisabled}"
+                                         value="Guardar contacto" actionListener="#{clienteBean.agregarContacto()}"
+                                         update="growl,btnAgregarContacto"/>
+                        <p:commandButton id="btnAgregarOtro" class="btn btn-success btn-xs"
+                                         value="Otro" actionListener="#{clienteBean.contactoBean.nuevoContacto()}"
+                                         update="frmNuevoContacto,btnAgregarContacto"/>
+                      </h:form>
+                    </div>
+
+                    <div class="tab-pane fade in active" id="telContacto">
+                      <h:form id="frmNuevoTelContacto">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="N&uacute;mero:" />
+                              <p:inputText id="numero" class="form-control input-sm" required="true"
+                                           requiredMessage="Ingrese un n&uacute;mero telef&oacute;nico"
+                                           value="#{clienteBean.contactoBean.telefonoBean.numero}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Tipo:" />
+                              <p:inputText id="tipo" class="form-control input-sm"
+                                           value="#{clienteBean.contactoBean.telefonoBean.tipo}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                        </div> <!-- /.row-->  
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Extensi&oacute;n:" />
+                              <p:inputText id="ext" class="form-control input-sm"
+                                           value="#{clienteBean.contactoBean.telefonoBean.extension}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Lada:" />
+                              <p:inputText id="lada" class="form-control input-sm"
+                                           value="#{clienteBean.contactoBean.telefonoBean.lada}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                        </div> <!-- /.row-->  
+                        <div class="form-group">
+                          <p:outputLabel value="Horario: " />
+                          <p:inputText id="hora" class="form-control input-sm"
+                                       value="#{clienteBean.contactoBean.telefonoBean.horario}"/>
+                        </div> <!-- /form-group-->  
+                        <p:commandButton id="btnNuevoTel" class="btn btn-xs btn-success btn-sm"
+                                         value="Guardar Tel&eacute;fono" actionListener="#{clienteBean.contactoBean.agregarTelefono()}"
+                                         update="growl,frmNuevoTelContacto"/>
+                      </h:form>
+                    </div>
+
+                    <div class="tab-pane fade" id="mailContacto">
+                      <h:form id="frmNuevoMailContacto">
+                        <div class="form-group">
+                          <p:outputLabel value="Direcci&oacute;n: " />
+                          <p:inputText id="email" class="form-control input-sm"
+                                       required="true" requiredMessage="Ingrese una direcci&oacute;n"
+                                       value="#{clienteBean.contactoBean.emailBean.direccion}" />
+                        </div> <!-- /form-group-->
+                        <p:commandButton id="btnNuevoMail" class="btn btn-xs btn-success btn-sm"
+                                         value="Guardar E-mail" actionListener="#{clienteBean.contactoBean.agregarEmail()}"
+                                         update="growl,frmNuevoMailContacto" />
+                      </h:form>
+                    </div>
+
+                    <div class="tab-pane fade" id="dirContacto">
+                      <h:form id="frmNuevaDirContacto">
+                        <div class="form-group">
+                          <p:outputLabel value="Calle: " />
+                          <p:inputText id="calle" class="form-control input-sm" value="#{clienteBean.contactoBean.direccionBean.calle}"
+                                       required="true" requiredMessage="Ingrese el nombre de la calle"/>
+                        </div> <!-- /form-group-->  
+                        <div class="form-group">
+                          <p:outputLabel value="Colonia: " />
+                          <p:inputText id="col" class="form-control input-sm" value="#{clienteBean.contactoBean.direccionBean.colonia}"/>
+                        </div> <!-- /form-group-->  
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Municipio:" />
+                              <p:inputText id="mpio" class="form-control input-sm" value="#{clienteBean.contactoBean.direccionBean.municipio}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Estado:" />
+                              <p:inputText id="edo" class="form-control input-sm" value="#{clienteBean.contactoBean.direccionBean.estado}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                        </div> <!-- /.row-->  
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="C&oacute;digo postal:" />
+                              <p:inputText id="cp" class="form-control input-sm" value="#{clienteBean.contactoBean.direccionBean.cp}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <p:outputLabel value="Tipo:" />
+                              <p:inputText id="tipodir" class="form-control input-sm" value="#{clienteBean.contactoBean.direccionBean.tipo}"/>
+                            </div>
+                          </div> <!-- /.col-->  
+                        </div> <!-- /.row-->
+                        <p:commandButton id="btnNuevaDir" class="btn btn-xs btn-success btn-sm"
+                                         value="Guardar Direcci&oacute;n" actionListener="#{clienteBean.contactoBean.agregarDireccion()}"
+                                         update="growl,frmNuevaDirContacto" />
+                      </h:form>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <p:commandButton class="btn btn-success btn-xs" value="Teminar"
+                           actionListener="#{clienteBean.terminarProceso()}"
+                           update="frmNuevoDeudor:btnAceptar,frmNuevaDir,frmNuevoMail,
+                           frmNuevoTelefono,frmNuevoDeudor,frmNuevaDirContacto,
+                           frmNuevoMailContacto,frmNuevoTelContacto,frmNuevoContacto,
+                           frmNuevoContacto:btnAgregarContacto"
+                           onclick="PF('dlgAgregarCliente').hide();"/>
+        </div>
+
+      </div>
+    </p:dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+    <p:dialog id="iddlgListaClientes" widgetVar="dlgListaClientes" width="40%"
+              header="Lista de clientes, seleccione una fila para ver detalle"
+              showEffect="size" hideEffect="size" draggable="false">
+      <h:form id="frmListaClientes">
+
+        <p:dataTable id="clientes" var="cliente" value="#{clienteBean.listaDeClientes}"
+                     rowKey="#{cliente.idCliente}" selectionMode="single"
+                     class="table table-bordered table-condensed table-hover table-striped">
+
+          <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelect}"
+                  oncomplete="PF('dlgDetalle').show()" update="frmListaClientes"/>
+
+          <p:column headerText="Nombre" width="70%">
+            <h:outputText value="#{cliente.sujeto.nombreRazonSocial}" />
+          </p:column>
+          <p:column headerText="RFC">
+            <h:outputText value="#{cliente.sujeto.rfc}" />
+          </p:column>
+        </p:dataTable>
+
+        <p:dialog header="Detalle de cliente" widgetVar="dlgDetalle"
+                  showEffect="size" hideEffect="size">
+          <p:outputPanel id="pnlDetalleCliente">
+            <p:panelGrid id="pnlgDetalleCliente" columns="2"
+                         class="table table-bordered table-condensed table-hover table-striped">
+              <h:outputText value="Nombre o razón social" />
+              <h:inputText value="#{clienteBean.clienteSeleccionado.sujeto.nombreRazonSocial}" />
+
+              <h:outputText value="RFC" />
+              <h:inputText value="#{clienteBean.clienteSeleccionado.sujeto.rfc}" />
+
+              <h:outputText value="CURP" />
+              <h:inputText value="#{clienteBean.clienteSeleccionado.curp}" />
+
+              <h:outputText value="NSS" />
+              <h:inputText value="#{clienteBean.clienteSeleccionado.numeroSeguroSocial}" />
+
+              <h:outputText value="N. Cliente" />
+              <h:inputText value="#{clienteBean.clienteSeleccionado.numeroCliente}" />
+            </p:panelGrid>
+            <div class="modal-footer">
+              <p:commandButton value="Guardar cambios" styleClass="btn btn-xs btn-danger tooltip-test"
+                               actionListener="#{clienteBean.editar()}" update="growl,frmListaClientes"/>
+              <p:commandButton value="Eliminar" styleClass="btn btn-xs btn-danger"
+                               actionListener="#{clienteBean.eliminar()}" update="growl,frmListaClientes">
+                <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
+                           message="&iquest;Est&aacute; seguro que desea eliminar este dato?" />
+              </p:commandButton>
+              <p:confirmDialog global="true" showEffect="size" hideEffect="size">
+                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+              </p:confirmDialog>
+            </div>
+          </p:outputPanel>
         </p:dialog>
 
-        <p:dialog id="iddlgListaClientes" widgetVar="dlgListaClientes" width="40%"
-                  header="Lista de clientes, seleccione una fila para ver detalle"
-                  showEffect="size" hideEffect="size" draggable="false">
-            <h:form id="frmListaClientes">
-
-                <p:dataTable id="clientes" var="cliente" value="#{clienteBean.listaDeClientes}"
-                             rowKey="#{cliente.idCliente}" selectionMode="single">
-
-                    <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelect}"
-                            oncomplete="PF('dlgDetalle').show()" update="frmListaClientes"/>
-
-                    <p:column headerText="Nombre" width="70%">
-                        <h:outputText value="#{cliente.sujeto.nombreRazonSocial}" />
-                    </p:column>
-                    <p:column headerText="RFC">
-                        <h:outputText value="#{cliente.sujeto.rfc}" />
-                    </p:column>
-                </p:dataTable>
-
-                <p:dialog header="Detalle de cliente" widgetVar="dlgDetalle"
-                          showEffect="size" hideEffect="size">
-                    <p:outputPanel id="pnlDetalleCliente">
-                        <p:panelGrid id="pnlgDetalleCliente" columns="2">
-                            <h:outputText value="Nombre o razón social" />
-                            <h:inputText value="#{clienteBean.clienteSeleccionado.sujeto.nombreRazonSocial}" />
-
-                            <h:outputText value="RFC" />
-                            <h:inputText value="#{clienteBean.clienteSeleccionado.sujeto.rfc}" />
-
-                            <h:outputText value="CURP" />
-                            <h:inputText value="#{clienteBean.clienteSeleccionado.curp}" />
-
-                            <h:outputText value="NSS" />
-                            <h:inputText value="#{clienteBean.clienteSeleccionado.numeroSeguroSocial}" />
-
-                            <h:outputText value="N. Cliente" />
-                            <h:inputText value="#{clienteBean.clienteSeleccionado.numeroCliente}" />
-                        </p:panelGrid>
-                        <div class="modal-footer">
-                            <p:commandButton value="Guardar cambios" styleClass="btn btn-danger tooltip-test"
-                                             actionListener="#{clienteBean.editar()}" update="growl,frmListaClientes"/>
-                            <p:commandButton value="Eliminar" styleClass="btn btn-danger tooltip-test"
-                                             actionListener="#{clienteBean.eliminar()}" update="growl,frmListaClientes">
-                                <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
-                                           message="&iquest;Está seguro que desea eliminar este dato?" />
-                            </p:commandButton>
-                            <p:confirmDialog global="true" showEffect="size" hideEffect="size">
-                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-                            </p:confirmDialog>
-                        </div>
-                    </p:outputPanel>
-                </p:dialog>
-
-            </h:form>
-        </p:dialog>
-    </h:body>
+      </h:form>
+    </p:dialog>
+  </h:body>
 </html>
