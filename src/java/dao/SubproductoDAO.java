@@ -1,21 +1,50 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dao;
 
 import dto.Subproducto;
 import java.util.List;
 
 /**
+ * La interfaz {@code SubproductoDAO} contiene los prototipos de las 
+ * funciones que se realizarán sobre la tabla _ de la base de datos.
  *
+ * @author
+ * @author
  * @author brionvega
+ * @since SigerWeb2.0
  */
 public interface SubproductoDAO {
+
+    /**
+     *
+     * @param subproducto
+     * @return
+     */
     public boolean insertar(Subproducto subproducto);
+
+    /**
+     *
+     * @param subproducto
+     * @return
+     */
     public boolean editar(Subproducto subproducto);
+
+    /**
+     *
+     * @param subproducto
+     * @return
+     */
     public boolean eliminar(Subproducto subproducto);
+
+    /**
+     *
+     * @param idSubproducto
+     * @return
+     */
     public Subproducto buscar(int idSubproducto);
+
+    /**
+     *
+     * @return
+     */
     public List<Subproducto> buscarTodo();    
 }

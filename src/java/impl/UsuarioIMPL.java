@@ -12,7 +12,9 @@ import util.constantes.Perfiles;
 import util.log.Logs;
 
 /**
- * La clase {@code UsuarioIMPL} permite ...
+ * La clase {@code UsuarioIMPL} contiene la implementación de las 
+ * operaciones sobre la tabla usuarios, requeridas por la interfaz 
+ * {@code UsuarioDAO}. Dichas operaciones son realizadas por Hibernate.
  *
  * @author
  * @author
@@ -25,7 +27,8 @@ public class UsuarioIMPL implements UsuarioDAO {
     /**
      *
      *
-     * @return
+     * @param usuario
+     * @return 
      */
     @Override
     public int insertar(Usuario usuario) {
@@ -54,6 +57,7 @@ public class UsuarioIMPL implements UsuarioDAO {
     /**
      *
      *
+     * @param usuario
      * @return
      */
     @Override
@@ -82,6 +86,7 @@ public class UsuarioIMPL implements UsuarioDAO {
     /**
      *
      *
+     * @param usuario
      * @return
      */
     @Override
@@ -109,8 +114,9 @@ public class UsuarioIMPL implements UsuarioDAO {
     }
 
     /**
+     * 
      *
-     *
+     * @param idUsuario
      * @return
      */
     @Override
@@ -138,8 +144,12 @@ public class UsuarioIMPL implements UsuarioDAO {
     }
 
     /**
+     * Busca a todos los usuarios que no hayan sido eliminados y cuyo 
+     * perfil haya sido confirmado, en su caso. Un usuario eliminado tiene 
+     * perfil = 0.
      *
-     *
+     * @param nombreLogin
+     * @param password
      * @return
      */
     @Override
@@ -148,7 +158,7 @@ public class UsuarioIMPL implements UsuarioDAO {
         Transaction tx = sesion.beginTransaction();
         Usuario usuario;
 
-        try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
+        try { 
             usuario = (Usuario) sesion.createQuery("from Usuario u where "
                     + "u.perfil != " + Perfiles.ELIMINADO + " and u.perfil != "
                     + Perfiles.GESTOR_NO_CONFIRMADO + " and u.nombreLogin = '"
@@ -164,8 +174,11 @@ public class UsuarioIMPL implements UsuarioDAO {
     }
 
     /**
+     * Busca a todos los usuarios que no hayan sido eliminados, un 
+     * usuario eliminado tiene perfil = 0.
      *
-     *
+     * @param nombreLogin
+     * @param correo
      * @return
      */
     @Override
@@ -174,7 +187,7 @@ public class UsuarioIMPL implements UsuarioDAO {
         Transaction tx = sesion.beginTransaction();
         Usuario usuario;
 
-        try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
+        try {
             usuario = (Usuario) sesion.createQuery("from Usuario u where "
                     + "u.perfil != " + Perfiles.ELIMINADO + " and u.nombreLogin = '"
                     + nombreLogin + "' and u.correo = '"
@@ -191,7 +204,8 @@ public class UsuarioIMPL implements UsuarioDAO {
     }
 
     /**
-     *
+     * Busca a todos los usuarios que no hayan sido eliminados. Un 
+     * usuario eliminado tiene perfil = 0.
      *
      * @return
      */
@@ -201,7 +215,7 @@ public class UsuarioIMPL implements UsuarioDAO {
         Transaction tx = sesion.beginTransaction();
         List<Usuario> listaUsuario;
 
-        try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
+        try {
             listaUsuario = sesion.createQuery("from Usuario u"
                     + " where u.perfil != " + Perfiles.ELIMINADO
                     + " and u.perfil != " + Perfiles.GESTOR_NO_CONFIRMADO).list();
@@ -216,7 +230,7 @@ public class UsuarioIMPL implements UsuarioDAO {
     }
 
     /**
-     *
+     * Busca únicamente a los usuarios no confirmados.
      *
      * @return
      */
@@ -226,7 +240,7 @@ public class UsuarioIMPL implements UsuarioDAO {
         Transaction tx = sesion.beginTransaction();
         List<Usuario> listaUsuarioNoConfirmados;
 
-        try { // Buscamos únicamente a los no confirmados
+        try {
             listaUsuarioNoConfirmados = sesion.createQuery("from Usuario u"
                     + " where u.perfil = " + Perfiles.GESTOR_NO_CONFIRMADO).list();
         } catch (HibernateException he) {
@@ -242,6 +256,7 @@ public class UsuarioIMPL implements UsuarioDAO {
     /**
      *
      *
+     * @param nombreLogin
      * @return
      */
     @Override
@@ -267,6 +282,7 @@ public class UsuarioIMPL implements UsuarioDAO {
     /**
      *
      *
+     * @param correo
      * @return
      */
     @Override

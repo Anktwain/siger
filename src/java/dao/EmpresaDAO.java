@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dao;
 
 import dto.Empresa;
@@ -10,14 +5,48 @@ import dto.Sujeto;
 import java.util.List;
 
 /**
+ * La interfaz {@code EmpresaDAO} contiene los prototipos de las 
+ * funciones que se realizarán sobre la tabla _ de la base de datos.
  *
+ * @author
+ * @author
  * @author brionvega
+ * @since SigerWeb2.0
  */
 public interface EmpresaDAO {
+
+    /**
+     *
+     * @param empresa
+     * @return
+     */
     public boolean insertar(Empresa empresa);
+
+    /**
+     *
+     * @param empresa
+     * @return
+     */
     public boolean editar(Empresa empresa);
+
+    /**
+     *
+     * @param empresa
+     * @return
+     */
     public boolean eliminar(Empresa empresa);
+
+    /**
+     *
+     * @param idEmpresa
+     * @return
+     */
     public Empresa buscar(int idEmpresa);
+
+    /**
+     *
+     * @return
+     */
     public Empresa buscarEmpresaPorSujeto(int idEmpresa);
     public List<Empresa> buscarTodo();    
 }

@@ -26,8 +26,18 @@ public class Usuario  implements java.io.Serializable {
     public Usuario() {
     }
 
-	
-    public Usuario(String nombre, String paterno, String nombreLogin, String password, int perfil, String correo) {
+    /**
+     * Constructor parametrizado. <br/>
+     * Configura ...
+     * @param nombre
+     * @param paterno
+     * @param nombreLogin
+     * @param password
+     * @param perfil
+     * @param correo
+     */
+    public Usuario(String nombre, String paterno, String nombreLogin, 
+            String password, int perfil, String correo) {
         this.nombre = nombre;
         this.paterno = paterno;
         this.nombreLogin = nombreLogin;
@@ -35,93 +45,165 @@ public class Usuario  implements java.io.Serializable {
         this.perfil = perfil;
         this.correo = correo;
     }
-    public Usuario(String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagenPerfil, Set administrativos, Set gestors) {
-       this.nombre = nombre;
-       this.paterno = paterno;
-       this.materno = materno;
-       this.nombreLogin = nombreLogin;
-       this.password = password;
-       this.perfil = perfil;
-       this.correo = correo;
-       this.imagenPerfil = imagenPerfil;
-       this.administrativos = administrativos;
-       this.gestors = gestors;
+
+    /**
+     * Constructor parametrizado. <br/>
+     * Configura ...
+     * @param nombre
+     * @param paterno
+     * @param materno
+     * @param nombreLogin
+     * @param password
+     * @param perfil
+     * @param correo
+     * @param imagenPerfil
+     * @param administrativos
+     * @param gestors
+     */
+    public Usuario(String nombre, String paterno, String materno, String nombreLogin, 
+            String password, int perfil, String correo, String imagenPerfil, 
+            Set administrativos, Set gestors) {
+        this.nombre = nombre;
+        this.paterno = paterno;
+        this.materno = materno;
+        this.nombreLogin = nombreLogin;
+        this.password = password;
+        this.perfil = perfil;
+        this.correo = correo;
+        this.imagenPerfil = imagenPerfil;
+        this.administrativos = administrativos;
+        this.gestors = gestors;
     }
    
     public Integer getIdUsuario() {
         return this.idUsuario;
     }
-    
+
+    /**
+     *
+     *
+     * @param idUsuario 
+     */
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
     public String getNombre() {
         return this.nombre;
     }
-    
+
+    /**
+     *
+     *
+     * @param nombre 
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
     public String getPaterno() {
         return this.paterno;
     }
-    
+
+    /**
+     *
+     *
+     * @param paterno 
+     */
     public void setPaterno(String paterno) {
         this.paterno = paterno;
     }
     public String getMaterno() {
         return this.materno;
     }
-    
+
+    /**
+     *
+     *
+     * @param materno 
+     */
     public void setMaterno(String materno) {
         this.materno = materno;
     }
     public String getNombreLogin() {
         return this.nombreLogin;
     }
-    
+
+    /**
+     *
+     *
+     * @param nombreLogin 
+     */
     public void setNombreLogin(String nombreLogin) {
         this.nombreLogin = nombreLogin;
     }
     public String getPassword() {
         return this.password;
     }
-    
+
+    /**
+     *
+     *
+     * @param password 
+     */
     public void setPassword(String password) {
         this.password = password;
     }
     public int getPerfil() {
         return this.perfil;
     }
-    
+
+    /**
+     *
+     *
+     * @param perfil 
+     */
     public void setPerfil(int perfil) {
         this.perfil = perfil;
     }
     public String getCorreo() {
         return this.correo;
     }
-    
+
+    /**
+     *
+     *
+     * @param correo 
+     */
     public void setCorreo(String correo) {
         this.correo = correo;
     }
     public String getImagenPerfil() {
         return this.imagenPerfil;
     }
-    
+
+    /**
+     *
+     *
+     * @param imagenPerfil 
+     */
     public void setImagenPerfil(String imagenPerfil) {
         this.imagenPerfil = imagenPerfil;
     }
     public Set getAdministrativos() {
         return this.administrativos;
     }
-    
+
+    /**
+     *
+     *
+     * @param administrativos 
+     */
     public void setAdministrativos(Set administrativos) {
         this.administrativos = administrativos;
     }
     public Set getGestors() {
         return this.gestors;
     }
-    
+
+    /**
+     *
+     *
+     * @param gestors 
+     */
     public void setGestors(Set gestors) {
         this.gestors = gestors;
     }
