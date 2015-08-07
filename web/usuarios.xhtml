@@ -14,8 +14,7 @@
         <h:outputStylesheet library="css" name="morris.css" />
         <h:outputStylesheet library="css" name="usuarios.css" />
 
-        <!--                
-        <h:outputScript library="js" name="jquery-1.10.2.min.js" />
+        <!--  <h:outputScript library="js" name="jquery-1.10.2.min.js" />
         <h:outputScript library="js" name="jquery.flot.min.js" />
         <h:outputScript library="js" name="rapheal.min.js" />
         <h:outputScript library="js" name="morris.min.js" />
@@ -28,8 +27,7 @@
         <h:outputScript library="js" name="jquery.cookie.min.js" />
         <h:outputScript library="js" name="/endless/endless_dashboard.js" />
         <h:outputScript library="js" name="/endless/endless.js" />
-        <h:outputScript library="primefaces" name="jquery.js" />
-        -->
+        <h:outputScript library="primefaces" name="jquery.js" />        -->
         <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
     </h:head>
     <h:body>
@@ -39,12 +37,11 @@
         <ui:include src="barraLateral.xhtml" />
         <div id="main-container">
             <ui:include src="barraAdministrativo.xhtml" />
-
             <div id="opciones">
                 <div class="panel panel-default">
-                    <div class="panel-heading"> <h1>Usuarios</h1> </div>
+                    <div class="panel-heading h1 text-center"> Usuarios </div>
                     <div class="panel-tab clearfix">
-                        <ul class="tab-bar">
+                        <ul class="tab-bar h4">
                             <li class="active"><a href="#tabConfirmar" data-toggle="tab"><i class="fa fa-check-circle-o"></i> Confirmar gestores</a></li>
                             <li><a href="#tabRegistrar" data-toggle="tab"><i class="fa fa-pencil"></i> Registrar nuevo usuario</a></li>
                             <li><a href="#tabBuscar" data-toggle="tab"><i class="fa fa-search"></i> Buscar usuario</a></li>
@@ -200,7 +197,7 @@
                                             <!--<div class="form-group">-->
                                             <h:form id="form">
                                                 <p:contextMenu for="usuarios">
-                                                    <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()" />
+                                                    <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
                                                 </p:contextMenu>
 
                                                 <p:dataTable id="usuarios" var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usuarioDataTable" paginator="true" rows="10"
@@ -217,13 +214,11 @@
                                                     <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
                                                         <h:outputText value="#{usuario.nombre}"/>
                                                     </p:column>
-
                                                     <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
                                                         <h:outputLink value="" >
                                                             #{usuario.paterno}
                                                         </h:outputLink>
                                                     </p:column>
-
                                                     <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
                                                         <h:outputLink value="" >
                                                             #{usuario.materno}
@@ -235,6 +230,7 @@
                                                             #{usuario.nombreLogin}
                                                         </h:outputLink>
                                                     </p:column>
+
                                                 </p:dataTable>
 
                                                 <p:dialog header="Informaci&oacute; detallada del usuario" widgetVar="usuarioDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
@@ -246,29 +242,71 @@
 
                                                             <h:outputText value="Nombre: " />
                                                             <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombre}" />
-
                                                             <h:outputText value="Apellido paterno: " />
                                                             <h:outputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
-
                                                             <h:outputText value="Apellido materno: " />
                                                             <h:outputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
-
                                                             <h:outputText value="Nombre login: " />
-                                                            <h:outputText value="$#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
-
+                                                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
                                                             <h:outputText value="Perfil: " />
-                                                            <h:outputText value="$#{usuariosBean.usuarioSeleccionado.perfil}" style="color:red"/>
-
+                                                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.perfil}" style="color:red"/>
                                                             <h:outputText value="Correo: " />
-                                                            <h:outputText value="$#{usuariosBean.usuarioSeleccionado.correo}" />
+                                                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
 
                                                         </p:panelGrid>
                                                     </p:outputPanel>
                                                 </p:dialog>
                                             </h:form>
+
+
+                                            <h:form id="formCars">
+                                                <p:contextMenu for="cars">
+                                                    <p:menuitem value="View" update="carDetail" icon="ui-icon-search" oncomplete="PF('carDialog').show()"/>
+                                                    <p:menuitem value="Delete" update="cars" icon="ui-icon-close" actionListener="#{dtContextMenuView.deleteCar()}"/>
+                                                </p:contextMenu>
+
+                                                <p:dataTable id="cars" var="car" value="#{dtContextMenuView.cars}" rowKey="#{car.id}"
+                                                             selection="#{dtContextMenuView.selectedCar}" selectionMode="single">
+                                                    <f:facet name="header"> Clic derecho para ver opciones </f:facet>
+                                                    <p:column headerText="Id">
+                                                        <h:outputText value="#{car.id}" />
+                                                    </p:column>
+                                                    <p:column headerText="Year">
+                                                        <h:outputText value="#{car.year}" />
+                                                    </p:column>
+                                                    <p:column headerText="Brand">
+                                                        <h:outputText value="#{car.brand}" />
+                                                    </p:column>
+                                                    <p:column headerText="Color">
+                                                        <h:outputText value="#{car.color}" />
+                                                    </p:column>
+                                                </p:dataTable> 
+
+                                                <p:dialog header="Car Info" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                                                    <p:outputPanel id="carDetail" style="text-align:center;">
+                                                        <p:panelGrid  columns="2" rendered="#{not empty dtContextMenuView.selectedCar}" columnClasses="label,value">
+                                                            <f:facet name="header">
+                                                                <p:graphicImage name="demo/images/car/#{dtContextMenuView.selectedCar.brand}-big.gif"/> 
+                                                            </f:facet>
+
+                                                            <h:outputText value="Id:" />
+                                                            <h:outputText value="#{dtContextMenuView.selectedCar.id}" />
+
+                                                            <h:outputText value="Year" />
+                                                            <h:outputText value="#{dtContextMenuView.selectedCar.year}" />
+
+                                                            <h:outputText value="Color:" />
+                                                            <h:outputText value="#{dtContextMenuView.selectedCar.color}" style="color:#{dtContextMenuView.selectedCar.color}"/>
+
+                                                            <h:outputText value="Price" />
+                                                            <h:outputText value="$#{dtContextMenuView.selectedCar.price}" />
+                                                        </p:panelGrid>
+                                                    </p:outputPanel>
+                                                </p:dialog>
+                                            </h:form>
+
                                             <!-- </div> --> <!-- /form-group -->
                                             <!--</div> -->  <!-- .modal-body -->
-                                            <!--<div class="modal-footer"> <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{pruebaBean.mostrar()}" value="Aceptar" /> </div>-->
                                             <!-- </div> --> <!-- .modal-content -->
                                             <!--</h:form>-->
                                             <!--</div>--> <!-- .modal-dialog -->

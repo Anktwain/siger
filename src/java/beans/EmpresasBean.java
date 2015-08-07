@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.SessionScoped;
 import org.primefaces.context.RequestContext;
+import util.log.Logs;
 
 /**
  * La clase {@code EmpresasBean} permite ... y es el bean correspondiente a la
@@ -61,13 +62,13 @@ public class EmpresasBean implements Serializable{
     }
     
     public void editarEmpresa(){
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Se quiere editar la empresa " + corto);
+        Logs.log.debug("************ CONSOLA SIGERWEB ****************");
+        Logs.log.debug("Se quiere editar la empresa " + corto);
     }
     
     public void eliminarEmpresa(){
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Se quiere eliminar la empresa " + corto);
+        Logs.log.debug("************ CONSOLA SIGERWEB ****************");
+        Logs.log.debug("Se quiere eliminar la empresa " + corto);
     }
 
     /**

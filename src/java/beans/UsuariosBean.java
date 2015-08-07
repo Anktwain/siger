@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import org.primefaces.model.SelectableDataModel;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -38,7 +40,7 @@ import util.log.Logs;
  * @since SigerWeb2.0
  */
 @ManagedBean(name = "usuariosBean")
-@ViewScoped
+@ApplicationScoped
 public class UsuariosBean implements Serializable {
 
     private Usuario usuario;
@@ -54,7 +56,7 @@ public class UsuariosBean implements Serializable {
     private String correo;
     private String imagenPerfil;
     private String extension;
-    private SesionBean sesion;
+//    private SesionBean sesion;
     private List<Usuario> gestoresNoConfirmados;
     private List<Usuario> usuariosEncontrados;
     private List<Usuario> usuariosSeleccionados;
@@ -119,9 +121,9 @@ public class UsuariosBean implements Serializable {
      *
      * @return
      */
-    public SesionBean getSesion() {
-        return sesion;
-    }
+//    public SesionBean getSesion() {
+//        return sesion;
+//    }
 
     /**
      *
@@ -285,8 +287,8 @@ public class UsuariosBean implements Serializable {
                                 "Se ha confirmado al usuario: " + usuario.getNombre()
                                 + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
                 // AVISO
-                System.out.println("************ CONSOLA SIGERWEB ****************");
-                System.out.println("Se ha confirmado al usuario: " + usuariosSeleccionados.get(i).getNombreLogin());
+                Logs.log.debug("************ CONSOLA SIGERWEB ****************");
+                Logs.log.debug("Se ha confirmado al usuario: " + usuariosSeleccionados.get(i).getNombreLogin());
                 RequestContext.getCurrentInstance().update("noConfirmados");
                 RequestContext.getCurrentInstance().update("circulito");
             }
@@ -317,8 +319,8 @@ public class UsuariosBean implements Serializable {
                                 "Se ha eliminado al usuario: " + usuario.getNombre()
                                 + " " + usuario.getPaterno() + " " + usuario.getMaterno()));
                 // AVISO
-                System.out.println("************ CONSOLA SIGERWEB ****************");
-                System.out.println("Se ha eliminado al usuario: " + usuariosSeleccionados.get(i).getNombreLogin());
+                Logs.log.debug("************ CONSOLA SIGERWEB ****************");
+                Logs.log.debug("Se ha eliminado al usuario: " + usuariosSeleccionados.get(i).getNombreLogin());
                 RequestContext.getCurrentInstance().update("noConfirmados");
                 RequestContext.getCurrentInstance().update("circulito");
             }
@@ -347,9 +349,9 @@ public class UsuariosBean implements Serializable {
      *
      * @param sesion
      */
-    public void setSesion(SesionBean sesion) {
-        this.sesion = sesion;
-    }
+//    public void setSesion(SesionBean sesion) {
+//        this.sesion = sesion;
+//    }
 
     /**
      *
@@ -421,7 +423,7 @@ public class UsuariosBean implements Serializable {
      * @param event
      */
     public void onRowSelect(SelectEvent event) {
-        System.out.println("Se selecciono un registro");
+        Logs.log.debug("*********************** Se selecciono un registro");
     }
 
     /**
@@ -430,7 +432,7 @@ public class UsuariosBean implements Serializable {
      * @param event
      */
     public void onRowUnselect(UnselectEvent event) {
-        System.out.println("Se deselecciono un registro");
+        Logs.log.debug("*********************** Se deselecciono un registro");
     }
 
     /**

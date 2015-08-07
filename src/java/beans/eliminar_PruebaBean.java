@@ -3,6 +3,7 @@ package beans;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import util.log.Logs;
 
 /**
  * La clase {@code PruebaBean} permite ... y es el bean correspondiente a la
@@ -15,7 +16,7 @@ import javax.faces.bean.ViewScoped;
  */
 @ManagedBean
 @ViewScoped
-public class PruebaBean implements Serializable {
+public class eliminar_PruebaBean implements Serializable {
 
     private String nombre;
 
@@ -25,8 +26,8 @@ public class PruebaBean implements Serializable {
      * @param
      */
     public void mostrar() {
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("SE DIO DE ALTA A: " + nombre + " EN EL SISTEMA");
+        Logs.log.debug("************ CONSOLA SIGERWEB ****************");
+        Logs.log.debug("SE DIO DE ALTA A: " + nombre + " EN EL SISTEMA");
     }
 
     /**
