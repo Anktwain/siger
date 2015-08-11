@@ -14,6 +14,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.RowEditEvent;
 import util.log.Logs;
 
 /**
@@ -40,6 +41,42 @@ public class TelefonoBean implements Serializable {
     telefono = new Telefono();
     telefonoDao = new TelefonoIMPL();
   }
+
+  public boolean editar(Telefono tel) {
+    FacesContext context = FacesContext.getCurrentInstance();
+    boolean ok = false;
+    
+    ok = telefonoDao.editar(tel); 
+    if (ok) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Operación Exitosa",
+              "Se modificó el registro seleccionado"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "Operación Exitosa",
+              "No se pudo editar el registro seleccionado."));
+    }
+    
+    return ok;
+  }
+  
+  public boolean eliminar(Telefono tel) {
+    FacesContext context = FacesContext.getCurrentInstance();
+    boolean ok = false;
+    
+    ok = telefonoDao.eliminar(tel);
+    if (ok) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Operación Exitosa",
+              "Se eliminó el registro seleccionado"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "Operación Exitosa",
+              "No se pudo eliminar el registro seleccionado."));
+    }
+    
+    return ok;
+  }  
 
   public void agregar(Sujeto sujeto) {
     telefono.setNumero(numero);

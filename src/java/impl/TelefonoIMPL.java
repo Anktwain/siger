@@ -88,8 +88,7 @@ public class TelefonoIMPL implements TelefonoDAO {
         boolean ok;
 
         try {
-            // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
-            sesion.update(telefono);
+            sesion.delete(telefono);
             tx.commit();
             ok = true;
         } catch (HibernateException he) {
@@ -136,7 +135,7 @@ public class TelefonoIMPL implements TelefonoDAO {
         listaTelefonos = sesion.createSQLQuery(consulta).addEntity(Telefono.class).list();
       } catch (HibernateException he) {
         listaTelefonos = null;
-        he.printStackTrace();
+        Logs.log.error(he.getMessage());
       } finally {
         cerrar(sesion);
       }

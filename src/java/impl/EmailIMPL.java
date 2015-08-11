@@ -88,8 +88,7 @@ public class EmailIMPL implements EmailDAO {
         boolean ok;
 
         try {
-            // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
-            sesion.update(email);
+            sesion.delete(email);
             tx.commit();
             ok = true;
         } catch (HibernateException he) {
@@ -123,6 +122,25 @@ public class EmailIMPL implements EmailDAO {
     @Override
     public List<Email> buscarTodo() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public List<Email> buscarPorSujeto(int idSujeto) {
+      Session sesion = HibernateUtil.getSessionFactory().openSession();
+      Transaction tx = sesion.beginTransaction();
+      List<Email> listaEmails;
+      String consulta = "select e.* from email e join sujeto s on s.id_sujeto=e.sujetos_id_sujeto where s.id_sujeto=" + idSujeto + ";";
+      
+      try {
+        listaEmails = sesion.createSQLQuery(consulta).addEntity(Email.class).list();
+      } catch(HibernateException he) {
+        listaEmails = null;
+        Logs.log.error(he.getMessage());
+      } finally {
+        cerrar(sesion);
+      }
+      
+      return listaEmails;
     }
 
     /**

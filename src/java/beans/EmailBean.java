@@ -27,68 +27,105 @@ import util.log.Logs;
 @ViewScoped
 public class EmailBean implements Serializable {
 
-    // Objeto Email, sus propiedades y acceso a la BD
-    private Email email;
+  // Objeto Email, sus propiedades y acceso a la BD
+  private Email email;
 
-    private String direccion;
-    private String tipo;
+  private String direccion;
+  private String tipo;
 
-    private EmailDAO emailDao;
+  private EmailDAO emailDao;
 
-    // Construyendo...
-    public EmailBean() {
-        email = new Email();
-        emailDao = new EmailIMPL();
+  // Construyendo...
+  public EmailBean() {
+    email = new Email();
+    emailDao = new EmailIMPL();
+  }
+
+  public boolean editar(Email mail) {
+    FacesContext context = FacesContext.getCurrentInstance();
+    boolean ok = false;
+
+    ok = emailDao.editar(mail);
+    if (ok) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Operación Exitosa",
+              "Se modificó el registro seleccionado"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "Operación Exitosa",
+              "No se pudo editar el registro seleccionado."));
     }
 
-    public void agregar(Sujeto sujeto) {
-        email.setDireccion(direccion);
-        email.setTipo(tipo);
-        email.setSujeto(sujeto);
+    return ok;
+  }
 
-        if (!validarCorreo()) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "No se pudo agregar el usuario", "El formato de correo electrónico no es válido."));
-        } else if (emailDao.insertar(email)) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            context.addMessage(null, new FacesMessage("Operación Exitosa",
-                    "Se agregó un nuevo E-mail: " + direccion + " para: "
-                    + " " + sujeto.getNombreRazonSocial()));
-            limpiarEntradas();
-            Logs.log.info("Se agregó objeto: Email");
-        } else {
-            Logs.log.error("No se pudo agregar objeto: Email.");
-        }
+  public boolean eliminar(Email mail) {
+    FacesContext context = FacesContext.getCurrentInstance();
+    boolean ok = false;
+
+    ok = emailDao.eliminar(email);
+
+    if (ok) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Operación Exitosa",
+              "Se eliminó el registro seleccionado"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "Operación Exitosa",
+              "No se pudo eliminar el registro seleccionado."));
     }
 
-    public void limpiarEntradas() {
-        direccion = null;
-        tipo = null;
-    }
+    return ok;
+  }
 
-    private boolean validarCorreo() {
-        // Compila la cadena PATRON_EMAIL como un patrón
-        Pattern patron = Pattern.compile(Patrones.PATRON_EMAIL);
-        // Compara el correo con el patrón dado
-        Matcher matcher = patron.matcher(direccion);
-        return matcher.matches();
-    }
+  public void agregar(Sujeto sujeto) {
+    email.setDireccion(direccion);
+    email.setTipo(tipo);
+    email.setSujeto(sujeto);
 
-    public String getDireccion() {
-        return direccion;
+    if (!validarCorreo()) {
+      FacesContext.getCurrentInstance().addMessage(null,
+              new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                      "No se pudo agregar el usuario", "El formato de correo electrónico no es válido."));
+    } else if (emailDao.insertar(email)) {
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage("Operación Exitosa",
+              "Se agregó un nuevo E-mail: " + direccion + " para: "
+              + " " + sujeto.getNombreRazonSocial()));
+      limpiarEntradas();
+      Logs.log.info("Se agregó objeto: Email");
+    } else {
+      Logs.log.error("No se pudo agregar objeto: Email.");
     }
+  }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
+  public void limpiarEntradas() {
+    direccion = null;
+    tipo = null;
+  }
 
-    public String getTipo() {
-        return tipo;
-    }
+  private boolean validarCorreo() {
+    // Compila la cadena PATRON_EMAIL como un patrón
+    Pattern patron = Pattern.compile(Patrones.PATRON_EMAIL);
+    // Compara el correo con el patrón dado
+    Matcher matcher = patron.matcher(direccion);
+    return matcher.matches();
+  }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
+  public String getDireccion() {
+    return direccion;
+  }
+
+  public void setDireccion(String direccion) {
+    this.direccion = direccion;
+  }
+
+  public String getTipo() {
+    return tipo;
+  }
+
+  public void setTipo(String tipo) {
+    this.tipo = tipo;
+  }
 
 }
