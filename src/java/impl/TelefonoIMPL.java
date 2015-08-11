@@ -124,6 +124,25 @@ public class TelefonoIMPL implements TelefonoDAO {
     public List<Telefono> buscarTodo() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    @Override
+    public List<Telefono> buscarPorSujeto(int idSujeto) {
+      Session sesion = HibernateUtil.getSessionFactory().openSession();
+      Transaction tx = sesion.beginTransaction();
+      List<Telefono> listaTelefonos;
+      String consulta = "select t.* from telefono t join sujeto s on s.id_sujeto=t.sujetos_id_sujeto where s.id_sujeto=" + idSujeto + ";";
+      
+      try {
+        listaTelefonos = sesion.createSQLQuery(consulta).addEntity(Telefono.class).list();
+      } catch (HibernateException he) {
+        listaTelefonos = null;
+        he.printStackTrace();
+      } finally {
+        cerrar(sesion);
+      }
+      
+      return listaTelefonos;
+    }
 
     /**
      *
