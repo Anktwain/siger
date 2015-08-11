@@ -61,6 +61,15 @@ public class UsuariosBean implements Serializable {
     private List<Usuario> usuariosEncontrados;
     private List<Usuario> usuariosSeleccionados;
     private List<Usuario> todosUsuarios;
+    private final String rutaImPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL;
+
+    /**
+     *
+     * @return
+     */
+    public String getRutaImPerfil() {
+        return rutaImPerfil;
+    }
 
     /**
      *
