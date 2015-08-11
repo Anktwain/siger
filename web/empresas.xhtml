@@ -44,7 +44,50 @@
                                         <h4>Registre a una empresa en el sistema</h4>
                                     </div>
                                     <div class="modal-body">
-
+                                        <!-- FORMULARIO PARA REGISTRAR UNA NUEVA EMPRESA -->
+                                        <h:outputText value="Razon Social:" />
+                                        <br />
+                                        <p:inputText value="#{empresasBean.nuevaRazonSocial}" size="50" />
+                                        <br />
+                                        <h:outputText value="RFC:" />
+                                        <br />
+                                        <p:inputText value="#{empresasBean. nuevoRfc}" size="25" />
+                                        <br />
+                                        <h:outputText value="Nombre Corto:" />
+                                        <br />
+                                        <p:inputText value="#{empresasBean.nuevoCorto}" size="25" />
+                                        <br />
+                                        <p:separator />
+                                        <h4>
+                                            <h:outputText value="Agregue telefonos, correos y direcciones:" />
+                                        </h4>
+                                        <br />
+                                        <p:commandButton id="btnTelsEmpresa" icon="fa fa-phone" type="button">
+                                            <p:overlayPanel id="pnlTelsEmpresa" for="btnTelsEmpresa" hideEffect="size" dynamic="true" style="width: 600px">
+                                                <p:outputLabel value="Numero:" />
+                                                <p:inputText id="numero" class="form-control input-sm" required="true" requiredMessage="Ingrese un numero telefonico" value="#{clienteBean.telefonoBean.numero}"/>
+                                                <p:outputLabel value="Tipo:" />
+                              <p:inputText id="tipo" class="form-control input-sm"
+                                           value="#{clienteBean.telefonoBean.tipo}"/>
+                              <p:outputLabel value="Lada:" />
+                              <p:inputText id="lada" class="form-control input-sm"
+                                           value="#{clienteBean.telefonoBean.lada}"/>
+                              <p:outputLabel value="Horario: " />
+                          <p:inputText id="hora" class="form-control input-sm"
+                                       value="#{clienteBean.telefonoBean.horario}"/>
+                                            </p:overlayPanel>
+                                        </p:commandButton>
+                                        <p:commandButton id="btnMailsEmpresa" icon="fa fa-envelope" type="button">
+                                            <p:overlayPanel id="pnlMailsEmpresa" for="btnMailsEmpresa" hideEffect="size" dynamic="true" style="width: 600px">
+                                            </p:overlayPanel>
+                                        </p:commandButton>
+                                        <p:commandButton id="btnDirsEmpresa" icon="fa fa-map-marker" type="button">
+                                            <p:overlayPanel id="pnlDirsEmpresa" for="btnDirsEmpresa" hideEffect="size" dynamic="true" style="width: 600px">
+                                            </p:overlayPanel>
+                                        </p:commandButton>
+                                        <br />
+                                        <br />
+                                        <p:commandButton value="Aceptar" actionListener="#{empresasBean.crearEmpresa}"/>
                                     </div>
                                     <div class="modal-footer">
                                     </div>
@@ -56,26 +99,23 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                        <h4>seleccione la empresa y de click en "Editar"</h4>
+                                        <h4>Seleccione la empresa y de click en "Editar"</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <h:form>
-                                            <p:dataTable id="editarEmpresa" var="sujeto" value="#{empresasBean.listaEmpresas}" rowKey="#{sujeto.rfc}" selection="#{empresasBean.empresa}" selectionMode="single" paginator="true" rows="10">
-                                                <f:facet name="header">
-                                                    Empresas registradas en el sistema
-                                                </f:facet>
-                                                <p:column headerText="Nombre de la empresa">
-                                                    <p:outputLabel value="#{sujeto.nombreRazonSocial}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
-                                                </p:column>
-                                                <p:column headerText="RFC"> 
-                                                    <h:outputText value="#{sujeto.rfc}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
-                                                </p:column>
-                                                <f:facet name="footer">
-                                                    <p:commandButton process="editarEmpresa" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarEmpresa}" update="modalEmpresaId, modalEditarId" oncomplete="PF('modalEmpresa').show();" />
-                                                    <!-- update="modalEmpresaId" -->
-                                                </f:facet>
-                                            </p:dataTable>
-                                        </h:form>
+                                        <p:dataTable id="editarEmpresa" var="sujeto" value="#{empresasBean.listaEmpresas}" rowKey="#{sujeto.rfc}" selection="#{empresasBean.empresa}" selectionMode="single" paginator="true" rows="10" style="width: 700px; margin-left: auto; margin-right: auto;">
+                                            <f:facet name="header">
+                                                Empresas registradas en el sistema
+                                            </f:facet>
+                                            <p:column headerText="Nombre de la empresa">
+                                                <p:outputLabel value="#{sujeto.nombreRazonSocial}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                                            </p:column>
+                                            <p:column headerText="RFC"> 
+                                                <h:outputText value="#{sujeto.rfc}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                                            </p:column>
+                                            <f:facet name="footer">
+                                                <p:commandButton process="editarEmpresa" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarEmpresa}" update="todo:modalEmpresaId, editarEmpresa" oncomplete="PF('modalEmpresa').show();" />
+                                            </f:facet>
+                                        </p:dataTable>
                                     </div>
                                     <div class="modal-footer">
                                     </div>
@@ -89,63 +129,154 @@
         <!-- Footer ================================================== -->
         <ui:include src="barraInferior.xhtml" />
         <!-- DIALOGOS -->
-        <!-- DIALOGO DE DETALLE EMPRESAS -->
-        <p:dialog id="modalEmpresaId" header="Detalle empresa" widgetVar="modalEmpresa" modal="true" resizable="false">
-            <h:form>
-                <p:outputLabel value="Razon social: " />
+        <!-- DIALOGO DE DETALLE EMPRESA -->
+        <h:form id="todo">
+            <p:dialog id="modalEmpresaId" header="Detalle empresa" widgetVar="modalEmpresa" modal="true" resizable="false">
+                <h:form>
+                    <div class="panel panel-default">
+                        <div class="panel-tab clearfix">
+                            <ul class="tab-bar">
+                                <li><a href="#editaDatos" data-toggle="tab"><i class="fa fa-briefcase"></i> Editar datos primarios</a></li>
+                                <li><a href="#editaProductos" data-toggle="tab"><i class="fa fa-barcode"></i> Editar productos</a></li>
+                                <li><a href="#editaSubproductos" data-toggle="tab"><i class="fa fa-barcode"></i> Editar subproductos</a></li>
+                                <li><a href="#eliminaEmpresa" data-toggle="tab"><i class="fa fa-trash-o"></i> Eliminar empresa</a></li>
+                            </ul>
+                        </div>
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade" id="editaDatos">
+                                    <!--
+                                    EDICION DE DATOS PRIMARIOS
+                                    -->
+                                    <h:outputText value="Razon Social:" />
+                                    <br />
+                                    <p:inputText value="#{empresasBean.razonSocial}" size="50" />
+                                    <br />
+                                    <h:outputText value="RFC:" />
+                                    <br />
+                                    <p:inputText value="#{empresasBean.auxRfc}" size="25" />
+                                    <br />
+                                    <h:outputText value="Nombre Corto:" />
+                                    <br />
+                                    <p:inputText value="#{empresasBean.corto}" size="25" />
+                                    <br />
+                                    <br />
+                                    <p:commandButton value="Aceptar" actionListener="#{empresasBean.editarEmpresa}" />
+                                </div>
+                                <div class="tab-pane fade" id="editaProductos">
+                                    <!--
+                                    EDICION DE PRODUCTOS
+                                    -->
+                                    <p:dataTable id="editarProducto" var="producto" value="#{empresasBean.listaProductos}" rowKey="#{producto.idProducto}" selection="#{empresasBean.producto}" selectionMode="single" paginator="true" rows="10" emptyMessage="No hay productos registrados." style="width: 620px;">
+                                        <f:facet name="header">
+                                            Productos de <p:outputLabel value="#{empresasBean.razonSocial}" />
+                                        </f:facet>
+                                        <p:column headerText="Nombre del producto" style="width: 150px;">
+                                            <p:outputLabel value="#{producto.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                                        </p:column>
+                                        <p:column headerText="Descripcion" style="width: 450px;"> 
+                                            <h:outputText value="#{producto.descripcion}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                                        </p:column>
+                                        <f:facet name="footer">
+                                            <p:commandButton process="editarProducto" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarProducto}" update="todo:modalProductoId, todo:modalEmpresaId" oncomplete="PF('modalProducto').show();" />
+                                            <p:commandButton process="editarProducto" icon="ui-icon-plus" value="Agregar" update="todo:modalProductoId" oncomplete="PF('nuevoProducto').show();" />
+                                        </f:facet>
+                                    </p:dataTable>
+                                </div>
+                                <!--
+                                    EDICION DE SUBPRODUCTOS
+                                -->
+                                <div class="tab-pane fade" id="editaSubproductos">
+                                    <p:dataTable id="editarSubproducto" var="subproducto" value="#{empresasBean.listaSubproductos}" rowKey="#{subproducto.idSubproducto}" selection="#{empresasBean.subproduct}" selectionMode="single" paginator="true" rows="10" emptyMessage="No hay subproductos registrados." style="width: 620px;">
+                                        <f:facet name="header">
+                                            Subproductos de <p:outputLabel value="#{empresasBean.razonSocial}" />
+                                        </f:facet>
+                                        <p:column headerText="Nombre del subproducto" style="width: 150px;">
+                                            <p:outputLabel value="#{subproducto.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                                        </p:column>
+                                        <p:column headerText="Descripcion" style="width: 450px;"> 
+                                            <h:outputText value="#{subproducto.descripcion}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                                        </p:column>
+                                        <f:facet name="footer">
+                                            <p:commandButton process="editarSubproducto" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarSubproducto}" update="todo:modalSubproductoId" oncomplete="PF('modalSubproducto').show();" />
+                                            <p:commandButton process="editarSubproducto" icon="ui-icon-plus" value="Agregar" update="todo:modalSubproductoId" oncomplete="PF('nuevoSubproducto').show();" />
+                                        </f:facet>
+                                    </p:dataTable>
+                                </div>
+                                <div class="tab-pane fade" id="eliminaEmpresa">
+                                    <!--
+                                    ELIMINAR A LA EMPRESA
+                                    -->
+                                    <h:outputText value="Esta seguro de que desea eliminar a esta empresa?" />
+                                    <br />
+                                    <br />
+                                    <p:commandButton value="Eliminar" actionListener="#{empresasBean.eliminarEmpresa}" oncomplete="PF('modalEmpresa').hide();" />
+                                    <p:commandButton value="Cancelar" oncomplete="PF('modalEmpresa').hide();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+            </p:dialog>
+            <!-- DIALOGO DE DETALLE PRODUCTO -->
+            <p:dialog id="modalProductoId" header="Detalle producto" widgetVar="modalProducto" modal="false" resizable="false" draggable="false" >
+                <h:outputText value="Nombre del producto:" />
                 <br />
-                <p:outputLabel value="#{empresasBean.razonSocial}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                <p:inputText value="#{empresasBean.prod}" size="50" />
                 <br />
-                <p:outputLabel value="RFC: " />
+                <h:outputText value="Descripcion:" />
                 <br />
-                <p:outputLabel value="#{empresasBean.auxRfc}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
-                <br />
-                <br />
-                <p:commandButton value="Editar datos" type="button" onclick="PF('modalEditar').show();" />
+                <p:inputTextarea value="#{empresasBean.desc}" rows="10" cols="50" />
                 <br />
                 <br />
-                <p:commandButton value="Editar productos" type="button" onclick="PF('modalProductos').show();" />
+                <p:commandButton value="Aceptar" actionListener="#{empresasBean.editarProducto}" oncomplete="PF('modalProducto').hide();" />
+            </p:dialog>
+            <!-- DIALOGO DE DETALLE SUBPRODUCTO -->
+            <p:dialog id="modalSubproductoId" header="Detalle subproducto" widgetVar="modalSubproducto" modal="false" resizable="false" draggable="false" >
+                <h:outputText value="Nombre del subproducto:" />
+                <br />
+                <p:inputText value="#{empresasBean.subprod}" size="50" />
+                <br />
+                <h:outputText value="Descripcion:" />
+                <br />
+                <p:inputTextarea value="#{empresasBean.subdesc}" rows="10" cols="50" />
                 <br />
                 <br />
-                <p:commandButton value="Editar subproductos" type="button" onclick="PF('modalSubproductos').show();" />
+                <p:commandButton value="Aceptar" actionListener="#{empresasBean.editarSubproducto}" oncomplete="PF('modalSubproducto').hide();" />
+            </p:dialog>
+            <!-- DIALOGO DE NUEVO PRODUCTO -->
+            <p:dialog id="modalNuevoProducto" header="Nuevo producto" widgetVar="nuevoProducto" modal="false" resizable="false" draggable="false" >
+                <h:outputText value="Nombre del producto:" />
+                <br />
+                <p:inputText value="#{empresasBean.nuevoProd}" size="50" />
+                <br />
+                <h:outputText value="Descripcion:" />
+                <br />
+                <p:inputTextarea value="#{empresasBean.nuevaDesc}" rows="10" cols="50" />
                 <br />
                 <br />
-                <p:commandButton value="Eliminar empresa" onclick="PF('modalEliminar').show();" />
-            </h:form>
-        </p:dialog>
-        <!-- DIALOGO DE PRODUCTOS -->
-        <p:dialog header="Productos de la empresa" widgetVar="modalProductos" modal="true" resizable="false">
-            <h:outputText value="Dialogo de productos" />
-        </p:dialog>
-        <!-- DIALOGO DE SUBPRODUCTOS -->
-        <p:dialog header="Subproductos de la empresa" widgetVar="modalSubproductos" modal="true" resizable="false">
-            <h:outputText value="Dialogo de subproductos" />
-        </p:dialog>
-        <!-- DIALOGO DE EDITAR EMPRESA -->
-        <p:dialog id="modalEditarId" header="Datos primarios de la empresa" widgetVar="modalEditar" modal="true" resizable="false">
-            <f:facet name="header">
-                <h:outputText value="Modifique los datos para esta empresa" />
-            </f:facet>
-            <h:outputText value="Razon Social:" />
-            <br />
-            <p:inputText value="#{empresasBean.razonSocial}" size="50" />
-            <br />
-            <br />
-            <h:outputText value="RFC:" />
-            <br />
-            <p:inputText value="#{empresasBean.auxRfc}" size="25" />
-            <br />
-            <br />
-            <h:outputText value="Nombre Corto:" />
-            <br />
-            <p:inputText value="#{empresasBean.corto}" size="25" />
-            <f:facet name="footer">
-                <p:commandButton value="Aceptar" actionListener="#{empresasBean.editarEmpresa}" />
-            </f:facet>
-        </p:dialog>
-        <!-- DIALOGO DE ELIMINAR EMPRESA -->
-        <p:dialog header="Eliminar empresa" widgetVar="modalEliminar" modal="true" resizable="false">
-            <h:outputText value="Esta seguro de que desea eliminar a esta empresa?" />
-        </p:dialog>
+                <p:commandButton value="Aceptar" actionListener="#{empresasBean.crearProducto}" oncomplete="PF('nuevoProducto').hide();" />
+            </p:dialog>
+            <!-- DIALOGO DE NUEVO SUBPRODUCTO -->
+            <p:dialog id="modalNuevoSubproducto" header="Nuevo subproducto" widgetVar="nuevoSubproducto" modal="false" resizable="false" draggable="false" >
+                <h:outputText value="Nombre del subproducto:" />
+                <br />
+                <p:inputText value="#{empresasBean.nuevoSubprod}" size="50" />
+                <br />
+                <h:outputText value="Descripcion:" />
+                <br />
+                <p:inputTextarea value="#{empresasBean.nuevaSubdesc}" rows="10" cols="50" />
+                <br />
+                <h:outputText value="Seleccione el producto al que pertenece" />
+                <br />
+                <p:selectOneMenu id="combobox" value="#{empresasBean.seleccionadoCombobox}">
+                    <f:selectItem itemLabel="Seleccione un producto" itemValue="" />
+                    <f:selectItems value="#{empresasBean.listaProductos}" var="producto" itemLabel="#{producto.nombre}" itemValue="#{producto.idProducto}" />
+                </p:selectOneMenu>
+                <br />
+                <br />
+                <p:commandButton value="Aceptar" actionListener="#{empresasBean.crearSubproducto}" oncomplete="PF('nuevoSubproducto').hide();" />
+            </p:dialog>
+        </h:form>
     </h:body>
 </html>
