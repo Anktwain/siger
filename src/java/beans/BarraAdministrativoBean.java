@@ -7,6 +7,7 @@ import dao.UsuarioDAO;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import util.log.Logs;
 
 
 /**
@@ -40,8 +41,8 @@ public class BarraAdministrativoBean implements Serializable{
         sinConfirmar = usuarioDao.buscarUsuariosNoConfirmados();
         int cuenta = sinConfirmar.size();
         String total = Integer.toString(cuenta);
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Existen " + total + " gestores no confirmados en el sistema");
+        Logs.log.debug("************ CONSOLA SIGERWEB ****************");
+        Logs.log.debug("Existen " + total + " gestores no confirmados en el sistema");
         return total;
     }
       /**

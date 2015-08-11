@@ -172,107 +172,6 @@ public class EmpresasBean implements Serializable {
         }
     }
     
-    public void crearProducto() {
-        nuevoProducto.setNombre(nuevoProd);
-        nuevoProducto.setDescripcion(nuevaDesc);
-        okNuevoProducto = productoDao.insertar(nuevoProducto);
-        if(okNuevoProducto){
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Se registro el producto " + nuevoProd + " exitosamente");
-        /*
-        RequestContext.getCurrentInstance().update("formNuevaEmpresa");
-        RequestContext.getCurrentInstance().update("formEditarEmpresa");
-        */
-        }
-        else{
-            System.out.println("Error fatal. No se registro el producto " + nuevoProd + " en el sistema");
-        }
-    }
-
-    public void editarProducto() {
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Se quiere editar el producto " + prod);
-        RequestContext.getCurrentInstance().update("editarProductos");
-    }
-    
-    public void crearSubproducto() {
-        nuevoSubproducto.setNombre(nuevoSubprod);
-        nuevoSubproducto.setDescripcion(nuevaSubdesc);
-        nuevoSubproducto.setProducto(seleccionadoCombobox);
-        okNuevoSubproducto = subproductoDao.insertar(nuevoSubproducto);
-        if(okNuevoSubproducto){
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Se registro el subproducto " + nuevoSubprod + " exitosamente");
-        /*
-        RequestContext.getCurrentInstance().update("formNuevaEmpresa");
-        RequestContext.getCurrentInstance().update("formEditarEmpresa");
-        */
-        }
-        else{
-            System.out.println("Error fatal. No se registro el producto " + nuevoSubprod + " en el sistema");
-        }
-    }
-
-    public void editarSubproducto() {
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Se quiere editar el subproducto " + subprod);
-        RequestContext.getCurrentInstance().update("editarSubproductos");
-    }
-
-    public Subproducto getSubproduct() {
-        return subproduct;
-    }
-
-    public void setSubproduct(Subproducto subproduct) {
-        this.subproduct = subproduct;
-    }
-
-    public Subproducto getSubproductoSeleccionado() {
-        return subproductoSeleccionado;
-    }
-
-    public void setSubproductoSeleccionado(Subproducto subproductoSeleccionado) {
-        this.subproductoSeleccionado = subproductoSeleccionado;
-    }
-
-    public String getSubprod() {
-        return subprod;
-    }
-
-    public void setSubprod(String subprod) {
-        this.subprod = subprod;
-    }
-
-    public String getSubdesc() {
-        return subdesc;
-    }
-
-    public void setSubdesc(String subdesc) {
-        this.subdesc = subdesc;
-    }
-
-    public ProductoDAO getProductoDao() {
-        return productoDao;
-    }
-
-    public void setProductoDao(ProductoDAO productoDao) {
-        this.productoDao = productoDao;
-    }
-
-    public List<Producto> getListaProductos() {
-        return listaProductos;
-    }
-
-    public void setListaProductos(List<Producto> listaProductos) {
-        this.listaProductos = listaProductos;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     /**
@@ -649,3 +548,104 @@ public class EmpresasBean implements Serializable {
 
 
 }
+    public void crearProducto() {
+        nuevoProducto.setNombre(nuevoProd);
+        nuevoProducto.setDescripcion(nuevaDesc);
+        okNuevoProducto = productoDao.insertar(nuevoProducto);
+        if(okNuevoProducto){
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println("Se registro el producto " + nuevoProd + " exitosamente");
+        /*
+        RequestContext.getCurrentInstance().update("formNuevaEmpresa");
+        RequestContext.getCurrentInstance().update("formEditarEmpresa");
+        */
+        }
+        else{
+            System.out.println("Error fatal. No se registro el producto " + nuevoProd + " en el sistema");
+        }
+    }
+
+    public void editarProducto() {
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println("Se quiere editar el producto " + prod);
+        RequestContext.getCurrentInstance().update("editarProductos");
+    }
+    
+    public void crearSubproducto() {
+        nuevoSubproducto.setNombre(nuevoSubprod);
+        nuevoSubproducto.setDescripcion(nuevaSubdesc);
+        nuevoSubproducto.setProducto(seleccionadoCombobox);
+        okNuevoSubproducto = subproductoDao.insertar(nuevoSubproducto);
+        if(okNuevoSubproducto){
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println("Se registro el subproducto " + nuevoSubprod + " exitosamente");
+        /*
+        RequestContext.getCurrentInstance().update("formNuevaEmpresa");
+        RequestContext.getCurrentInstance().update("formEditarEmpresa");
+        */
+        }
+        else{
+            System.out.println("Error fatal. No se registro el producto " + nuevoSubprod + " en el sistema");
+        }
+    }
+
+    public void editarSubproducto() {
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println("Se quiere editar el subproducto " + subprod);
+        RequestContext.getCurrentInstance().update("editarSubproductos");
+    }
+
+    public Subproducto getSubproduct() {
+        return subproduct;
+    }
+
+    public void setSubproduct(Subproducto subproduct) {
+        this.subproduct = subproduct;
+    }
+
+    public Subproducto getSubproductoSeleccionado() {
+        return subproductoSeleccionado;
+    }
+
+    public void setSubproductoSeleccionado(Subproducto subproductoSeleccionado) {
+        this.subproductoSeleccionado = subproductoSeleccionado;
+    }
+
+    public String getSubprod() {
+        return subprod;
+    }
+
+    public void setSubprod(String subprod) {
+        this.subprod = subprod;
+    }
+
+    public String getSubdesc() {
+        return subdesc;
+    }
+
+    public void setSubdesc(String subdesc) {
+        this.subdesc = subdesc;
+    }
+
+    public ProductoDAO getProductoDao() {
+        return productoDao;
+    }
+
+    public void setProductoDao(ProductoDAO productoDao) {
+        this.productoDao = productoDao;
+    }
+
+    public List<Producto> getListaProductos() {
+        return listaProductos;
+    }
+
+    public void setListaProductos(List<Producto> listaProductos) {
+        this.listaProductos = listaProductos;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
