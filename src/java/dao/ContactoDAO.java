@@ -47,4 +47,6 @@ public interface ContactoDAO {
      * @return
      */
     public List<Contacto> buscarTodo();
+    
+    public List<Contacto> buscarPorSujeto(int idSujeto);
 }

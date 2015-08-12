@@ -6,18 +6,31 @@
 package beans;
 
 import dao.ContactoDAO;
+import dao.DireccionDAO;
+import dao.EmailDAO;
 import dao.SujetoDAO;
+import dao.TelefonoDAO;
 import dto.Cliente;
 import dto.Contacto;
+import dto.Direccion;
+import dto.Email;
 import dto.Sujeto;
+import dto.Telefono;
 import impl.ContactoIMPL;
+import impl.DireccionIMPL;
+import impl.EmailIMPL;
 import impl.SujetoIMPL;
+import impl.TelefonoIMPL;
 import java.io.Serializable;
+import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
+import util.constantes.Perfiles;
 import util.constantes.Sujetos;
 import util.log.Logs;
 
@@ -33,14 +46,34 @@ public class ContactoBean implements Serializable {
   private Contacto contacto;
   private Sujeto sujeto;
 
+  // Atributos de Contacto
   private String observaciones;
 
+  // Atributos de Sujeto
   private String nombreRazonSocial;
   private String rfc;
   private int eliminado;
 
+  // clases para acceso a datos
   private ContactoDAO contactoDao;
   private SujetoDAO sujetoDao;
+  
+  // Listas
+  List<Contacto> listaDeContactos;
+  List<Telefono> listaTelefonos;
+  List<Direccion> listaDirecciones;
+  List<Email> listaEmails;
+  
+  // Otros accesos a datos
+  private TelefonoDAO telefonoDao;
+  private EmailDAO emailDao;
+  private DireccionDAO direccionDao;
+  
+  // Objetos seleccionados en la tabla
+  private Telefono telefonoSeleccionado;
+  private Email emailSeleccionado;
+  private Direccion direccionSeleccionada;
+  private Contacto contactoSeleccionado;  
 
   // Otros beans
   @ManagedProperty(value = "#{telefonoBean}")
@@ -61,6 +94,49 @@ public class ContactoBean implements Serializable {
     sujetoDao = new SujetoIMPL();
     eliminado = Sujetos.ACTIVO;
     btnGuardarContactoDisabled = false;
+    
+    telefonoDao = new TelefonoIMPL();
+    emailDao = new EmailIMPL();
+    direccionDao = new DireccionIMPL();
+  }
+  
+  public boolean editar(Contacto contacto) {
+    boolean ok = false;
+    FacesContext context = FacesContext.getCurrentInstance();
+    if (sujetoDao.editar(contacto.getSujeto())) {
+      if (contactoDao.editar(contacto)) {
+        context.addMessage(null, new FacesMessage("Operación Exitosa",
+                "Se actualizaron los datos del contacto: "
+                + contacto.getSujeto().getNombreRazonSocial()));
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleContacto').hide();");
+        ok = true;
+      }
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "Operación No Exitosa",
+              "No se pudo eliminar el registro seleccionado."));
+      ok = false;
+    }
+    return ok;
+  }
+    
+  public boolean eliminar(Contacto contacto) {
+    FacesContext context = FacesContext.getCurrentInstance();
+    boolean ok = false;
+
+    ok = contactoDao.eliminar(contacto);
+
+    if (ok) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Operación Exitosa",
+              "Se eliminó el registro seleccionado"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "Operación Exitosa",
+              "No se pudo eliminar el registro seleccionado."));
+    }
+
+    return ok;
   }
 
   public void agregarTelefono() {
@@ -118,6 +194,12 @@ public class ContactoBean implements Serializable {
       Logs.log.error("No se pudo agregar objeto: Sujeto.");
     }
   }
+  
+  public void obtenerDatos(){
+    listaTelefonos = telefonoDao.buscarPorSujeto(contactoSeleccionado.getSujeto().getIdSujeto());
+        listaEmails = emailDao.buscarPorSujeto(contactoSeleccionado.getSujeto().getIdSujeto());
+    listaDirecciones = direccionDao.buscarPorSujeto(contactoSeleccionado.getSujeto().getIdSujeto());
+  }
 
   private int agregarSujeto() {
     sujeto.setNombreRazonSocial(nombreRazonSocial);
@@ -159,6 +241,26 @@ public class ContactoBean implements Serializable {
     sujeto = new Sujeto();
     limpiarEntradas();
     habilitarBtnGuardarContacto();
+  }
+  
+  public void onRowSelect(SelectEvent evento) {
+    contactoSeleccionado = (Contacto) evento.getObject();
+    sujeto = contactoSeleccionado.getSujeto();    
+    listaTelefonos = telefonoDao.buscarPorSujeto(contactoSeleccionado.getSujeto().getIdSujeto());
+    listaEmails = emailDao.buscarPorSujeto(contactoSeleccionado.getSujeto().getIdSujeto());
+    listaDirecciones = direccionDao.buscarPorSujeto(contactoSeleccionado.getSujeto().getIdSujeto());
+  }
+
+  public void onRowSelectTel(SelectEvent evento) {
+    telefonoSeleccionado = (Telefono) evento.getObject();
+  }
+
+  public void onRowSelectMail(SelectEvent evento) {
+    emailSeleccionado = (Email) evento.getObject();
+  }
+
+  public void onRowSelectDir(SelectEvent evento) {
+    direccionSeleccionada = (Direccion) evento.getObject();
   }
 
   public Sujeto getSujetoContacto() {
@@ -232,5 +334,71 @@ public class ContactoBean implements Serializable {
   public void setDireccionBean(DireccionBean direccionBean) {
     this.direccionBean = direccionBean;
   }
+
+  public List<Contacto> getListaDeContactos() {
+    return listaDeContactos;
+  }
+
+  public void setListaDeContactos(List<Contacto> listaDeContactos) {
+    this.listaDeContactos = listaDeContactos;
+  }
+
+  public List<Telefono> getListaTelefonos() {
+    return listaTelefonos;
+  }
+
+  public void setListaTelefonos(List<Telefono> listaTelefonos) {
+    this.listaTelefonos = listaTelefonos;
+  }
+
+  public List<Direccion> getListaDirecciones() {
+    return listaDirecciones;
+  }
+
+  public void setListaDirecciones(List<Direccion> listaDirecciones) {
+    this.listaDirecciones = listaDirecciones;
+  }
+
+  public List<Email> getListaEmails() {
+    return listaEmails;
+  }
+
+  public void setListaEmails(List<Email> listaEmails) {
+    this.listaEmails = listaEmails;
+  }
+
+  public Telefono getTelefonoSeleccionado() {
+    return telefonoSeleccionado;
+  }
+
+  public void setTelefonoSeleccionado(Telefono telefonoSeleccionado) {
+    this.telefonoSeleccionado = telefonoSeleccionado;
+  }
+
+  public Email getEmailSeleccionado() {
+    return emailSeleccionado;
+  }
+
+  public void setEmailSeleccionado(Email emailSeleccionado) {
+    this.emailSeleccionado = emailSeleccionado;
+  }
+
+  public Direccion getDireccionSeleccionada() {
+    return direccionSeleccionada;
+  }
+
+  public void setDireccionSeleccionada(Direccion direccionSeleccionada) {
+    this.direccionSeleccionada = direccionSeleccionada;
+  }
+
+  public Contacto getContactoSeleccionado() {
+    return contactoSeleccionado;
+  }
+
+  public void setContactoSeleccionado(Contacto contactoSeleccionado) {
+    this.contactoSeleccionado = contactoSeleccionado;
+  }
+  
+  
 
 }
