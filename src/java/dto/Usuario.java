@@ -23,7 +23,10 @@ public class Usuario  implements java.io.Serializable {
      private Set administrativos = new HashSet(0);
      private Set gestors = new HashSet(0);
 
-    public Usuario() {
+  /**
+   *
+   */
+  public Usuario() {
     }
 
     /**
@@ -75,7 +78,11 @@ public class Usuario  implements java.io.Serializable {
         this.gestors = gestors;
     }
    
-    public Integer getIdUsuario() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdUsuario() {
         return this.idUsuario;
     }
 
@@ -87,7 +94,12 @@ public class Usuario  implements java.io.Serializable {
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
-    public String getNombre() {
+
+  /**
+   *
+   * @return
+   */
+  public String getNombre() {
         return this.nombre;
     }
 
@@ -99,7 +111,12 @@ public class Usuario  implements java.io.Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public String getPaterno() {
+
+  /**
+   *
+   * @return
+   */
+  public String getPaterno() {
         return this.paterno;
     }
 
@@ -111,7 +128,12 @@ public class Usuario  implements java.io.Serializable {
     public void setPaterno(String paterno) {
         this.paterno = paterno;
     }
-    public String getMaterno() {
+
+  /**
+   *
+   * @return
+   */
+  public String getMaterno() {
         return this.materno;
     }
 
@@ -123,7 +145,12 @@ public class Usuario  implements java.io.Serializable {
     public void setMaterno(String materno) {
         this.materno = materno;
     }
-    public String getNombreLogin() {
+
+  /**
+   *
+   * @return
+   */
+  public String getNombreLogin() {
         return this.nombreLogin;
     }
 
@@ -135,7 +162,12 @@ public class Usuario  implements java.io.Serializable {
     public void setNombreLogin(String nombreLogin) {
         this.nombreLogin = nombreLogin;
     }
-    public String getPassword() {
+
+  /**
+   *
+   * @return
+   */
+  public String getPassword() {
         return this.password;
     }
 
@@ -147,7 +179,12 @@ public class Usuario  implements java.io.Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-    public int getPerfil() {
+
+  /**
+   *
+   * @return
+   */
+  public int getPerfil() {
         return this.perfil;
     }
 
@@ -159,7 +196,12 @@ public class Usuario  implements java.io.Serializable {
     public void setPerfil(int perfil) {
         this.perfil = perfil;
     }
-    public String getCorreo() {
+
+  /**
+   *
+   * @return
+   */
+  public String getCorreo() {
         return this.correo;
     }
 
@@ -171,7 +213,12 @@ public class Usuario  implements java.io.Serializable {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-    public String getImagenPerfil() {
+
+  /**
+   *
+   * @return
+   */
+  public String getImagenPerfil() {
         return this.imagenPerfil;
     }
 
@@ -183,7 +230,12 @@ public class Usuario  implements java.io.Serializable {
     public void setImagenPerfil(String imagenPerfil) {
         this.imagenPerfil = imagenPerfil;
     }
-    public Set getAdministrativos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getAdministrativos() {
         return this.administrativos;
     }
 
@@ -195,7 +247,12 @@ public class Usuario  implements java.io.Serializable {
     public void setAdministrativos(Set administrativos) {
         this.administrativos = administrativos;
     }
-    public Set getGestors() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getGestors() {
         return this.gestors;
     }
 

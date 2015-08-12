@@ -19,6 +19,11 @@ public class Logs {
      de la clase.
      */
 
+  /**
+   *
+   */
+  
+
     public static final Logger log = Logger.getLogger(Logs.class);
 }
 

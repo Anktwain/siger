@@ -17,54 +17,113 @@ public class Subproducto  implements java.io.Serializable {
      private String descripcion;
      private Set creditos = new HashSet(0);
 
-    public Subproducto() {
+  /**
+   *
+   */
+  public Subproducto() {
     }
 
-	
-    public Subproducto(Producto producto, String nombre) {
+  /**
+   *
+   * @param producto
+   * @param nombre
+   */
+  public Subproducto(Producto producto, String nombre) {
         this.producto = producto;
         this.nombre = nombre;
     }
-    public Subproducto(Producto producto, String nombre, String descripcion, Set creditos) {
+
+  /**
+   *
+   * @param producto
+   * @param nombre
+   * @param descripcion
+   * @param creditos
+   */
+  public Subproducto(Producto producto, String nombre, String descripcion, Set creditos) {
        this.producto = producto;
        this.nombre = nombre;
        this.descripcion = descripcion;
        this.creditos = creditos;
     }
    
-    public Integer getIdSubproducto() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdSubproducto() {
         return this.idSubproducto;
     }
     
-    public void setIdSubproducto(Integer idSubproducto) {
+  /**
+   *
+   * @param idSubproducto
+   */
+  public void setIdSubproducto(Integer idSubproducto) {
         this.idSubproducto = idSubproducto;
     }
-    public Producto getProducto() {
+
+  /**
+   *
+   * @return
+   */
+  public Producto getProducto() {
         return this.producto;
     }
     
-    public void setProducto(Producto producto) {
+  /**
+   *
+   * @param producto
+   */
+  public void setProducto(Producto producto) {
         this.producto = producto;
     }
-    public String getNombre() {
+
+  /**
+   *
+   * @return
+   */
+  public String getNombre() {
         return this.nombre;
     }
     
-    public void setNombre(String nombre) {
+  /**
+   *
+   * @param nombre
+   */
+  public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public String getDescripcion() {
+
+  /**
+   *
+   * @return
+   */
+  public String getDescripcion() {
         return this.descripcion;
     }
     
-    public void setDescripcion(String descripcion) {
+  /**
+   *
+   * @param descripcion
+   */
+  public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    public Set getCreditos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getCreditos() {
         return this.creditos;
     }
     
-    public void setCreditos(Set creditos) {
+  /**
+   *
+   * @param creditos
+   */
+  public void setCreditos(Set creditos) {
         this.creditos = creditos;
     }
 

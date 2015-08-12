@@ -36,11 +36,19 @@ public class TelefonoBean implements Serializable {
   private TelefonoDAO telefonoDao;
 
   // Construyendo...
-  public TelefonoBean() {
+
+  /**
+   *
+   */
+    public TelefonoBean() {
     telefono = new Telefono();
     telefonoDao = new TelefonoIMPL();
   }
 
+  /**
+   *
+   * @param sujeto
+   */
   public void agregar(Sujeto sujeto) {
     telefono.setNumero(numero);
     telefono.setTipo(tipo);
@@ -61,6 +69,9 @@ public class TelefonoBean implements Serializable {
     }
   }
 
+  /**
+   *
+   */
   public void limpiarEntradas() {
     numero = null;
     tipo = null;
@@ -69,42 +80,82 @@ public class TelefonoBean implements Serializable {
     horario = null;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getNumero() {
     return numero;
   }
 
+  /**
+   *
+   * @param numero
+   */
   public void setNumero(String numero) {
     this.numero = numero;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getTipo() {
     return tipo;
   }
 
+  /**
+   *
+   * @param tipo
+   */
   public void setTipo(String tipo) {
     this.tipo = tipo;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getExtension() {
     return extension;
   }
 
+  /**
+   *
+   * @param extension
+   */
   public void setExtension(String extension) {
     this.extension = extension;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getLada() {
     return lada;
   }
 
+  /**
+   *
+   * @param lada
+   */
   public void setLada(String lada) {
     this.lada = lada;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getHorario() {
     return horario;
   }
 
+  /**
+   *
+   * @param horario
+   */
   public void setHorario(String horario) {
     this.horario = horario;
   }

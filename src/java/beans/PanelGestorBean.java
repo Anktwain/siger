@@ -29,7 +29,10 @@ public class PanelGestorBean implements Serializable {
     private String nombre;
     private String correo;
 
-    public PanelGestorBean() {
+  /**
+   *
+   */
+  public PanelGestorBean() {
         nombre = indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno();
         nombreUsuario = indexBean.getUsuario().getNombreLogin();
         imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
@@ -48,8 +51,7 @@ public class PanelGestorBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param nombreUsuario */
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
     }
@@ -66,8 +68,7 @@ public class PanelGestorBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param imagenDePerfil     */
     public void setImagenDePerfil(String imagenDePerfil) {
         this.imagenDePerfil = imagenDePerfil;
     }
@@ -84,8 +85,7 @@ public class PanelGestorBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param nombre     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -102,8 +102,7 @@ public class PanelGestorBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param correo     */
     public void setCorreo(String correo) {
         this.correo = correo;
     }
@@ -120,7 +119,7 @@ public class PanelGestorBean implements Serializable {
     /**
      *
      *
-     * @return
+   * @param indexBean
      */
     public void setIndexBean(IndexBean indexBean) {
         this.indexBean = indexBean;

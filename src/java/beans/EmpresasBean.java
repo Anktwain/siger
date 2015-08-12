@@ -53,7 +53,10 @@ public class EmpresasBean implements Serializable{
         empresaDao = new EmpresaIMPL();
     }
     
-    public void guardarEmpresa(){
+  /**
+   *
+   */
+  public void guardarEmpresa(){
         empresaSeleccionada = empresaDao.buscarEmpresaPorSujeto(empresa.getIdSujeto());
         sujetoSeleccionado = sujetoDao.buscar(empresa.getIdSujeto());
         razonSocial = sujetoSeleccionado.getNombreRazonSocial();
@@ -61,12 +64,18 @@ public class EmpresasBean implements Serializable{
         auxRfc = sujetoSeleccionado.getRfc();
     }
     
-    public void editarEmpresa(){
+  /**
+   *
+   */
+  public void editarEmpresa(){
         Logs.log.debug("************ CONSOLA SIGERWEB ****************");
         Logs.log.debug("Se quiere editar la empresa " + corto);
     }
     
-    public void eliminarEmpresa(){
+  /**
+   *
+   */
+  public void eliminarEmpresa(){
         Logs.log.debug("************ CONSOLA SIGERWEB ****************");
         Logs.log.debug("Se quiere eliminar la empresa " + corto);
     }
@@ -83,8 +92,7 @@ public class EmpresasBean implements Serializable{
     /**
      *
      *
-     * @param
-     */
+   * @param sujeto     */
     public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
@@ -101,8 +109,7 @@ public class EmpresasBean implements Serializable{
     /**
      *
      *
-     * @param
-     */
+   * @param sujetoDao     */
     public void setSujetoDao(SujetoDAO sujetoDao) {
         this.sujetoDao = sujetoDao;
     }
@@ -119,8 +126,7 @@ public class EmpresasBean implements Serializable{
     /**
      *
      *
-     * @param
-     */
+   * @param nombreRazonSocial     */
     public void setNombreRazonSocial(String nombreRazonSocial) {
         this.nombreRazonSocial = nombreRazonSocial;
     }
@@ -137,7 +143,7 @@ public class EmpresasBean implements Serializable{
     /**
      *
      *
-     * @return
+   * @param rfc
      */
     public void setRfc(String rfc) {
         this.rfc = rfc;
@@ -155,8 +161,7 @@ public class EmpresasBean implements Serializable{
     /**
      *
      *
-     * @param
-     */
+   * @param listaEmpresas     */
     public void setListaEmpresas(List<Sujeto> listaEmpresas) {
         this.listaEmpresas = listaEmpresas;
     }
@@ -173,57 +178,104 @@ public class EmpresasBean implements Serializable{
     /**
      *
      *
-     * @param
-     */
+   * @param empresa     */
     public void setEmpresa(Sujeto empresa) {
         this.empresa = empresa;
     }
     
-    public Empresa getEmpresaSeleccionada() {
+  /**
+   *
+   * @return
+   */
+  public Empresa getEmpresaSeleccionada() {
         return empresaSeleccionada;
     }
 
-    public void setEmpresaSeleccionada(Empresa empresaSeleccionada) {
+  /**
+   *
+   * @param empresaSeleccionada
+   */
+  public void setEmpresaSeleccionada(Empresa empresaSeleccionada) {
         this.empresaSeleccionada = empresaSeleccionada;
     }
 
-    public Sujeto getSujetoSeleccionado() {
+  /**
+   *
+   * @return
+   */
+  public Sujeto getSujetoSeleccionado() {
         return sujetoSeleccionado;
     }
 
-    public void setSujetoSeleccionado(Sujeto sujetoSeleccionado) {
+  /**
+   *
+   * @param sujetoSeleccionado
+   */
+  public void setSujetoSeleccionado(Sujeto sujetoSeleccionado) {
         this.sujetoSeleccionado = sujetoSeleccionado;
     }
 
-    public EmpresaDAO getEmpresaDao() {
+  /**
+   *
+   * @return
+   */
+  public EmpresaDAO getEmpresaDao() {
         return empresaDao;
     }
 
-    public void setEmpresaDao(EmpresaDAO empresaDao) {
+  /**
+   *
+   * @param empresaDao
+   */
+  public void setEmpresaDao(EmpresaDAO empresaDao) {
         this.empresaDao = empresaDao;
     }
 
-    public String getRazonSocial() {
+  /**
+   *
+   * @return
+   */
+  public String getRazonSocial() {
         return razonSocial;
     }
 
-    public void setRazonSocial(String razonSocial) {
+  /**
+   *
+   * @param razonSocial
+   */
+  public void setRazonSocial(String razonSocial) {
         this.razonSocial = razonSocial;
     }
 
-    public String getCorto() {
+  /**
+   *
+   * @return
+   */
+  public String getCorto() {
         return corto;
     }
 
-    public void setCorto(String corto) {
+  /**
+   *
+   * @param corto
+   */
+  public void setCorto(String corto) {
         this.corto = corto;
     }
 
-    public String getAuxRfc() {
+  /**
+   *
+   * @return
+   */
+  public String getAuxRfc() {
         return auxRfc;
     }
 
-    public void setAuxRfc(String auxRfc) {
+  /**
+   *
+   * @param auxRfc
+   */
+  public void setAuxRfc(String auxRfc) {
         this.auxRfc = auxRfc;
     }
 

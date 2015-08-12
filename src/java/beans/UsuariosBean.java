@@ -96,6 +96,7 @@ public class UsuariosBean implements Serializable {
      */
     public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
         this.usuarioSeleccionado = usuarioSeleccionado;
+        Logs.log.info("#################### Seleccionando al usuario: " + this.usuarioSeleccionado.getNombre());
     }
 
     /**
@@ -118,10 +119,10 @@ public class UsuariosBean implements Serializable {
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
         gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
         todosUsuarios = usuarioDao.buscarTodo();
-        Logs.log.debug("\n*************************** todosUsuario:");
+        Logs.log.info("\n*************************** todosUsuario:");
         int i = 0;
         for (Usuario usuarioActual : todosUsuarios) {
-            Logs.log.debug("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
+            Logs.log.info("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
         }
     }
 
@@ -226,7 +227,7 @@ public class UsuariosBean implements Serializable {
         if (usuario.getPerfil() == Perfiles.ADMINISTRADOR) {
             administrador.setUsuario(usuario);
             administradorDao.insertar(administrador);
-            Logs.log.info("Administrador ha agregado al administrador: " + usuario.getIdUsuario());
+            Logs.log.info("#################### Administrador ha agregado al administrador: " + usuario.getIdUsuario());
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Se agregó un nuevo usuario",
                             "Se ha agregó correctamente: " + usuario.getNombre()
@@ -236,7 +237,7 @@ public class UsuariosBean implements Serializable {
             gestor.setUsuario(usuario);
             gestor.setExtension(extension);
             gestorDao.insertar(gestor);
-            Logs.log.info("Administrador ha agregado al gestor: " + usuario.getIdUsuario());
+            Logs.log.info("#################### Administrador ha agregado al gestor: " + usuario.getIdUsuario());
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Se agregó un nuevo usuario",
                             "Se ha agregó correctamente: " + usuario.getNombre()
@@ -289,7 +290,7 @@ public class UsuariosBean implements Serializable {
                 RequestContext.getCurrentInstance().update("noConfirmados");
                 RequestContext.getCurrentInstance().update("circulito");
                 //LOG
-                Logs.log.info("Se confirmo al gestor con id " + usuario.getIdUsuario());
+                Logs.log.info("#################### Se confirmo al gestor con id " + usuario.getIdUsuario());
                 // MENSAJE EN VISTA
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Se confirmo un nuevo usuario",
@@ -321,7 +322,7 @@ public class UsuariosBean implements Serializable {
                 RequestContext.getCurrentInstance().update("noConfirmados");
                 RequestContext.getCurrentInstance().update("circulito");
                 //LOG
-                Logs.log.info("Se elimino al gestor con id " + usuario.getIdUsuario());
+                Logs.log.info("#################### Se elimino al gestor con id " + usuario.getIdUsuario());
                 // MENSAJE EN VISTA
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_WARN, "Se elimino el usuario",
@@ -347,7 +348,7 @@ public class UsuariosBean implements Serializable {
         gestor.setUsuario(usuario);
         gestor.setExtension(extension);
         gestorDao.insertar(gestor);
-        Logs.log.info("Administrador ha agregado al gestor: " + usuario.getIdUsuario());
+        Logs.log.info("#################### Administrador ha agregado al gestor: " + usuario.getIdUsuario());
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Se agregó un nuevo gestor",
                         "Se ha agregado correctamente."));

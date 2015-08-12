@@ -107,6 +107,7 @@ public class SujetoIMPL implements SujetoDAO {
         /**
      *
      *
+   * @param sujeto
      * @return
      */
     @Override
@@ -135,6 +136,7 @@ public class SujetoIMPL implements SujetoDAO {
     /**
      *
      *
+   * @param idSujeto
      * @return
      */
     @Override

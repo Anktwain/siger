@@ -36,12 +36,20 @@ public class EmailBean implements Serializable {
     private EmailDAO emailDao;
 
     // Construyendo...
-    public EmailBean() {
+
+  /**
+   *
+   */
+      public EmailBean() {
         email = new Email();
         emailDao = new EmailIMPL();
     }
 
-    public void agregar(Sujeto sujeto) {
+  /**
+   *
+   * @param sujeto
+   */
+  public void agregar(Sujeto sujeto) {
         email.setDireccion(direccion);
         email.setTipo(tipo);
         email.setSujeto(sujeto);
@@ -62,7 +70,10 @@ public class EmailBean implements Serializable {
         }
     }
 
-    public void limpiarEntradas() {
+  /**
+   *
+   */
+  public void limpiarEntradas() {
         direccion = null;
         tipo = null;
     }
@@ -75,19 +86,35 @@ public class EmailBean implements Serializable {
         return matcher.matches();
     }
 
-    public String getDireccion() {
+  /**
+   *
+   * @return
+   */
+  public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
+  /**
+   *
+   * @param direccion
+   */
+  public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 
-    public String getTipo() {
+  /**
+   *
+   * @return
+   */
+  public String getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+  /**
+   *
+   * @param tipo
+   */
+  public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 

@@ -5,20 +5,20 @@
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <meta charset="utf-8"></meta>
-        <title>SigerWeb - Panel gestores</title>
-    </h:head> 
-    <body class="overflow-hidden">
-         Overlay Div 
-        <div id="overlay" class="transparent"></div>
-        <ui:include src="barraSuperior.xhtml" />
-        <ui:include src="barraLateral.xhtml" />
-        <div id="main-container">
-            <ui:include src="barraEstadisticasGestor.xhtml" />
-            <ui:include src="barraProgresoGestor.xhtml" />
-        </div> /main-container 
-         Footer ================================================== 
-        <ui:include src="barraInferior.xhtml" />
-    </body>
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Panel gestores</title>
+  </h:head> 
+  <body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <ui:include src="barraEstadisticasGestor.xhtml" />
+      <ui:include src="barraProgresoGestor.xhtml" />
+    </div> <!-- main-container -->
+    <!-- Footer ================================================== --> 
+    <ui:include src="barraInferior.xhtml" />
+  </body>
 </html>

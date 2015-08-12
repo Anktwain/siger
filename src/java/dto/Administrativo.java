@@ -12,25 +12,49 @@ public class Administrativo  implements java.io.Serializable {
      private Integer idAdministrativo;
      private Usuario usuario;
 
-    public Administrativo() {
+  /**
+   *
+   */
+  public Administrativo() {
     }
 
-    public Administrativo(Usuario usuario) {
+  /**
+   *
+   * @param usuario
+   */
+  public Administrativo(Usuario usuario) {
        this.usuario = usuario;
     }
    
-    public Integer getIdAdministrativo() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdAdministrativo() {
         return this.idAdministrativo;
     }
     
-    public void setIdAdministrativo(Integer idAdministrativo) {
+  /**
+   *
+   * @param idAdministrativo
+   */
+  public void setIdAdministrativo(Integer idAdministrativo) {
         this.idAdministrativo = idAdministrativo;
     }
-    public Usuario getUsuario() {
+
+  /**
+   *
+   * @return
+   */
+  public Usuario getUsuario() {
         return this.usuario;
     }
     
-    public void setUsuario(Usuario usuario) {
+  /**
+   *
+   * @param usuario
+   */
+  public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 

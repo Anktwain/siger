@@ -17,54 +17,113 @@ public class Empresa  implements java.io.Serializable {
      private Set productos = new HashSet(0);
      private Set creditos = new HashSet(0);
 
-    public Empresa() {
+  /**
+   *
+   */
+  public Empresa() {
     }
 
-	
-    public Empresa(Sujeto sujeto, String nombreCorto) {
+  /**
+   *
+   * @param sujeto
+   * @param nombreCorto
+   */
+  public Empresa(Sujeto sujeto, String nombreCorto) {
         this.sujeto = sujeto;
         this.nombreCorto = nombreCorto;
     }
-    public Empresa(Sujeto sujeto, String nombreCorto, Set productos, Set creditos) {
+
+  /**
+   *
+   * @param sujeto
+   * @param nombreCorto
+   * @param productos
+   * @param creditos
+   */
+  public Empresa(Sujeto sujeto, String nombreCorto, Set productos, Set creditos) {
        this.sujeto = sujeto;
        this.nombreCorto = nombreCorto;
        this.productos = productos;
        this.creditos = creditos;
     }
    
-    public Integer getIdEmpresa() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdEmpresa() {
         return this.idEmpresa;
     }
     
-    public void setIdEmpresa(Integer idEmpresa) {
+  /**
+   *
+   * @param idEmpresa
+   */
+  public void setIdEmpresa(Integer idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
-    public Sujeto getSujeto() {
+
+  /**
+   *
+   * @return
+   */
+  public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-    public void setSujeto(Sujeto sujeto) {
+  /**
+   *
+   * @param sujeto
+   */
+  public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public String getNombreCorto() {
+
+  /**
+   *
+   * @return
+   */
+  public String getNombreCorto() {
         return this.nombreCorto;
     }
     
-    public void setNombreCorto(String nombreCorto) {
+  /**
+   *
+   * @param nombreCorto
+   */
+  public void setNombreCorto(String nombreCorto) {
         this.nombreCorto = nombreCorto;
     }
-    public Set getProductos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getProductos() {
         return this.productos;
     }
     
-    public void setProductos(Set productos) {
+  /**
+   *
+   * @param productos
+   */
+  public void setProductos(Set productos) {
         this.productos = productos;
     }
-    public Set getCreditos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getCreditos() {
         return this.creditos;
     }
     
-    public void setCreditos(Set creditos) {
+  /**
+   *
+   * @param creditos
+   */
+  public void setCreditos(Set creditos) {
         this.creditos = creditos;
     }
 

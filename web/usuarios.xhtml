@@ -8,13 +8,15 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Usuarios</title>
-    <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
-    <h:outputStylesheet library="css" name="pace.css" />
-    <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
-    <h:outputStylesheet library="css" name="morris.css" />
+
     <h:outputStylesheet library="css" name="usuarios.css" />
 
-    <!--  <h:outputScript library="js" name="jquery-1.10.2.min.js" />
+<!--<h:outputStylesheet library="css" name="morris.css" />
+    <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
+    <h:outputStylesheet library="css" name="pace.css" />
+    <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
+
+    <h:outputScript library="js" name="jquery-1.10.2.min.js" />
     <h:outputScript library="js" name="jquery.flot.min.js" />
     <h:outputScript library="js" name="rapheal.min.js" />
     <h:outputScript library="js" name="morris.min.js" />
@@ -195,7 +197,7 @@
                       <!--<div class="modal-header"> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> <h4>Buscar usuarios</h4> </div>-->
                       <!--<div class="modal-body">-->
                       <!--<div class="form-group">-->
-                      <h:form id="form">
+                      <h:form id="formUsuarios">
                         <p:contextMenu for="usuarios">
                           <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
                         </p:contextMenu>
@@ -230,19 +232,18 @@
                               #{usuario.nombreLogin}
                             </h:outputLink>
                           </p:column>
-
                         </p:dataTable>
 
                         <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                           <p:outputPanel id="usuarioDetail" style="text-align:center;">
                             <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}" columnClasses="value,value">
                               <f:facet name="header">
-                                <p:graphicImage library="img" name="#{util.constantes.Directorios.RUTA_IMAGENES_DE_PERFIL}#{usuariosBean.usuarioSeleccionado.imagenPerfil}"/> 
+                                  <p:graphicImage class="user-block" library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}"/> 
                               </f:facet>
 
                               <h:outputText value="util.constantes.Directorios.RUTA_IMAGENES_DE_PERFIL" />
                               <h:outputText value="#{util.constantes.Directorios.RUTA_IMAGENES_DE_PERFIL}" />
-                              
+
                               <h:outputText value="Nombre: " />
                               <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombre}" />
                               <h:outputText value="Apellido paterno: " />

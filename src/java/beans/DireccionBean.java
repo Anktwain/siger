@@ -37,11 +37,19 @@ public class DireccionBean implements Serializable {
   private DireccionDAO direccionDao;
 
   // Construyendo...
-  public DireccionBean() {
+
+  /**
+   *
+   */
+    public DireccionBean() {
     direccion = new Direccion();
     direccionDao = new DireccionIMPL();
   }
 
+  /**
+   *
+   * @param sujeto
+   */
   public void agregar(Sujeto sujeto) {
     direccion.setCalle(calle);
     direccion.setColonia(colonia);
@@ -63,6 +71,9 @@ public class DireccionBean implements Serializable {
     }
   }
 
+  /**
+   *
+   */
   public void limpiarEntradas() {
     calle = null;
     colonia = null;
@@ -72,50 +83,98 @@ public class DireccionBean implements Serializable {
     tipo = null;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getCalle() {
     return calle;
   }
 
+  /**
+   *
+   * @param calle
+   */
   public void setCalle(String calle) {
     this.calle = calle;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getColonia() {
     return colonia;
   }
 
+  /**
+   *
+   * @param colonia
+   */
   public void setColonia(String colonia) {
     this.colonia = colonia;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getMunicipio() {
     return municipio;
   }
 
+  /**
+   *
+   * @param municipio
+   */
   public void setMunicipio(String municipio) {
     this.municipio = municipio;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getEstado() {
     return estado;
   }
 
+  /**
+   *
+   * @param estado
+   */
   public void setEstado(String estado) {
     this.estado = estado;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getCp() {
     return cp;
   }
 
+  /**
+   *
+   * @param cp
+   */
   public void setCp(String cp) {
     this.cp = cp;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getTipo() {
     return tipo;
   }
 
+  /**
+   *
+   * @param tipo
+   */
   public void setTipo(String tipo) {
     this.tipo = tipo;
   }

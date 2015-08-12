@@ -49,9 +49,7 @@ public class RecuperarContrasenaBean implements Serializable {
 
     /**
      *
-     *
-     * @param
-     */
+     *@throws java.io.IOException     */
     public void recuperar() throws IOException {
         // verifica que el usuario y correo existan en la BD
         usuario = usuarioDao.buscarPorCorreo(usuarioLogin, correo);
@@ -159,8 +157,7 @@ public class RecuperarContrasenaBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param usuarioLogin     */
     public void setUsuarioLogin(String usuarioLogin) {
         this.usuarioLogin = usuarioLogin;
     }
@@ -177,8 +174,7 @@ public class RecuperarContrasenaBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param correo     */
     public void setCorreo(String correo) {
         this.correo = correo;
     }

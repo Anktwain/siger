@@ -14,46 +14,95 @@ public class Email  implements java.io.Serializable {
      private String direccion;
      private String tipo;
 
-    public Email() {
+  /**
+   *
+   */
+  public Email() {
     }
 
-	
-    public Email(Sujeto sujeto, String direccion) {
+  /**
+   *
+   * @param sujeto
+   * @param direccion
+   */
+  public Email(Sujeto sujeto, String direccion) {
         this.sujeto = sujeto;
         this.direccion = direccion;
     }
-    public Email(Sujeto sujeto, String direccion, String tipo) {
+
+  /**
+   *
+   * @param sujeto
+   * @param direccion
+   * @param tipo
+   */
+  public Email(Sujeto sujeto, String direccion, String tipo) {
        this.sujeto = sujeto;
        this.direccion = direccion;
        this.tipo = tipo;
     }
    
-    public Integer getIdEmail() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdEmail() {
         return this.idEmail;
     }
     
-    public void setIdEmail(Integer idEmail) {
+  /**
+   *
+   * @param idEmail
+   */
+  public void setIdEmail(Integer idEmail) {
         this.idEmail = idEmail;
     }
-    public Sujeto getSujeto() {
+
+  /**
+   *
+   * @return
+   */
+  public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-    public void setSujeto(Sujeto sujeto) {
+  /**
+   *
+   * @param sujeto
+   */
+  public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public String getDireccion() {
+
+  /**
+   *
+   * @return
+   */
+  public String getDireccion() {
         return this.direccion;
     }
     
-    public void setDireccion(String direccion) {
+  /**
+   *
+   * @param direccion
+   */
+  public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-    public String getTipo() {
+
+  /**
+   *
+   * @return
+   */
+  public String getTipo() {
         return this.tipo;
     }
     
-    public void setTipo(String tipo) {
+  /**
+   *
+   * @param tipo
+   */
+  public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 

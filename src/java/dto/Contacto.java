@@ -14,46 +14,95 @@ public class Contacto  implements java.io.Serializable {
      private Sujeto sujeto;
      private String observaciones;
 
-    public Contacto() {
+  /**
+   *
+   */
+  public Contacto() {
     }
 
-	
-    public Contacto(Cliente cliente, Sujeto sujeto) {
+  /**
+   *
+   * @param cliente
+   * @param sujeto
+   */
+  public Contacto(Cliente cliente, Sujeto sujeto) {
         this.cliente = cliente;
         this.sujeto = sujeto;
     }
-    public Contacto(Cliente cliente, Sujeto sujeto, String observaciones) {
+
+  /**
+   *
+   * @param cliente
+   * @param sujeto
+   * @param observaciones
+   */
+  public Contacto(Cliente cliente, Sujeto sujeto, String observaciones) {
        this.cliente = cliente;
        this.sujeto = sujeto;
        this.observaciones = observaciones;
     }
    
-    public Integer getIdContacto() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdContacto() {
         return this.idContacto;
     }
     
-    public void setIdContacto(Integer idContacto) {
+  /**
+   *
+   * @param idContacto
+   */
+  public void setIdContacto(Integer idContacto) {
         this.idContacto = idContacto;
     }
-    public Cliente getCliente() {
+
+  /**
+   *
+   * @return
+   */
+  public Cliente getCliente() {
         return this.cliente;
     }
     
-    public void setCliente(Cliente cliente) {
+  /**
+   *
+   * @param cliente
+   */
+  public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-    public Sujeto getSujeto() {
+
+  /**
+   *
+   * @return
+   */
+  public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-    public void setSujeto(Sujeto sujeto) {
+  /**
+   *
+   * @param sujeto
+   */
+  public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public String getObservaciones() {
+
+  /**
+   *
+   * @return
+   */
+  public String getObservaciones() {
         return this.observaciones;
     }
     
-    public void setObservaciones(String observaciones) {
+  /**
+   *
+   * @param observaciones
+   */
+  public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
     }
 
