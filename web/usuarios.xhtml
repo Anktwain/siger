@@ -9,11 +9,11 @@
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Usuarios</title>
     <h:outputStylesheet library="css" name="usuarios.css" />
-    <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
   </h:head>
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
-    <div id="overlay" class="transparent"></div>        
+    <div id="overlay" class="transparent" style="display: none"></div>        
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
@@ -24,7 +24,7 @@
           <div class="panel-tab clearfix">
             <ul class="tab-bar h4">
               <li class="active"><a href="#tabConfirmar" data-toggle="tab">
-                  <i class="fa fa-check-circle-o"></i> Confirmar Gestores</a>
+                  <i class="fa fa-check-circle-o"></i> Confirmar gestores</a>
               </li>     
               <li><a href="#tabRegistrar" data-toggle="tab">
                   <i class="fa fa-pencil"></i> Registrar nuevo usuario</a>
@@ -146,67 +146,74 @@
               </div> <!-- #tabRegistrar -->
 
               <div class="tab-pane fade" id="tabBuscar">
-                <h:form id="formUsuarios">
-                  <p:contextMenu for="usuarios">
-                    <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
-                  </p:contextMenu>
+                <div id="buscausuarios" class="panel bg-primary">
+                  <div class="panel-body form-group">
+                    <h4>Consulte y modifique a los usuarios del sistema.</h4>
+                    <h:form id="formUsuarios">
+                      <p:contextMenu for="usuarios">
+                        <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
+                      </p:contextMenu>
 
-                  <p:dataTable id="usuarios" var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usuarioDataTable" paginator="true" rows="10"
-                               emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda." filteredValue="#{usuariosBean.usuariosEncontrados}"
-                               rowKey="#{usuario.nombreLogin}" selection="#{usuariosBean.usuarioSeleccionado}" selectionMode="single">
+                      <p:dataTable id="usuarios" var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usuarioDataTable" paginator="true" rows="10"
+                                   emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda." filteredValue="#{usuariosBean.usuariosEncontrados}"
+                                   rowKey="#{usuario.nombreLogin}" selection="#{usuariosBean.usuarioSeleccionado}" selectionMode="single">
 
-                    <f:facet name="header">
-                      <p:outputPanel>
-                        <h:outputText value="Buscar en todos los usuarios:  " />
-                        <p:inputText id="globalFilter" onkeyup="PF('usuarioDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>
-                      </p:outputPanel>
-                    </f:facet>
-
-                    <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
-                      <h:outputText value="#{usuario.nombre}"/>
-                    </p:column>
-                    <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
-                      <h:outputLink value="" >
-                        #{usuario.paterno}
-                      </h:outputLink>
-                    </p:column>
-                    <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
-                      <h:outputLink value="" >
-                        #{usuario.materno}
-                      </h:outputLink>
-                    </p:column>
-
-                    <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
-                      <h:outputLink value="" >
-                        #{usuario.nombreLogin}
-                      </h:outputLink>
-                    </p:column>
-                  </p:dataTable>
-
-                  <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                    <p:outputPanel id="usuarioDetail" style="text-align:center;">
-                      <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}" columnClasses="value,value">
                         <f:facet name="header">
-                          <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}"/> 
+                          <p:outputPanel>
+                            <h:outputText value="Buscar en todos los usuarios:  " />
+                            <p:inputText id="globalFilter" onkeyup="PF('usuarioDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>
+                          </p:outputPanel>
                         </f:facet>
 
-                        <h:outputText value="Nombre: "/>
-                        <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombre}" />
-                        <h:outputText value="Apellido paterno: "/>
-                        <h:outputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
-                        <h:outputText value="Apellido materno: "/>
-                        <h:outputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
-                        <h:outputText value="Nombre login: "/>
-                        <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
-                        <h:outputText value="Perfil: "/>
-                        <h:outputText value="#{usuariosBean.usuarioSeleccionado.perfil}" style="color:red"/>
-                        <h:outputText value="Correo: "/>
-                        <h:outputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
+                        <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
+                          <h:outputText value="#{usuario.nombre}"/>
+                        </p:column>
+                        <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
+                          <h:outputLink value="" >
+                            #{usuario.paterno}
+                          </h:outputLink>
+                        </p:column>
+                        <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
+                          <h:outputLink value="" >
+                            #{usuario.materno}
+                          </h:outputLink>
+                        </p:column>
 
-                      </p:panelGrid>
-                    </p:outputPanel>
-                  </p:dialog>
-                </h:form>
+                        <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
+                          <h:outputLink value="" >
+                            #{usuario.nombreLogin}
+                          </h:outputLink>
+                        </p:column>
+                      </p:dataTable>
+
+                      <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                        <p:outputPanel id="usuarioDetail" style="text-align:center;">
+                          <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}" columnClasses="value,value">
+                            <f:facet name="header">
+                              <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}"/> 
+                            </f:facet>
+
+                            <h:outputText value="Nombre: "/>
+                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombre}" />
+                            <h:outputText value="Apellido paterno: "/>
+                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
+                            <h:outputText value="Apellido materno: "/>
+                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
+                            <h:outputText value="Nombre login: "/>
+                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
+                            <h:outputText value="Perfil: "/>
+                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.perfil}" style="color:red"/>
+                            <h:outputText value="Correo: "/>
+                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
+
+                          </p:panelGrid>
+                        </p:outputPanel>
+                      </p:dialog>
+                    </h:form>
+                  </div>
+                </div>
+
+
               </div> <!-- #tabBuscar -->
             </div> <!-- .tabContent -->
           </div> <!-- .panelbody -->
