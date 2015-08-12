@@ -6,16 +6,19 @@
 package beans;
 
 import dao.ClienteDAO;
+import dao.ContactoDAO;
 import dao.DireccionDAO;
 import dao.EmailDAO;
 import dao.SujetoDAO;
 import dao.TelefonoDAO;
 import dto.Cliente;
+import dto.Contacto;
 import dto.Direccion;
 import dto.Email;
 import dto.Sujeto;
 import dto.Telefono;
 import impl.ClienteIMPL;
+import impl.ContactoIMPL;
 import impl.DireccionIMPL;
 import impl.EmailIMPL;
 import impl.SujetoIMPL;
@@ -41,7 +44,7 @@ import util.log.Logs;
 @ViewScoped
 public class ClienteBean implements Serializable {
 
-  // Cliente y Sujeto, porque un cliente es un sujeto:
+  // Objeto Cliente, sus propiedades y acceso a la BD
   private Cliente cliente;
   private Sujeto sujeto;
 
@@ -64,17 +67,20 @@ public class ClienteBean implements Serializable {
   List<Telefono> listaTelefonos;
   List<Direccion> listaDirecciones;
   List<Email> listaEmails;
+  List<Contacto> listaContactos;
 
   // Otros acceso a datos
   private TelefonoDAO telefonoDao;
   private EmailDAO emailDao;
   private DireccionDAO direccionDao;
+  private ContactoDAO contactoDao;
 
   // Objetos seleccionados en la tabla
   private Cliente clienteSeleccionado;
   private Telefono telefonoSeleccionado;
   private Email emailSeleccionado;
   private Direccion direccionSeleccionada;
+  private Contacto contactoSeleccionado;
 
   // Controles de la vista
   private boolean btnGuardarDeudorDisabled;
@@ -90,11 +96,7 @@ public class ClienteBean implements Serializable {
   private ContactoBean contactoBean;
 
   // Construyendo...
-
-  /**
-   *
-   */
-    public ClienteBean() {
+  public ClienteBean() {
     cliente = new Cliente();
     clienteSeleccionado = new Cliente();
     clienteDao = new ClienteIMPL();
@@ -108,15 +110,11 @@ public class ClienteBean implements Serializable {
     telefonoDao = new TelefonoIMPL();
     emailDao = new EmailIMPL();
     direccionDao = new DireccionIMPL();
+    contactoDao = new ContactoIMPL();
   }
 
   // Editar datos de un cliente
-
-  /**
-   *
-   * @return
-   */
-    public boolean editar() {
+  public boolean editar() {
     boolean ok = false;
     if (sujetoDao.editar(clienteSeleccionado.getSujeto())) {
       if (clienteDao.editar(clienteSeleccionado)) {
@@ -172,22 +170,28 @@ public class ClienteBean implements Serializable {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
     }
   }
+  
+  public void editarContacto() {
+    if(contactoBean.editar(contactoSeleccionado)) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleContacto').hide()");
+    }
+  }
+  
+  public void eliminarContacto() {
+    if(contactoBean.eliminar(contactoSeleccionado)) {
+      listaContactos.remove(contactoSeleccionado);
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleContacto').hide()");
+    }
+  }
 
   // Eliminar Cliente
-
-  /**
-   *
-   */
-    public void eliminar() {
+  public void eliminar() {
     clienteSeleccionado.getSujeto().setEliminado(Sujetos.ELIMINADO);
     if (editar()) {
       listaDeClientes.remove(clienteSeleccionado);
     }
   }
 
-  /**
-   *
-   */
   public void agregarTelefono() {
     if (sujeto.getIdSujeto() == null) {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -215,9 +219,6 @@ public class ClienteBean implements Serializable {
     }
   }
 
-  /**
-   *
-   */
   public void agregarDireccion() {
     if (sujeto.getIdSujeto() == null) {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -230,9 +231,6 @@ public class ClienteBean implements Serializable {
     }
   }
 
-  /**
-   *
-   */
   public void agregarContacto() {
     if (sujeto.getIdSujeto() == null) {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -245,11 +243,7 @@ public class ClienteBean implements Serializable {
   }
 
   // Agregar un nuevo cliente
-
-  /**
-   *
-   */
-    public void agregar() {
+  public void agregar() {
     // Primero agrega el sujeto, si se agregó correctamente entonces agrega cliente
     int idSujeto = agregarSujeto();
 
@@ -300,9 +294,6 @@ public class ClienteBean implements Serializable {
     rfc = null;
   }
 
-  /**
-   *
-   */
   public void nuevoCliente() {
     sujeto = new Sujeto();
     limpiarEntradas();
@@ -310,9 +301,6 @@ public class ClienteBean implements Serializable {
     contactoBean.nuevoContacto();
   }
 
-  /**
-   *
-   */
   public void terminarProceso() {
     nuevoCliente();
     limpiarEntradas();
@@ -323,10 +311,6 @@ public class ClienteBean implements Serializable {
     habilitarBtnGuardarDeudor();
   }
 
-  /**
-   *
-   * @return
-   */
   public boolean nombreEsValido() {
     return (nombreRazonSocial != null) && (!nombreRazonSocial.equals(""))
             && (nombreRazonSocial.length() <= Sujetos.LONGITUD_NOMBRE)
@@ -341,16 +325,13 @@ public class ClienteBean implements Serializable {
     btnGuardarDeudorDisabled = false;
   }
 
-  /**
-   *
-   * @param evento
-   */
   public void onRowSelect(SelectEvent evento) {
     clienteSeleccionado = (Cliente) evento.getObject();
     sujeto = clienteSeleccionado.getSujeto();    
     listaTelefonos = telefonoDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
     listaEmails = emailDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
     listaDirecciones = direccionDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
+    listaContactos = contactoDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
   }
 
   public void onRowSelectTel(SelectEvent evento) {
@@ -364,135 +345,77 @@ public class ClienteBean implements Serializable {
   public void onRowSelectDir(SelectEvent evento) {
     direccionSeleccionada = (Direccion) evento.getObject();
   }
+  
+  public void onRowSelectCont(SelectEvent evento) {
+    contactoSeleccionado = (Contacto) evento.getObject();
+    contactoBean.setContactoSeleccionado(contactoSeleccionado);
+    contactoBean.obtenerDatos();
+  }
 
   private void inicializarListaDeClientes() {
     listaDeClientes = clienteDao.buscarTodo();
   }
 
-  /**
-   *
-   * @return
-   */
   public String getNumeroCliente() {
     return numeroCliente;
   }
 
-  /**
-   *
-   * @param numeroCliente
-   */
   public void setNumeroCliente(String numeroCliente) {
     this.numeroCliente = numeroCliente;
   }
 
-  /**
-   *
-   * @return
-   */
   public String getCurp() {
     return curp;
   }
 
-  /**
-   *
-   * @param curp
-   */
   public void setCurp(String curp) {
     this.curp = curp;
   }
 
-  /**
-   *
-   * @return
-   */
   public String getNumeroSeguroSocial() {
     return numeroSeguroSocial;
   }
 
-  /**
-   *
-   * @param numeroSeguroSocial
-   */
   public void setNumeroSeguroSocial(String numeroSeguroSocial) {
     this.numeroSeguroSocial = numeroSeguroSocial;
   }
 
-  /**
-   *
-   * @return
-   */
   public String getNombreRazonSocial() {
     return nombreRazonSocial;
   }
 
-  /**
-   *
-   * @param nombreRazonSocial
-   */
   public void setNombreRazonSocial(String nombreRazonSocial) {
     this.nombreRazonSocial = nombreRazonSocial;
   }
 
-  /**
-   *
-   * @return
-   */
   public String getRfc() {
     return rfc;
   }
 
-  /**
-   *
-   * @param rfc
-   */
   public void setRfc(String rfc) {
     this.rfc = rfc;
   }
 
-  /**
-   *
-   * @return
-   */
   public int getEliminado() {
     return eliminado;
   }
 
-  /**
-   *
-   * @param eliminado
-   */
   public void setEliminado(int eliminado) {
     this.eliminado = eliminado;
   }
 
-  /**
-   *
-   * @return
-   */
   public List<Cliente> getListaDeClientes() {
     return listaDeClientes;
   }
 
-  /**
-   *
-   * @param listaDeClientes
-   */
   public void setListaDeClientes(List<Cliente> listaDeClientes) {
     this.listaDeClientes = listaDeClientes;
   }
 
-  /**
-   *
-   * @return
-   */
   public Cliente getClienteSeleccionado() {
     return clienteSeleccionado;
   }
 
-  /**
-   *
-   * @param clienteSeleccionado
-   */
   public void setClienteSeleccionado(Cliente clienteSeleccionado) {
     this.clienteSeleccionado = clienteSeleccionado;
   }
@@ -521,128 +444,85 @@ public class ClienteBean implements Serializable {
     this.direccionSeleccionada = direccionSeleccionada;
   }
 
+  public Contacto getContactoSeleccionado() {
+    return contactoSeleccionado;
+  }
+
+  public void setContactoSeleccionado(Contacto contactoSeleccionado) {
+    this.contactoSeleccionado = contactoSeleccionado;
+  }
+
+
   public boolean isBtnGuardarDeudorDisabled() {
     return btnGuardarDeudorDisabled;
   }
 
-  /**
-   *
-   * @param btnGuardarDeudorDisabled
-   */
   public void setBtnGuardarDeudorDisabled(boolean btnGuardarDeudorDisabled) {
     this.btnGuardarDeudorDisabled = btnGuardarDeudorDisabled;
   }
 
-  /**
-   *
-   * @return
-   */
   public TelefonoBean getTelefonoBean() {
     return telefonoBean;
   }
 
-  /**
-   *
-   * @param telefonoBean
-   */
   public void setTelefonoBean(TelefonoBean telefonoBean) {
     this.telefonoBean = telefonoBean;
   }
 
-  /**
-   *
-   * @return
-   */
   public EmailBean getEmailBean() {
     return emailBean;
   }
 
-  /**
-   *
-   * @param emailBean
-   */
   public void setEmailBean(EmailBean emailBean) {
     this.emailBean = emailBean;
   }
 
-  /**
-   *
-   * @return
-   */
   public DireccionBean getDireccionBean() {
     return direccionBean;
   }
 
-  /**
-   *
-   * @param direccionBean
-   */
   public void setDireccionBean(DireccionBean direccionBean) {
     this.direccionBean = direccionBean;
   }
 
-  /**
-   *
-   * @return
-   */
   public ContactoBean getContactoBean() {
     return contactoBean;
   }
 
-  /**
-   *
-   * @param contactoBean
-   */
   public void setContactoBean(ContactoBean contactoBean) {
     this.contactoBean = contactoBean;
   }
 
-  /**
-   *
-   * @return
-   */
   public List<Telefono> getListaTelefonos() {
     return listaTelefonos;
   }
 
-  /**
-   *
-   * @param listaTelefonos
-   */
   public void setListaTelefonos(List<Telefono> listaTelefonos) {
     this.listaTelefonos = listaTelefonos;
   }
 
-  /**
-   *
-   * @return
-   */
   public List<Direccion> getListaDirecciones() {
     return listaDirecciones;
   }
 
-  /**
-   *
-   * @param listaDirecciones
-   */
   public void setListaDirecciones(List<Direccion> listaDirecciones) {
     this.listaDirecciones = listaDirecciones;
   }
 
-  /**
-   *
-   * @return
-   */
   public List<Email> getListaEmails() {
     return listaEmails;
   }
 
-  /**
-   *
-   * @param listaEmails
-   */
   public void setListaEmails(List<Email> listaEmails) {
     this.listaEmails = listaEmails;
+  }
+
+  public List<Contacto> getListaContactos() {
+    return listaContactos;
+  }
+
+  public void setListaContactos(List<Contacto> listaContactos) {
+    this.listaContactos = listaContactos;
   }
 
 }
