@@ -47,4 +47,6 @@ public interface EmailDAO {
      * @return
      */
     public List<Email> buscarTodo();
+    
+    public List<Email> buscarPorSujeto(int idSujeto);
 }

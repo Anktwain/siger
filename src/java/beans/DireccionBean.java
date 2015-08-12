@@ -45,6 +45,43 @@ public class DireccionBean implements Serializable {
     direccion = new Direccion();
     direccionDao = new DireccionIMPL();
   }
+  
+  public boolean editar(Direccion dir) {
+    FacesContext context = FacesContext.getCurrentInstance();
+    boolean ok = false;
+
+    ok = direccionDao.editar(dir);
+    if (ok) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Operación Exitosa",
+              "Se modificó el registro seleccionado"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "Operación Exitosa",
+              "No se pudo editar el registro seleccionado."));
+    }
+
+    return ok;
+  }
+
+  public boolean eliminar(Direccion dir) {
+    FacesContext context = FacesContext.getCurrentInstance();
+    boolean ok = false;
+
+    ok = direccionDao.eliminar(dir);
+
+    if (ok) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Operación Exitosa",
+              "Se eliminó el registro seleccionado"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "Operación Exitosa",
+              "No se pudo eliminar el registro seleccionado."));
+    }
+
+    return ok;
+  }
 
   /**
    *

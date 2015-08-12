@@ -6,6 +6,8 @@
 package beans;
 
 import dao.ClienteDAO;
+import dao.DireccionDAO;
+import dao.EmailDAO;
 import dao.SujetoDAO;
 import dao.TelefonoDAO;
 import dto.Cliente;
@@ -14,6 +16,8 @@ import dto.Email;
 import dto.Sujeto;
 import dto.Telefono;
 import impl.ClienteIMPL;
+import impl.DireccionIMPL;
+import impl.EmailIMPL;
 import impl.SujetoIMPL;
 import impl.TelefonoIMPL;
 import java.io.Serializable;
@@ -24,6 +28,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import util.constantes.Sujetos;
 import util.log.Logs;
@@ -59,12 +64,17 @@ public class ClienteBean implements Serializable {
   List<Telefono> listaTelefonos;
   List<Direccion> listaDirecciones;
   List<Email> listaEmails;
-  
+
   // Otros acceso a datos
   private TelefonoDAO telefonoDao;
+  private EmailDAO emailDao;
+  private DireccionDAO direccionDao;
 
   // Objetos seleccionados en la tabla
   private Cliente clienteSeleccionado;
+  private Telefono telefonoSeleccionado;
+  private Email emailSeleccionado;
+  private Direccion direccionSeleccionada;
 
   // Controles de la vista
   private boolean btnGuardarDeudorDisabled;
@@ -94,8 +104,10 @@ public class ClienteBean implements Serializable {
     inicializarListaDeClientes();
 
     btnGuardarDeudorDisabled = false;
-    
+
     telefonoDao = new TelefonoIMPL();
+    emailDao = new EmailIMPL();
+    direccionDao = new DireccionIMPL();
   }
 
   // Editar datos de un cliente
@@ -122,6 +134,45 @@ public class ClienteBean implements Serializable {
     return ok;
   }
 
+  public void editarTelefono() {
+    if (telefonoBean.editar(telefonoSeleccionado)) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+    }
+  }
+
+  public void eliminarTelefono() {
+    if (telefonoBean.eliminar(telefonoSeleccionado)) {
+      listaTelefonos.remove(telefonoSeleccionado);
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+    }
+  }
+  
+  public void editarEmail() {
+    if (emailBean.editar(emailSeleccionado)) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+    }
+  }
+
+  public void eliminarEmail() {
+    if (emailBean.eliminar(emailSeleccionado)) {
+      listaEmails.remove(emailSeleccionado);
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+    }
+  }
+  
+  public void editarDireccion() {
+    if (direccionBean.editar(direccionSeleccionada)) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+    }
+  }
+
+  public void eliminarDireccion() {
+    if (direccionBean.eliminar(direccionSeleccionada)) {
+      listaDirecciones.remove(direccionSeleccionada);
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+    }
+  }
+
   // Eliminar Cliente
 
   /**
@@ -145,12 +196,13 @@ public class ClienteBean implements Serializable {
               "Antes debe agregar un nuevo deudor."));
     } else {
       telefonoBean.agregar(sujeto);
+      RequestContext.getCurrentInstance().execute("PF('dlgOtroTelefono').hide();");
     }
   }
 
-  /**
-   *
-   */
+//  public void editarTelefono() {
+//    telefonoBean.editar((Telefono)event.getObject());
+//  }
   public void agregarEmail() {
     if (sujeto.getIdSujeto() == null) {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -159,6 +211,7 @@ public class ClienteBean implements Serializable {
               "Antes debe agregar un nuevo deudor."));
     } else {
       emailBean.agregar(sujeto);
+      RequestContext.getCurrentInstance().execute("PF('dlgOtroMail').hide();");
     }
   }
 
@@ -173,6 +226,7 @@ public class ClienteBean implements Serializable {
               "Antes debe agregar un nuevo deudor."));
     } else {
       direccionBean.agregar(sujeto);
+      RequestContext.getCurrentInstance().execute("PF('dlgOtraDireccion').hide();");
     }
   }
 
@@ -293,7 +347,22 @@ public class ClienteBean implements Serializable {
    */
   public void onRowSelect(SelectEvent evento) {
     clienteSeleccionado = (Cliente) evento.getObject();
+    sujeto = clienteSeleccionado.getSujeto();    
     listaTelefonos = telefonoDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
+    listaEmails = emailDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
+    listaDirecciones = direccionDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
+  }
+
+  public void onRowSelectTel(SelectEvent evento) {
+    telefonoSeleccionado = (Telefono) evento.getObject();
+  }
+
+  public void onRowSelectMail(SelectEvent evento) {
+    emailSeleccionado = (Email) evento.getObject();
+  }
+
+  public void onRowSelectDir(SelectEvent evento) {
+    direccionSeleccionada = (Direccion) evento.getObject();
   }
 
   private void inicializarListaDeClientes() {
@@ -428,10 +497,30 @@ public class ClienteBean implements Serializable {
     this.clienteSeleccionado = clienteSeleccionado;
   }
 
-  /**
-   *
-   * @return
-   */
+  public Telefono getTelefonoSeleccionado() {
+    return telefonoSeleccionado;
+  }
+
+  public void setTelefonoSeleccionado(Telefono telefonoSeleccionado) {
+    this.telefonoSeleccionado = telefonoSeleccionado;
+  }
+
+  public Email getEmailSeleccionado() {
+    return emailSeleccionado;
+  }
+
+  public void setEmailSeleccionado(Email emailSeleccionado) {
+    this.emailSeleccionado = emailSeleccionado;
+  }
+
+  public Direccion getDireccionSeleccionada() {
+    return direccionSeleccionada;
+  }
+
+  public void setDireccionSeleccionada(Direccion direccionSeleccionada) {
+    this.direccionSeleccionada = direccionSeleccionada;
+  }
+
   public boolean isBtnGuardarDeudorDisabled() {
     return btnGuardarDeudorDisabled;
   }
@@ -555,7 +644,5 @@ public class ClienteBean implements Serializable {
   public void setListaEmails(List<Email> listaEmails) {
     this.listaEmails = listaEmails;
   }
-  
-  
 
 }

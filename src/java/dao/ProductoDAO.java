@@ -46,5 +46,7 @@ public interface ProductoDAO {
      *
      * @return
      */
-    public List<Producto> buscarTodo(); 
+    public List<Producto> buscarTodo();
+    
+    public List<Producto> buscarProductosPorEmpresa(int idEmpresa);
 }

@@ -47,4 +47,6 @@ public interface DireccionDAO {
      * @return
      */
     public List<Direccion> buscarTodo();    
+    
+    public List<Direccion> buscarPorSujeto(int idSujeto);
 }

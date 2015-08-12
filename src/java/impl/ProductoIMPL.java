@@ -1,6 +1,7 @@
 package impl;
 
 import dao.ProductoDAO;
+import dto.Empresa;
 import dto.Producto;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -111,9 +112,36 @@ public class ProductoIMPL implements ProductoDAO {
      */
     @Override
     public Producto buscar(int idProducto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        Producto producto;
+        try { 
+            producto = (Producto) sesion.createSQLQuery("select * from producto where id_producto = " + idProducto + ";").addEntity(Producto.class).uniqueResult();
+        } catch(HibernateException he) {
+            producto = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return producto;
     }
 
+    @Override
+    public List<Producto> buscarProductosPorEmpresa(int idEmpresa) {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        List<Producto> productos;
+        try { 
+            productos = sesion.createSQLQuery("select * from producto where empresas_id_empresa = " + idEmpresa + ";").addEntity(Producto.class).list();
+        } catch(HibernateException he) {
+            productos = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return productos;
+    }
+    
     /**
      *
      *
