@@ -5,50 +5,56 @@
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <meta charset="utf-8"></meta>
-        <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
-        <h:outputStylesheet library="css" name="endless.min.css" />
-        <h:outputStylesheet library="css" name="endless-skin.css" />
-        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
-    </h:head>
-    <h:body>
-        <div id="top-nav" class="fixed skin-6">
-            <a href="#" class="brand">
-                <span>Siger</span>
-                <span class="text-toggle"> Web</span>
-            </a><!-- /brand -->
-            <ul class="nav-notification clearfix">                    
-                <li class="profile dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">
-                        <strong><p:outputLabel value="#{panelGestorBean.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" /></strong>
-                        <span><i class="fa fa-chevron-down"></i></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="clearfix" href="#">
-                                
-                                <h:graphicImage library="images" name="#{panelGestorBean.imagenDePerfil}" />
-                                
-                                <div class="detail">
-                                    <strong><p:outputLabel value="#{panelGestorBean.nombreUsuario}" style="font-family: 'Open Sans',sans-serif; font-size: 14px;" /></strong>
-                                    <p class="grey"><p:outputLabel value="#{panelGestorBean.correo}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></p> 
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a tabindex="-1" href="foto.xhtml" class="main-link"><i class="fa fa-picture-o fa-lg"></i> Cambiar foto</a>
-                        </li>
-                        <li>
-                            <a tabindex="-1" href="pswd.xhtml" class="main-link"><i class="fa fa-unlock-alt fa-lg"></i> Cambiar contraseña</a>
-                        </li>
-                        <li>
-                            <a tabindex="-1" href="index.xhtml" class="main-link"><i class="fa fa-power-off fa-lg"></i> Cerrar sesion</a>
-                        </li>
-                        <li class="divider"></li>                            
-                    </ul>
-                </li>
-            </ul>
-        </div><!-- /top-nav-->
-    </h:body>
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+    <h:outputStylesheet library="css" name="endless.min.css" />
+    <h:outputStylesheet library="css" name="endless-skin.css" />
+    <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
+  </h:head>
+  <h:body>
+    <div id="top-nav" class="fixed skin-6">
+      <a href="#" class="brand">
+        <span>Siger</span>
+        <span class="text-toggle"> Web</span>
+      </a><!-- /brand -->
+      <ul class="nav-notification clearfix">                    
+        <li class="profile dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            <strong><p:outputLabel value="#{panelGestorBean.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" /></strong>
+            <span><i class="fa fa-chevron-down"></i></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="clearfix" href="#">
+
+                <h:graphicImage library="images" name="#{panelGestorBean.imagenDePerfil}" />
+
+                <div class="detail">
+                  <strong><p:outputLabel value="#{panelGestorBean.nombreUsuario}" style="font-family: 'Open Sans',sans-serif; font-size: 14px;" /></strong>
+                  <p class="grey"><p:outputLabel value="#{panelGestorBean.correo}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></p> 
+                </div>
+              </a>
+            </li>
+            <li>
+              <a tabindex="-1" href="foto.xhtml" class="main-link">
+                <i class="fa fa-picture-o fa-lg"></i> Cambiar foto
+              </a>
+            </li>
+            <li>
+              <a tabindex="-1" href="pswd.xhtml" class="main-link">
+                <i class="fa fa-unlock-alt fa-lg"></i> Cambiar contrase&ntilde;a
+              </a>
+            </li>
+            <li>
+              <a tabindex="-1" href="index.xhtml" class="main-link">
+                <i class="fa fa-power-off fa-lg"></i> Cerrar sesi&oacute;n
+              </a>
+            </li>
+            <li class="divider"></li>                            
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /top-nav-->
+  </h:body>
 </html>

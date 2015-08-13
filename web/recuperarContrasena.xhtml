@@ -5,67 +5,67 @@
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <meta charset="utf-8"></meta>
-        <title>Recuperar contraseña</title>
-        <!--<link rel="stylesheet" type="text/css" href="css/recuperarContraseña.css" />-->
-        <h:outputStylesheet library="css" name="recuperarContrasena.css" />
-        <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />        
-    </h:head>
-    <h:body>        
-        <!--<h:outputScript library="js" name="resources/js/verificaCaptcha.js" />-->
-        <p:growl id="growl" showDetail="true" sticky="true" />
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>Recuperar contrase&ntilde;a</title>
+    <!--<link rel="stylesheet" type="text/css" href="css/recuperarContraseña.css" />-->
+    <h:outputStylesheet library="css" name="recuperarContrasena.css" />
+    <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />        
+  </h:head>
+  <h:body>        
+    <!--<h:outputScript library="js" name="resources/js/verificaCaptcha.js" />-->
+    <p:growl id="growl" showDetail="true" sticky="true" />
 
-        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
 
-        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-                  closable="false" resizable="false" showHeader="false" >
-            <p:graphicImage library="img" name="loadingBarra.gif" /></p:dialog>
-        <div id="pagina">
-            <div id="formulario">
-                <a href="index.xhtml" title="Volver al inicio">
-                    <div id="encabezadoForm">
-                    </div>
-                </a>
-                <div id="cuerpoForm">
-                    <h:form >
-                        <div id="letrero">
-                            SOLICITUD DE RECUPERACION DE CONTRASEÑA
-                        </div>
-                        <div id="texto">                            
-                            Por favor complete el siguiente formulario con sus datos:
-                        </div>
-                        <div id="entrada">
-                            Usuario:
-                            <br />
-                            <p:inputText id="usuario" type="text" maxlength="50" required="true"
-                                         requiredMessage="Debe escribir un nombre de usuario" value="#{recuperarContrasenaBean.usuarioLogin}" />
-                        </div>
-                        <div id="entrada">
-                            Correo Electrónico:
-                            <br />
-                            <p:inputText id="mail" type="mail" maxlength="50" required="true"
-                                         requiredMessage="Debe escribir su correo electrónico" value="#{recuperarContrasenaBean.correo}" />
-                        </div>
-                        <!--
-                        <div id="captcha">
-                            <h:form>
-                                <div class="g-recaptcha" data-sitekey="6LeBKQgTAAAAAMPEUJ0hWwf7ubawf30er0IIgdPj"></div>
-                            </h:form>
-                            <h:form>
-                                <p:messages showDetail="true"/>
-                                <p:captcha label="Captcha" required="true" requiredMessage="Resuelva el CAPTCHA" />
-                            </h:form>
-                        </div>
-                        -->
-                        <h:form id="botonLogin">
-                            <div id="btnEnviar">
-                                <p:commandButton value="Enviar" id="botonLogin" icon="ui-icon-check" actionListener="#{recuperarContrasenaBean.recuperar}" update="growl" />
-                            </div>
-                        </h:form>                        
-                    </h:form>
-                </div>
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+              closable="false" resizable="false" showHeader="false" >
+      <p:graphicImage library="img" name="loadingBarra.gif" /></p:dialog>
+    <div id="pagina">
+      <div id="formulario">
+        <a href="index.xhtml" title="Volver al inicio">
+          <div id="encabezadoForm">
+          </div>
+        </a>
+        <div id="cuerpoForm">
+          <h:form >
+            <div id="letrero">
+              SOLICITUD DE RECUPERACI&Oacute;N DE CONTRASE&Ntilde;A
             </div>
+            <div id="texto">                            
+              Por favor complete el siguiente formulario con sus datos:
+            </div>
+            <div id="entrada">
+              Usuario:
+              <br />
+              <p:inputText id="usuario" type="text" maxlength="50" required="true"
+                           requiredMessage="Debe escribir un nombre de usuario" value="#{recuperarContrasenaBean.usuarioLogin}" />
+            </div>
+            <div id="entrada">
+              Correo Electrónico:
+              <br />
+              <p:inputText id="mail" type="mail" maxlength="50" required="true"
+                           requiredMessage="Debe escribir su correo electr&oacute;nico" value="#{recuperarContrasenaBean.correo}" />
+            </div>
+            <!--
+            <div id="captcha">
+                <h:form>
+                    <div class="g-recaptcha" data-sitekey="6LeBKQgTAAAAAMPEUJ0hWwf7ubawf30er0IIgdPj"></div>
+                </h:form>
+                <h:form>
+                    <p:messages showDetail="true"/>
+                    <p:captcha label="Captcha" required="true" requiredMessage="Resuelva el CAPTCHA" />
+                </h:form>
+            </div>
+            -->
+            <h:form id="botonLogin">
+              <div id="btnEnviar">
+                <p:commandButton value="Enviar" id="botonLogin" icon="ui-icon-check" actionListener="#{recuperarContrasenaBean.recuperar}" update="growl" />
+              </div>
+            </h:form>                        
+          </h:form>
         </div>
-    </h:body>
+      </div>
+    </div>
+  </h:body>
 </html>

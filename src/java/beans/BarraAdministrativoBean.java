@@ -26,7 +26,11 @@ import util.log.Logs;
 public class BarraAdministrativoBean implements Serializable{
     private UsuarioDAO usuarioDao;
     private List<Usuario> sinConfirmar;
-    public BarraAdministrativoBean() {
+
+  /**
+   *
+   */
+  public BarraAdministrativoBean() {
         usuarioDao = new UsuarioIMPL();
     }
        
@@ -48,8 +52,7 @@ public class BarraAdministrativoBean implements Serializable{
       /**
      *
      *
-     * @param
-     */
+   * @param sinConfirmar     */
     public void setSinConfirmar(List sinConfirmar){
         this.sinConfirmar = sinConfirmar;
     }

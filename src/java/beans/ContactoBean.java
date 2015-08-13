@@ -87,7 +87,11 @@ public class ContactoBean implements Serializable {
   private boolean btnGuardarContactoDisabled;
 
   // Construyendo...
-  public ContactoBean() {
+
+  /**
+   *
+   */
+    public ContactoBean() {
     contacto = new Contacto();
     contactoDao = new ContactoIMPL();
     sujeto = new Sujeto();
@@ -175,6 +179,9 @@ public class ContactoBean implements Serializable {
     return ok;
   }
 
+  /**
+   *
+   */
   public void agregarTelefono() {
     if (sujeto.getIdSujeto() == null) {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -187,6 +194,9 @@ public class ContactoBean implements Serializable {
     }
   }
 
+  /**
+   *
+   */
   public void agregarEmail() {
     if (sujeto.getIdSujeto() == null) {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -199,6 +209,9 @@ public class ContactoBean implements Serializable {
     }
   }
 
+  /**
+   *
+   */
   public void agregarDireccion() {
     if (sujeto.getIdSujeto() == null) {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -212,7 +225,12 @@ public class ContactoBean implements Serializable {
   }
 
   // Agregar un nuevo contacto
-  public void agregar(Cliente cliente) {
+
+  /**
+   *
+   * @param cliente
+   */
+    public void agregar(Cliente cliente) {
     // En primera instancia agrega el Sujeto
     int idSujeto = agregarSujeto();
 
@@ -264,12 +282,19 @@ public class ContactoBean implements Serializable {
     btnGuardarContactoDisabled = false;
   }
 
+  /**
+   *
+   * @return
+   */
   public boolean nombreEsValido() {
     return (nombreRazonSocial != null) && (!nombreRazonSocial.equals(""))
             && (nombreRazonSocial.length() <= Sujetos.LONGITUD_NOMBRE)
             && (!nombreRazonSocial.matches("[.*\\s*]*"));
   }
 
+  /**
+   *
+   */
   public void nuevoContacto() {
     sujeto = new Sujeto();
     limpiarEntradas();
@@ -296,74 +321,146 @@ public class ContactoBean implements Serializable {
     direccionSeleccionada = (Direccion) evento.getObject();
   }
 
+  /**
+   *
+   * @return
+   */
   public Sujeto getSujetoContacto() {
     return sujeto;
   }
 
+  /**
+   *
+   * @param sujeto
+   */
   public void setSujetoContacto(Sujeto sujeto) {
     this.sujeto = sujeto;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getObservaciones() {
     return observaciones;
   }
 
+  /**
+   *
+   * @param observaciones
+   */
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getNombreRazonSocial() {
     return nombreRazonSocial;
   }
 
+  /**
+   *
+   * @param nombreRazonSocial
+   */
   public void setNombreRazonSocial(String nombreRazonSocial) {
     this.nombreRazonSocial = nombreRazonSocial;
   }
 
+  /**
+   *
+   * @return
+   */
   public String getRfc() {
     return rfc;
   }
 
+  /**
+   *
+   * @param rfc
+   */
   public void setRfc(String rfc) {
     this.rfc = rfc;
   }
 
+  /**
+   *
+   * @return
+   */
   public int getEliminado() {
     return eliminado;
   }
 
+  /**
+   *
+   * @param eliminado
+   */
   public void setEliminado(int eliminado) {
     this.eliminado = eliminado;
   }
 
+  /**
+   *
+   * @return
+   */
   public boolean isBtnGuardarContactoDisabled() {
     return btnGuardarContactoDisabled;
   }
 
+  /**
+   *
+   * @param btnGuardarContactoDisabled
+   */
   public void setBtnGuardarContactoDisabled(boolean btnGuardarContactoDisabled) {
     this.btnGuardarContactoDisabled = btnGuardarContactoDisabled;
   }
 
+  /**
+   *
+   * @return
+   */
   public TelefonoBean getTelefonoBean() {
     return telefonoBean;
   }
 
+  /**
+   *
+   * @param telefonoBean
+   */
   public void setTelefonoBean(TelefonoBean telefonoBean) {
     this.telefonoBean = telefonoBean;
   }
 
+  /**
+   *
+   * @return
+   */
   public EmailBean getEmailBean() {
     return emailBean;
   }
 
+  /**
+   *
+   * @param emailBean
+   */
   public void setEmailBean(EmailBean emailBean) {
     this.emailBean = emailBean;
   }
 
+  /**
+   *
+   * @return
+   */
   public DireccionBean getDireccionBean() {
     return direccionBean;
   }
 
+  /**
+   *
+   * @param direccionBean
+   */
   public void setDireccionBean(DireccionBean direccionBean) {
     this.direccionBean = direccionBean;
   }

@@ -17,15 +17,33 @@ public class Auto  implements java.io.Serializable {
      private String color;
      private Float valor;
 
-    public Auto() {
+  /**
+   *
+   */
+  public Auto() {
     }
 
-	
-    public Auto(int idAuto, Credito credito) {
+  /**
+   *
+   * @param idAuto
+   * @param credito
+   */
+  public Auto(int idAuto, Credito credito) {
         this.idAuto = idAuto;
         this.credito = credito;
     }
-    public Auto(int idAuto, Credito credito, String clave, String marca, String modelo, String color, Float valor) {
+
+  /**
+   *
+   * @param idAuto
+   * @param credito
+   * @param clave
+   * @param marca
+   * @param modelo
+   * @param color
+   * @param valor
+   */
+  public Auto(int idAuto, Credito credito, String clave, String marca, String modelo, String color, Float valor) {
        this.idAuto = idAuto;
        this.credito = credito;
        this.clave = clave;
@@ -35,53 +53,115 @@ public class Auto  implements java.io.Serializable {
        this.valor = valor;
     }
    
-    public int getIdAuto() {
+  /**
+   *
+   * @return
+   */
+  public int getIdAuto() {
         return this.idAuto;
     }
     
-    public void setIdAuto(int idAuto) {
+  /**
+   *
+   * @param idAuto
+   */
+  public void setIdAuto(int idAuto) {
         this.idAuto = idAuto;
     }
-    public Credito getCredito() {
+
+  /**
+   *
+   * @return
+   */
+  public Credito getCredito() {
         return this.credito;
     }
     
-    public void setCredito(Credito credito) {
+  /**
+   *
+   * @param credito
+   */
+  public void setCredito(Credito credito) {
         this.credito = credito;
     }
-    public String getClave() {
+
+  /**
+   *
+   * @return
+   */
+  public String getClave() {
         return this.clave;
     }
     
-    public void setClave(String clave) {
+  /**
+   *
+   * @param clave
+   */
+  public void setClave(String clave) {
         this.clave = clave;
     }
-    public String getMarca() {
+
+  /**
+   *
+   * @return
+   */
+  public String getMarca() {
         return this.marca;
     }
     
-    public void setMarca(String marca) {
+  /**
+   *
+   * @param marca
+   */
+  public void setMarca(String marca) {
         this.marca = marca;
     }
-    public String getModelo() {
+
+  /**
+   *
+   * @return
+   */
+  public String getModelo() {
         return this.modelo;
     }
     
-    public void setModelo(String modelo) {
+  /**
+   *
+   * @param modelo
+   */
+  public void setModelo(String modelo) {
         this.modelo = modelo;
     }
-    public String getColor() {
+
+  /**
+   *
+   * @return
+   */
+  public String getColor() {
         return this.color;
     }
     
-    public void setColor(String color) {
+  /**
+   *
+   * @param color
+   */
+  public void setColor(String color) {
         this.color = color;
     }
-    public Float getValor() {
+
+  /**
+   *
+   * @return
+   */
+  public Float getValor() {
         return this.valor;
     }
     
-    public void setValor(Float valor) {
+  /**
+   *
+   * @param valor
+   */
+  public void setValor(Float valor) {
         this.valor = valor;
     }
 

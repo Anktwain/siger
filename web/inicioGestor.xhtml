@@ -5,333 +5,334 @@
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <meta charset="utf-8"></meta>
-        <title>SigerWeb - Panel Gestores</title>
-<!--                <link href="EndlessStuff/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-                 Font Awesome 
-                <link href="EndlessStuff/css/font-awesome.min.css" rel="stylesheet" />
-                 Pace 
-                <link href="EndlessStuff/css/pace.css" rel="stylesheet" />
-                 Color box 
-                <link href="EndlessStuff/css/colorbox/colorbox.css" rel="stylesheet" />
-                 Morris 
-                <link href="EndlessStuff/css/morris.css" rel="stylesheet" />
-                 Endless  
-                <link href="EndlessStuff/css/endless.min.css" rel="stylesheet" />
-                <link href="EndlessStuff/css/endless-skin.css" rel="stylesheet" />
-                 Icono 
-                <link rel="shortcut icon" href="img/icono1.ico" type="image/x-icon" />-->
-        
-        <h:outputStylesheet library="bootstrap" name="/css/bootstrap.min.css" />
-        <h:outputStylesheet library="css" name="font-awesome.min.css" />
-        <h:outputStylesheet library="css" name="pace.css" />
-        <h:outputStylesheet library="css" name="/colorbox/colorbox.css" />
-        <h:outputStylesheet library="css" name="morris.css" />
-        <h:outputStylesheet library="css" name="endless.min.css" />
-        <h:outputStylesheet library="css" name="endless-skin.css" />
-        
-        
-                <!--<script src="EndlessStuff/js/jquery-1.10.2.min.js"></script>-->
-        <!-- Bootstrap -->
-        <!--<script src="EndlessStuff/bootstrap/js/bootstrap.js"></script>-->
-        <!-- Flot -->
-        <!--<script src='EndlessStuff/js/jquery.flot.min.js'></script>-->
-        <!-- Morris -->
-        <!--<script src='EndlessStuff/js/rapheal.min.js'></script>-->
-        <!--<script src='EndlessStuff/js/morris.min.js'></script>-->
-        <!-- Colorbox -->
-        <!--<script src='EndlessStuff/js/jquery.colorbox.min.js'></script>-->
-        <!-- Sparkline -->
-        <!--<script src='EndlessStuff/js/jquery.sparkline.min.js'></script>-->
-        <!-- Pace -->
-        <!--<script src='EndlessStuff/js/uncompressed/pace.js'></script>-->
-        <!-- Popup Overlay -->
-        <!--<script src='EndlessStuff/js/jquery.popupoverlay.min.js'></script>-->
-        <!-- Slimscroll -->
-        <!--<script src='EndlessStuff/js/jquery.slimscroll.min.js'></script>-->
-        <!-- Modernizr -->
-        <!--<script src='EndlessStuff/js/modernizr.min.js'></script>-->
-        <!-- Cookie -->
-        <!--<script src='EndlessStuff/js/jquery.cookie.min.js'></script>-->
-        <!-- Endless -->
-        <!--<script src="EndlessStuff/js/endless/endless_dashboard.js"></script>-->
-        <!--<script src="EndlessStuff/js/endless/endless.js"></script>-->
-        
-        <h:outputScript library="js" name="jquery-1.10.2.min.js" />
-        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
-        <h:outputScript library="js" name="jquery.flot.min.js" />
-        <h:outputScript library="js" name="rapheal.min.js" />
-        <h:outputScript library="js" name="morris.min.js" />
-        <h:outputScript library="js" name="jquery.colorbox.min.js" />
-        <h:outputScript library="js" name="jquery.sparkline.min.js" />
-        <h:outputScript library="js" name="/uncompressed/pace.js" />
-        <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
-        <h:outputScript library="js" name="jquery.slimscroll.min.js" />
-        <h:outputScript library="js" name="modernizr.min.js" />
-        <h:outputScript library="js" name="jquery.cookie.min.js" />
-        <h:outputScript library="js" name="/endless/endless_dashboard.js" />
-        <h:outputScript library="js" name="/endless/endless.js" />
-        
-        
-    </h:head>
-    <h:body class="overflow-hidden">
-        <!-- Overlay Div -->
-        <div id="overlay" class="transparent"></div>
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Panel Gestores</title>
+    <!--                <link href="EndlessStuff/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+                     Font Awesome 
+                    <link href="EndlessStuff/css/font-awesome.min.css" rel="stylesheet" />
+                     Pace 
+                    <link href="EndlessStuff/css/pace.css" rel="stylesheet" />
+                     Color box 
+                    <link href="EndlessStuff/css/colorbox/colorbox.css" rel="stylesheet" />
+                     Morris 
+                    <link href="EndlessStuff/css/morris.css" rel="stylesheet" />
+                     Endless  
+                    <link href="EndlessStuff/css/endless.min.css" rel="stylesheet" />
+                    <link href="EndlessStuff/css/endless-skin.css" rel="stylesheet" />
+                     Icono 
+                    <link rel="shortcut icon" href="img/icono1.ico" type="image/x-icon" />-->
 
-        <div id="theme-setting">
-            <div class="title">
-                <strong class="no-margin">Skin Color</strong>
-            </div>
-            <div class="theme-box">
-                <a class="theme-color" style="background:#323447" id="default"></a>
-                <a class="theme-color" style="background:#efefef" id="skin-1"></a>
-                <a class="theme-color" style="background:#a93922" id="skin-2"></a>
-                <a class="theme-color" style="background:#3e6b96" id="skin-3"></a>
-                <a class="theme-color" style="background:#635247" id="skin-4"></a>
-                <a class="theme-color" style="background:#3a3a3a" id="skin-5"></a>
-                <a class="theme-color" style="background:#495B6C" id="skin-6"></a>
-            </div>
-            <div class="title">
-                <strong class="no-margin">Menu</strong>
-            </div>
-        </div>
-        <div id="wrapper" class="preload">
-            <div id="top-nav" class="fixed skin-6">
-                <a href="#" class="brand">
-                    <span>Siger</span>
-                    <span class="text-toggle"> Web</span>
-                </a><!-- /brand -->
-                <ul class="nav-notification clearfix">                    
-                    <li class="profile dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <strong><p:outputLabel value="#{panelGestorBean.nombre}" /></strong>
-                            <span><i class="fa fa-chevron-down"></i></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="clearfix" href="#">
-                                    <h:graphicImage library="images" name="#{panelGestorBean.imagenDePerfil}" />
-                                    <div class="detail">
-                                        <strong><p:outputLabel value="#{panelGestorBean.nombreUsuario}"/></strong>
-                                        <p class="grey"><p:outputLabel value="#{panelGestorBean.correo}" /></p> 
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a tabindex="-1" href="foto.xhtml" class="main-link"><i class="fa fa-picture-o fa-lg"></i> Cambiar foto</a></li>
-                            <li><a tabindex="-1" href="index.xhtml" class="main-link"><i class="fa fa-power-off fa-lg"></i> Cerrar sesion</a></li>
-                            <li class="divider"></li>                            
-                        </ul>
-                    </li>
-                </ul>
-            </div><!-- /top-nav-->
-            <aside class="fixed skin-6">
-                <div class="sidebar-inner scrollable-sidebar">
-                    <div class="user-block clearfix">
-                        <h:graphicImage library="images" name="#{panelGestorBean.imagenDePerfil}" />                            
-                    </div><!-- /user-block -->
-                    <div class="search-block">
-                        <div class="input-group">
-                            <input type="text" class="form-control input-sm" placeholder="Numero de credito..." />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default btn-sm" type="button"><i class="fa fa-search"></i></button>
-                            </span>
-                        </div><!-- /input-group -->
-                    </div><!-- /search-block -->
-                    <div class="main-menu">
-                        <ul>
-                            <li class="active">
-                                <a href="#">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-desktop fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Panel de control</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-
-                            <li class="openable">
-                                <a href="cuentas.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-list"></i>
-                                    </span>
-                                    <span class="text">Cuentas</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="empresas.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-envelope fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Empresas</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="visitas.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-tag fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Visitas</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="correos.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-book fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Correos</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="busqueda.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-search-plus fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Busqueda Avanzada</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                            <li class="openable">
-                                <a href="estatusInformativo.xhtml">
-                                    <span class="menu-icon">
-                                        <i class="fa fa-info-circle fa-lg"></i> 
-                                    </span>
-                                    <span class="text">Estatus Informativo</span>
-                                    <span class="menu-hover"></span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div><!-- /main-menu -->
-                </div><!-- /sidebar-inner -->
-            </aside>
-            <div id="main-container">
-                <div class="main-header clearfix">
-                    <div class="page-title">
-                        <h3 class="no-margin">Panel de control Gestores</h3>
-                        <span>Bienvenid@</span>
-                    </div><!-- /page-title -->
-                    <ul class="page-stats">
-                        <li>
-                            <div class="value">
-                                <span>Gestiones hoy:</span>
-                                <h4 id="currentVisitor">3</h4>
-                            </div>
-                            <span id="visits" class="sparkline"></span>
-                        </li>
-                        <li>
-                            <div class="value">
-                                <span>Saldo aprobado hoy:</span>
-                                <h4>$<strong id="currentBalance">0</strong></h4>
-                            </div>
-                            <span id="balances" class="sparkline"></span>
-                        </li>
-                    </ul><!-- /page-stats -->
-                </div><!-- /main-header -->
-                <div class="grey-container shortcut-wrapper">
+    <h:outputStylesheet library="bootstrap" name="/css/bootstrap.min.css" />
+    <h:outputStylesheet library="css" name="font-awesome.min.css" />
+    <h:outputStylesheet library="css" name="pace.css" />
+    <h:outputStylesheet library="css" name="/colorbox/colorbox.css" />
+    <h:outputStylesheet library="css" name="morris.css" />
+    <h:outputStylesheet library="css" name="endless.min.css" />
+    <h:outputStylesheet library="css" name="endless-skin.css" />
 
 
-                </div><!-- /grey-container -->
-                <div class="padding-md">
-                    <div class="row">
-                        <div class="col-sm-6 col-md-3">
-                            <div class="panel-stat3 bg-danger">
-                                <h2 class="m-top-none" id="userCount">363</h2>
-                                <h5>Cuentas en gestion</h5>
-                                <div class="stat-icon">
-                                    <i class="fa fa-group fa-3x"></i>
-                                </div>
-                                <div class="loading-overlay">
-                                    <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
-                                </div>
-                            </div>
-                        </div><!-- /.col -->
-                        <div class="col-sm-6 col-md-3">
-                            <div class="panel-stat3 bg-info">
-                                <h2 class="m-top-none"><span id="serverloadCount">15</span></h2>
-                                <h5>Visitas domiciliarias</h5>
-                                <div class="stat-icon">
-                                    <i class="fa fa-envelope-o fa-3x"></i>
-                                </div>
-                                <div class="loading-overlay">
-                                    <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
-                                </div>
-                            </div>
-                        </div><!-- /.col -->
-                        <div class="col-sm-6 col-md-3">
-                            <div class="panel-stat3 bg-warning">
-                                <h2 class="m-top-none" id="orderCount">2</h2>
-                                <h5>Pagos por aprobar</h5>
-                                <div class="stat-icon">
-                                    <i class="fa fa-usd fa-3x"></i>
-                                </div>
-                                <div class="loading-overlay">
-                                    <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
-                                </div>
-                            </div>
-                        </div><!-- /.col -->
-                        <div class="col-sm-6 col-md-3">
-                            <div class="panel-stat3 bg-success">
-                                <h2 class="m-top-none" id="visitorCount">- 6.84%</h2>
-                                <h5>Recuperacion</h5>
-                                <div class="stat-icon">
-                                    <i class="fa fa-bar-chart-o fa-3x"></i>
-                                </div>                                
-                                <div class="loading-overlay">
-                                    <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
-                                </div>
-                            </div>
-                        </div><!-- /.col -->
-                    </div>
-                    <div class="row">
+    <!--<script src="EndlessStuff/js/jquery-1.10.2.min.js"></script>-->
+    <!-- Bootstrap -->
+    <!--<script src="EndlessStuff/bootstrap/js/bootstrap.js"></script>-->
+    <!-- Flot -->
+    <!--<script src='EndlessStuff/js/jquery.flot.min.js'></script>-->
+    <!-- Morris -->
+    <!--<script src='EndlessStuff/js/rapheal.min.js'></script>-->
+    <!--<script src='EndlessStuff/js/morris.min.js'></script>-->
+    <!-- Colorbox -->
+    <!--<script src='EndlessStuff/js/jquery.colorbox.min.js'></script>-->
+    <!-- Sparkline -->
+    <!--<script src='EndlessStuff/js/jquery.sparkline.min.js'></script>-->
+    <!-- Pace -->
+    <!--<script src='EndlessStuff/js/uncompressed/pace.js'></script>-->
+    <!-- Popup Overlay -->
+    <!--<script src='EndlessStuff/js/jquery.popupoverlay.min.js'></script>-->
+    <!-- Slimscroll -->
+    <!--<script src='EndlessStuff/js/jquery.slimscroll.min.js'></script>-->
+    <!-- Modernizr -->
+    <!--<script src='EndlessStuff/js/modernizr.min.js'></script>-->
+    <!-- Cookie -->
+    <!--<script src='EndlessStuff/js/jquery.cookie.min.js'></script>-->
+    <!-- Endless -->
+    <!--<script src="EndlessStuff/js/endless/endless_dashboard.js"></script>-->
+    <!--<script src="EndlessStuff/js/endless/endless.js"></script>-->
 
-                    </div><!-- /.row -->
-                </div><!-- /.padding-md -->
-            </div><!-- /main-container -->
-            <footer><!-- footer -->
-                <div class="row">
-                    <div class="col-sm-6">
-                        <span class="footer-brand">
-                            <strong class="text-danger">Siger</strong> Web
-                        </span>
-                        <p class="no-margin">
-                            &copy; 2015 <strong>Corporativo Del Rio &amp; Asociados</strong>. Todos los derechos reservados. 
-                        </p>
-                    </div><!-- /.col -->
-                </div><!-- /.row-->
-            </footer><!-- /footer -->
-        </div><!-- /wrapper -->
-        <a href="" id="scroll-to-top" class="hidden-print"><i class="fa fa-chevron-up"></i></a>
-        <!-- Javascript placed at the end of the document so the pages load faster -->
-        <!-- Jquery -->
-<!--        <script src="EndlessStuff/js/jquery-1.10.2.min.js"></script>
-         Bootstrap 
-        <script src="EndlessStuff/bootstrap/js/bootstrap.js"></script>
-         Flot 
-        <script src='EndlessStuff/js/jquery.flot.min.js'></script>
-         Morris 
-        <script src='EndlessStuff/js/rapheal.min.js'></script>
-        <script src='EndlessStuff/js/morris.min.js'></script>
-         Colorbox 
-        <script src='EndlessStuff/js/jquery.colorbox.min.js'></script>
-         Sparkline 
-        <script src='EndlessStuff/js/jquery.sparkline.min.js'></script>
-         Pace 
-        <script src='EndlessStuff/js/uncompressed/pace.js'></script>
-         Popup Overlay 
-        <script src='EndlessStuff/js/jquery.popupoverlay.min.js'></script>
-         Slimscroll 
-        <script src='EndlessStuff/js/jquery.slimscroll.min.js'></script>
-         Modernizr 
-        <script src='EndlessStuff/js/modernizr.min.js'></script>
-         Cookie 
-        <script src='EndlessStuff/js/jquery.cookie.min.js'></script>
-         Endless 
-        <script src="EndlessStuff/js/endless/endless_dashboard.js"></script>
-        <script src="EndlessStuff/js/endless/endless.js"></script>-->
-    </h:body>
+    <h:outputScript library="js" name="jquery-1.10.2.min.js" />
+    <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
+    <h:outputScript library="js" name="jquery.flot.min.js" />
+    <h:outputScript library="js" name="rapheal.min.js" />
+    <h:outputScript library="js" name="morris.min.js" />
+    <h:outputScript library="js" name="jquery.colorbox.min.js" />
+    <h:outputScript library="js" name="jquery.sparkline.min.js" />
+    <h:outputScript library="js" name="/uncompressed/pace.js" />
+    <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
+    <h:outputScript library="js" name="jquery.slimscroll.min.js" />
+    <h:outputScript library="js" name="modernizr.min.js" />
+    <h:outputScript library="js" name="jquery.cookie.min.js" />
+    <h:outputScript library="js" name="/endless/endless_dashboard.js" />
+    <h:outputScript library="js" name="/endless/endless.js" />
+
+
+  </h:head>
+  <body class="overflow-hidden">
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent"></div>
+
+    <div id="theme-setting">
+      <div class="title">
+        <strong class="no-margin">Skin Color</strong>
+      </div>
+      <div class="theme-box">
+        <a class="theme-color" style="background:#323447" id="default"></a>
+        <a class="theme-color" style="background:#efefef" id="skin-1"></a>
+        <a class="theme-color" style="background:#a93922" id="skin-2"></a>
+        <a class="theme-color" style="background:#3e6b96" id="skin-3"></a>
+        <a class="theme-color" style="background:#635247" id="skin-4"></a>
+        <a class="theme-color" style="background:#3a3a3a" id="skin-5"></a>
+        <a class="theme-color" style="background:#495B6C" id="skin-6"></a>
+      </div>
+      <div class="title">
+        <strong class="no-margin">Menu</strong>
+      </div>
+    </div>
+    <div id="wrapper" class="preload">
+      <div id="top-nav" class="fixed skin-6">
+        <a href="#" class="brand">
+          <span>Siger</span>
+          <span class="text-toggle"> Web</span>
+        </a><!-- /brand -->
+        <ul class="nav-notification clearfix">                    
+          <li class="profile dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <strong><p:outputLabel value="#{panelGestorBean.nombre}" /></strong>
+              <span><i class="fa fa-chevron-down"></i></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="clearfix" href="#">
+                  <h:graphicImage library="images" name="#{panelGestorBean.imagenDePerfil}" />
+                  <div class="detail">
+                    <strong><p:outputLabel value="#{panelGestorBean.nombreUsuario}"/></strong>
+                    <p class="grey"><p:outputLabel value="#{panelGestorBean.correo}" /></p> 
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a tabindex="-1" href="foto.xhtml" class="main-link"><i class="fa fa-picture-o fa-lg"></i> Cambiar foto</a></li>
+              <li><a tabindex="-1" href="index.xhtml" class="main-link"><i class="fa fa-power-off fa-lg"></i> Cerrar sesion</a></li>
+              <li class="divider"></li>                            
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /top-nav-->
+      <aside class="fixed skin-6">
+        <div class="sidebar-inner scrollable-sidebar">
+          <div class="user-block clearfix">
+            <h:graphicImage library="images" name="#{panelGestorBean.imagenDePerfil}" />                            
+          </div><!-- /user-block -->
+          <div class="search-block">
+            <div class="input-group">
+              <input type="text" class="form-control input-sm" placeholder="Numero de credito..." />
+              <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" type="button"><i class="fa fa-search"></i></button>
+              </span>
+            </div><!-- /input-group -->
+          </div><!-- /search-block -->
+          <div class="main-menu">
+            <ul>
+              <li class="active">
+                <a href="#">
+                  <span class="menu-icon">
+                    <i class="fa fa-desktop fa-lg"></i> 
+                  </span>
+                  <span class="text">Panel de control</span>
+                  <span class="menu-hover"></span>
+                </a>
+              </li>
+
+              <li class="openable">
+                <a href="cuentas.xhtml">
+                  <span class="menu-icon">
+                    <i class="fa fa-list"></i>
+                  </span>
+                  <span class="text">Cuentas</span>
+                  <span class="menu-hover"></span>
+                </a>
+              </li>
+              <li class="openable">
+                <a href="empresas.xhtml">
+                  <span class="menu-icon">
+                    <i class="fa fa-envelope fa-lg"></i> 
+                  </span>
+                  <span class="text">Empresas</span>
+                  <span class="menu-hover"></span>
+                </a>
+              </li>
+              <li class="openable">
+                <a href="visitas.xhtml">
+                  <span class="menu-icon">
+                    <i class="fa fa-tag fa-lg"></i> 
+                  </span>
+                  <span class="text">Visitas</span>
+                  <span class="menu-hover"></span>
+                </a>
+              </li>
+              <li class="openable">
+                <a href="correos.xhtml">
+                  <span class="menu-icon">
+                    <i class="fa fa-book fa-lg"></i> 
+                  </span>
+                  <span class="text">Correos</span>
+                  <span class="menu-hover"></span>
+                </a>
+              </li>
+              <li class="openable">
+                <a href="busqueda.xhtml">
+                  <span class="menu-icon">
+                    <i class="fa fa-search-plus fa-lg"></i> 
+                  </span>
+                  <span class="text">Busqueda Avanzada</span>
+                  <span class="menu-hover"></span>
+                </a>
+              </li>
+              <li class="openable">
+                <a href="estatusInformativo.xhtml">
+                  <span class="menu-icon">
+                    <i class="fa fa-info-circle fa-lg"></i> 
+                  </span>
+                  <span class="text">Estatus Informativo</span>
+                  <span class="menu-hover"></span>
+                </a>
+              </li>
+            </ul>
+          </div><!-- /main-menu -->
+        </div><!-- /sidebar-inner -->
+      </aside>
+      <div id="main-container">
+        <div class="main-header clearfix">
+          <div class="page-title">
+            <h3 class="no-margin">Panel de control Gestores</h3>
+            <span>Bienvenid@</span>
+          </div><!-- /page-title -->
+          <ul class="page-stats">
+            <li>
+              <div class="value">
+                <span>Gestiones hoy:</span>
+                <h4 id="currentVisitor">3</h4>
+              </div>
+              <span id="visits" class="sparkline"></span>
+            </li>
+            <li>
+              <div class="value">
+                <span>Saldo aprobado hoy:</span>
+                <h4>$<strong id="currentBalance">0</strong></h4>
+              </div>
+              <span id="balances" class="sparkline"></span>
+            </li>
+          </ul><!-- /page-stats -->
+        </div><!-- /main-header -->
+        <div class="grey-container shortcut-wrapper">
+
+
+        </div><!-- /grey-container -->
+        <div class="padding-md">
+          <div class="row">
+            <div class="col-sm-6 col-md-3">
+              <div class="panel-stat3 bg-danger">
+                <h2 class="m-top-none" id="userCount">363</h2>
+                <h5>Cuentas en gestion</h5>
+                <div class="stat-icon">
+                  <i class="fa fa-group fa-3x"></i>
+                </div>
+                <div class="loading-overlay">
+                  <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+                </div>
+              </div>
+            </div><!-- /.col -->
+            <div class="col-sm-6 col-md-3">
+              <div class="panel-stat3 bg-info">
+                <h2 class="m-top-none"><span id="serverloadCount">15</span></h2>
+                <h5>Visitas domiciliarias</h5>
+                <div class="stat-icon">
+                  <i class="fa fa-envelope-o fa-3x"></i>
+                </div>
+                <div class="loading-overlay">
+                  <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+                </div>
+              </div>
+            </div><!-- /.col -->
+            <div class="col-sm-6 col-md-3">
+              <div class="panel-stat3 bg-warning">
+                <h2 class="m-top-none" id="orderCount">2</h2>
+                <h5>Pagos por aprobar</h5>
+                <div class="stat-icon">
+                  <i class="fa fa-usd fa-3x"></i>
+                </div>
+                <div class="loading-overlay">
+                  <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+                </div>
+              </div>
+            </div><!-- /.col -->
+            <div class="col-sm-6 col-md-3">
+              <div class="panel-stat3 bg-success">
+                <h2 class="m-top-none" id="visitorCount">- 6.84%</h2>
+                <h5>Recuperacion</h5>
+                <div class="stat-icon">
+                  <i class="fa fa-bar-chart-o fa-3x"></i>
+                </div>                                
+                <div class="loading-overlay">
+                  <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+                </div>
+              </div>
+            </div><!-- /.col -->
+          </div>
+          <div class="row">
+
+          </div><!-- /.row -->
+        </div><!-- /.padding-md -->
+      </div><!-- /main-container -->
+      <footer><!-- footer -->
+        <div class="row">
+          <div class="col-sm-6">
+            <span class="footer-brand">
+              <strong class="text-danger">Siger</strong> Web
+            </span>
+            <p class="no-margin">
+              &copy; 2015 <strong>Corporativo Del Rio &amp; Asociados</strong>. Todos los derechos reservados. 
+            </p>
+          </div><!-- /.col -->
+        </div><!-- /.row-->
+      </footer><!-- /footer -->
+    </div><!-- /wrapper -->
+    <a href="" id="scroll-to-top" class="hidden-print"><i class="fa fa-chevron-up"></i></a>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <!-- Jquery -->
+    <!--        <script src="EndlessStuff/js/jquery-1.10.2.min.js"></script>
+             Bootstrap 
+            <script src="EndlessStuff/bootstrap/js/bootstrap.js"></script>
+             Flot 
+            <script src='EndlessStuff/js/jquery.flot.min.js'></script>
+             Morris 
+            <script src='EndlessStuff/js/rapheal.min.js'></script>
+            <script src='EndlessStuff/js/morris.min.js'></script>
+             Colorbox 
+            <script src='EndlessStuff/js/jquery.colorbox.min.js'></script>
+             Sparkline 
+            <script src='EndlessStuff/js/jquery.sparkline.min.js'></script>
+             Pace 
+            <script src='EndlessStuff/js/uncompressed/pace.js'></script>
+             Popup Overlay 
+            <script src='EndlessStuff/js/jquery.popupoverlay.min.js'></script>
+             Slimscroll 
+            <script src='EndlessStuff/js/jquery.slimscroll.min.js'></script>
+             Modernizr 
+            <script src='EndlessStuff/js/modernizr.min.js'></script>
+             Cookie 
+            <script src='EndlessStuff/js/jquery.cookie.min.js'></script>
+             Endless 
+            <script src="EndlessStuff/js/endless/endless_dashboard.js"></script>
+            <script src="EndlessStuff/js/endless/endless.js"></script>-->
+  </body>
 </html>

@@ -53,8 +53,7 @@ public class PanelAdministrativoBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param nombreUsuario */
     public void setNombreUsuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
     }
@@ -71,7 +70,7 @@ public class PanelAdministrativoBean implements Serializable {
     /**
      *
      *
-     * @return
+   * @param imagenDePerfil
      */
     public void setImagenDePerfil(String imagenDePerfil) {
         this.imagenDePerfil = imagenDePerfil;
@@ -89,8 +88,7 @@ public class PanelAdministrativoBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param nombre     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -107,8 +105,7 @@ public class PanelAdministrativoBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param correo     */
     public void setCorreo(String correo) {
         this.correo = correo;
     }
@@ -125,8 +122,7 @@ public class PanelAdministrativoBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param indexBean */
     public void setIndexBean(IndexBean indexBean) {
         this.indexBean = indexBean;
     }

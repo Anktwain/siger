@@ -54,8 +54,7 @@ public class SesionBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param sesionActiva     */
     public void setSesionActiva(boolean sesionActiva) {
         this.sesionActiva = sesionActiva;
     }
@@ -72,8 +71,7 @@ public class SesionBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param horaInicio */
     public void setHoraInicio(Date horaInicio) {
         this.horaInicio = horaInicio;
     }
@@ -90,8 +88,7 @@ public class SesionBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param usuarioActivo */
     public void setUsuarioActivo(Usuario usuarioActivo) {
         this.usuarioActivo = usuarioActivo;
     }

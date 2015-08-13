@@ -124,7 +124,12 @@ public class TelefonoIMPL implements TelefonoDAO {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    @Override
+  /**
+   *
+   * @param idSujeto
+   * @return
+   */
+  @Override
     public List<Telefono> buscarPorSujeto(int idSujeto) {
       Session sesion = HibernateUtil.getSessionFactory().openSession();
       Transaction tx = sesion.beginTransaction();

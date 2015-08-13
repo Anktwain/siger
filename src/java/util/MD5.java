@@ -19,6 +19,7 @@ public class MD5 {
     /**
      *
      *
+   * @param palabra
      * @return
      */
     public static String encriptar(String palabra) {

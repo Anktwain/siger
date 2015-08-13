@@ -22,15 +22,35 @@ public class Sujeto  implements java.io.Serializable {
      private Set telefonos = new HashSet(0);
      private Set contactos = new HashSet(0);
 
-    public Sujeto() {
+  /**
+   *
+   */
+  public Sujeto() {
     }
 
-	
-    public Sujeto(String nombreRazonSocial, int eliminado) {
+  /**
+   *
+   * @param nombreRazonSocial
+   * @param eliminado
+   */
+  public Sujeto(String nombreRazonSocial, int eliminado) {
         this.nombreRazonSocial = nombreRazonSocial;
         this.eliminado = eliminado;
     }
-    public Sujeto(String nombreRazonSocial, String rfc, int eliminado, Set direccions, Set emails, Set empresas, Set clientes, Set telefonos, Set contactos) {
+
+  /**
+   *
+   * @param nombreRazonSocial
+   * @param rfc
+   * @param eliminado
+   * @param direccions
+   * @param emails
+   * @param empresas
+   * @param clientes
+   * @param telefonos
+   * @param contactos
+   */
+  public Sujeto(String nombreRazonSocial, String rfc, int eliminado, Set direccions, Set emails, Set empresas, Set clientes, Set telefonos, Set contactos) {
        this.nombreRazonSocial = nombreRazonSocial;
        this.rfc = rfc;
        this.eliminado = eliminado;
@@ -42,74 +62,163 @@ public class Sujeto  implements java.io.Serializable {
        this.contactos = contactos;
     }
    
-    public Integer getIdSujeto() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdSujeto() {
         return this.idSujeto;
     }
     
-    public void setIdSujeto(Integer idSujeto) {
+  /**
+   *
+   * @param idSujeto
+   */
+  public void setIdSujeto(Integer idSujeto) {
         this.idSujeto = idSujeto;
     }
-    public String getNombreRazonSocial() {
+
+  /**
+   *
+   * @return
+   */
+  public String getNombreRazonSocial() {
         return this.nombreRazonSocial;
     }
     
-    public void setNombreRazonSocial(String nombreRazonSocial) {
+  /**
+   *
+   * @param nombreRazonSocial
+   */
+  public void setNombreRazonSocial(String nombreRazonSocial) {
         this.nombreRazonSocial = nombreRazonSocial;
     }
-    public String getRfc() {
+
+  /**
+   *
+   * @return
+   */
+  public String getRfc() {
         return this.rfc;
     }
     
-    public void setRfc(String rfc) {
+  /**
+   *
+   * @param rfc
+   */
+  public void setRfc(String rfc) {
         this.rfc = rfc;
     }
-    public int getEliminado() {
+
+  /**
+   *
+   * @return
+   */
+  public int getEliminado() {
         return this.eliminado;
     }
     
-    public void setEliminado(int eliminado) {
+  /**
+   *
+   * @param eliminado
+   */
+  public void setEliminado(int eliminado) {
         this.eliminado = eliminado;
     }
-    public Set getDireccions() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getDireccions() {
         return this.direccions;
     }
     
-    public void setDireccions(Set direccions) {
+  /**
+   *
+   * @param direccions
+   */
+  public void setDireccions(Set direccions) {
         this.direccions = direccions;
     }
-    public Set getEmails() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getEmails() {
         return this.emails;
     }
     
-    public void setEmails(Set emails) {
+  /**
+   *
+   * @param emails
+   */
+  public void setEmails(Set emails) {
         this.emails = emails;
     }
-    public Set getEmpresas() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getEmpresas() {
         return this.empresas;
     }
     
-    public void setEmpresas(Set empresas) {
+  /**
+   *
+   * @param empresas
+   */
+  public void setEmpresas(Set empresas) {
         this.empresas = empresas;
     }
-    public Set getClientes() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getClientes() {
         return this.clientes;
     }
     
-    public void setClientes(Set clientes) {
+  /**
+   *
+   * @param clientes
+   */
+  public void setClientes(Set clientes) {
         this.clientes = clientes;
     }
-    public Set getTelefonos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getTelefonos() {
         return this.telefonos;
     }
     
-    public void setTelefonos(Set telefonos) {
+  /**
+   *
+   * @param telefonos
+   */
+  public void setTelefonos(Set telefonos) {
         this.telefonos = telefonos;
     }
-    public Set getContactos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getContactos() {
         return this.contactos;
     }
     
-    public void setContactos(Set contactos) {
+  /**
+   *
+   * @param contactos
+   */
+  public void setContactos(Set contactos) {
         this.contactos = contactos;
     }
 

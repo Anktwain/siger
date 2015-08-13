@@ -5,10 +5,10 @@
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <meta charset="utf-8"></meta>
-        <title>SigerWeb - Correos</title>
-        <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Correos</title>
+    <!--    <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
         <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
         <h:outputStylesheet library="css" name="pace.css" />
         <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
@@ -29,24 +29,26 @@
         <h:outputScript library="js" name="modernizr.min.js" />
         <h:outputScript library="js" name="jquery.cookie.min.js" />
         <h:outputScript library="js" name="/endless/endless_dashboard.js" />
-        <h:outputScript library="js" name="/endless/endless.js" />
-        <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
-    </h:head> 
-    <body class="overflow-hidden">
-        <!-- Overlay Div -->
-        <div id="overlay" class="transparent"></div>
-        <ui:include src="barraSuperior.xhtml" />
-        <ui:include src="barraLateral.xhtml" />
-            <div id="main-container">
-                <h1>
-                    Modulo de correos
-                </h1>
-                <h3>
-                    En construccion!!!
-                </h3>
-                <h:graphicImage library="img" name="construccion.png" />
-            </div><!-- /main-container -->
-            <!-- Footer ================================================== -->
-            <ui:include src="barraInferior.xhtml" />
-    </body>
+        <h:outputScript library="js" name="/endless/endless.js" />-->
+    <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+  </h:head> 
+  <body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <h1>
+        M&oacute;dulo de correos
+      </h1>
+      <h3>
+        En construcci&oacute;n!
+      </h3>
+      <h:graphicImage library="img" name="construccion.png" />
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </body>
 </html>

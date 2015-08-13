@@ -47,14 +47,21 @@ public class AltaGestorBean {
 
     private UsuarioDAO usuarioDao;
 
-    public AltaGestorBean() {
+  /**
+   *
+   */
+  public AltaGestorBean() {
         usuarioDao = new UsuarioIMPL();
         usuario = new Usuario();
         perfil = Perfiles.GESTOR_NO_CONFIRMADO;
         imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
     }
 
-    public void insertar() throws IOException {
+  /**
+   *
+   * @throws IOException
+   */
+  public void insertar() throws IOException {
         // Valida correo
         if (!validarCorreo()) {
             FacesContext context = FacesContext.getCurrentInstance();
@@ -171,8 +178,7 @@ public class AltaGestorBean {
     /**
      *
      *
-     * @param
-     */
+   * @param nombre     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -189,8 +195,7 @@ public class AltaGestorBean {
     /**
      *
      *
-     * @param
-     */
+   * @param paterno     */
     public void setPaterno(String paterno) {
         this.paterno = paterno;
     }
@@ -207,8 +212,7 @@ public class AltaGestorBean {
     /**
      *
      *
-     * @param
-     */
+   * @param materno     */
     public void setMaterno(String materno) {
         this.materno = materno;
     }
@@ -225,8 +229,7 @@ public class AltaGestorBean {
     /**
      *
      *
-     * @param
-     */
+   * @param nombreLogin */
     public void setNombreLogin(String nombreLogin) {
         this.nombreLogin = nombreLogin;
     }
@@ -243,8 +246,7 @@ public class AltaGestorBean {
     /**
      *
      *
-     * @param
-     */
+   * @param password     */
     public void setPassword(String password) {
         this.password = password;
     }
@@ -261,8 +263,7 @@ public class AltaGestorBean {
     /**
      *
      *
-     * @param
-     */
+   * @param confirmePassword     */
     public void setConfirmePassword(String confirmePassword) {
         this.confirmePassword = confirmePassword;
     }
@@ -279,8 +280,7 @@ public class AltaGestorBean {
     /**
      *
      *
-     * @param
-     */
+   * @param correo */
     public void setCorreo(String correo) {
         this.correo = correo;
     }
@@ -297,8 +297,7 @@ public class AltaGestorBean {
     /**
      *
      *
-     * @param
-     */
+   * @param imagenPerfil     */
     public void setImagenPerfil(String imagenPerfil) {
         this.imagenPerfil = imagenPerfil;
     }
