@@ -137,6 +137,12 @@ public class ClienteBean implements Serializable {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
     }
   }
+  
+  public void editarTelefonoContacto() {
+    if(contactoBean.editarTelefono()) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefonoContacto').hide();");
+    }
+  }
 
   public void eliminarTelefono() {
     if (telefonoBean.eliminar(telefonoSeleccionado)) {
@@ -145,11 +151,24 @@ public class ClienteBean implements Serializable {
     }
   }
   
+  public void eliminarTelefonoContacto() {
+    if (contactoBean.eliminarTelefono()) {
+      listaTelefonos.remove(telefonoSeleccionado);
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefonoContacto').hide();");
+    }
+  }  
+  
   public void editarEmail() {
     if (emailBean.editar(emailSeleccionado)) {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
     }
   }
+  
+  public void editarEmailContacto() {
+    if (contactoBean.editarEmail()) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMailContacto').hide();");
+    }
+  }  
 
   public void eliminarEmail() {
     if (emailBean.eliminar(emailSeleccionado)) {
@@ -158,11 +177,24 @@ public class ClienteBean implements Serializable {
     }
   }
   
+  public void eliminarEmailContacto() {
+    if (contactoBean.eliminarEmail()) {
+      listaEmails.remove(emailSeleccionado);
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMailContacto').hide();");
+    }
+  }  
+  
   public void editarDireccion() {
     if (direccionBean.editar(direccionSeleccionada)) {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
     }
   }
+  
+  public void editarDireccionContacto() {
+    if (contactoBean.editarDireccion()) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMailContacto').hide();");
+    }
+  }  
 
   public void eliminarDireccion() {
     if (direccionBean.eliminar(direccionSeleccionada)) {
@@ -170,6 +202,13 @@ public class ClienteBean implements Serializable {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
     }
   }
+  
+  public void eliminarDireccionContacto() {
+    if (contactoBean.eliminarDireccion()) {
+      listaDirecciones.remove(direccionSeleccionada);
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccionContacto').hide();");
+    }
+  }  
   
   public void editarContacto() {
     if(contactoBean.editar(contactoSeleccionado)) {
@@ -232,7 +271,7 @@ public class ClienteBean implements Serializable {
   }
 
   public void agregarContacto() {
-    if (sujeto.getIdSujeto() == null) {
+    if (sujeto.getIdSujeto() == null) { // el objeto: 'sujeto' representa el sujeto al cual se agregará este contacto
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
               "No se puede agregar un nuevo contacto",
@@ -241,6 +280,17 @@ public class ClienteBean implements Serializable {
       contactoBean.agregar(cliente);
     }
   }
+  
+  public void agregarNuevoContacto() {
+    if (sujeto.getIdSujeto() == null) { // el objeto: 'sujeto' representa el sujeto al cual se agregará este contacto
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se puede agregar un nuevo contacto",
+              "Antes debe agregar un nuevo deudor."));
+    } else {
+      contactoBean.agregar(clienteSeleccionado);
+    }
+  }  
 
   // Agregar un nuevo cliente
   public void agregar() {
@@ -348,8 +398,7 @@ public class ClienteBean implements Serializable {
   
   public void onRowSelectCont(SelectEvent evento) {
     contactoSeleccionado = (Contacto) evento.getObject();
-    contactoBean.setContactoSeleccionado(contactoSeleccionado);
-    contactoBean.obtenerDatos();
+    contactoBean.onRowSelect(evento);
   }
 
   private void inicializarListaDeClientes() {

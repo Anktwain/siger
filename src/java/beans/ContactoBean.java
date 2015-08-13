@@ -119,6 +119,42 @@ public class ContactoBean implements Serializable {
     }
     return ok;
   }
+  
+  public boolean editarTelefono() {
+    return telefonoBean.editar(telefonoSeleccionado);
+  }
+
+  public boolean eliminarTelefono() {
+    if (telefonoBean.eliminar(telefonoSeleccionado)) {
+      listaTelefonos.remove(telefonoSeleccionado);
+      return true;
+    }
+    return false;
+  }
+  
+  public boolean editarEmail() {
+    return emailBean.editar(emailSeleccionado);
+  }
+
+  public boolean eliminarEmail() {
+    if (emailBean.eliminar(emailSeleccionado)) {
+      listaEmails.remove(emailSeleccionado);
+      return true;
+    }
+    return false;
+  }
+  
+  public boolean editarDireccion() {
+    return direccionBean.editar(direccionSeleccionada);
+  }
+
+  public boolean eliminarDireccion() {
+    if (direccionBean.eliminar(direccionSeleccionada)) {
+      listaDirecciones.remove(direccionSeleccionada);
+      return true;
+    }
+    return false;
+  }  
     
   public boolean eliminar(Contacto contacto) {
     FacesContext context = FacesContext.getCurrentInstance();
@@ -147,6 +183,7 @@ public class ContactoBean implements Serializable {
               "Antes debe agregar un nuevo contacto."));
     } else {
       telefonoBean.agregar(sujeto);
+      RequestContext.getCurrentInstance().execute("PF('dlgOtroTelefonoParaContacto').hide();");
     }
   }
 
@@ -158,6 +195,7 @@ public class ContactoBean implements Serializable {
               "Antes debe agregar un nuevo contacto."));
     } else {
       emailBean.agregar(sujeto);
+      RequestContext.getCurrentInstance().execute("PF('dlgOtroMailParaContacto').hide();");
     }
   }
 
@@ -169,6 +207,7 @@ public class ContactoBean implements Serializable {
               "Antes debe agregar un nuevo contacto."));
     } else {
       direccionBean.agregar(sujeto);
+      RequestContext.getCurrentInstance().execute("PF('dlgOtraDireccionParaContacto').hide();");
     }
   }
 
@@ -193,12 +232,6 @@ public class ContactoBean implements Serializable {
     } else {
       Logs.log.error("No se pudo agregar objeto: Sujeto.");
     }
-  }
-  
-  public void obtenerDatos(){
-    listaTelefonos = telefonoDao.buscarPorSujeto(contactoSeleccionado.getSujeto().getIdSujeto());
-        listaEmails = emailDao.buscarPorSujeto(contactoSeleccionado.getSujeto().getIdSujeto());
-    listaDirecciones = direccionDao.buscarPorSujeto(contactoSeleccionado.getSujeto().getIdSujeto());
   }
 
   private int agregarSujeto() {

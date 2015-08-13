@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
 import util.constantes.Perfiles;
+import util.constantes.Sujetos;
 import util.log.Logs;
 
 /**
@@ -136,7 +137,7 @@ public class ContactoIMPL implements ContactoDAO {
 
     String consulta = "select c.* from sujeto s join contacto c on s.id_sujeto = c.sujetos_id_sujeto "
             + "join cliente l on l.id_cliente = c.clientes_id_cliente join sujeto s2 on s2.id_sujeto = l.sujetos_id_sujeto "
-            + "where s2.id_sujeto=" + idSujeto + ";";
+            + "where s2.id_sujeto=" + idSujeto + " and s.eliminado = " + Sujetos.ACTIVO + ";";
 
     try {
       listaContactos = sesion.createSQLQuery(consulta).addEntity(Contacto.class).list();
