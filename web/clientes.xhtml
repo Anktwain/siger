@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
-      xmlns:h="http://xmlns.jcp.org/jsf/html" 
-      xmlns:p="http://primefaces.org/ui" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+<html xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
@@ -60,16 +60,6 @@
           </div>
         </div>
 
-        <div class="col-sm-6 col-md-3">
-          <div class="panel-stat3 bg-info">
-            <h3 class="m-top-none">Consultar clientes</h3>
-            <p:commandButton value="Consultar" class="btn btn-info"
-                             onclick="PF('dlgListaClientes').show();"/>
-            <div class="stat-icon">
-              <i class="fa fa-list-alt fa-2x" />
-            </div>
-          </div>
-        </div>
       </div>
         </div>
 
@@ -89,11 +79,11 @@
                           frmDetalleTels,frmDetalleMails,frmDetalleDirs,frmDetalleContactos"/>
                   <p:column headerText="Nombre" width="70%">
                     <h:outputText id="nombreCliente" value="#{cliente.sujeto.nombreRazonSocial}" />
-                    <p:tooltip for="nombreCliente" value="Haga clic para ver detalle del cliente en la tabla de la derecha" />
+                    <p:tooltip for="nombreCliente" value="Haga clic y se mostrar&aacute; detalle del cliente en la tabla de la derecha" />
                   </p:column>                  
                   <p:column headerText="RFC">
                     <h:outputText id="rfcCliente" value="#{cliente.sujeto.rfc}" />
-                    <p:tooltip for="rfcCliente" value="Haga clic para ver detalle del cliente en la tabla de la derecha" />
+                    <p:tooltip for="rfcCliente" value="Haga clic y se mostrar&aacute; detalle del cliente en la tabla de la derecha" />
                   </p:column>
                 </p:dataTable>
               </h:form>
@@ -244,8 +234,8 @@
                       <p:column headerText="Nombre">
                         <h:outputText value="#{contacto.sujeto.nombreRazonSocial}" />
                       </p:column>
-                      <p:column headerText="RFC">
-                        <h:outputText value="#{contacto.sujeto.rfc}" />
+                      <p:column headerText="Relaci&oacute;n con el cliente">
+                        <h:outputText value="#{contacto.observaciones}" />
                       </p:column>
                     </p:dataTable>
                   </h:form>
@@ -700,10 +690,10 @@
           <div class="modal-footer">
             <p:commandButton value="Guardar cambios" styleClass="btn btn-xs btn-danger tooltip-test"
                              actionListener="#{clienteBean.editarTelefono()}" update="growl,frmDetalleTelefono,
-                             frmDetalleTels"/>
+                             frmDetalleTels,frmDetalleTelsContacto"/>
             <p:commandButton value="Eliminar" styleClass="btn btn-xs btn-danger"
                              actionListener="#{clienteBean.eliminarTelefono()}" update="growl,frmDetalleTelefono,
-                             frmDetalleTels">
+                             frmDetalleTels,frmDetalleTelsContacto">
               <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
                          message="&iquest;Est&aacute; seguro que desea eliminar este dato?" />
             </p:commandButton>
@@ -715,47 +705,7 @@
         </p:outputPanel>
       </h:form>
     </p:dialog>
-
-    <p:dialog widgetVar="dlgDetalleTelefonoContacto" header="Tel&eacute;fono" showEffect="size" hideEffect="size" modal="true">
-      <h:form id="frmDetalleTelefonoContacto">
-        <p:outputPanel id="pnlDetalleTelefonoContacto">
-          <p:panelGrid id="pnlgDetalleTelefonoContacto" columns="2"
-                       class="table table-bordered table-condensed table-hover table-striped">
-            <h:outputText value="N&uacute;mero" />
-            <h:inputText value="#{clienteBean.contactoBean.telefonoSeleccionado.numero}" />
-
-            <h:outputText value="Extensi&oacute;n" />
-            <h:inputText value="#{clienteBean.contactoBean.telefonoSeleccionado.extension}" />
-
-            <h:outputText value="Lada" />
-            <h:inputText value="#{clienteBean.contactoBean.telefonoSeleccionado.lada}" />
-
-            <h:outputText value="Horario" />
-            <h:inputText value="#{clienteBean.contactoBean.telefonoSeleccionado.horario}" />
-
-            <h:outputText value="Tipo" />
-            <h:inputText value="#{clienteBean.contactoBean.telefonoSeleccionado.tipo}" />
-          </p:panelGrid>
-
-          <div class="modal-footer">
-            <p:commandButton value="Guardar cambios" styleClass="btn btn-xs btn-danger tooltip-test"
-                             actionListener="#{clienteBean.editarTelefonoContacto()}" update="growl,frmDetalleTelefono,
-                             frmDetalleTels"/>
-            <p:commandButton value="Eliminar" styleClass="btn btn-xs btn-danger"
-                             actionListener="#{clienteBean.eliminarTelefonoContacto()}" update="growl,frmDetalleTelefono,
-                             frmDetalleTels">
-              <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
-                         message="&iquest;Est&aacute; seguro que desea eliminar este dato?" />
-            </p:commandButton>
-            <p:confirmDialog global="true" showEffect="size" hideEffect="size">
-              <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-              <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-            </p:confirmDialog>
-          </div>
-        </p:outputPanel>
-      </h:form>
-    </p:dialog>    
-
+    
     <p:dialog widgetVar="dlgDetalleMail" header="E-mail" showEffect="size" hideEffect="size" modal="true">
       <h:form id="frmDetalleMail">
         <p:outputPanel id="pnlDetalleMail">
@@ -771,10 +721,10 @@
           <div class="modal-footer">
             <p:commandButton value="Guardar cambios" styleClass="btn btn-xs btn-danger tooltip-test"
                              actionListener="#{clienteBean.editarEmail()}" update="growl,frmDetalleMail,
-                             frmDetalleMails"/>
+                             frmDetalleMails,frmDetalleMailsContacto"/>
             <p:commandButton value="Eliminar" styleClass="btn btn-xs btn-danger"
                              actionListener="#{clienteBean.eliminarEmail()}" update="growl,frmDetalleMail,
-                             frmDetalleMails">
+                             frmDetalleMails,frmDetalleMailsContacto">
               <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
                          message="&iquest;Est&aacute; seguro que desea eliminar este dato?" />
             </p:commandButton>
@@ -785,38 +735,7 @@
           </div>
         </p:outputPanel>
       </h:form>
-    </p:dialog>
-
-    <p:dialog widgetVar="dlgDetalleMailContacto" header="E-mail" showEffect="size" hideEffect="size" modal="true">
-      <h:form id="frmDetalleMailContacto">
-        <p:outputPanel id="pnlDetalleMailContacto">
-          <p:panelGrid id="pnlgDetalleMailContacto" columns="2"
-                       class="table table-bordered table-condensed table-hover table-striped">
-            <h:outputText value="Direcci&oacute;n" />
-            <h:inputText value="#{clienteBean.contactoBean.emailSeleccionado.direccion}" />
-
-            <h:outputText value="Tipo" />
-            <h:inputText value="#{clienteBean.contactoBean.emailSeleccionado.tipo}" />
-          </p:panelGrid>
-
-          <div class="modal-footer">
-            <p:commandButton value="Guardar cambios" styleClass="btn btn-xs btn-danger tooltip-test"
-                             actionListener="#{clienteBean.editarEmailContacto()}" update="growl,frmDetalleMail,
-                             frmDetalleMails"/>
-            <p:commandButton value="Eliminar" styleClass="btn btn-xs btn-danger"
-                             actionListener="#{clienteBean.eliminarEmailContacto()}" update="growl,frmDetalleMail,
-                             frmDetalleMails">
-              <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
-                         message="&iquest;Est&aacute; seguro que desea eliminar este dato?" />
-            </p:commandButton>
-            <p:confirmDialog global="true" showEffect="size" hideEffect="size">
-              <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-              <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-            </p:confirmDialog>
-          </div>
-        </p:outputPanel>
-      </h:form>
-    </p:dialog>    
+    </p:dialog> 
 
     <p:dialog widgetVar="dlgDetalleDireccion" header="Direcci&oacute;n" showEffect="size" hideEffect="size" modal="true">
       <h:form id="frmDetalleDireccion">
@@ -845,10 +764,10 @@
           <div class="modal-footer">
             <p:commandButton value="Guardar cambios" styleClass="btn btn-xs btn-danger tooltip-test"
                              actionListener="#{clienteBean.editarDireccion()}" update="growl,frmDetalleDireccion,
-                             frmDetalleDirs"/>
+                             frmDetalleDirs,frmDetalleDirsContacto"/>
             <p:commandButton value="Eliminar" styleClass="btn btn-xs btn-danger"
                              actionListener="#{clienteBean.eliminarDireccion()}" update="growl,frmDetalleDireccion,
-                             frmDetalleDirs">
+                             frmDetalleDirs,frmDetalleDirsContacto">
               <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
                          message="&iquest;Est&aacute; seguro que desea eliminar este dato?" />
             </p:commandButton>
@@ -859,50 +778,7 @@
           </div>
         </p:outputPanel>
       </h:form>
-    </p:dialog>
-
-    <p:dialog widgetVar="dlgDetalleDireccionContacto" header="Direcci&oacute;n" showEffect="size" hideEffect="size" modal="true">
-      <h:form id="frmDetalleDireccionContacto">
-        <p:outputPanel id="pnlDetalleDireccionContacto">
-          <p:panelGrid id="pnlgDetalleDireccionContacto" columns="2"
-                       class="table table-bordered table-condensed table-hover table-striped">
-            <h:outputText value="Calle" />
-            <h:inputText value="#{clienteBean.contactoBean.direccionSeleccionada.calle}" />
-
-            <h:outputText value="Colonia" />
-            <h:inputText value="#{clienteBean.contactoBean.direccionSeleccionada.colonia}" />
-
-            <h:outputText value="Municipio" />
-            <h:inputText value="#{clienteBean.contactoBean.direccionSeleccionada.municipio}" />
-
-            <h:outputText value="Estado" />
-            <h:inputText value="#{clienteBean.contactoBean.direccionSeleccionada.estado}" />
-
-            <h:outputText value="C&oacute;digo Postal" />
-            <h:inputText value="#{clienteBean.contactoBean.direccionSeleccionada.codigoPostal}" />
-
-            <h:outputText value="Tipo" />
-            <h:inputText value="#{clienteBean.contactoBean.direccionSeleccionada.tipo}" />
-          </p:panelGrid>
-
-          <div class="modal-footer">
-            <p:commandButton value="Guardar cambios" styleClass="btn btn-xs btn-danger tooltip-test"
-                             actionListener="#{clienteBean.editarDireccionContacto()}" update="growl,frmDetalleDireccion,
-                             frmDetalleDirs"/>
-            <p:commandButton value="Eliminar" styleClass="btn btn-xs btn-danger"
-                             actionListener="#{clienteBean.eliminarDireccionContacto()}" update="growl,frmDetalleDireccion,
-                             frmDetalleDirs">
-              <p:confirm header="Confirmaci&oacute;n" icon="ui-icon-check"
-                         message="&iquest;Est&aacute; seguro que desea eliminar este dato?" />
-            </p:commandButton>
-            <p:confirmDialog global="true" showEffect="size" hideEffect="size">
-              <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-              <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-            </p:confirmDialog>
-          </div>
-        </p:outputPanel>
-      </h:form>
-    </p:dialog>    
+    </p:dialog> 
 
     <p:dialog header="Detalle de contacto" widgetVar="dlgDetalleContacto" modal="true"
               showEffect="size" hideEffect="size">
@@ -945,8 +821,8 @@
         <p:overlayPanel id="pnlTelsContacto" for="btnTelsContacto" hideEffect="size" dynamic="true">
           <h:form id="frmDetalleTelsContacto">
             <p:dataTable var="tel" value="#{clienteBean.contactoBean.listaTelefonos}" selectionMode="single" rowKey="#{tel.idTelefono}" emptyMessage="No hay tel&eacute;fonos">
-              <p:ajax event="rowSelect" listener="#{clienteBean.contactoBean.onRowSelectTel}"
-                      oncomplete="PF('dlgDetalleTelefonoContacto').show()" update="frmDetalleTelefonoContacto"/>
+              <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelectTel}"
+                      oncomplete="PF('dlgDetalleTelefono').show()" update="frmDetalleTelefono"/>
               <f:facet name="header">
                 <p:commandButton icon="fa fa-plus" value="Nuevo" class="btn btn-info btn-xs" oncomplete="PF('dlgOtroTelefonoParaContacto').show()"/>
               </f:facet>
@@ -976,8 +852,8 @@
         <p:overlayPanel id="pnlMailsContacto" for="btnMailsContacto" hideEffect="size" dynamic="true">
           <h:form id="frmDetalleMailsContacto">
             <p:dataTable var="mail" value="#{clienteBean.contactoBean.listaEmails}" selectionMode="single" rowKey="#{mail.idEmail}" emptyMessage="No hay e-mails">
-              <p:ajax event="rowSelect" listener="#{clienteBean.contactoBean.onRowSelectMail}"
-                      oncomplete="PF('dlgDetalleMailContacto').show()" update="frmDetalleMailContacto" />
+              <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelectMail}"
+                      oncomplete="PF('dlgDetalleMail').show()" update="frmDetalleMail" />
               <f:facet name="header">
                 <p:commandButton icon="fa fa-plus" value="Nuevo" class="btn btn-info btn-xs" oncomplete="PF('dlgOtroMailParaContacto').show()" />
               </f:facet>
@@ -997,8 +873,8 @@
         <p:overlayPanel id="pnlDirsContacto" for="btnDirsContacto" hideEffect="size" dynamic="true">
           <h:form id="frmDetalleDirsContacto">
             <p:dataTable var="dir" value="#{clienteBean.contactoBean.listaDirecciones}" selectionMode="single" rowKey="#{dir.idDireccion}" emptyMessage="No hay direcciones">
-              <p:ajax event="rowSelect" listener="#{clienteBean.contactoBean.onRowSelectDir}"
-                      oncomplete="PF('dlgDetalleDireccionContacto').show()" update="frmDetalleDireccionContacto" />
+              <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelectDir}"
+                      oncomplete="PF('dlgDetalleDireccion').show()" update="frmDetalleDireccion" />
               <f:facet name="header">
                 <p:commandButton icon="fa fa-plus" value="Nuevo" class="btn btn-info btn-xs" oncomplete="PF('dlgOtraDireccionParaContacto').show()" />
               </f:facet>                
@@ -1117,7 +993,7 @@
         </div> <!-- /form-group-->  
         <p:commandButton id="btnNuevoTelContacto" class="btn btn-xs btn-success btn-sm"
                          value="Guardar Tel&eacute;fono" actionListener="#{clienteBean.contactoBean.agregarTelefono()}"
-                         update="growl,frmDetalleTelsContacto,frmDetalleTelefonoContacto,frmOtroTelefonoParaContacto"/>
+                         update="growl,frmDetalleTelsContacto,frmDetalleTelefono,frmOtroTelefonoParaContacto"/>
       </h:form>
     </p:dialog>    
 
@@ -1145,7 +1021,7 @@
         </div> <!-- /form-group-->
         <p:commandButton id="btnNuevoMail" class="btn btn-xs btn-success btn-sm"
                          value="Guardar E-mail" actionListener="#{clienteBean.contactoBean.agregarEmail()}"
-                         update="growl,frmDetalleMailsContacto,frmDetalleMailContacto,frmOtroMailParaContacto" />
+                         update="growl,frmDetalleMailsContacto,frmDetalleMail,frmOtroMailParaContacto" />
       </h:form>
     </p:dialog>
 

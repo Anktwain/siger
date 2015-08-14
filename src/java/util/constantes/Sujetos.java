@@ -25,4 +25,8 @@ public interface Sujetos {
    *
    */
   public static final int LONGITUD_NOMBRE = 100;
+  
+  public static final int CLIENTE = 10;
+  public static final int CONTACTO = 11;
+  public static final int EMPRESA = 12;
 }
