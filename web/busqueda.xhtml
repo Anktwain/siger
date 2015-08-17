@@ -5,124 +5,146 @@
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <meta charset="utf-8"></meta>
-        <title>SigerWeb - Busqueda</title>
-        <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
-    </h:head> 
-    <body class="overflow-hidden">
-        <!-- Overlay Div -->
-        <div id="overlay" class="transparent"></div>
-        <ui:include src="barraSuperior.xhtml" />
-        <ui:include src="barraLateral.xhtml" />
-        <div id="main-container">
-            <div class="row">
-                <div class="section-header">
-                    <span>
-                        Busqueda avanzada de creditos en el sistema
-                    </span>
-                </div>
-                <h:form>
-                    <p:panel>
-                        <div style="padding-left: 25px">
-                            <h3 class="no-margin">Busqueda por area:</h3>
-                            <br />
-                            <table>
-                                <tr>
-                                    <td style="padding: 5px">
-                                        <h:panelGrid style="width: 200px" cellpadding="5">
-                                            <p:outputLabel for="estado" value="Estado:" />
-                                            <p:selectOneMenu id="estado" style="width: 200px">
-                                                <f:selectItem itemLabel="Todos" itemValue="" />
-                                            </p:selectOneMenu>
-                                        </h:panelGrid>
-                                    </td>
-                                    <td style="padding: 5px">
-                                        <h:panelGrid style="width: 200px" cellpadding="5">
-                                            <p:outputLabel for="municipio" value="Municipio:" />
-                                            <p:selectOneMenu id="municipio" style="width: 200px">
-                                                <f:selectItem itemLabel="Todos" itemValue="" />
-                                            </p:selectOneMenu>
-                                        </h:panelGrid>
-                                    </td>
-                                    <td style="padding: 5px">
-                                        <h:panelGrid style="width: 200px" cellpadding="5">
-                                            <p:outputLabel for="colonia" value="Colonia:" />
-                                            <p:selectOneMenu id="colonia" style="width: 200px">
-                                                <f:selectItem itemLabel="Todas" itemValue="" />
-                                            </p:selectOneMenu>                                
-                                        </h:panelGrid>
-                                    </td>
-                                    <td>
-                                        <p:commandButton value="Buscar" id="busquedaEstado" icon="ui-icon-search" />
-                                    </td>
-                                </tr>
-                            </table>
-                            <hr />
-                        </div>
-                        <div style="padding-left: 25px">
-                            <h3 class="no-margin">Busqueda por saldo vencido:</h3>
-                            <br />
-                            <h6 class="no-margin">Introduzca el saldo vencido</h6>
-                            <h:panelGrid columns="2" style="width: 200px" cellpadding="5">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <p:inputText id="txt1" />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-top: 25px">                                                
-                                            <p:slider for="txt1" style="width: 200px" />
-                                        </td>
-                                    </tr>
-                                </table>
-                            </h:panelGrid>
-                            <p:commandButton value="Buscar" id="busquedaSaldo" icon="ui-icon-search" />
-                            <hr />
-                        </div>
-                        <div style="padding-left: 25px">
-                            <h3 class="no-margin">Busqueda por tiempo con adeudo:</h3>
-                            <br />
-                            <h:panelGrid columns="2" cellpadding="5">
-                                <table>
-                                    <tr>
-                                        <td style="padding: 5px; text-align: center">
-                                            Fecha de inicio:
-                                        </td>                                            
-                                        <td style="padding: 5px; text-align: center">
-                                            Fecha final:
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 5px">
-                                            <p:calendar id="inicio" mode="inline" />
-                                        </td>
-                                        <td style="padding: 5px">
-                                            <p:calendar id="fin" mode="inline" />
-                                        </td>
-                                    </tr>
-                                </table>
-                            </h:panelGrid>
-                            <p:commandButton value="Buscar" id="busquedaTiempo" icon="ui-icon-search" />
-                            <hr />
-                        </div>
-                        <div style="padding-left: 25px">
-                            <h3 class="no-margin">Busqueda por campaña:</h3>
-                            <br />
-                            <h:panelGrid style="width: 200px" cellpadding="5">
-                                <p:outputLabel for="campaña" value="Campaña:" />
-                                <p:selectOneMenu id="campaña" style="width: 200px">
-                                    <f:selectItem itemLabel="Todas" itemValue="" />
-                                </p:selectOneMenu>                                
-                            </h:panelGrid>
-                            <p:commandButton value="Buscar" id="busquedaCampaña" icon="ui-icon-search" />
-                        </div>
-                    </p:panel>
-                </h:form>
-            </div><!-- /.row -->
-        </div><!-- /main-container -->
-        <!-- Footer ================================================== -->
-        <ui:include src="barraInferior.xhtml" />
-    </body>
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - B&uacute;squeda</title>
+    <!--    <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+        <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
+        <h:outputStylesheet library="css" name="pace.css" />
+        <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
+        <h:outputStylesheet library="css" name="morris.css" />
+        <h:outputStylesheet library="css" name="endless.min.css" />
+        <h:outputStylesheet library="css" name="endless-skin.css" />
+        <h:outputStylesheet library="css" name="usuarios.css" />
+        <h:outputScript library="js" name="jquery-1.10.2.min.js" />
+        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
+        <h:outputScript library="js" name="jquery.flot.min.js" />
+        <h:outputScript library="js" name="rapheal.min.js" />
+        <h:outputScript library="js" name="morris.min.js" />
+        <h:outputScript library="js" name="jquery.colorbox.min.js" />
+        <h:outputScript library="js" name="jquery.sparkline.min.js" />
+        <h:outputScript library="js" name="/uncompressed/pace.js" />
+        <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
+        <h:outputScript library="js" name="jquery.slimscroll.min.js" />
+        <h:outputScript library="js" name="modernizr.min.js" />
+        <h:outputScript library="js" name="jquery.cookie.min.js" />
+        <h:outputScript library="js" name="/endless/endless_dashboard.js" />
+        <h:outputScript library="js" name="/endless/endless.js" />-->
+    <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+  </h:head> 
+  <body>
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div class="row">
+        <div class="section-header">
+          <span>
+            B&uacute;squeda avanzada de cr&eacute;ditos en el sistema
+          </span>
+        </div>
+        <h:form>
+          <p:panel>
+            <div style="padding-left: 25px">
+              <h3 class="no-margin">B&uacute;squeda por &aacute;rea:</h3>
+              <br />
+              <table>
+                <tr>
+                  <td style="padding: 5px">
+                    <h:panelGrid style="width: 200px" cellpadding="5">
+                      <p:outputLabel for="estado" value="Estado:" />
+                      <p:selectOneMenu id="estado" style="width: 200px">
+                        <f:selectItem itemLabel="Todos" itemValue="" />
+                      </p:selectOneMenu>
+                    </h:panelGrid>
+                  </td>
+                  <td style="padding: 5px">
+                    <h:panelGrid style="width: 200px" cellpadding="5">
+                      <p:outputLabel for="municipio" value="Municipio:" />
+                      <p:selectOneMenu id="municipio" style="width: 200px">
+                        <f:selectItem itemLabel="Todos" itemValue="" />
+                      </p:selectOneMenu>
+                    </h:panelGrid>
+                  </td>
+                  <td style="padding: 5px">
+                    <h:panelGrid style="width: 200px" cellpadding="5">
+                      <p:outputLabel for="colonia" value="Colonia:" />
+                      <p:selectOneMenu id="colonia" style="width: 200px">
+                        <f:selectItem itemLabel="Todas" itemValue="" />
+                      </p:selectOneMenu>                                
+                    </h:panelGrid>
+                  </td>
+                  <td>
+                    <p:commandButton value="Buscar" id="busquedaEstado" icon="ui-icon-search" />
+                  </td>
+                </tr>
+              </table>
+              <hr />
+            </div>
+            <div style="padding-left: 25px">
+              <h3 class="no-margin">B&uacute;squeda por saldo vencido:</h3>
+              <br />
+              <h6 class="no-margin">Introduzca el saldo vencido</h6>
+              <h:panelGrid columns="2" style="width: 200px" cellpadding="5">
+                <table>
+                  <tr>
+                    <td>
+                      <p:inputText id="txt1" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top: 25px">                                                
+                      <p:slider for="txt1" style="width: 200px" />
+                    </td>
+                  </tr>
+                </table>
+              </h:panelGrid>
+              <p:commandButton value="Buscar" id="busquedaSaldo" icon="ui-icon-search" />
+              <hr />
+            </div>
+            <div style="padding-left: 25px">
+              <h3 class="no-margin">B&uacute;squeda por tiempo con adeudo:</h3>
+              <br />
+              <h:panelGrid columns="2" cellpadding="5">
+                <table>
+                  <tr>
+                    <td style="padding: 5px; text-align: center">
+                      Fecha de inicio:
+                    </td>                                            
+                    <td style="padding: 5px; text-align: center">
+                      Fecha final:
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 5px">
+                      <p:calendar id="inicio" mode="inline" />
+                    </td>
+                    <td style="padding: 5px">
+                      <p:calendar id="fin" mode="inline" />
+                    </td>
+                  </tr>
+                </table>
+              </h:panelGrid>
+              <p:commandButton value="Buscar" id="busquedaTiempo" icon="ui-icon-search" />
+              <hr />
+            </div>
+            <div style="padding-left: 25px">
+              <h3 class="no-margin">B&uacute;squeda por campaña:</h3>
+              <br />
+              <h:panelGrid style="width: 200px" cellpadding="5">
+                <p:outputLabel for="campaña" value="Campaña:" />
+                <p:selectOneMenu id="campaña" style="width: 200px">
+                  <f:selectItem itemLabel="Todas" itemValue="" />
+                </p:selectOneMenu>                                
+              </h:panelGrid>
+              <p:commandButton value="Buscar" id="busquedaCampaña" icon="ui-icon-search" />
+            </div>
+          </p:panel>
+        </h:form>
+      </div><!-- /.row -->
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </body>
 </html>

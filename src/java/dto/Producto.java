@@ -18,15 +18,31 @@ public class Producto  implements java.io.Serializable {
      private Set creditos = new HashSet(0);
      private Set subproductos = new HashSet(0);
 
-    public Producto() {
+  /**
+   *
+   */
+  public Producto() {
     }
 
-	
-    public Producto(Empresa empresa, String nombre) {
+  /**
+   *
+   * @param empresa
+   * @param nombre
+   */
+  public Producto(Empresa empresa, String nombre) {
         this.empresa = empresa;
         this.nombre = nombre;
     }
-    public Producto(Empresa empresa, String nombre, String descripcion, Set creditos, Set subproductos) {
+
+  /**
+   *
+   * @param empresa
+   * @param nombre
+   * @param descripcion
+   * @param creditos
+   * @param subproductos
+   */
+  public Producto(Empresa empresa, String nombre, String descripcion, Set creditos, Set subproductos) {
        this.empresa = empresa;
        this.nombre = nombre;
        this.descripcion = descripcion;
@@ -34,46 +50,99 @@ public class Producto  implements java.io.Serializable {
        this.subproductos = subproductos;
     }
    
-    public Integer getIdProducto() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdProducto() {
         return this.idProducto;
     }
     
-    public void setIdProducto(Integer idProducto) {
+  /**
+   *
+   * @param idProducto
+   */
+  public void setIdProducto(Integer idProducto) {
         this.idProducto = idProducto;
     }
-    public Empresa getEmpresa() {
+
+  /**
+   *
+   * @return
+   */
+  public Empresa getEmpresa() {
         return this.empresa;
     }
     
-    public void setEmpresa(Empresa empresa) {
+  /**
+   *
+   * @param empresa
+   */
+  public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
-    public String getNombre() {
+
+  /**
+   *
+   * @return
+   */
+  public String getNombre() {
         return this.nombre;
     }
     
-    public void setNombre(String nombre) {
+  /**
+   *
+   * @param nombre
+   */
+  public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public String getDescripcion() {
+
+  /**
+   *
+   * @return
+   */
+  public String getDescripcion() {
         return this.descripcion;
     }
     
-    public void setDescripcion(String descripcion) {
+  /**
+   *
+   * @param descripcion
+   */
+  public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    public Set getCreditos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getCreditos() {
         return this.creditos;
     }
     
-    public void setCreditos(Set creditos) {
+  /**
+   *
+   * @param creditos
+   */
+  public void setCreditos(Set creditos) {
         this.creditos = creditos;
     }
-    public Set getSubproductos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getSubproductos() {
         return this.subproductos;
     }
     
-    public void setSubproductos(Set subproductos) {
+  /**
+   *
+   * @param subproductos
+   */
+  public void setSubproductos(Set subproductos) {
         this.subproductos = subproductos;
     }
 

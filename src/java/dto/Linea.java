@@ -13,34 +13,69 @@ public class Linea  implements java.io.Serializable {
      private Credito credito;
      private String telefono;
 
-    public Linea() {
+  /**
+   *
+   */
+  public Linea() {
     }
 
-    public Linea(int idLinea, Credito credito, String telefono) {
+  /**
+   *
+   * @param idLinea
+   * @param credito
+   * @param telefono
+   */
+  public Linea(int idLinea, Credito credito, String telefono) {
        this.idLinea = idLinea;
        this.credito = credito;
        this.telefono = telefono;
     }
    
-    public int getIdLinea() {
+  /**
+   *
+   * @return
+   */
+  public int getIdLinea() {
         return this.idLinea;
     }
     
-    public void setIdLinea(int idLinea) {
+  /**
+   *
+   * @param idLinea
+   */
+  public void setIdLinea(int idLinea) {
         this.idLinea = idLinea;
     }
-    public Credito getCredito() {
+
+  /**
+   *
+   * @return
+   */
+  public Credito getCredito() {
         return this.credito;
     }
     
-    public void setCredito(Credito credito) {
+  /**
+   *
+   * @param credito
+   */
+  public void setCredito(Credito credito) {
         this.credito = credito;
     }
-    public String getTelefono() {
+
+  /**
+   *
+   * @return
+   */
+  public String getTelefono() {
         return this.telefono;
     }
     
-    public void setTelefono(String telefono) {
+  /**
+   *
+   * @param telefono
+   */
+  public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 

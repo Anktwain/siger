@@ -19,14 +19,30 @@ public class Cliente  implements java.io.Serializable {
      private Set creditos = new HashSet(0);
      private Set contactos = new HashSet(0);
 
-    public Cliente() {
+  /**
+   *
+   */
+  public Cliente() {
     }
 
-	
-    public Cliente(Sujeto sujeto) {
+  /**
+   *
+   * @param sujeto
+   */
+  public Cliente(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public Cliente(Sujeto sujeto, String numeroCliente, String curp, String numeroSeguroSocial, Set creditos, Set contactos) {
+
+  /**
+   *
+   * @param sujeto
+   * @param numeroCliente
+   * @param curp
+   * @param numeroSeguroSocial
+   * @param creditos
+   * @param contactos
+   */
+  public Cliente(Sujeto sujeto, String numeroCliente, String curp, String numeroSeguroSocial, Set creditos, Set contactos) {
        this.sujeto = sujeto;
        this.numeroCliente = numeroCliente;
        this.curp = curp;
@@ -35,53 +51,115 @@ public class Cliente  implements java.io.Serializable {
        this.contactos = contactos;
     }
    
-    public Integer getIdCliente() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdCliente() {
         return this.idCliente;
     }
     
-    public void setIdCliente(Integer idCliente) {
+  /**
+   *
+   * @param idCliente
+   */
+  public void setIdCliente(Integer idCliente) {
         this.idCliente = idCliente;
     }
-    public Sujeto getSujeto() {
+
+  /**
+   *
+   * @return
+   */
+  public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-    public void setSujeto(Sujeto sujeto) {
+  /**
+   *
+   * @param sujeto
+   */
+  public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public String getNumeroCliente() {
+
+  /**
+   *
+   * @return
+   */
+  public String getNumeroCliente() {
         return this.numeroCliente;
     }
     
-    public void setNumeroCliente(String numeroCliente) {
+  /**
+   *
+   * @param numeroCliente
+   */
+  public void setNumeroCliente(String numeroCliente) {
         this.numeroCliente = numeroCliente;
     }
-    public String getCurp() {
+
+  /**
+   *
+   * @return
+   */
+  public String getCurp() {
         return this.curp;
     }
     
-    public void setCurp(String curp) {
+  /**
+   *
+   * @param curp
+   */
+  public void setCurp(String curp) {
         this.curp = curp;
     }
-    public String getNumeroSeguroSocial() {
+
+  /**
+   *
+   * @return
+   */
+  public String getNumeroSeguroSocial() {
         return this.numeroSeguroSocial;
     }
     
-    public void setNumeroSeguroSocial(String numeroSeguroSocial) {
+  /**
+   *
+   * @param numeroSeguroSocial
+   */
+  public void setNumeroSeguroSocial(String numeroSeguroSocial) {
         this.numeroSeguroSocial = numeroSeguroSocial;
     }
-    public Set getCreditos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getCreditos() {
         return this.creditos;
     }
     
-    public void setCreditos(Set creditos) {
+  /**
+   *
+   * @param creditos
+   */
+  public void setCreditos(Set creditos) {
         this.creditos = creditos;
     }
-    public Set getContactos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getContactos() {
         return this.contactos;
     }
     
-    public void setContactos(Set contactos) {
+  /**
+   *
+   * @param contactos
+   */
+  public void setContactos(Set contactos) {
         this.contactos = contactos;
     }
 

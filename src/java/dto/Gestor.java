@@ -16,45 +16,93 @@ public class Gestor  implements java.io.Serializable {
      private String extension;
      private Set creditos = new HashSet(0);
 
-    public Gestor() {
+  /**
+   *
+   */
+  public Gestor() {
     }
 
-	
-    public Gestor(Usuario usuario) {
+  /**
+   *
+   * @param usuario
+   */
+  public Gestor(Usuario usuario) {
         this.usuario = usuario;
     }
-    public Gestor(Usuario usuario, String extension, Set creditos) {
+
+  /**
+   *
+   * @param usuario
+   * @param extension
+   * @param creditos
+   */
+  public Gestor(Usuario usuario, String extension, Set creditos) {
        this.usuario = usuario;
        this.extension = extension;
        this.creditos = creditos;
     }
    
-    public Integer getIdGestor() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdGestor() {
         return this.idGestor;
     }
     
-    public void setIdGestor(Integer idGestor) {
+  /**
+   *
+   * @param idGestor
+   */
+  public void setIdGestor(Integer idGestor) {
         this.idGestor = idGestor;
     }
-    public Usuario getUsuario() {
+
+  /**
+   *
+   * @return
+   */
+  public Usuario getUsuario() {
         return this.usuario;
     }
     
-    public void setUsuario(Usuario usuario) {
+  /**
+   *
+   * @param usuario
+   */
+  public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    public String getExtension() {
+
+  /**
+   *
+   * @return
+   */
+  public String getExtension() {
         return this.extension;
     }
     
-    public void setExtension(String extension) {
+  /**
+   *
+   * @param extension
+   */
+  public void setExtension(String extension) {
         this.extension = extension;
     }
-    public Set getCreditos() {
+
+  /**
+   *
+   * @return
+   */
+  public Set getCreditos() {
         return this.creditos;
     }
     
-    public void setCreditos(Set creditos) {
+  /**
+   *
+   * @param creditos
+   */
+  public void setCreditos(Set creditos) {
         this.creditos = creditos;
     }
 

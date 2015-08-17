@@ -6,16 +6,19 @@
 package beans;
 
 import dao.ClienteDAO;
+import dao.ContactoDAO;
 import dao.DireccionDAO;
 import dao.EmailDAO;
 import dao.SujetoDAO;
 import dao.TelefonoDAO;
 import dto.Cliente;
+import dto.Contacto;
 import dto.Direccion;
 import dto.Email;
 import dto.Sujeto;
 import dto.Telefono;
 import impl.ClienteIMPL;
+import impl.ContactoIMPL;
 import impl.DireccionIMPL;
 import impl.EmailIMPL;
 import impl.SujetoIMPL;
@@ -28,7 +31,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import util.constantes.Sujetos;
 import util.log.Logs;
@@ -41,7 +43,7 @@ import util.log.Logs;
 @ViewScoped
 public class ClienteBean implements Serializable {
 
-  // Cliente y Sujeto, porque un cliente es un sujeto:
+  // Objeto Cliente, sus propiedades y acceso a la BD
   private Cliente cliente;
   private Sujeto sujeto;
 
@@ -64,17 +66,20 @@ public class ClienteBean implements Serializable {
   List<Telefono> listaTelefonos;
   List<Direccion> listaDirecciones;
   List<Email> listaEmails;
+  List<Contacto> listaContactos;
 
   // Otros acceso a datos
   private TelefonoDAO telefonoDao;
   private EmailDAO emailDao;
   private DireccionDAO direccionDao;
+  private ContactoDAO contactoDao;
 
   // Objetos seleccionados en la tabla
   private Cliente clienteSeleccionado;
   private Telefono telefonoSeleccionado;
   private Email emailSeleccionado;
   private Direccion direccionSeleccionada;
+  private Contacto contactoSeleccionado;
 
   // Controles de la vista
   private boolean btnGuardarDeudorDisabled;
@@ -88,6 +93,9 @@ public class ClienteBean implements Serializable {
   private DireccionBean direccionBean;
   @ManagedProperty(value = "#{contactoBean}")
   private ContactoBean contactoBean;
+
+  // Indica qué tipo de sujeto se está trabajando actualmente
+  private int sujetoActual;
 
   // Construyendo...
   public ClienteBean() {
@@ -104,6 +112,9 @@ public class ClienteBean implements Serializable {
     telefonoDao = new TelefonoIMPL();
     emailDao = new EmailIMPL();
     direccionDao = new DireccionIMPL();
+    contactoDao = new ContactoIMPL();
+
+    sujetoActual = 0;
   }
 
   // Editar datos de un cliente
@@ -126,41 +137,121 @@ public class ClienteBean implements Serializable {
   }
 
   public void editarTelefono() {
-    if (telefonoBean.editar(telefonoSeleccionado)) {
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+    boolean ok = false;
+
+    if (sujetoActual == Sujetos.CLIENTE) {
+      ok = telefonoBean.editar(telefonoSeleccionado);
+    } else if (sujetoActual == Sujetos.CONTACTO) {
+      ok = contactoBean.getTelefonoBean().editar(telefonoSeleccionado);
     }
+
+    if (ok) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+    } else {
+      Logs.log.error("No se pudo editar el objeto 'Telefono'");
+    }
+
   }
 
   public void eliminarTelefono() {
-    if (telefonoBean.eliminar(telefonoSeleccionado)) {
-      listaTelefonos.remove(telefonoSeleccionado);
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+    if (sujetoActual == Sujetos.CLIENTE) {
+      if (telefonoBean.eliminar(telefonoSeleccionado)) {
+        listaTelefonos.remove(telefonoSeleccionado);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Telefono'");
+      }
+    } else if (sujetoActual == Sujetos.CONTACTO) {
+      if (contactoBean.getTelefonoBean().eliminar(telefonoSeleccionado)) {
+        contactoBean.listaTelefonos.remove(telefonoSeleccionado);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Telefono'");
+      }
     }
+
   }
-  
+
   public void editarEmail() {
-    if (emailBean.editar(emailSeleccionado)) {
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+    boolean ok = false;
+    
+    if(sujetoActual == Sujetos.CLIENTE) {
+      ok = emailBean.editar(emailSeleccionado);
+    } else if(sujetoActual == Sujetos.CONTACTO) {
+      ok = contactoBean.getEmailBean().editar(emailSeleccionado);
     }
+    
+    if(ok) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+    } else {
+      Logs.log.error("No se pudo eliminar el objeto 'Email'");
+    }
+    
   }
 
   public void eliminarEmail() {
-    if (emailBean.eliminar(emailSeleccionado)) {
-      listaEmails.remove(emailSeleccionado);
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
-    }
-  }
-  
-  public void editarDireccion() {
-    if (direccionBean.editar(direccionSeleccionada)) {
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+    if (sujetoActual == Sujetos.CLIENTE) {
+      if (emailBean.eliminar(emailSeleccionado)) {
+        listaEmails.remove(emailSeleccionado);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Email'");
+      }
+    } else if (sujetoActual == Sujetos.CONTACTO) {
+      if (contactoBean.getEmailBean().eliminar(emailSeleccionado)) {
+        contactoBean.listaEmails.remove(emailSeleccionado);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Email'");
+      }
     }
   }
 
-  public void eliminarDireccion() {
-    if (direccionBean.eliminar(direccionSeleccionada)) {
-      listaDirecciones.remove(direccionSeleccionada);
+  public void editarDireccion() {
+    boolean ok = false;
+    
+    if(sujetoActual == Sujetos.CLIENTE) {
+      ok = direccionBean.editar(direccionSeleccionada);
+    } else if(sujetoActual == Sujetos.CONTACTO) {
+      ok = contactoBean.getDireccionBean().editar(direccionSeleccionada);
+    }
+    
+    if(ok) {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+    } else {
+      Logs.log.error("No se pudo eliminar el objeto 'Direccion'");
+    }
+    
+  }
+
+  public void eliminarDireccion() {
+    if (sujetoActual == Sujetos.CLIENTE) {
+      if (direccionBean.eliminar(direccionSeleccionada)) {
+        listaDirecciones.remove(direccionSeleccionada);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Direccion'");
+      }
+    } else if (sujetoActual == Sujetos.CONTACTO) {
+      if (contactoBean.getDireccionBean().eliminar(direccionSeleccionada)) {
+        contactoBean.listaDirecciones.remove(direccionSeleccionada);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Direccion'");
+      }
+    }
+  }
+
+  public void editarContacto() {
+    if (contactoBean.editar(contactoSeleccionado)) {
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleContacto').hide()");
+    }
+  }
+
+  public void eliminarContacto() {
+    if (contactoBean.eliminar(contactoSeleccionado)) {
+      listaContactos.remove(contactoSeleccionado);
+      RequestContext.getCurrentInstance().execute("PF('dlgDetalleContacto').hide()");
     }
   }
 
@@ -212,13 +303,24 @@ public class ClienteBean implements Serializable {
   }
 
   public void agregarContacto() {
-    if (sujeto.getIdSujeto() == null) {
+    if (sujeto.getIdSujeto() == null) { // el objeto: 'sujeto' representa el sujeto al cual se agregará este contacto
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
               "No se puede agregar un nuevo contacto",
               "Antes debe agregar un nuevo deudor."));
     } else {
       contactoBean.agregar(cliente);
+    }
+  }
+
+  public void agregarNuevoContacto() {
+    if (sujeto.getIdSujeto() == null) { // el objeto: 'sujeto' representa el sujeto al cual se agregará este contacto
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se puede agregar un nuevo contacto",
+              "Antes debe agregar un nuevo deudor."));
+    } else {
+      contactoBean.agregar(clienteSeleccionado);
     }
   }
 
@@ -306,11 +408,13 @@ public class ClienteBean implements Serializable {
   }
 
   public void onRowSelect(SelectEvent evento) {
+    sujetoActual = Sujetos.CLIENTE;
     clienteSeleccionado = (Cliente) evento.getObject();
-    sujeto = clienteSeleccionado.getSujeto();    
+    sujeto = clienteSeleccionado.getSujeto();
     listaTelefonos = telefonoDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
     listaEmails = emailDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
     listaDirecciones = direccionDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
+    listaContactos = contactoDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
   }
 
   public void onRowSelectTel(SelectEvent evento) {
@@ -323,6 +427,12 @@ public class ClienteBean implements Serializable {
 
   public void onRowSelectDir(SelectEvent evento) {
     direccionSeleccionada = (Direccion) evento.getObject();
+  }
+
+  public void onRowSelectCont(SelectEvent evento) {
+    sujetoActual = Sujetos.CONTACTO;
+    contactoSeleccionado = (Contacto) evento.getObject();
+    contactoBean.onRowSelect(evento);
   }
 
   private void inicializarListaDeClientes() {
@@ -417,6 +527,14 @@ public class ClienteBean implements Serializable {
     this.direccionSeleccionada = direccionSeleccionada;
   }
 
+  public Contacto getContactoSeleccionado() {
+    return contactoSeleccionado;
+  }
+
+  public void setContactoSeleccionado(Contacto contactoSeleccionado) {
+    this.contactoSeleccionado = contactoSeleccionado;
+  }
+
   public boolean isBtnGuardarDeudorDisabled() {
     return btnGuardarDeudorDisabled;
   }
@@ -479,6 +597,14 @@ public class ClienteBean implements Serializable {
 
   public void setListaEmails(List<Email> listaEmails) {
     this.listaEmails = listaEmails;
+  }
+
+  public List<Contacto> getListaContactos() {
+    return listaContactos;
+  }
+
+  public void setListaContactos(List<Contacto> listaContactos) {
+    this.listaContactos = listaContactos;
   }
 
 }

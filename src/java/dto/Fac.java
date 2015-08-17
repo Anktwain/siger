@@ -16,14 +16,29 @@ public class Fac  implements java.io.Serializable {
      private Float facPor;
      private String facMes;
 
-    public Fac() {
+  /**
+   *
+   */
+  public Fac() {
     }
 
-	
-    public Fac(Remesa remesa) {
+  /**
+   *
+   * @param remesa
+   */
+  public Fac(Remesa remesa) {
         this.remesa = remesa;
     }
-    public Fac(Remesa remesa, Integer mes, Integer anio, Float facPor, String facMes) {
+
+  /**
+   *
+   * @param remesa
+   * @param mes
+   * @param anio
+   * @param facPor
+   * @param facMes
+   */
+  public Fac(Remesa remesa, Integer mes, Integer anio, Float facPor, String facMes) {
        this.remesa = remesa;
        this.mes = mes;
        this.anio = anio;
@@ -31,46 +46,99 @@ public class Fac  implements java.io.Serializable {
        this.facMes = facMes;
     }
    
-    public Integer getIdFac() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdFac() {
         return this.idFac;
     }
     
-    public void setIdFac(Integer idFac) {
+  /**
+   *
+   * @param idFac
+   */
+  public void setIdFac(Integer idFac) {
         this.idFac = idFac;
     }
-    public Remesa getRemesa() {
+
+  /**
+   *
+   * @return
+   */
+  public Remesa getRemesa() {
         return this.remesa;
     }
     
-    public void setRemesa(Remesa remesa) {
+  /**
+   *
+   * @param remesa
+   */
+  public void setRemesa(Remesa remesa) {
         this.remesa = remesa;
     }
-    public Integer getMes() {
+
+  /**
+   *
+   * @return
+   */
+  public Integer getMes() {
         return this.mes;
     }
     
-    public void setMes(Integer mes) {
+  /**
+   *
+   * @param mes
+   */
+  public void setMes(Integer mes) {
         this.mes = mes;
     }
-    public Integer getAnio() {
+
+  /**
+   *
+   * @return
+   */
+  public Integer getAnio() {
         return this.anio;
     }
     
-    public void setAnio(Integer anio) {
+  /**
+   *
+   * @param anio
+   */
+  public void setAnio(Integer anio) {
         this.anio = anio;
     }
-    public Float getFacPor() {
+
+  /**
+   *
+   * @return
+   */
+  public Float getFacPor() {
         return this.facPor;
     }
     
-    public void setFacPor(Float facPor) {
+  /**
+   *
+   * @param facPor
+   */
+  public void setFacPor(Float facPor) {
         this.facPor = facPor;
     }
-    public String getFacMes() {
+
+  /**
+   *
+   * @return
+   */
+  public String getFacMes() {
         return this.facMes;
     }
     
-    public void setFacMes(String facMes) {
+  /**
+   *
+   * @param facMes
+   */
+  public void setFacMes(String facMes) {
         this.facMes = facMes;
     }
 

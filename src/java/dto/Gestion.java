@@ -14,37 +14,75 @@ public class Gestion  implements java.io.Serializable {
      private Credito credito;
      private Date fecha;
 
-    public Gestion() {
+  /**
+   *
+   */
+  public Gestion() {
     }
 
-	
-    public Gestion(Credito credito) {
+  /**
+   *
+   * @param credito
+   */
+  public Gestion(Credito credito) {
         this.credito = credito;
     }
-    public Gestion(Credito credito, Date fecha) {
+
+  /**
+   *
+   * @param credito
+   * @param fecha
+   */
+  public Gestion(Credito credito, Date fecha) {
        this.credito = credito;
        this.fecha = fecha;
     }
    
-    public Integer getIdGestion() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdGestion() {
         return this.idGestion;
     }
     
-    public void setIdGestion(Integer idGestion) {
+  /**
+   *
+   * @param idGestion
+   */
+  public void setIdGestion(Integer idGestion) {
         this.idGestion = idGestion;
     }
-    public Credito getCredito() {
+
+  /**
+   *
+   * @return
+   */
+  public Credito getCredito() {
         return this.credito;
     }
     
-    public void setCredito(Credito credito) {
+  /**
+   *
+   * @param credito
+   */
+  public void setCredito(Credito credito) {
         this.credito = credito;
     }
-    public Date getFecha() {
+
+  /**
+   *
+   * @return
+   */
+  public Date getFecha() {
         return this.fecha;
     }
     
-    public void setFecha(Date fecha) {
+  /**
+   *
+   * @param fecha
+   */
+  public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 

@@ -22,9 +22,7 @@ public class eliminar_PruebaBean implements Serializable {
 
     /**
      *
-     *
-     * @param
-     */
+     *     */
     public void mostrar() {
         Logs.log.debug("************ CONSOLA SIGERWEB ****************");
         Logs.log.debug("SE DIO DE ALTA A: " + nombre + " EN EL SISTEMA");
@@ -34,6 +32,7 @@ public class eliminar_PruebaBean implements Serializable {
      *
      *
      *
+   * @return  
      */
     public String getNombre() {
         return nombre;
@@ -42,8 +41,7 @@ public class eliminar_PruebaBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param nombre     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }

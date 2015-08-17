@@ -13,34 +13,69 @@ public class CreditoRemesa  implements java.io.Serializable {
      private Credito credito;
      private Remesa remesa;
 
-    public CreditoRemesa() {
+  /**
+   *
+   */
+  public CreditoRemesa() {
     }
 
-    public CreditoRemesa(CreditoRemesaId id, Credito credito, Remesa remesa) {
+  /**
+   *
+   * @param id
+   * @param credito
+   * @param remesa
+   */
+  public CreditoRemesa(CreditoRemesaId id, Credito credito, Remesa remesa) {
        this.id = id;
        this.credito = credito;
        this.remesa = remesa;
     }
    
-    public CreditoRemesaId getId() {
+  /**
+   *
+   * @return
+   */
+  public CreditoRemesaId getId() {
         return this.id;
     }
     
-    public void setId(CreditoRemesaId id) {
+  /**
+   *
+   * @param id
+   */
+  public void setId(CreditoRemesaId id) {
         this.id = id;
     }
-    public Credito getCredito() {
+
+  /**
+   *
+   * @return
+   */
+  public Credito getCredito() {
         return this.credito;
     }
     
-    public void setCredito(Credito credito) {
+  /**
+   *
+   * @param credito
+   */
+  public void setCredito(Credito credito) {
         this.credito = credito;
     }
-    public Remesa getRemesa() {
+
+  /**
+   *
+   * @return
+   */
+  public Remesa getRemesa() {
         return this.remesa;
     }
     
-    public void setRemesa(Remesa remesa) {
+  /**
+   *
+   * @param remesa
+   */
+  public void setRemesa(Remesa remesa) {
         this.remesa = remesa;
     }
 

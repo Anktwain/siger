@@ -273,8 +273,7 @@ public class EmpresasBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param sujetoDao     */
     public void setSujetoDao(SujetoDAO sujetoDao) {
         this.sujetoDao = sujetoDao;
     }
@@ -291,8 +290,7 @@ public class EmpresasBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param nombreRazonSocial     */
     public void setNombreRazonSocial(String nombreRazonSocial) {
         this.nombreRazonSocial = nombreRazonSocial;
     }
@@ -309,7 +307,7 @@ public class EmpresasBean implements Serializable {
     /**
      *
      *
-     * @return
+   * @param rfc
      */
     public void setRfc(String rfc) {
         this.rfc = rfc;
@@ -327,8 +325,7 @@ public class EmpresasBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param listaEmpresas     */
     public void setListaEmpresas(List<Sujeto> listaEmpresas) {
         this.listaEmpresas = listaEmpresas;
     }
@@ -345,8 +342,7 @@ public class EmpresasBean implements Serializable {
     /**
      *
      *
-     * @param
-     */
+   * @param empresa     */
     public void setEmpresa(Sujeto empresa) {
         this.empresa = empresa;
     }
@@ -355,47 +351,91 @@ public class EmpresasBean implements Serializable {
         return empresaSeleccionada;
     }
 
-    public void setEmpresaSeleccionada(Empresa empresaSeleccionada) {
+  /**
+   *
+   * @param empresaSeleccionada
+   */
+  public void setEmpresaSeleccionada(Empresa empresaSeleccionada) {
         this.empresaSeleccionada = empresaSeleccionada;
     }
 
-    public Sujeto getSujetoSeleccionado() {
+  /**
+   *
+   * @return
+   */
+  public Sujeto getSujetoSeleccionado() {
         return sujetoSeleccionado;
     }
 
-    public void setSujetoSeleccionado(Sujeto sujetoSeleccionado) {
+  /**
+   *
+   * @param sujetoSeleccionado
+   */
+  public void setSujetoSeleccionado(Sujeto sujetoSeleccionado) {
         this.sujetoSeleccionado = sujetoSeleccionado;
     }
 
-    public EmpresaDAO getEmpresaDao() {
+  /**
+   *
+   * @return
+   */
+  public EmpresaDAO getEmpresaDao() {
         return empresaDao;
     }
 
-    public void setEmpresaDao(EmpresaDAO empresaDao) {
+  /**
+   *
+   * @param empresaDao
+   */
+  public void setEmpresaDao(EmpresaDAO empresaDao) {
         this.empresaDao = empresaDao;
     }
 
-    public String getRazonSocial() {
+  /**
+   *
+   * @return
+   */
+  public String getRazonSocial() {
         return razonSocial;
     }
 
-    public void setRazonSocial(String razonSocial) {
+  /**
+   *
+   * @param razonSocial
+   */
+  public void setRazonSocial(String razonSocial) {
         this.razonSocial = razonSocial;
     }
 
-    public String getCorto() {
+  /**
+   *
+   * @return
+   */
+  public String getCorto() {
         return corto;
     }
 
-    public void setCorto(String corto) {
+  /**
+   *
+   * @param corto
+   */
+  public void setCorto(String corto) {
         this.corto = corto;
     }
 
-    public String getAuxRfc() {
+  /**
+   *
+   * @return
+   */
+  public String getAuxRfc() {
         return auxRfc;
     }
 
-    public void setAuxRfc(String auxRfc) {
+  /**
+   *
+   * @param auxRfc
+   */
+  public void setAuxRfc(String auxRfc) {
         this.auxRfc = auxRfc;
     }
 

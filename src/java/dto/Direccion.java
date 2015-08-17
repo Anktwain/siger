@@ -18,15 +18,33 @@ public class Direccion  implements java.io.Serializable {
      private String codigoPostal;
      private String tipo;
 
-    public Direccion() {
+  /**
+   *
+   */
+  public Direccion() {
     }
 
-	
-    public Direccion(Sujeto sujeto, String calle) {
+  /**
+   *
+   * @param sujeto
+   * @param calle
+   */
+  public Direccion(Sujeto sujeto, String calle) {
         this.sujeto = sujeto;
         this.calle = calle;
     }
-    public Direccion(Sujeto sujeto, String calle, String colonia, String municipio, String estado, String codigoPostal, String tipo) {
+
+  /**
+   *
+   * @param sujeto
+   * @param calle
+   * @param colonia
+   * @param municipio
+   * @param estado
+   * @param codigoPostal
+   * @param tipo
+   */
+  public Direccion(Sujeto sujeto, String calle, String colonia, String municipio, String estado, String codigoPostal, String tipo) {
        this.sujeto = sujeto;
        this.calle = calle;
        this.colonia = colonia;
@@ -36,60 +54,131 @@ public class Direccion  implements java.io.Serializable {
        this.tipo = tipo;
     }
    
-    public Integer getIdDireccion() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdDireccion() {
         return this.idDireccion;
     }
     
-    public void setIdDireccion(Integer idDireccion) {
+  /**
+   *
+   * @param idDireccion
+   */
+  public void setIdDireccion(Integer idDireccion) {
         this.idDireccion = idDireccion;
     }
-    public Sujeto getSujeto() {
+
+  /**
+   *
+   * @return
+   */
+  public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-    public void setSujeto(Sujeto sujeto) {
+  /**
+   *
+   * @param sujeto
+   */
+  public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public String getCalle() {
+
+  /**
+   *
+   * @return
+   */
+  public String getCalle() {
         return this.calle;
     }
     
-    public void setCalle(String calle) {
+  /**
+   *
+   * @param calle
+   */
+  public void setCalle(String calle) {
         this.calle = calle;
     }
-    public String getColonia() {
+
+  /**
+   *
+   * @return
+   */
+  public String getColonia() {
         return this.colonia;
     }
     
-    public void setColonia(String colonia) {
+  /**
+   *
+   * @param colonia
+   */
+  public void setColonia(String colonia) {
         this.colonia = colonia;
     }
-    public String getMunicipio() {
+
+  /**
+   *
+   * @return
+   */
+  public String getMunicipio() {
         return this.municipio;
     }
     
-    public void setMunicipio(String municipio) {
+  /**
+   *
+   * @param municipio
+   */
+  public void setMunicipio(String municipio) {
         this.municipio = municipio;
     }
-    public String getEstado() {
+
+  /**
+   *
+   * @return
+   */
+  public String getEstado() {
         return this.estado;
     }
     
-    public void setEstado(String estado) {
+  /**
+   *
+   * @param estado
+   */
+  public void setEstado(String estado) {
         this.estado = estado;
     }
-    public String getCodigoPostal() {
+
+  /**
+   *
+   * @return
+   */
+  public String getCodigoPostal() {
         return this.codigoPostal;
     }
     
-    public void setCodigoPostal(String codigoPostal) {
+  /**
+   *
+   * @param codigoPostal
+   */
+  public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
-    public String getTipo() {
+
+  /**
+   *
+   * @return
+   */
+  public String getTipo() {
         return this.tipo;
     }
     
-    public void setTipo(String tipo) {
+  /**
+   *
+   * @param tipo
+   */
+  public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 

@@ -63,7 +63,7 @@ public class EmailBean implements Serializable {
     FacesContext context = FacesContext.getCurrentInstance();
     boolean ok = false;
 
-    ok = emailDao.eliminar(email);
+    ok = emailDao.eliminar(mail);
 
     if (ok) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,

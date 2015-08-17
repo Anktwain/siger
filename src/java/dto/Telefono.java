@@ -17,15 +17,32 @@ public class Telefono  implements java.io.Serializable {
      private String lada;
      private String horario;
 
-    public Telefono() {
+  /**
+   *
+   */
+  public Telefono() {
     }
 
-	
-    public Telefono(Sujeto sujeto, String numero) {
+  /**
+   *
+   * @param sujeto
+   * @param numero
+   */
+  public Telefono(Sujeto sujeto, String numero) {
         this.sujeto = sujeto;
         this.numero = numero;
     }
-    public Telefono(Sujeto sujeto, String numero, String tipo, String extension, String lada, String horario) {
+
+  /**
+   *
+   * @param sujeto
+   * @param numero
+   * @param tipo
+   * @param extension
+   * @param lada
+   * @param horario
+   */
+  public Telefono(Sujeto sujeto, String numero, String tipo, String extension, String lada, String horario) {
        this.sujeto = sujeto;
        this.numero = numero;
        this.tipo = tipo;
@@ -34,53 +51,115 @@ public class Telefono  implements java.io.Serializable {
        this.horario = horario;
     }
    
-    public Integer getIdTelefono() {
+  /**
+   *
+   * @return
+   */
+  public Integer getIdTelefono() {
         return this.idTelefono;
     }
     
-    public void setIdTelefono(Integer idTelefono) {
+  /**
+   *
+   * @param idTelefono
+   */
+  public void setIdTelefono(Integer idTelefono) {
         this.idTelefono = idTelefono;
     }
-    public Sujeto getSujeto() {
+
+  /**
+   *
+   * @return
+   */
+  public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-    public void setSujeto(Sujeto sujeto) {
+  /**
+   *
+   * @param sujeto
+   */
+  public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public String getNumero() {
+
+  /**
+   *
+   * @return
+   */
+  public String getNumero() {
         return this.numero;
     }
     
-    public void setNumero(String numero) {
+  /**
+   *
+   * @param numero
+   */
+  public void setNumero(String numero) {
         this.numero = numero;
     }
-    public String getTipo() {
+
+  /**
+   *
+   * @return
+   */
+  public String getTipo() {
         return this.tipo;
     }
     
-    public void setTipo(String tipo) {
+  /**
+   *
+   * @param tipo
+   */
+  public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-    public String getExtension() {
+
+  /**
+   *
+   * @return
+   */
+  public String getExtension() {
         return this.extension;
     }
     
-    public void setExtension(String extension) {
+  /**
+   *
+   * @param extension
+   */
+  public void setExtension(String extension) {
         this.extension = extension;
     }
-    public String getLada() {
+
+  /**
+   *
+   * @return
+   */
+  public String getLada() {
         return this.lada;
     }
     
-    public void setLada(String lada) {
+  /**
+   *
+   * @param lada
+   */
+  public void setLada(String lada) {
         this.lada = lada;
     }
-    public String getHorario() {
+
+  /**
+   *
+   * @return
+   */
+  public String getHorario() {
         return this.horario;
     }
     
-    public void setHorario(String horario) {
+  /**
+   *
+   * @param horario
+   */
+  public void setHorario(String horario) {
         this.horario = horario;
     }
 

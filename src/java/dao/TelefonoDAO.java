@@ -48,5 +48,10 @@ public interface TelefonoDAO {
      */
     public List<Telefono> buscarTodo();
     
-    public List<Telefono> buscarPorSujeto(int idSujeto);
+  /**
+   *
+   * @param idSujeto
+   * @return
+   */
+  public List<Telefono> buscarPorSujeto(int idSujeto);
 }

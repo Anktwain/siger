@@ -5,30 +5,30 @@
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <title>TODO supply a title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </h:head>
-    <h:body>
-        <ui:include src="menulateral.xhtml" />
-        <div id="main-container">
-            <div class="padding-md">
-                <div class="row">
-                    <div class="col-sm-6 col-md-3">
-                        <div class="panel-stat3 bg-danger">
-                            
-                            <h:form>
-                                <p:outputLabel value="Seleccione imagen de perfil" />
-                                <br />
-                                <p:fileUpload fileUploadListener="#{fotoBean.handleFileUpload}" mode="advanced"
-                                              auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" label="Imagen" />
-                            </h:form>
-                        </div>
+  <h:head>
+    <title>TODO supply a title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </h:head>
+  <h:body>
+    <ui:include src="menulateral.xhtml" />
+    <div id="main-container">
+      <div class="padding-md">
+        <div class="row">
+          <div class="col-sm-6 col-md-3">
+            <div class="panel-stat3 bg-danger">
 
-                    </div>
-
-                </div>
+              <h:form>
+                <p:outputLabel value="Seleccione imagen de perfil" />
+                <br />
+                <p:fileUpload fileUploadListener="#{fotoBean.handleFileUpload}" mode="advanced"
+                              auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" label="Imagen" />
+              </h:form>
             </div>
-        </div><!-- /main-container -->
-    </h:body>
+
+          </div>
+
+        </div>
+      </div>
+    </div><!-- /main-container -->
+  </h:body>
 </html>
