@@ -31,7 +31,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import util.constantes.Sujetos;
 import util.log.Logs;
@@ -95,6 +94,9 @@ public class ClienteBean implements Serializable {
   @ManagedProperty(value = "#{contactoBean}")
   private ContactoBean contactoBean;
 
+  // Indica qué tipo de sujeto se está trabajando actualmente
+  private int sujetoActual;
+
   // Construyendo...
   public ClienteBean() {
     cliente = new Cliente();
@@ -111,6 +113,8 @@ public class ClienteBean implements Serializable {
     emailDao = new EmailIMPL();
     direccionDao = new DireccionIMPL();
     contactoDao = new ContactoIMPL();
+
+    sujetoActual = 0;
   }
 
   // Editar datos de un cliente
@@ -133,91 +137,119 @@ public class ClienteBean implements Serializable {
   }
 
   public void editarTelefono() {
-    if (telefonoBean.editar(telefonoSeleccionado)) {
+    boolean ok = false;
+
+    if (sujetoActual == Sujetos.CLIENTE) {
+      ok = telefonoBean.editar(telefonoSeleccionado);
+    } else if (sujetoActual == Sujetos.CONTACTO) {
+      ok = contactoBean.getTelefonoBean().editar(telefonoSeleccionado);
+    }
+
+    if (ok) {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+    } else {
+      Logs.log.error("No se pudo editar el objeto 'Telefono'");
     }
-  }
-  
-  public void editarTelefonoContacto() {
-    if(contactoBean.editarTelefono()) {
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefonoContacto').hide();");
-    }
+
   }
 
   public void eliminarTelefono() {
-    if (telefonoBean.eliminar(telefonoSeleccionado)) {
-      listaTelefonos.remove(telefonoSeleccionado);
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+    if (sujetoActual == Sujetos.CLIENTE) {
+      if (telefonoBean.eliminar(telefonoSeleccionado)) {
+        listaTelefonos.remove(telefonoSeleccionado);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Telefono'");
+      }
+    } else if (sujetoActual == Sujetos.CONTACTO) {
+      if (contactoBean.getTelefonoBean().eliminar(telefonoSeleccionado)) {
+        contactoBean.listaTelefonos.remove(telefonoSeleccionado);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefono').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Telefono'");
+      }
     }
+
   }
-  
-  public void eliminarTelefonoContacto() {
-    if (contactoBean.eliminarTelefono()) {
-      listaTelefonos.remove(telefonoSeleccionado);
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleTelefonoContacto').hide();");
-    }
-  }  
-  
+
   public void editarEmail() {
-    if (emailBean.editar(emailSeleccionado)) {
+    boolean ok = false;
+    
+    if(sujetoActual == Sujetos.CLIENTE) {
+      ok = emailBean.editar(emailSeleccionado);
+    } else if(sujetoActual == Sujetos.CONTACTO) {
+      ok = contactoBean.getEmailBean().editar(emailSeleccionado);
+    }
+    
+    if(ok) {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+    } else {
+      Logs.log.error("No se pudo eliminar el objeto 'Email'");
     }
+    
   }
-  
-  public void editarEmailContacto() {
-    if (contactoBean.editarEmail()) {
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMailContacto').hide();");
-    }
-  }  
 
   public void eliminarEmail() {
-    if (emailBean.eliminar(emailSeleccionado)) {
-      listaEmails.remove(emailSeleccionado);
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+    if (sujetoActual == Sujetos.CLIENTE) {
+      if (emailBean.eliminar(emailSeleccionado)) {
+        listaEmails.remove(emailSeleccionado);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Email'");
+      }
+    } else if (sujetoActual == Sujetos.CONTACTO) {
+      if (contactoBean.getEmailBean().eliminar(emailSeleccionado)) {
+        contactoBean.listaEmails.remove(emailSeleccionado);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleMail').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Email'");
+      }
     }
   }
-  
-  public void eliminarEmailContacto() {
-    if (contactoBean.eliminarEmail()) {
-      listaEmails.remove(emailSeleccionado);
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMailContacto').hide();");
-    }
-  }  
-  
+
   public void editarDireccion() {
-    if (direccionBean.editar(direccionSeleccionada)) {
+    boolean ok = false;
+    
+    if(sujetoActual == Sujetos.CLIENTE) {
+      ok = direccionBean.editar(direccionSeleccionada);
+    } else if(sujetoActual == Sujetos.CONTACTO) {
+      ok = contactoBean.getDireccionBean().editar(direccionSeleccionada);
+    }
+    
+    if(ok) {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+    } else {
+      Logs.log.error("No se pudo eliminar el objeto 'Direccion'");
     }
+    
   }
-  
-  public void editarDireccionContacto() {
-    if (contactoBean.editarDireccion()) {
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleMailContacto').hide();");
-    }
-  }  
 
   public void eliminarDireccion() {
-    if (direccionBean.eliminar(direccionSeleccionada)) {
-      listaDirecciones.remove(direccionSeleccionada);
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+    if (sujetoActual == Sujetos.CLIENTE) {
+      if (direccionBean.eliminar(direccionSeleccionada)) {
+        listaDirecciones.remove(direccionSeleccionada);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Direccion'");
+      }
+    } else if (sujetoActual == Sujetos.CONTACTO) {
+      if (contactoBean.getDireccionBean().eliminar(direccionSeleccionada)) {
+        contactoBean.listaDirecciones.remove(direccionSeleccionada);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccion').hide();");
+      } else {
+        Logs.log.error("No se pudo eliminar el objeto 'Direccion'");
+      }
     }
   }
-  
-  public void eliminarDireccionContacto() {
-    if (contactoBean.eliminarDireccion()) {
-      listaDirecciones.remove(direccionSeleccionada);
-      RequestContext.getCurrentInstance().execute("PF('dlgDetalleDireccionContacto').hide();");
-    }
-  }  
-  
+
   public void editarContacto() {
-    if(contactoBean.editar(contactoSeleccionado)) {
+    if (contactoBean.editar(contactoSeleccionado)) {
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleContacto').hide()");
     }
   }
-  
+
   public void eliminarContacto() {
-    if(contactoBean.eliminar(contactoSeleccionado)) {
+    if (contactoBean.eliminar(contactoSeleccionado)) {
       listaContactos.remove(contactoSeleccionado);
       RequestContext.getCurrentInstance().execute("PF('dlgDetalleContacto').hide()");
     }
@@ -280,7 +312,7 @@ public class ClienteBean implements Serializable {
       contactoBean.agregar(cliente);
     }
   }
-  
+
   public void agregarNuevoContacto() {
     if (sujeto.getIdSujeto() == null) { // el objeto: 'sujeto' representa el sujeto al cual se agregará este contacto
       FacesContext context = FacesContext.getCurrentInstance();
@@ -290,7 +322,7 @@ public class ClienteBean implements Serializable {
     } else {
       contactoBean.agregar(clienteSeleccionado);
     }
-  }  
+  }
 
   // Agregar un nuevo cliente
   public void agregar() {
@@ -376,8 +408,9 @@ public class ClienteBean implements Serializable {
   }
 
   public void onRowSelect(SelectEvent evento) {
+    sujetoActual = Sujetos.CLIENTE;
     clienteSeleccionado = (Cliente) evento.getObject();
-    sujeto = clienteSeleccionado.getSujeto();    
+    sujeto = clienteSeleccionado.getSujeto();
     listaTelefonos = telefonoDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
     listaEmails = emailDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
     listaDirecciones = direccionDao.buscarPorSujeto(clienteSeleccionado.getSujeto().getIdSujeto());
@@ -395,8 +428,9 @@ public class ClienteBean implements Serializable {
   public void onRowSelectDir(SelectEvent evento) {
     direccionSeleccionada = (Direccion) evento.getObject();
   }
-  
+
   public void onRowSelectCont(SelectEvent evento) {
+    sujetoActual = Sujetos.CONTACTO;
     contactoSeleccionado = (Contacto) evento.getObject();
     contactoBean.onRowSelect(evento);
   }
@@ -500,7 +534,6 @@ public class ClienteBean implements Serializable {
   public void setContactoSeleccionado(Contacto contactoSeleccionado) {
     this.contactoSeleccionado = contactoSeleccionado;
   }
-
 
   public boolean isBtnGuardarDeudorDisabled() {
     return btnGuardarDeudorDisabled;
