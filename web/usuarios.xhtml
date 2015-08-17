@@ -158,7 +158,7 @@
                                    emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda." filteredValue="#{usuariosBean.usuariosEncontrados}"
                                    rowKey="#{usuario.nombreLogin}" selection="#{usuariosBean.usuarioSeleccionado}" selectionMode="single">
 
-                        <f:facet name="header">
+                        <f:facet name="header_tabBuscar">
                           <p:outputPanel>
                             <h:outputText value="Buscar en todos los usuarios:  " />
                             <p:inputText id="globalFilter" onkeyup="PF('usuarioDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>
@@ -169,42 +169,55 @@
                           <h:outputText value="#{usuario.nombre}"/>
                         </p:column>
                         <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
-                          <h:outputLink value="" >
-                            #{usuario.paterno}
-                          </h:outputLink>
+                          <h:outputText value="#{usuario.paterno}"/>
                         </p:column>
                         <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
-                          <h:outputLink value="" >
-                            #{usuario.materno}
-                          </h:outputLink>
+                          <h:outputText value="#{usuario.materno}"/>                         
                         </p:column>
 
                         <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
-                          <h:outputLink value="" >
-                            #{usuario.nombreLogin}
-                          </h:outputLink>
+                          <h:outputText value="#{usuario.nombreLogin}"/>                           
                         </p:column>
                       </p:dataTable>
 
-                      <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                      <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" 
+                                modal="true" showEffect="fade" hideEffect="fade" resizable="true" style="text-align:center;">
                         <p:outputPanel id="usuarioDetail" style="text-align:center;">
-                          <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}" columnClasses="value,value">
+
+                          <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}" >
+
                             <f:facet name="header">
                               <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}"/> 
                             </f:facet>
 
                             <h:outputText value="Nombre: "/>
-                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombre}" />
+                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombre}" /> 
+
+
                             <h:outputText value="Apellido paterno: "/>
-                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
+                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
+
                             <h:outputText value="Apellido materno: "/>
-                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
+                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
+
                             <h:outputText value="Nombre login: "/>
-                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
+                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
+
                             <h:outputText value="Perfil: "/>
-                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.perfil}" style="color:red"/>
+                            <p:selectOneMenu onchange="PF('carsTable').filter()" >
+                              <f:selectItem itemValue="#{usuariosBean.usuarioSeleccionado.perfil}" noSelectionOption="false" />
+                              <f:selectItems value="#{usuariosBean.perfiles}" />
+                            </p:selectOneMenu>
+
                             <h:outputText value="Correo: "/>
-                            <h:outputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
+                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
+
+                            <f:facet name="footer" >
+                              <p:selectOneButton onchange="">
+                                <f:selectItem itemLabel="Modificar" itemValue="" />
+                                <f:selectItem itemLabel="Eliminar" itemValue="true" />
+                              </p:selectOneButton>
+                            </f:facet>
 
                           </p:panelGrid>
                         </p:outputPanel>
@@ -212,7 +225,6 @@
                     </h:form>
                   </div>
                 </div>
-
 
               </div> <!-- #tabBuscar -->
             </div> <!-- .tabContent -->
