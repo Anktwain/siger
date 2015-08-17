@@ -7,6 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.Sujetos;
 
 /**
  * La clase {@code SujetoIMPL} permite ...
@@ -208,7 +209,7 @@ public class SujetoIMPL implements SujetoDAO {
 
         try { // Buscamos todas las empresas.
             //"select e.name, a.city from Employee e INNER JOIN e.address a"
-            listaSujeto = sesion.createSQLQuery("select * from sujeto s join empresa e where s.eliminado = 1 and s.id_sujeto = e.sujetos_id_sujeto;").addEntity(Sujeto.class).list();
+            listaSujeto = sesion.createSQLQuery("select * from sujeto s join empresa e where s.eliminado = " + Sujetos.ACTIVO + " and s.id_sujeto = e.sujetos_id_sujeto;").addEntity(Sujeto.class).list();
         } catch(HibernateException he) {
             listaSujeto = null;
             he.printStackTrace();
@@ -216,9 +217,6 @@ public class SujetoIMPL implements SujetoDAO {
             cerrar(sesion);
         }
         return listaSujeto;
-        /*
-         return null;
-         */
     }
 
     /**
