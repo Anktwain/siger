@@ -13,11 +13,15 @@ import impl.ProductoIMPL;
 import impl.SubproductoIMPL;
 import impl.SujetoIMPL;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.constantes.Patrones;
 import util.constantes.Sujetos;
 
 /**
@@ -30,7 +34,6 @@ import util.constantes.Sujetos;
  * @since SigerWeb2.0
  */
 @ManagedBean(name = "empresasBean")
-@ViewScoped
 @SessionScoped
 public class EmpresasBean implements Serializable {
 
@@ -80,7 +83,7 @@ public class EmpresasBean implements Serializable {
     private Producto seleccionadoCombobox;
     private boolean okNuevoSubproducto;
     private boolean okEditarSubproducto;
-
+    
     /**
      *
      *
@@ -99,6 +102,21 @@ public class EmpresasBean implements Serializable {
         nuevoSubproducto = new Subproducto();
     }
 
+    public boolean validarRfc(String nuevo){
+        boolean validacion = false;
+        Pattern patron = Pattern.compile(Patrones.PATRON_RFC);
+        nuevo = nuevoRfc;
+        Matcher coincidencia = patron.matcher(nuevoRfc);
+        validacion = coincidencia.matches();
+            if(!validacion){
+                FacesContext actual = FacesContext.getCurrentInstance();
+                actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "El RFC especificado no es valido, intente nuevamente"));
+            }
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println(validacion);
+        return validacion;
+    }
+    
     public void guardarEmpresa() {
         empresaSeleccionada = empresaDao.buscarEmpresaPorSujeto(empresa.getIdSujeto());
         sujetoSeleccionado = sujetoDao.buscar(empresa.getIdSujeto());
@@ -125,6 +143,7 @@ public class EmpresasBean implements Serializable {
     }
     
     public void crearEmpresa(){
+        nuevoRfc = nuevoRfc.toUpperCase();
         nuevoSujeto.setNombreRazonSocial(nuevaRazonSocial);
         nuevoSujeto.setRfc(nuevoRfc);
         nuevoSujeto.setEliminado(Sujetos.ACTIVO);
@@ -132,31 +151,36 @@ public class EmpresasBean implements Serializable {
         nuevaEmpresa.setNombreCorto(nuevoCorto);
         nuevaEmpresa.setSujeto(nuevoSujeto);
         okNuevaEmpresa = empresaDao.insertar(nuevaEmpresa);
+        FacesContext actual = FacesContext.getCurrentInstance();
         if(okNuevaEmpresa){
-            System.out.println("************ CONSOLA SIGERWEB ****************");
-            System.out.println("Se registro a la empresa " + nuevaRazonSocial + " exitosamente");
+            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO,"Insercion exitosa", "Se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
             RequestContext.getCurrentInstance().update("formNuevaEmpresa");
             RequestContext.getCurrentInstance().update("formEditarEmpresa");
         }
         else{
-            System.out.println("Error fatal. No se registro a la empresa " + nuevaRazonSocial + " en el sistema");
+            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "No se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
         }
     }
 
     public void editarEmpresa() {
+        System.out.println("Se edito a la empresa " + razonSocial);
+        /*
         sujetoSeleccionado.setNombreRazonSocial(razonSocial);
+        System.out.println(razonSocial);
         sujetoSeleccionado.setRfc(auxRfc);
+        System.out.println(auxRfc);
         okEditarSujeto = sujetoDao.editar(sujetoSeleccionado);
         empresaSeleccionada.setNombreCorto(corto);
+        System.out.println(corto);
         okEditarEmpresa = empresaDao.editar(empresaSeleccionada);
+        FacesContext actual = FacesContext.getCurrentInstance();
         if(okEditarEmpresa && okEditarSujeto){
-            System.out.println("************ CONSOLA SIGERWEB ****************");
-            System.out.println("Se edito a la empresa " + corto);
-            //RequestContext.getCurrentInstance().update("editarEmpresas");
+            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO,"Actualizacion exitosa", "Se edito a la empresa " + corto));
         }
         else{
-            System.out.println("Error fatal. No se guardaron los cambios de la empresa " + corto);
+            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "No se guardaron los cambios de la empresa " + corto));
         }
+        */
     }
 
     public void eliminarEmpresa() {

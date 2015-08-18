@@ -8,9 +8,10 @@
     <h:head>
         <meta charset="utf-8"></meta>
         <title>SigerWeb - Empresas</title>
-        <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
     </h:head> 
     <h:body>
+        <p:growl id="growl" showDetail="true" sticky="true" />
         <div id="overlay" class="transparent" style="display: none;"></div>
         <ui:include src="barraSuperior.xhtml" />
         <ui:include src="barraLateral.xhtml" />
@@ -47,15 +48,15 @@
                                         <!-- FORMULARIO PARA REGISTRAR UNA NUEVA EMPRESA -->
                                         <h:outputText value="Razon Social:" />
                                         <br />
-                                        <p:inputText value="#{empresasBean.nuevaRazonSocial}" size="50" />
+                                        <p:inputText value="#{empresasBean.nuevaRazonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
                                         <br />
                                         <h:outputText value="RFC:" />
                                         <br />
-                                        <p:inputText value="#{empresasBean. nuevoRfc}" size="25" />
+                                        <p:inputText value="#{empresasBean.nuevoRfc}" size="25" validator="#{empresasBean.validarRfc(empresasBean.nuevoRfc)}" required="true" requiredMessage="Debe ingresar un RFC" />
                                         <br />
                                         <h:outputText value="Nombre Corto:" />
                                         <br />
-                                        <p:inputText value="#{empresasBean.nuevoCorto}" size="25" />
+                                        <p:inputText value="#{empresasBean.nuevoCorto}" size="25" required="true" requiredMessage="Debe ingresar un nombre corto de empresa" />
                                         <br />
                                         <p:separator />
                                         <h4>
@@ -67,14 +68,14 @@
                                                 <p:outputLabel value="Numero:" />
                                                 <p:inputText id="numero" class="form-control input-sm" required="true" requiredMessage="Ingrese un numero telefonico" value="#{clienteBean.telefonoBean.numero}"/>
                                                 <p:outputLabel value="Tipo:" />
-                              <p:inputText id="tipo" class="form-control input-sm"
-                                           value="#{clienteBean.telefonoBean.tipo}"/>
-                              <p:outputLabel value="Lada:" />
-                              <p:inputText id="lada" class="form-control input-sm"
-                                           value="#{clienteBean.telefonoBean.lada}"/>
-                              <p:outputLabel value="Horario: " />
-                          <p:inputText id="hora" class="form-control input-sm"
-                                       value="#{clienteBean.telefonoBean.horario}"/>
+                                                <p:inputText id="tipo" class="form-control input-sm"
+                                                             value="#{clienteBean.telefonoBean.tipo}"/>
+                                                <p:outputLabel value="Lada:" />
+                                                <p:inputText id="lada" class="form-control input-sm"
+                                                             value="#{clienteBean.telefonoBean.lada}"/>
+                                                <p:outputLabel value="Horario: " />
+                                            <p:inputText id="hora" class="form-control input-sm"
+                                                         value="#{clienteBean.telefonoBean.horario}"/>
                                             </p:overlayPanel>
                                         </p:commandButton>
                                         <p:commandButton id="btnMailsEmpresa" icon="fa fa-envelope" type="button">
@@ -87,7 +88,7 @@
                                         </p:commandButton>
                                         <br />
                                         <br />
-                                        <p:commandButton value="Aceptar" actionListener="#{empresasBean.crearEmpresa}"/>
+                                        <p:commandButton value="Aceptar" actionListener="#{empresasBean.crearEmpresa}" update="growl" />
                                     </div>
                                     <div class="modal-footer">
                                     </div>
@@ -113,7 +114,7 @@
                                                 <h:outputText value="#{sujeto.rfc}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
                                             </p:column>
                                             <f:facet name="footer">
-                                                <p:commandButton process="editarEmpresa" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarEmpresa}" update="todo:modalEmpresaId, editarEmpresa" oncomplete="PF('modalEmpresa').show();" />
+                                                <p:commandButton process="editarEmpresa" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarEmpresa}" update="todo:modalEmpresaId" oncomplete="PF('modalEmpresa').show();" />
                                             </f:facet>
                                         </p:dataTable>
                                     </div>
@@ -150,18 +151,18 @@
                                     -->
                                     <h:outputText value="Razon Social:" />
                                     <br />
-                                    <p:inputText value="#{empresasBean.razonSocial}" size="50" />
+                                    <p:inputText value="#{empresasBean.razonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
                                     <br />
                                     <h:outputText value="RFC:" />
                                     <br />
-                                    <p:inputText value="#{empresasBean.auxRfc}" size="25" />
+                                    <p:inputText value="#{empresasBean.auxRfc}" size="25" required="true" requiredMessage="Debe ingresar un RFC" />
                                     <br />
                                     <h:outputText value="Nombre Corto:" />
                                     <br />
-                                    <p:inputText value="#{empresasBean.corto}" size="25" />
+                                    <p:inputText value="#{empresasBean.corto}" size="25" required="true" requiredMessage="Debe ingresar un nombre corto de empresa" />
                                     <br />
                                     <br />
-                                    <p:commandButton value="Aceptar" actionListener="#{empresasBean.editarEmpresa}" />
+                                    <p:commandButton value="Aceptar" oncomplete="#{empresasBean.editarEmpresa()}" update="growl" />
                                 </div>
                                 <div class="tab-pane fade" id="editaProductos">
                                     <!--
@@ -178,8 +179,8 @@
                                             <h:outputText value="#{producto.descripcion}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
                                         </p:column>
                                         <f:facet name="footer">
-                                            <p:commandButton process="editarProducto" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarProducto}" update="todo:modalProductoId, todo:modalEmpresaId" oncomplete="PF('modalProducto').show();" />
-                                            <p:commandButton process="editarProducto" icon="ui-icon-plus" value="Agregar" update="todo:modalProductoId" oncomplete="PF('nuevoProducto').show();" />
+                                            <p:commandButton process="editarProducto" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarProducto}" oncomplete="PF('modalProducto').show();" />
+                                            <p:commandButton process="editarProducto" icon="ui-icon-plus" value="Agregar" oncomplete="PF('nuevoProducto').show();" />
                                         </f:facet>
                                     </p:dataTable>
                                 </div>
@@ -198,8 +199,8 @@
                                             <h:outputText value="#{subproducto.descripcion}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
                                         </p:column>
                                         <f:facet name="footer">
-                                            <p:commandButton process="editarSubproducto" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarSubproducto}" update="todo:modalSubproductoId" oncomplete="PF('modalSubproducto').show();" />
-                                            <p:commandButton process="editarSubproducto" icon="ui-icon-plus" value="Agregar" update="todo:modalSubproductoId" oncomplete="PF('nuevoSubproducto').show();" />
+                                            <p:commandButton process="editarSubproducto" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarSubproducto}" oncomplete="PF('modalSubproducto').show();" />
+                                            <p:commandButton process="editarSubproducto" icon="ui-icon-plus" value="Agregar" oncomplete="PF('nuevoSubproducto').show();" />
                                         </f:facet>
                                     </p:dataTable>
                                 </div>
