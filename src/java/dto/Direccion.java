@@ -1,5 +1,6 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
+
 
 
 
@@ -18,33 +19,15 @@ public class Direccion  implements java.io.Serializable {
      private String codigoPostal;
      private String tipo;
 
-  /**
-   *
-   */
-  public Direccion() {
+    public Direccion() {
     }
 
-  /**
-   *
-   * @param sujeto
-   * @param calle
-   */
-  public Direccion(Sujeto sujeto, String calle) {
+	
+    public Direccion(Sujeto sujeto, String calle) {
         this.sujeto = sujeto;
         this.calle = calle;
     }
-
-  /**
-   *
-   * @param sujeto
-   * @param calle
-   * @param colonia
-   * @param municipio
-   * @param estado
-   * @param codigoPostal
-   * @param tipo
-   */
-  public Direccion(Sujeto sujeto, String calle, String colonia, String municipio, String estado, String codigoPostal, String tipo) {
+    public Direccion(Sujeto sujeto, String calle, String colonia, String municipio, String estado, String codigoPostal, String tipo) {
        this.sujeto = sujeto;
        this.calle = calle;
        this.colonia = colonia;
@@ -54,131 +37,60 @@ public class Direccion  implements java.io.Serializable {
        this.tipo = tipo;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdDireccion() {
+    public Integer getIdDireccion() {
         return this.idDireccion;
     }
     
-  /**
-   *
-   * @param idDireccion
-   */
-  public void setIdDireccion(Integer idDireccion) {
+    public void setIdDireccion(Integer idDireccion) {
         this.idDireccion = idDireccion;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Sujeto getSujeto() {
+    public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-  /**
-   *
-   * @param sujeto
-   */
-  public void setSujeto(Sujeto sujeto) {
+    public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getCalle() {
+    public String getCalle() {
         return this.calle;
     }
     
-  /**
-   *
-   * @param calle
-   */
-  public void setCalle(String calle) {
+    public void setCalle(String calle) {
         this.calle = calle;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getColonia() {
+    public String getColonia() {
         return this.colonia;
     }
     
-  /**
-   *
-   * @param colonia
-   */
-  public void setColonia(String colonia) {
+    public void setColonia(String colonia) {
         this.colonia = colonia;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getMunicipio() {
+    public String getMunicipio() {
         return this.municipio;
     }
     
-  /**
-   *
-   * @param municipio
-   */
-  public void setMunicipio(String municipio) {
+    public void setMunicipio(String municipio) {
         this.municipio = municipio;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getEstado() {
+    public String getEstado() {
         return this.estado;
     }
     
-  /**
-   *
-   * @param estado
-   */
-  public void setEstado(String estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getCodigoPostal() {
+    public String getCodigoPostal() {
         return this.codigoPostal;
     }
     
-  /**
-   *
-   * @param codigoPostal
-   */
-  public void setCodigoPostal(String codigoPostal) {
+    public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getTipo() {
+    public String getTipo() {
         return this.tipo;
     }
     
-  /**
-   *
-   * @param tipo
-   */
-  public void setTipo(String tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 

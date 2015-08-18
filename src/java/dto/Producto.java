@@ -1,7 +1,8 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
+import dto.Empresa;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,31 +19,15 @@ public class Producto  implements java.io.Serializable {
      private Set creditos = new HashSet(0);
      private Set subproductos = new HashSet(0);
 
-  /**
-   *
-   */
-  public Producto() {
+    public Producto() {
     }
 
-  /**
-   *
-   * @param empresa
-   * @param nombre
-   */
-  public Producto(Empresa empresa, String nombre) {
+	
+    public Producto(Empresa empresa, String nombre) {
         this.empresa = empresa;
         this.nombre = nombre;
     }
-
-  /**
-   *
-   * @param empresa
-   * @param nombre
-   * @param descripcion
-   * @param creditos
-   * @param subproductos
-   */
-  public Producto(Empresa empresa, String nombre, String descripcion, Set creditos, Set subproductos) {
+    public Producto(Empresa empresa, String nombre, String descripcion, Set creditos, Set subproductos) {
        this.empresa = empresa;
        this.nombre = nombre;
        this.descripcion = descripcion;
@@ -50,99 +35,46 @@ public class Producto  implements java.io.Serializable {
        this.subproductos = subproductos;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdProducto() {
+    public Integer getIdProducto() {
         return this.idProducto;
     }
     
-  /**
-   *
-   * @param idProducto
-   */
-  public void setIdProducto(Integer idProducto) {
+    public void setIdProducto(Integer idProducto) {
         this.idProducto = idProducto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Empresa getEmpresa() {
+    public Empresa getEmpresa() {
         return this.empresa;
     }
     
-  /**
-   *
-   * @param empresa
-   */
-  public void setEmpresa(Empresa empresa) {
+    public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getNombre() {
+    public String getNombre() {
         return this.nombre;
     }
     
-  /**
-   *
-   * @param nombre
-   */
-  public void setNombre(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getDescripcion() {
+    public String getDescripcion() {
         return this.descripcion;
     }
     
-  /**
-   *
-   * @param descripcion
-   */
-  public void setDescripcion(String descripcion) {
+    public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getCreditos() {
+    public Set getCreditos() {
         return this.creditos;
     }
     
-  /**
-   *
-   * @param creditos
-   */
-  public void setCreditos(Set creditos) {
+    public void setCreditos(Set creditos) {
         this.creditos = creditos;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getSubproductos() {
+    public Set getSubproductos() {
         return this.subproductos;
     }
     
-  /**
-   *
-   * @param subproductos
-   */
-  public void setSubproductos(Set subproductos) {
+    public void setSubproductos(Set subproductos) {
         this.subproductos = subproductos;
     }
 

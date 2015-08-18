@@ -1,5 +1,5 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -20,22 +20,10 @@ public class Remesa  implements java.io.Serializable {
      private Set facs = new HashSet(0);
      private Set creditoRemesas = new HashSet(0);
 
-  /**
-   *
-   */
-  public Remesa() {
+    public Remesa() {
     }
 
-  /**
-   *
-   * @param mesesVencidos
-   * @param saldoVencido
-   * @param estatus
-   * @param fechaUltimoPago
-   * @param facs
-   * @param creditoRemesas
-   */
-  public Remesa(Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Set facs, Set creditoRemesas) {
+    public Remesa(Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Set facs, Set creditoRemesas) {
        this.mesesVencidos = mesesVencidos;
        this.saldoVencido = saldoVencido;
        this.estatus = estatus;
@@ -44,115 +32,53 @@ public class Remesa  implements java.io.Serializable {
        this.creditoRemesas = creditoRemesas;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdRemesa() {
+    public Integer getIdRemesa() {
         return this.idRemesa;
     }
     
-  /**
-   *
-   * @param idRemesa
-   */
-  public void setIdRemesa(Integer idRemesa) {
+    public void setIdRemesa(Integer idRemesa) {
         this.idRemesa = idRemesa;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Integer getMesesVencidos() {
+    public Integer getMesesVencidos() {
         return this.mesesVencidos;
     }
     
-  /**
-   *
-   * @param mesesVencidos
-   */
-  public void setMesesVencidos(Integer mesesVencidos) {
+    public void setMesesVencidos(Integer mesesVencidos) {
         this.mesesVencidos = mesesVencidos;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Float getSaldoVencido() {
+    public Float getSaldoVencido() {
         return this.saldoVencido;
     }
     
-  /**
-   *
-   * @param saldoVencido
-   */
-  public void setSaldoVencido(Float saldoVencido) {
+    public void setSaldoVencido(Float saldoVencido) {
         this.saldoVencido = saldoVencido;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getEstatus() {
+    public String getEstatus() {
         return this.estatus;
     }
     
-  /**
-   *
-   * @param estatus
-   */
-  public void setEstatus(String estatus) {
+    public void setEstatus(String estatus) {
         this.estatus = estatus;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Date getFechaUltimoPago() {
+    public Date getFechaUltimoPago() {
         return this.fechaUltimoPago;
     }
     
-  /**
-   *
-   * @param fechaUltimoPago
-   */
-  public void setFechaUltimoPago(Date fechaUltimoPago) {
+    public void setFechaUltimoPago(Date fechaUltimoPago) {
         this.fechaUltimoPago = fechaUltimoPago;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getFacs() {
+    public Set getFacs() {
         return this.facs;
     }
     
-  /**
-   *
-   * @param facs
-   */
-  public void setFacs(Set facs) {
+    public void setFacs(Set facs) {
         this.facs = facs;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getCreditoRemesas() {
+    public Set getCreditoRemesas() {
         return this.creditoRemesas;
     }
     
-  /**
-   *
-   * @param creditoRemesas
-   */
-  public void setCreditoRemesas(Set creditoRemesas) {
+    public void setCreditoRemesas(Set creditoRemesas) {
         this.creditoRemesas = creditoRemesas;
     }
 

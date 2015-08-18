@@ -1,5 +1,5 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,93 +16,45 @@ public class Gestor  implements java.io.Serializable {
      private String extension;
      private Set creditos = new HashSet(0);
 
-  /**
-   *
-   */
-  public Gestor() {
+    public Gestor() {
     }
 
-  /**
-   *
-   * @param usuario
-   */
-  public Gestor(Usuario usuario) {
+	
+    public Gestor(Usuario usuario) {
         this.usuario = usuario;
     }
-
-  /**
-   *
-   * @param usuario
-   * @param extension
-   * @param creditos
-   */
-  public Gestor(Usuario usuario, String extension, Set creditos) {
+    public Gestor(Usuario usuario, String extension, Set creditos) {
        this.usuario = usuario;
        this.extension = extension;
        this.creditos = creditos;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdGestor() {
+    public Integer getIdGestor() {
         return this.idGestor;
     }
     
-  /**
-   *
-   * @param idGestor
-   */
-  public void setIdGestor(Integer idGestor) {
+    public void setIdGestor(Integer idGestor) {
         this.idGestor = idGestor;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Usuario getUsuario() {
+    public Usuario getUsuario() {
         return this.usuario;
     }
     
-  /**
-   *
-   * @param usuario
-   */
-  public void setUsuario(Usuario usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getExtension() {
+    public String getExtension() {
         return this.extension;
     }
     
-  /**
-   *
-   * @param extension
-   */
-  public void setExtension(String extension) {
+    public void setExtension(String extension) {
         this.extension = extension;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getCreditos() {
+    public Set getCreditos() {
         return this.creditos;
     }
     
-  /**
-   *
-   * @param creditos
-   */
-  public void setCreditos(Set creditos) {
+    public void setCreditos(Set creditos) {
         this.creditos = creditos;
     }
 

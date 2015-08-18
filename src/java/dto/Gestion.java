@@ -1,5 +1,5 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -14,75 +14,37 @@ public class Gestion  implements java.io.Serializable {
      private Credito credito;
      private Date fecha;
 
-  /**
-   *
-   */
-  public Gestion() {
+    public Gestion() {
     }
 
-  /**
-   *
-   * @param credito
-   */
-  public Gestion(Credito credito) {
+	
+    public Gestion(Credito credito) {
         this.credito = credito;
     }
-
-  /**
-   *
-   * @param credito
-   * @param fecha
-   */
-  public Gestion(Credito credito, Date fecha) {
+    public Gestion(Credito credito, Date fecha) {
        this.credito = credito;
        this.fecha = fecha;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdGestion() {
+    public Integer getIdGestion() {
         return this.idGestion;
     }
     
-  /**
-   *
-   * @param idGestion
-   */
-  public void setIdGestion(Integer idGestion) {
+    public void setIdGestion(Integer idGestion) {
         this.idGestion = idGestion;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Credito getCredito() {
+    public Credito getCredito() {
         return this.credito;
     }
     
-  /**
-   *
-   * @param credito
-   */
-  public void setCredito(Credito credito) {
+    public void setCredito(Credito credito) {
         this.credito = credito;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Date getFecha() {
+    public Date getFecha() {
         return this.fecha;
     }
     
-  /**
-   *
-   * @param fecha
-   */
-  public void setFecha(Date fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
