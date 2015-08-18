@@ -14,7 +14,9 @@ import impl.SubproductoIMPL;
 import impl.SujetoIMPL;
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
@@ -68,6 +70,17 @@ public class EmpresasBean implements Serializable {
     private int idNuevoSujeto;
     private Empresa nuevaEmpresa;
     private String nuevoCorto;
+    private String nuevoNumero;
+    private String nuevaLada;
+    private String nuevoTipoTel;
+    private String nuevoHorarioAtencionTel;
+    private String nuevoCorreo;
+    private String nuevaCalle;
+    private String nuevoExterior;
+    private String nuevoInterior;
+    private int idEstado;
+    private int idMunicipio;
+    private int idColonia;
     private boolean okNuevaEmpresa;
     private boolean okEditarEmpresa;
     private boolean okEditarSujeto;
@@ -83,6 +96,9 @@ public class EmpresasBean implements Serializable {
     private Producto seleccionadoCombobox;
     private boolean okNuevoSubproducto;
     private boolean okEditarSubproducto;
+    private Map<String,String> listaEstados;
+    private Map<String,String> listaMunicipios;
+    private Map<String,String> listaColonias;
     
     /**
      *
@@ -102,19 +118,10 @@ public class EmpresasBean implements Serializable {
         nuevoSubproducto = new Subproducto();
     }
 
-    public boolean validarRfc(String nuevo){
-        boolean validacion = false;
-        Pattern patron = Pattern.compile(Patrones.PATRON_RFC);
-        nuevo = nuevoRfc;
-        Matcher coincidencia = patron.matcher(nuevoRfc);
-        validacion = coincidencia.matches();
-            if(!validacion){
-                FacesContext actual = FacesContext.getCurrentInstance();
-                actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "El RFC especificado no es valido, intente nuevamente"));
-            }
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println(validacion);
-        return validacion;
+    public boolean validarRfc(String rfc){
+        Pattern patron = Pattern.compile(Patrones.PATRON_RFC_MORAL);
+        Matcher matcher = patron.matcher(rfc);
+        return matcher.matches();
     }
     
     public void guardarEmpresa() {
@@ -144,22 +151,33 @@ public class EmpresasBean implements Serializable {
     
     public void crearEmpresa(){
         nuevoRfc = nuevoRfc.toUpperCase();
+        boolean okRfc = validarRfc(nuevoRfc);
         nuevoSujeto.setNombreRazonSocial(nuevaRazonSocial);
         nuevoSujeto.setRfc(nuevoRfc);
         nuevoSujeto.setEliminado(Sujetos.ACTIVO);
         idNuevoSujeto = sujetoDao.insertar(nuevoSujeto);
         nuevaEmpresa.setNombreCorto(nuevoCorto);
         nuevaEmpresa.setSujeto(nuevoSujeto);
-        okNuevaEmpresa = empresaDao.insertar(nuevaEmpresa);
         FacesContext actual = FacesContext.getCurrentInstance();
-        if(okNuevaEmpresa){
-            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO,"Insercion exitosa", "Se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
-            RequestContext.getCurrentInstance().update("formNuevaEmpresa");
-            RequestContext.getCurrentInstance().update("formEditarEmpresa");
+        if(okRfc){
+            okNuevaEmpresa = empresaDao.insertar(nuevaEmpresa);
+            if(okNuevaEmpresa){
+                actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO,"Insercion exitosa", "Se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
+                RequestContext.getCurrentInstance().update("formNuevaEmpresa");
+                RequestContext.getCurrentInstance().update("formEditarEmpresa");
+            }
+            else{
+                actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "No se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
+            }
         }
         else{
-            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "No se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
+            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "El RFC proporcionado no es valido, favor de verificarlo"));
         }
+    }
+    
+    public void cargaEstados(){
+        // SE REALIZARA UN "MAP" DE LOS ESTADOS
+        listaEstados = new HashMap<String, String>();
     }
 
     public void editarEmpresa() {
@@ -710,4 +728,93 @@ public class EmpresasBean implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+    
+    public String getNuevoNumero() {
+      return nuevoNumero;
+    }
+
+    public void setNuevoNumero(String nuevoNumero) {
+      this.nuevoNumero = nuevoNumero;
+    }
+
+    public String getNuevaLada() {
+      return nuevaLada;
+    }
+
+    public void setNuevaLada(String nuevaLada) {
+      this.nuevaLada = nuevaLada;
+    }
+
+    public String getNuevoTipoTel() {
+      return nuevoTipoTel;
+    }
+
+    public void setNuevoTipoTel(String nuevoTipoTel) {
+      this.nuevoTipoTel = nuevoTipoTel;
+    }
+
+    public String getNuevoHorarioAtencionTel() {
+      return nuevoHorarioAtencionTel;
+    }
+
+    public void setNuevoHorarioAtencionTel(String nuevoHorarioAtencionTel) {
+      this.nuevoHorarioAtencionTel = nuevoHorarioAtencionTel;
+    }
+
+    public String getNuevaCalle() {
+      return nuevaCalle;
+    }
+
+    public void setNuevaCalle(String nuevacalle) {
+      this.nuevaCalle = nuevaCalle;
+    }
+
+    public String getNuevoExterior() {
+      return nuevoExterior;
+    }
+
+    public void setNuevoExterior(String nuevoExterior) {
+      this.nuevoExterior = nuevoExterior;
+    }
+
+    public String getNuevoInterior() {
+      return nuevoInterior;
+    }
+
+    public void setNuevoInterior(String nuevoInterior) {
+      this.nuevoInterior = nuevoInterior;
+    }
+
+    public int getIdEstado() {
+      return idEstado;
+    }
+
+    public void setIdEstado(int idEstado) {
+      this.idEstado = idEstado;
+    }
+
+    public int getIdMunicipio() {
+      return idMunicipio;
+    }
+
+    public void setIdMunicipio(int idMunicipio) {
+      this.idMunicipio = idMunicipio;
+    }
+
+    public int getIdColonia() {
+      return idColonia;
+    }
+
+    public void setIdColonia(int idColonia) {
+      this.idColonia = idColonia;
+    }
+    
+    public String getNuevoCorreo() {
+      return nuevoCorreo;
+    }
+
+    public void setNuevoCorreo(String nuevoCorreo) {
+      this.nuevoCorreo = nuevoCorreo;
+    }
+
 }

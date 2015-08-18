@@ -28,11 +28,17 @@
                     </li>
                 </ul>
             </div>
+            <div class="main-header clearfix">
+              <div class="page-title">
+                  <h3 class="no-margin">Empresas</h3>
+                  <span>Consulte informaci&oacute;n de las empresas, registre a una nueva empresa, modifique o elimine las empresas registradas</span>
+              </div>
+            </div>
             <div class="panel panel-default">
                 <div class="panel-tab clearfix">
                     <ul class="tab-bar">
-                        <li><a href="#nueva" data-toggle="tab"><h2><i class="fa fa-plus"></i> Nueva empresa</h2></a></li>
-                        <li><a href="#editar" data-toggle="tab"><h2><i class="fa fa-pencil"></i> Editar empresa</h2></a></li>
+                      <li><a href="#nueva" data-toggle="tab" title="Click aqui si desea dar de alta una empresa"><h2><i class="fa fa-plus"></i> Nueva empresa</h2></a></li>
+                      <li><a href="#editar" data-toggle="tab" title="Click aqui si desea editar una empresa que ya esta registrada en el sistema"><h2><i class="fa fa-pencil"></i> Editar empresa</h2></a></li>
                     </ul>
                 </div>
                 <div class="panel-body">
@@ -48,15 +54,18 @@
                                         <!-- FORMULARIO PARA REGISTRAR UNA NUEVA EMPRESA -->
                                         <h:outputText value="Razon Social:" />
                                         <br />
-                                        <p:inputText value="#{empresasBean.nuevaRazonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
+                                        <p:inputText id="razon" value="#{empresasBean.nuevaRazonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
+                                        <p:tooltip for="razon" value="Indique el nombre completo de la empresa incluyendo el tipo de sociedad de la que se trata" />
                                         <br />
                                         <h:outputText value="RFC:" />
                                         <br />
-                                        <p:inputText value="#{empresasBean.nuevoRfc}" size="25" validator="#{empresasBean.validarRfc(empresasBean.nuevoRfc)}" required="true" requiredMessage="Debe ingresar un RFC" />
+                                        <p:inputText id="errefece" value="#{empresasBean.nuevoRfc}" size="25" required="true" requiredMessage="Debe ingresar un RFC" />
+                                        <p:tooltip for="errefece" value="Indique la clave del Registro Federal de Contribuyentes" />
                                         <br />
                                         <h:outputText value="Nombre Corto:" />
                                         <br />
-                                        <p:inputText value="#{empresasBean.nuevoCorto}" size="25" required="true" requiredMessage="Debe ingresar un nombre corto de empresa" />
+                                        <p:inputText id="cortito" value="#{empresasBean.nuevoCorto}" size="25" required="true" requiredMessage="Debe ingresar un nombre corto de empresa" />
+                                        <p:tooltip for="cortito" value="Indique un nombre clave para identificar a esta empresa" />
                                         <br />
                                         <p:separator />
                                         <h4>
@@ -64,31 +73,93 @@
                                         </h4>
                                         <br />
                                         <p:commandButton id="btnTelsEmpresa" icon="fa fa-phone" type="button">
-                                            <p:overlayPanel id="pnlTelsEmpresa" for="btnTelsEmpresa" hideEffect="size" dynamic="true" style="width: 600px">
-                                                <p:outputLabel value="Numero:" />
-                                                <p:inputText id="numero" class="form-control input-sm" required="true" requiredMessage="Ingrese un numero telefonico" value="#{clienteBean.telefonoBean.numero}"/>
-                                                <p:outputLabel value="Tipo:" />
-                                                <p:inputText id="tipo" class="form-control input-sm"
-                                                             value="#{clienteBean.telefonoBean.tipo}"/>
-                                                <p:outputLabel value="Lada:" />
-                                                <p:inputText id="lada" class="form-control input-sm"
-                                                             value="#{clienteBean.telefonoBean.lada}"/>
-                                                <p:outputLabel value="Horario: " />
-                                            <p:inputText id="hora" class="form-control input-sm"
-                                                         value="#{clienteBean.telefonoBean.horario}"/>
+                                            <p:tooltip for="btnTelsEmpresa" value="Registre numeros telefonicos para esta empresa" />
+                                            <p:overlayPanel id="pnlTelsEmpresa" for="btnTelsEmpresa" hideEffect="size" dynamic="true" style="width: 300px">
+                                                Numero:
+                                                <br />
+                                                <p:inputText id="numero" required="true" requiredMessage="Ingrese un numero telefonico" value="#{empresasBean.nuevoNumero}" size="25" />
+                                                <p:tooltip for="numero" value="Indique el numero de la empresa sin clave lada" />
+                                                <br />
+                                                Tipo:
+                                                <br />
+                                                <p:inputText id="tipo" value="#{empresasBean.nuevoTipoTel}" size="25" />
+                                                <p:tooltip for="tipo" value="Indique si es un numero de casa, oficina, etc." />
+                                                <br />
+                                                Clave Lada:
+                                                <br />
+                                                <p:inputText id="lada" value="#{empresasBean.nuevaLada}" size="25" />
+                                                <p:tooltip for="lada" value="Indique la clave lada del telefono proporcionado" />
+                                                <br />
+                                                Horario de llamadas:
+                                                <br />
+                                            <p:inputText id="hora" value="#{empresasBean.nuevoHorarioAtencionTel}" size="25" />
+                                            <p:tooltip for="hora" value="Indique un horario de atencion para realizar llamadas" />
                                             </p:overlayPanel>
                                         </p:commandButton>
                                         <p:commandButton id="btnMailsEmpresa" icon="fa fa-envelope" type="button">
-                                            <p:overlayPanel id="pnlMailsEmpresa" for="btnMailsEmpresa" hideEffect="size" dynamic="true" style="width: 600px">
+                                        <p:tooltip for="btnMailsEmpresa" value="Registre direcciones de correo para esta empresa" />
+                                            <p:overlayPanel id="pnlMailsEmpresa" for="btnMailsEmpresa" hideEffect="size" dynamic="true" style="width: 350px">
+                                                Correo electronico:
+                                                <br />
+                                                <p:inputText id="correo" required="true" requiredMessage="Ingrese una direccion de correo" value="#{empresasBean.nuevoCorreo}" size="35" />
+                                                <p:tooltip for="correo" value="Indique el algun correo electronico de la empresa" />
                                             </p:overlayPanel>
                                         </p:commandButton>
-                                        <p:commandButton id="btnDirsEmpresa" icon="fa fa-map-marker" type="button">
-                                            <p:overlayPanel id="pnlDirsEmpresa" for="btnDirsEmpresa" hideEffect="size" dynamic="true" style="width: 600px">
+                                        <p:commandButton id="btnDirsEmpresa" icon="fa fa-map-marker" type="button" actionListener="#{empresasBean.cargaEstados()}">
+                                        <p:tooltip for="btnDirsEmpresa" value="Registre direcciones fisicas para esta empresa" />
+                                            <p:overlayPanel id="pnlDirsEmpresa" for="btnDirsEmpresa" hideEffect="size" dynamic="true" style="width: 450px">
+                                                Calle:
+                                                <br />
+                                                <p:inputText id="calle" required="true" requiredMessage="Ingrese una calle" value="#{empresasBean.nuevaCalle}" size="40" />
+                                                <p:tooltip for="calle" value="Indique la calle donde se ubica la empresa" />
+                                                <br />
+                                                <br />
+                                                Numero Exterior:
+                                                &nbsp;
+                                                <p:inputText id="ext" required="true" requiredMessage="Ingrese un numero exterior" value="#{empresasBean.nuevoExterior}" size="5" />
+                                                <p:tooltip for="ext" value="Indique el numero exterior de la empresa" />
+                                                &nbsp;&nbsp;
+                                                Numero Interior:
+                                                &nbsp;
+                                                <p:inputText id="int" value="#{empresasBean.nuevoInterior}" size="5" />
+                                                <p:tooltip for="int" value="Indique el numero interior, edificion, local, etc. de la empresa" />
+                                                <br />
+                                                Estado:
+                                                &nbsp;
+                                                <p:selectOneMenu id="comboboxEstados" value="#{empresasBean.estado}" style="width:150px">
+                                                    <p:ajax listener="#{empresasBean.cambioEstado}" update="comboboxMunicipios" />
+                                                    <f:selectItem itemLabel="Seleccione un estado" itemValue="" noSelectionOption="false" />
+                                                    <f:selectItems value="#{empresasBean.listaEstados}" />
+                                                </p:selectOneMenu>
+                                                <p:tooltip for="comboboxEstados" value="Indique en que estado de la republica se ubica la empresa" />
+                                                <br />
+                                                Municipio:
+                                                &nbsp;
+                                                <p:selectOneMenu id="comboboxMunicipios" value="#{empresasBean.municipio}" style="width:250px">
+                                                    <p:ajax listener="#{empresasBean.cambioMunicipio}" update="comboboxColonias" />
+                                                    <f:selectItem itemLabel="Seleccione un municipio" itemValue="" noSelectionOption="false" />
+                                                    <f:selectItems value="#{dropdownView.listaMunicipios}" />
+                                                </p:selectOneMenu>
+                                                <p:tooltip for="comboboxEstados" value="Indique el municipio en el que se ubica la empresa" />
+                                                <br />
+                                                Localidad:
+                                                &nbsp;
+                                                <p:selectOneMenu id="comboboxColonias" value="#{empresasBean.colonia}" style="width:250px">
+                                                    <f:selectItem itemLabel="Seleccione una localidad" itemValue="" noSelectionOption="false" />
+                                                    <f:selectItems value="#{dropdownView.listaColonias}" />
+                                                </p:selectOneMenu>
+                                                <p:tooltip for="comboboxColonias" value="Indique la colonia en la que se ubica la empresa" />
+                                            </p:overlayPanel>
+                                        </p:commandButton>
+                                        <p:commandButton id="btnContactosEmpresa" icon="fa fa-users" type="button">
+                                            <p:tooltip for="btnContactosEmpresa" value="Registre contactos personales de la empresa" />
+                                            <p:overlayPanel id="pnlContactosEmpresa" for="btnContactosEmpresa" hideEffect="size" dynamic="true" style="width: 300px">
                                             </p:overlayPanel>
                                         </p:commandButton>
                                         <br />
                                         <br />
-                                        <p:commandButton value="Aceptar" actionListener="#{empresasBean.crearEmpresa}" update="growl" />
+                                        <p:commandButton id="creacion" value="Aceptar" actionListener="#{empresasBean.crearEmpresa}" update="growl" />
+                                        <p:tooltip for="creacion" value="Click aqui para registrar a la empresa de manera definitiva" />
                                     </div>
                                     <div class="modal-footer">
                                     </div>
