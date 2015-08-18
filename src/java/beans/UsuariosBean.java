@@ -62,16 +62,16 @@ public class UsuariosBean implements Serializable {
   private List<Usuario> usuariosEncontrados;
   private List<Usuario> usuariosSeleccionados;
   private List<Usuario> todosUsuarios;
-  private List<Usuario> perfiles;
-
-  public List<Usuario> getPerfiles() {
-    return perfiles;
-  }
-
-  public void setPerfiles(List<Usuario> perfiles) {
-    this.perfiles = perfiles;
-  }
   private final String rutaImPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL;
+  private List<PerfilBean> listaPerfiles;
+
+  public List<PerfilBean> getListaPerfiles() {
+    return listaPerfiles;
+  }
+
+  public void setListaPerfiles(List<PerfilBean> listaPerfiles) {
+    this.listaPerfiles = listaPerfiles;
+  }
 
   /**
    *

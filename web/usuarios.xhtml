@@ -181,18 +181,17 @@
                       </p:dataTable>
 
                       <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" 
-                                modal="true" showEffect="fade" hideEffect="fade" resizable="true" style="text-align:center;">
+                                modal="true" showEffect="fade" hideEffect="fade" resizable="true">
                         <p:outputPanel id="usuarioDetail" style="text-align:center;">
 
                           <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}" >
 
                             <f:facet name="header">
-                              <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}"/> 
+                              <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}" height="200px"/> 
                             </f:facet>
 
                             <h:outputText value="Nombre: "/>
                             <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombre}" /> 
-
 
                             <h:outputText value="Apellido paterno: "/>
                             <p:inputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
@@ -204,21 +203,22 @@
                             <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
 
                             <h:outputText value="Perfil: "/>
-                            <p:selectOneMenu onchange="PF('carsTable').filter()" >
-                              <f:selectItem itemValue="#{usuariosBean.usuarioSeleccionado.perfil}" noSelectionOption="false" />
-                              <f:selectItems value="#{usuariosBean.perfiles}" />
+                            <p:selectOneMenu onchange="" >
+                              <f:selectItem itemLabel="#{usuariosBean.usuarioSeleccionado.perfil}" itemValue="#{usuariosBean.usuarioSeleccionado.perfil}" noSelectionOption="false" class="text-danger"/>
+                              <f:selectItems value="#{perfilBean.enlistar()}" />
                             </p:selectOneMenu>
 
                             <h:outputText value="Correo: "/>
                             <p:inputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
 
-                            <f:facet name="footer" >
-                              <p:selectOneButton onchange="">
-                                <f:selectItem itemLabel="Modificar" itemValue="" />
-                                <f:selectItem itemLabel="Eliminar" itemValue="true" />
-                              </p:selectOneButton>
+                            <f:facet name="footer">
+                              <div class="text-center">                                                            
+                                <p:selectOneButton onchange="" >
+                                  <f:selectItem id="btn-modificar" itemLabel="Modificar" itemValue="" itemDisabled="true"/>
+                                  <f:selectItem id="btn-eliminar" itemLabel="Eliminar" itemValue="true" />
+                                </p:selectOneButton>
+                              </div>                              
                             </f:facet>
-
                           </p:panelGrid>
                         </p:outputPanel>
                       </p:dialog>
