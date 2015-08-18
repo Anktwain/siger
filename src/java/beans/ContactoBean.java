@@ -528,7 +528,5 @@ public class ContactoBean implements Serializable {
   public void setContactoSeleccionado(Contacto contactoSeleccionado) {
     this.contactoSeleccionado = contactoSeleccionado;
   }
-  
-  
-
+ 
 }

@@ -1,5 +1,6 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
+
 
 
 
@@ -16,29 +17,14 @@ public class Fac  implements java.io.Serializable {
      private Float facPor;
      private String facMes;
 
-  /**
-   *
-   */
-  public Fac() {
+    public Fac() {
     }
 
-  /**
-   *
-   * @param remesa
-   */
-  public Fac(Remesa remesa) {
+	
+    public Fac(Remesa remesa) {
         this.remesa = remesa;
     }
-
-  /**
-   *
-   * @param remesa
-   * @param mes
-   * @param anio
-   * @param facPor
-   * @param facMes
-   */
-  public Fac(Remesa remesa, Integer mes, Integer anio, Float facPor, String facMes) {
+    public Fac(Remesa remesa, Integer mes, Integer anio, Float facPor, String facMes) {
        this.remesa = remesa;
        this.mes = mes;
        this.anio = anio;
@@ -46,99 +32,46 @@ public class Fac  implements java.io.Serializable {
        this.facMes = facMes;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdFac() {
+    public Integer getIdFac() {
         return this.idFac;
     }
     
-  /**
-   *
-   * @param idFac
-   */
-  public void setIdFac(Integer idFac) {
+    public void setIdFac(Integer idFac) {
         this.idFac = idFac;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Remesa getRemesa() {
+    public Remesa getRemesa() {
         return this.remesa;
     }
     
-  /**
-   *
-   * @param remesa
-   */
-  public void setRemesa(Remesa remesa) {
+    public void setRemesa(Remesa remesa) {
         this.remesa = remesa;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Integer getMes() {
+    public Integer getMes() {
         return this.mes;
     }
     
-  /**
-   *
-   * @param mes
-   */
-  public void setMes(Integer mes) {
+    public void setMes(Integer mes) {
         this.mes = mes;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Integer getAnio() {
+    public Integer getAnio() {
         return this.anio;
     }
     
-  /**
-   *
-   * @param anio
-   */
-  public void setAnio(Integer anio) {
+    public void setAnio(Integer anio) {
         this.anio = anio;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Float getFacPor() {
+    public Float getFacPor() {
         return this.facPor;
     }
     
-  /**
-   *
-   * @param facPor
-   */
-  public void setFacPor(Float facPor) {
+    public void setFacPor(Float facPor) {
         this.facPor = facPor;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getFacMes() {
+    public String getFacMes() {
         return this.facMes;
     }
     
-  /**
-   *
-   * @param facMes
-   */
-  public void setFacMes(String facMes) {
+    public void setFacMes(String facMes) {
         this.facMes = facMes;
     }
 

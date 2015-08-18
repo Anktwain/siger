@@ -1,5 +1,5 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
 
@@ -13,69 +13,34 @@ public class Linea  implements java.io.Serializable {
      private Credito credito;
      private String telefono;
 
-  /**
-   *
-   */
-  public Linea() {
+    public Linea() {
     }
 
-  /**
-   *
-   * @param idLinea
-   * @param credito
-   * @param telefono
-   */
-  public Linea(int idLinea, Credito credito, String telefono) {
+    public Linea(int idLinea, Credito credito, String telefono) {
        this.idLinea = idLinea;
        this.credito = credito;
        this.telefono = telefono;
     }
    
-  /**
-   *
-   * @return
-   */
-  public int getIdLinea() {
+    public int getIdLinea() {
         return this.idLinea;
     }
     
-  /**
-   *
-   * @param idLinea
-   */
-  public void setIdLinea(int idLinea) {
+    public void setIdLinea(int idLinea) {
         this.idLinea = idLinea;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Credito getCredito() {
+    public Credito getCredito() {
         return this.credito;
     }
     
-  /**
-   *
-   * @param credito
-   */
-  public void setCredito(Credito credito) {
+    public void setCredito(Credito credito) {
         this.credito = credito;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getTelefono() {
+    public String getTelefono() {
         return this.telefono;
     }
     
-  /**
-   *
-   * @param telefono
-   */
-  public void setTelefono(String telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 

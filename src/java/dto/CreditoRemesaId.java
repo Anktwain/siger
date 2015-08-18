@@ -1,5 +1,5 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
 
@@ -12,51 +12,26 @@ public class CreditoRemesaId  implements java.io.Serializable {
      private int remesasIdRemesa;
      private int creditosIdCredito;
 
-  /**
-   *
-   */
-  public CreditoRemesaId() {
+    public CreditoRemesaId() {
     }
 
-  /**
-   *
-   * @param remesasIdRemesa
-   * @param creditosIdCredito
-   */
-  public CreditoRemesaId(int remesasIdRemesa, int creditosIdCredito) {
+    public CreditoRemesaId(int remesasIdRemesa, int creditosIdCredito) {
        this.remesasIdRemesa = remesasIdRemesa;
        this.creditosIdCredito = creditosIdCredito;
     }
    
-  /**
-   *
-   * @return
-   */
-  public int getRemesasIdRemesa() {
+    public int getRemesasIdRemesa() {
         return this.remesasIdRemesa;
     }
     
-  /**
-   *
-   * @param remesasIdRemesa
-   */
-  public void setRemesasIdRemesa(int remesasIdRemesa) {
+    public void setRemesasIdRemesa(int remesasIdRemesa) {
         this.remesasIdRemesa = remesasIdRemesa;
     }
-
-  /**
-   *
-   * @return
-   */
-  public int getCreditosIdCredito() {
+    public int getCreditosIdCredito() {
         return this.creditosIdCredito;
     }
     
-  /**
-   *
-   * @param creditosIdCredito
-   */
-  public void setCreditosIdCredito(int creditosIdCredito) {
+    public void setCreditosIdCredito(int creditosIdCredito) {
         this.creditosIdCredito = creditosIdCredito;
     }
 
