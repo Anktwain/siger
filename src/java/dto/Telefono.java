@@ -1,5 +1,5 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
 
@@ -17,32 +17,15 @@ public class Telefono  implements java.io.Serializable {
      private String lada;
      private String horario;
 
-  /**
-   *
-   */
-  public Telefono() {
+    public Telefono() {
     }
 
-  /**
-   *
-   * @param sujeto
-   * @param numero
-   */
-  public Telefono(Sujeto sujeto, String numero) {
+	
+    public Telefono(Sujeto sujeto, String numero) {
         this.sujeto = sujeto;
         this.numero = numero;
     }
-
-  /**
-   *
-   * @param sujeto
-   * @param numero
-   * @param tipo
-   * @param extension
-   * @param lada
-   * @param horario
-   */
-  public Telefono(Sujeto sujeto, String numero, String tipo, String extension, String lada, String horario) {
+    public Telefono(Sujeto sujeto, String numero, String tipo, String extension, String lada, String horario) {
        this.sujeto = sujeto;
        this.numero = numero;
        this.tipo = tipo;
@@ -51,115 +34,53 @@ public class Telefono  implements java.io.Serializable {
        this.horario = horario;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdTelefono() {
+    public Integer getIdTelefono() {
         return this.idTelefono;
     }
     
-  /**
-   *
-   * @param idTelefono
-   */
-  public void setIdTelefono(Integer idTelefono) {
+    public void setIdTelefono(Integer idTelefono) {
         this.idTelefono = idTelefono;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Sujeto getSujeto() {
+    public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-  /**
-   *
-   * @param sujeto
-   */
-  public void setSujeto(Sujeto sujeto) {
+    public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getNumero() {
+    public String getNumero() {
         return this.numero;
     }
     
-  /**
-   *
-   * @param numero
-   */
-  public void setNumero(String numero) {
+    public void setNumero(String numero) {
         this.numero = numero;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getTipo() {
+    public String getTipo() {
         return this.tipo;
     }
     
-  /**
-   *
-   * @param tipo
-   */
-  public void setTipo(String tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getExtension() {
+    public String getExtension() {
         return this.extension;
     }
     
-  /**
-   *
-   * @param extension
-   */
-  public void setExtension(String extension) {
+    public void setExtension(String extension) {
         this.extension = extension;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getLada() {
+    public String getLada() {
         return this.lada;
     }
     
-  /**
-   *
-   * @param lada
-   */
-  public void setLada(String lada) {
+    public void setLada(String lada) {
         this.lada = lada;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getHorario() {
+    public String getHorario() {
         return this.horario;
     }
     
-  /**
-   *
-   * @param horario
-   */
-  public void setHorario(String horario) {
+    public void setHorario(String horario) {
         this.horario = horario;
     }
 

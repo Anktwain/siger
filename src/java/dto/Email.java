@@ -1,5 +1,6 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
+
 
 
 
@@ -14,95 +15,46 @@ public class Email  implements java.io.Serializable {
      private String direccion;
      private String tipo;
 
-  /**
-   *
-   */
-  public Email() {
+    public Email() {
     }
 
-  /**
-   *
-   * @param sujeto
-   * @param direccion
-   */
-  public Email(Sujeto sujeto, String direccion) {
+	
+    public Email(Sujeto sujeto, String direccion) {
         this.sujeto = sujeto;
         this.direccion = direccion;
     }
-
-  /**
-   *
-   * @param sujeto
-   * @param direccion
-   * @param tipo
-   */
-  public Email(Sujeto sujeto, String direccion, String tipo) {
+    public Email(Sujeto sujeto, String direccion, String tipo) {
        this.sujeto = sujeto;
        this.direccion = direccion;
        this.tipo = tipo;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdEmail() {
+    public Integer getIdEmail() {
         return this.idEmail;
     }
     
-  /**
-   *
-   * @param idEmail
-   */
-  public void setIdEmail(Integer idEmail) {
+    public void setIdEmail(Integer idEmail) {
         this.idEmail = idEmail;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Sujeto getSujeto() {
+    public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-  /**
-   *
-   * @param sujeto
-   */
-  public void setSujeto(Sujeto sujeto) {
+    public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getDireccion() {
+    public String getDireccion() {
         return this.direccion;
     }
     
-  /**
-   *
-   * @param direccion
-   */
-  public void setDireccion(String direccion) {
+    public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getTipo() {
+    public String getTipo() {
         return this.tipo;
     }
     
-  /**
-   *
-   * @param tipo
-   */
-  public void setTipo(String tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 

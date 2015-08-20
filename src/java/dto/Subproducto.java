@@ -1,5 +1,5 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -17,113 +17,54 @@ public class Subproducto  implements java.io.Serializable {
      private String descripcion;
      private Set creditos = new HashSet(0);
 
-  /**
-   *
-   */
-  public Subproducto() {
+    public Subproducto() {
     }
 
-  /**
-   *
-   * @param producto
-   * @param nombre
-   */
-  public Subproducto(Producto producto, String nombre) {
+	
+    public Subproducto(Producto producto, String nombre) {
         this.producto = producto;
         this.nombre = nombre;
     }
-
-  /**
-   *
-   * @param producto
-   * @param nombre
-   * @param descripcion
-   * @param creditos
-   */
-  public Subproducto(Producto producto, String nombre, String descripcion, Set creditos) {
+    public Subproducto(Producto producto, String nombre, String descripcion, Set creditos) {
        this.producto = producto;
        this.nombre = nombre;
        this.descripcion = descripcion;
        this.creditos = creditos;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdSubproducto() {
+    public Integer getIdSubproducto() {
         return this.idSubproducto;
     }
     
-  /**
-   *
-   * @param idSubproducto
-   */
-  public void setIdSubproducto(Integer idSubproducto) {
+    public void setIdSubproducto(Integer idSubproducto) {
         this.idSubproducto = idSubproducto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Producto getProducto() {
+    public Producto getProducto() {
         return this.producto;
     }
     
-  /**
-   *
-   * @param producto
-   */
-  public void setProducto(Producto producto) {
+    public void setProducto(Producto producto) {
         this.producto = producto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getNombre() {
+    public String getNombre() {
         return this.nombre;
     }
     
-  /**
-   *
-   * @param nombre
-   */
-  public void setNombre(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getDescripcion() {
+    public String getDescripcion() {
         return this.descripcion;
     }
     
-  /**
-   *
-   * @param descripcion
-   */
-  public void setDescripcion(String descripcion) {
+    public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getCreditos() {
+    public Set getCreditos() {
         return this.creditos;
     }
     
-  /**
-   *
-   * @param creditos
-   */
-  public void setCreditos(Set creditos) {
+    public void setCreditos(Set creditos) {
         this.creditos = creditos;
     }
 

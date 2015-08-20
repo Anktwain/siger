@@ -1,5 +1,6 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
+
 
 
 
@@ -14,95 +15,46 @@ public class Contacto  implements java.io.Serializable {
      private Sujeto sujeto;
      private String observaciones;
 
-  /**
-   *
-   */
-  public Contacto() {
+    public Contacto() {
     }
 
-  /**
-   *
-   * @param cliente
-   * @param sujeto
-   */
-  public Contacto(Cliente cliente, Sujeto sujeto) {
+	
+    public Contacto(Cliente cliente, Sujeto sujeto) {
         this.cliente = cliente;
         this.sujeto = sujeto;
     }
-
-  /**
-   *
-   * @param cliente
-   * @param sujeto
-   * @param observaciones
-   */
-  public Contacto(Cliente cliente, Sujeto sujeto, String observaciones) {
+    public Contacto(Cliente cliente, Sujeto sujeto, String observaciones) {
        this.cliente = cliente;
        this.sujeto = sujeto;
        this.observaciones = observaciones;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdContacto() {
+    public Integer getIdContacto() {
         return this.idContacto;
     }
     
-  /**
-   *
-   * @param idContacto
-   */
-  public void setIdContacto(Integer idContacto) {
+    public void setIdContacto(Integer idContacto) {
         this.idContacto = idContacto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Cliente getCliente() {
+    public Cliente getCliente() {
         return this.cliente;
     }
     
-  /**
-   *
-   * @param cliente
-   */
-  public void setCliente(Cliente cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Sujeto getSujeto() {
+    public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-  /**
-   *
-   * @param sujeto
-   */
-  public void setSujeto(Sujeto sujeto) {
+    public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getObservaciones() {
+    public String getObservaciones() {
         return this.observaciones;
     }
     
-  /**
-   *
-   * @param observaciones
-   */
-  public void setObservaciones(String observaciones) {
+    public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
     }
 

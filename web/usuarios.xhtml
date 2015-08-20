@@ -34,7 +34,7 @@
               </li>
             </ul>
           </div>
-          <div class="panel-body">
+          <!--<div class="panel-body">-->
             <div class="tab-content">            
 
               <div class="tab-pane fade in active" id="tabConfirmar">
@@ -45,7 +45,9 @@
 
                       <h:form id="formConfirmarGestores">
                         <h:form id="tabla">
-                          <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}" paginator="true" rows="10">
+                          <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" 
+                                       selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}" paginator="true" rows="10"
+                                       emptyMessage="Todos los usuarios est&aacute;n confirmados.">
                             <f:facet name="header"> Usuarios no confirmados </f:facet>
                             <p:column selectionMode="multiple" style="width:30px;text-align:right" />
                             <p:column headerText="Nombre del usuario" style="width:110px;">
@@ -184,7 +186,7 @@
                                 modal="true" showEffect="fade" hideEffect="fade" resizable="true">
                         <p:outputPanel id="usuarioDetail" style="text-align:center;">
 
-                          <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}" >
+                          <p:panelGrid  columns="2" >
 
                             <f:facet name="header">
                               <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}" height="200px"/> 
@@ -204,19 +206,20 @@
 
                             <h:outputText value="Perfil: "/>
                             <p:selectOneMenu onchange="" >
-                              <f:selectItem itemLabel="#{usuariosBean.usuarioSeleccionado.perfil}" itemValue="#{usuariosBean.usuarioSeleccionado.perfil}" noSelectionOption="false" class="text-danger"/>
-                              <f:selectItems value="#{perfilBean.enlistar()}" />
+                              <f:selectItems  value="#{perfilBean.ordenarLista(usuariosBean.usuarioSeleccionado.perfil)}" />
                             </p:selectOneMenu>
 
                             <h:outputText value="Correo: "/>
                             <p:inputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
 
                             <f:facet name="footer">
-                              <div class="text-center">                                                            
-                                <p:selectOneButton onchange="" >
-                                  <f:selectItem id="btn-modificar" itemLabel="Modificar" itemValue="" itemDisabled="true"/>
-                                  <f:selectItem id="btn-eliminar" itemLabel="Eliminar" itemValue="true" />
-                                </p:selectOneButton>
+                              <div class="text-center">
+                                <p:commandButton value="Modificar" id="ajax" update="growl" />
+                                <p:commandButton value="Eliminar" id="nonAjax" ajax="false" />
+                                <!--<p:selectOneButton onchange="" >
+                                                                  <f:selectItem id="btn-modificar" itemLabel="Modificar" itemValue="" itemDisabled="true"/>
+                                                                  <f:selectItem id="btn-eliminar" itemLabel="Eliminar" itemValue="true" />
+                                                                </p:selectOneButton>-->
                               </div>                              
                             </f:facet>
                           </p:panelGrid>
@@ -228,7 +231,7 @@
 
               </div> <!-- #tabBuscar -->
             </div> <!-- .tabContent -->
-          </div> <!-- .panelbody -->
+          <!--</div>  .panelbody -->
         </div><!-- /panel -->
       </div>
     </div><!-- /main-container -->

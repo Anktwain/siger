@@ -1,5 +1,5 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -33,22 +33,11 @@ public class Credito  implements java.io.Serializable {
      private Set gestions = new HashSet(0);
      private Set autos = new HashSet(0);
 
-  /**
-   *
-   */
-  public Credito() {
+    public Credito() {
     }
 
-  /**
-   *
-   * @param cliente
-   * @param empresa
-   * @param gestor
-   * @param producto
-   * @param numeroCredito
-   * @param tipoCredito
-   */
-  public Credito(Cliente cliente, Empresa empresa, Gestor gestor, Producto producto, String numeroCredito, int tipoCredito) {
+	
+    public Credito(Cliente cliente, Empresa empresa, Gestor gestor, Producto producto, String numeroCredito, int tipoCredito) {
         this.cliente = cliente;
         this.empresa = empresa;
         this.gestor = gestor;
@@ -56,30 +45,7 @@ public class Credito  implements java.io.Serializable {
         this.numeroCredito = numeroCredito;
         this.tipoCredito = tipoCredito;
     }
-
-  /**
-   *
-   * @param cliente
-   * @param empresa
-   * @param gestor
-   * @param producto
-   * @param subproducto
-   * @param numeroCredito
-   * @param fechaInicio
-   * @param fechaFin
-   * @param fechaQuebranto
-   * @param monto
-   * @param mensualidad
-   * @param tasaInteres
-   * @param diasMora
-   * @param numeroCuenta
-   * @param tipoCredito
-   * @param lineas
-   * @param creditoRemesas
-   * @param gestions
-   * @param autos
-   */
-  public Credito(Cliente cliente, Empresa empresa, Gestor gestor, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set lineas, Set creditoRemesas, Set gestions, Set autos) {
+    public Credito(Cliente cliente, Empresa empresa, Gestor gestor, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set lineas, Set creditoRemesas, Set gestions, Set autos) {
        this.cliente = cliente;
        this.empresa = empresa;
        this.gestor = gestor;
@@ -101,323 +67,144 @@ public class Credito  implements java.io.Serializable {
        this.autos = autos;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdCredito() {
+    public Integer getIdCredito() {
         return this.idCredito;
     }
     
-  /**
-   *
-   * @param idCredito
-   */
-  public void setIdCredito(Integer idCredito) {
+    public void setIdCredito(Integer idCredito) {
         this.idCredito = idCredito;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Cliente getCliente() {
+    public Cliente getCliente() {
         return this.cliente;
     }
     
-  /**
-   *
-   * @param cliente
-   */
-  public void setCliente(Cliente cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Empresa getEmpresa() {
+    public Empresa getEmpresa() {
         return this.empresa;
     }
     
-  /**
-   *
-   * @param empresa
-   */
-  public void setEmpresa(Empresa empresa) {
+    public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Gestor getGestor() {
+    public Gestor getGestor() {
         return this.gestor;
     }
     
-  /**
-   *
-   * @param gestor
-   */
-  public void setGestor(Gestor gestor) {
+    public void setGestor(Gestor gestor) {
         this.gestor = gestor;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Producto getProducto() {
+    public Producto getProducto() {
         return this.producto;
     }
     
-  /**
-   *
-   * @param producto
-   */
-  public void setProducto(Producto producto) {
+    public void setProducto(Producto producto) {
         this.producto = producto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Subproducto getSubproducto() {
+    public Subproducto getSubproducto() {
         return this.subproducto;
     }
     
-  /**
-   *
-   * @param subproducto
-   */
-  public void setSubproducto(Subproducto subproducto) {
+    public void setSubproducto(Subproducto subproducto) {
         this.subproducto = subproducto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getNumeroCredito() {
+    public String getNumeroCredito() {
         return this.numeroCredito;
     }
     
-  /**
-   *
-   * @param numeroCredito
-   */
-  public void setNumeroCredito(String numeroCredito) {
+    public void setNumeroCredito(String numeroCredito) {
         this.numeroCredito = numeroCredito;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Date getFechaInicio() {
+    public Date getFechaInicio() {
         return this.fechaInicio;
     }
     
-  /**
-   *
-   * @param fechaInicio
-   */
-  public void setFechaInicio(Date fechaInicio) {
+    public void setFechaInicio(Date fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Date getFechaFin() {
+    public Date getFechaFin() {
         return this.fechaFin;
     }
     
-  /**
-   *
-   * @param fechaFin
-   */
-  public void setFechaFin(Date fechaFin) {
+    public void setFechaFin(Date fechaFin) {
         this.fechaFin = fechaFin;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Date getFechaQuebranto() {
+    public Date getFechaQuebranto() {
         return this.fechaQuebranto;
     }
     
-  /**
-   *
-   * @param fechaQuebranto
-   */
-  public void setFechaQuebranto(Date fechaQuebranto) {
+    public void setFechaQuebranto(Date fechaQuebranto) {
         this.fechaQuebranto = fechaQuebranto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Float getMonto() {
+    public Float getMonto() {
         return this.monto;
     }
     
-  /**
-   *
-   * @param monto
-   */
-  public void setMonto(Float monto) {
+    public void setMonto(Float monto) {
         this.monto = monto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Float getMensualidad() {
+    public Float getMensualidad() {
         return this.mensualidad;
     }
     
-  /**
-   *
-   * @param mensualidad
-   */
-  public void setMensualidad(Float mensualidad) {
+    public void setMensualidad(Float mensualidad) {
         this.mensualidad = mensualidad;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Float getTasaInteres() {
+    public Float getTasaInteres() {
         return this.tasaInteres;
     }
     
-  /**
-   *
-   * @param tasaInteres
-   */
-  public void setTasaInteres(Float tasaInteres) {
+    public void setTasaInteres(Float tasaInteres) {
         this.tasaInteres = tasaInteres;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Integer getDiasMora() {
+    public Integer getDiasMora() {
         return this.diasMora;
     }
     
-  /**
-   *
-   * @param diasMora
-   */
-  public void setDiasMora(Integer diasMora) {
+    public void setDiasMora(Integer diasMora) {
         this.diasMora = diasMora;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getNumeroCuenta() {
+    public String getNumeroCuenta() {
         return this.numeroCuenta;
     }
     
-  /**
-   *
-   * @param numeroCuenta
-   */
-  public void setNumeroCuenta(String numeroCuenta) {
+    public void setNumeroCuenta(String numeroCuenta) {
         this.numeroCuenta = numeroCuenta;
     }
-
-  /**
-   *
-   * @return
-   */
-  public int getTipoCredito() {
+    public int getTipoCredito() {
         return this.tipoCredito;
     }
     
-  /**
-   *
-   * @param tipoCredito
-   */
-  public void setTipoCredito(int tipoCredito) {
+    public void setTipoCredito(int tipoCredito) {
         this.tipoCredito = tipoCredito;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getLineas() {
+    public Set getLineas() {
         return this.lineas;
     }
     
-  /**
-   *
-   * @param lineas
-   */
-  public void setLineas(Set lineas) {
+    public void setLineas(Set lineas) {
         this.lineas = lineas;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getCreditoRemesas() {
+    public Set getCreditoRemesas() {
         return this.creditoRemesas;
     }
     
-  /**
-   *
-   * @param creditoRemesas
-   */
-  public void setCreditoRemesas(Set creditoRemesas) {
+    public void setCreditoRemesas(Set creditoRemesas) {
         this.creditoRemesas = creditoRemesas;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getGestions() {
+    public Set getGestions() {
         return this.gestions;
     }
     
-  /**
-   *
-   * @param gestions
-   */
-  public void setGestions(Set gestions) {
+    public void setGestions(Set gestions) {
         this.gestions = gestions;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getAutos() {
+    public Set getAutos() {
         return this.autos;
     }
     
-  /**
-   *
-   * @param autos
-   */
-  public void setAutos(Set autos) {
+    public void setAutos(Set autos) {
         this.autos = autos;
     }
 

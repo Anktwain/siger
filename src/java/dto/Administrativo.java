@@ -1,5 +1,6 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
+
 
 
 
@@ -12,49 +13,25 @@ public class Administrativo  implements java.io.Serializable {
      private Integer idAdministrativo;
      private Usuario usuario;
 
-  /**
-   *
-   */
-  public Administrativo() {
+    public Administrativo() {
     }
 
-  /**
-   *
-   * @param usuario
-   */
-  public Administrativo(Usuario usuario) {
+    public Administrativo(Usuario usuario) {
        this.usuario = usuario;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdAdministrativo() {
+    public Integer getIdAdministrativo() {
         return this.idAdministrativo;
     }
     
-  /**
-   *
-   * @param idAdministrativo
-   */
-  public void setIdAdministrativo(Integer idAdministrativo) {
+    public void setIdAdministrativo(Integer idAdministrativo) {
         this.idAdministrativo = idAdministrativo;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Usuario getUsuario() {
+    public Usuario getUsuario() {
         return this.usuario;
     }
     
-  /**
-   *
-   * @param usuario
-   */
-  public void setUsuario(Usuario usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 

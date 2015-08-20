@@ -1,5 +1,5 @@
 package dto;
-// Generated 7/08/2015 09:51:09 AM by Hibernate Tools 4.3.1
+// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -17,113 +17,54 @@ public class Empresa  implements java.io.Serializable {
      private Set productos = new HashSet(0);
      private Set creditos = new HashSet(0);
 
-  /**
-   *
-   */
-  public Empresa() {
+    public Empresa() {
     }
 
-  /**
-   *
-   * @param sujeto
-   * @param nombreCorto
-   */
-  public Empresa(Sujeto sujeto, String nombreCorto) {
+	
+    public Empresa(Sujeto sujeto, String nombreCorto) {
         this.sujeto = sujeto;
         this.nombreCorto = nombreCorto;
     }
-
-  /**
-   *
-   * @param sujeto
-   * @param nombreCorto
-   * @param productos
-   * @param creditos
-   */
-  public Empresa(Sujeto sujeto, String nombreCorto, Set productos, Set creditos) {
+    public Empresa(Sujeto sujeto, String nombreCorto, Set productos, Set creditos) {
        this.sujeto = sujeto;
        this.nombreCorto = nombreCorto;
        this.productos = productos;
        this.creditos = creditos;
     }
    
-  /**
-   *
-   * @return
-   */
-  public Integer getIdEmpresa() {
+    public Integer getIdEmpresa() {
         return this.idEmpresa;
     }
     
-  /**
-   *
-   * @param idEmpresa
-   */
-  public void setIdEmpresa(Integer idEmpresa) {
+    public void setIdEmpresa(Integer idEmpresa) {
         this.idEmpresa = idEmpresa;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Sujeto getSujeto() {
+    public Sujeto getSujeto() {
         return this.sujeto;
     }
     
-  /**
-   *
-   * @param sujeto
-   */
-  public void setSujeto(Sujeto sujeto) {
+    public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public String getNombreCorto() {
+    public String getNombreCorto() {
         return this.nombreCorto;
     }
     
-  /**
-   *
-   * @param nombreCorto
-   */
-  public void setNombreCorto(String nombreCorto) {
+    public void setNombreCorto(String nombreCorto) {
         this.nombreCorto = nombreCorto;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getProductos() {
+    public Set getProductos() {
         return this.productos;
     }
     
-  /**
-   *
-   * @param productos
-   */
-  public void setProductos(Set productos) {
+    public void setProductos(Set productos) {
         this.productos = productos;
     }
-
-  /**
-   *
-   * @return
-   */
-  public Set getCreditos() {
+    public Set getCreditos() {
         return this.creditos;
     }
     
-  /**
-   *
-   * @param creditos
-   */
-  public void setCreditos(Set creditos) {
+    public void setCreditos(Set creditos) {
         this.creditos = creditos;
     }
 
