@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
 import util.constantes.Sujetos;
+import util.log.Logs;
 
 /**
  * La clase {@code ClienteIMPL} permite ...
@@ -26,27 +27,27 @@ public class ClienteIMPL implements ClienteDAO {
      * @return
      */
     @Override
-    public boolean insertar(Cliente cliente) {
+    public Cliente insertar(Cliente cliente) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-        boolean ok;
 
         try {
             sesion.save(cliente);
             tx.commit();
-            ok = true;
-            //log.info("Se insertó un nuevo usuaario");
+            Logs.log.info("Se insertó un nuevo Cliente: id = " + cliente.getIdCliente()
+            + " asociado al Sujeto: " + cliente.getSujeto().getIdSujeto());
         } catch (HibernateException he) {
-            ok = false;
+            cliente = null;
             if (tx != null) {
                 tx.rollback();
             }
-            he.printStackTrace();
-            //         log.error(he.getMessage());
+            Logs.log.error("No se pudo insertar Cliente");
+            Logs.log.error(he.getMessage());
         } finally {
             cerrar(sesion);
         }
-        return ok;
+        
+        return cliente;
     }
 
     /**
@@ -133,7 +134,7 @@ public class ClienteIMPL implements ClienteDAO {
                     + " where s.eliminado != " + Sujetos.ELIMINADO).addEntity(Cliente.class).list();
         } catch (HibernateException he) {
             listaClientes = null;
-            he.printStackTrace();
+            Logs.log.error(he.getMessage());
         } finally {
             cerrar(sesion);
         }

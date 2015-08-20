@@ -20,7 +20,7 @@ public interface ClienteDAO {
      * @param cliente
      * @return
      */
-    public boolean insertar(Cliente cliente);
+    public Cliente insertar(Cliente cliente);
 
     /**
      *

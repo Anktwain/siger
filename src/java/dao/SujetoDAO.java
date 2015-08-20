@@ -19,7 +19,7 @@ public interface SujetoDAO {
      * @param sujeto
      * @return
      */
-    public int insertar(Sujeto sujeto);
+    public Sujeto insertar(Sujeto sujeto);
 
     /**
      *
