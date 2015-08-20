@@ -68,8 +68,10 @@ public class Municipio  implements java.io.Serializable {
         this.colonias = colonias;
     }
 
-
-
+    @Override
+    public String toString(){
+        return nombre;
+    }
 
 }
 

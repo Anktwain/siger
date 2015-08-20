@@ -1,20 +1,30 @@
 package beans;
 
+import dao.ColoniaDAO;
 import dao.EmpresaDAO;
+import dao.EstadoRepublicaDAO;
+import dao.MunicipioDAO;
 import dao.ProductoDAO;
 import dao.SubproductoDAO;
 import dao.SujetoDAO;
 import dto.Empresa;
+import dto.EstadoRepublica;
+import dto.Municipio;
+import dto.Colonia;
 import dto.Producto;
 import dto.Subproducto;
 import dto.Sujeto;
 import impl.EmpresaIMPL;
+import impl.EstadoRepublicaIMPL;
+import impl.MunicipioIMPL;
 import impl.ProductoIMPL;
 import impl.SubproductoIMPL;
 import impl.SujetoIMPL;
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
@@ -33,6 +43,7 @@ import util.constantes.Sujetos;
  * @author Eduardo
  * @since SigerWeb2.0
  */
+
 @ManagedBean(name = "empresasBean")
 @SessionScoped
 public class EmpresasBean implements Serializable {
@@ -68,6 +79,17 @@ public class EmpresasBean implements Serializable {
     private int idNuevoSujeto;
     private Empresa nuevaEmpresa;
     private String nuevoCorto;
+    private String nuevoNumero;
+    private String nuevaLada;
+    private String nuevoTipoTel;
+    private String nuevoHorarioAtencionTel;
+    private String nuevoCorreo;
+    private String nuevaCalle;
+    private String nuevoExterior;
+    private String nuevoInterior;
+    private int idEstado;
+    private int idMunicipio;
+    private int idColonia;
     private boolean okNuevaEmpresa;
     private boolean okEditarEmpresa;
     private boolean okEditarSujeto;
@@ -83,6 +105,14 @@ public class EmpresasBean implements Serializable {
     private Producto seleccionadoCombobox;
     private boolean okNuevoSubproducto;
     private boolean okEditarSubproducto;
+    private List<EstadoRepublica> conjuntoEstados;
+    private List<Municipio> conjuntoMunicipios;
+    private List<Colonia> conjuntoColonias;
+    private EstadoRepublicaDAO estadoDao;
+    private MunicipioDAO municipioDao;
+    private ColoniaDAO coloniaDao;
+    private EstadoRepublica estado;
+    private Municipio municipio;
     
     /**
      *
@@ -100,21 +130,16 @@ public class EmpresasBean implements Serializable {
         nuevaEmpresa = new Empresa();
         nuevoProducto = new Producto();
         nuevoSubproducto = new Subproducto();
+        estadoDao = new EstadoRepublicaIMPL();
+        conjuntoEstados = estadoDao.buscarTodo();
+        municipioDao = new MunicipioIMPL();
+        conjuntoMunicipios = municipioDao.buscarTodo();
     }
-
-    public boolean validarRfc(String nuevo){
-        boolean validacion = false;
-        Pattern patron = Pattern.compile(Patrones.PATRON_RFC);
-        nuevo = nuevoRfc;
-        Matcher coincidencia = patron.matcher(nuevoRfc);
-        validacion = coincidencia.matches();
-            if(!validacion){
-                FacesContext actual = FacesContext.getCurrentInstance();
-                actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "El RFC especificado no es valido, intente nuevamente"));
-            }
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println(validacion);
-        return validacion;
+    
+    public boolean validarRfc(String rfc){
+        Pattern patron = Pattern.compile(Patrones.PATRON_RFC_MORAL);
+        Matcher matcher = patron.matcher(rfc);
+        return matcher.matches();
     }
     
     public void guardarEmpresa() {
@@ -144,27 +169,31 @@ public class EmpresasBean implements Serializable {
     
     public void crearEmpresa(){
         nuevoRfc = nuevoRfc.toUpperCase();
+        boolean okRfc = validarRfc(nuevoRfc);
         nuevoSujeto.setNombreRazonSocial(nuevaRazonSocial);
         nuevoSujeto.setRfc(nuevoRfc);
         nuevoSujeto.setEliminado(Sujetos.ACTIVO);
         idNuevoSujeto = sujetoDao.insertar(nuevoSujeto);
         nuevaEmpresa.setNombreCorto(nuevoCorto);
         nuevaEmpresa.setSujeto(nuevoSujeto);
-        okNuevaEmpresa = empresaDao.insertar(nuevaEmpresa);
         FacesContext actual = FacesContext.getCurrentInstance();
-        if(okNuevaEmpresa){
-            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO,"Insercion exitosa", "Se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
-            RequestContext.getCurrentInstance().update("formNuevaEmpresa");
-            RequestContext.getCurrentInstance().update("formEditarEmpresa");
+        if(okRfc){
+            okNuevaEmpresa = empresaDao.insertar(nuevaEmpresa);
+            if(okNuevaEmpresa){
+                actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO,"Insercion exitosa", "Se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
+                RequestContext.getCurrentInstance().update("formNuevaEmpresa");
+                RequestContext.getCurrentInstance().update("formEditarEmpresa");
+            }
+            else{
+                actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "No se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
+            }
         }
         else{
-            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "No se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
+            actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "El RFC proporcionado no es valido, favor de verificarlo"));
         }
     }
 
     public void editarEmpresa() {
-        System.out.println("Se edito a la empresa " + razonSocial);
-        /*
         sujetoSeleccionado.setNombreRazonSocial(razonSocial);
         System.out.println(razonSocial);
         sujetoSeleccionado.setRfc(auxRfc);
@@ -180,7 +209,6 @@ public class EmpresasBean implements Serializable {
         else{
             actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "No se guardaron los cambios de la empresa " + corto));
         }
-        */
     }
 
     public void eliminarEmpresa() {
@@ -241,6 +269,28 @@ public class EmpresasBean implements Serializable {
         System.out.println("************ CONSOLA SIGERWEB ****************");
         System.out.println("Se quiere editar el subproducto " + subprod);
         RequestContext.getCurrentInstance().update("editarSubproductos");
+    }
+    
+    public void cargaMunicipios() {
+        conjuntoMunicipios.clear();
+        municipioDao = new MunicipioIMPL();
+        conjuntoMunicipios = municipioDao.buscarMunicipiosPorEstado(9);
+        int i=0;
+        for(i=0; i<(conjuntoMunicipios.size()); i++){
+            System.out.println(conjuntoMunicipios.get(i).getNombre());
+        }
+        RequestContext.getCurrentInstance().update("formCombos");
+        /*
+        if(estado !=null && !estado.equals("")){
+            System.out.println(estado.getNombre());
+            conjuntoMunicipios = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
+            RequestContext.getCurrentInstance().update("formCombos");
+        }
+        else{
+            System.out.println("************ CONSOLA SIGERWEB ****************");
+            System.out.println("No se pudio cambiar el municipio");
+        }
+        */
     }
 
     /**
@@ -710,4 +760,156 @@ public class EmpresasBean implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+    
+    public String getNuevoNumero() {
+        return nuevoNumero;
+    }
+
+    public void setNuevoNumero(String nuevoNumero) {
+        this.nuevoNumero = nuevoNumero;
+    }
+
+    public String getNuevaLada() {
+        return nuevaLada;
+    }
+
+    public void setNuevaLada(String nuevaLada) {
+        this.nuevaLada = nuevaLada;
+    }
+
+    public String getNuevoTipoTel() {
+        return nuevoTipoTel;
+    }
+
+    public void setNuevoTipoTel(String nuevoTipoTel) {
+        this.nuevoTipoTel = nuevoTipoTel;
+    }
+
+    public String getNuevoHorarioAtencionTel() {
+        return nuevoHorarioAtencionTel;
+    }
+
+    public void setNuevoHorarioAtencionTel(String nuevoHorarioAtencionTel) {
+        this.nuevoHorarioAtencionTel = nuevoHorarioAtencionTel;
+    }
+
+    public String getNuevaCalle() {
+        return nuevaCalle;
+    }
+
+    public void setNuevaCalle(String nuevacalle) {
+        this.nuevaCalle = nuevaCalle;
+    }
+
+    public String getNuevoExterior() {
+        return nuevoExterior;
+    }
+
+    public void setNuevoExterior(String nuevoExterior) {
+        this.nuevoExterior = nuevoExterior;
+    }
+
+    public String getNuevoInterior() {
+        return nuevoInterior;
+    }
+
+    public void setNuevoInterior(String nuevoInterior) {
+        this.nuevoInterior = nuevoInterior;
+    }
+
+    public int getIdEstado() {
+        return idEstado;
+    }
+
+    public void setIdEstado(int idEstado) {
+        this.idEstado = idEstado;
+    }
+
+    public int getIdMunicipio() {
+        return idMunicipio;
+    }
+
+    public void setIdMunicipio(int idMunicipio) {
+        this.idMunicipio = idMunicipio;
+    }
+
+    public int getIdColonia() {
+        return idColonia;
+    }
+
+    public void setIdColonia(int idColonia) {
+        this.idColonia = idColonia;
+    }
+    
+    public String getNuevoCorreo() {
+        return nuevoCorreo;
+    }
+
+    public void setNuevoCorreo(String nuevoCorreo) {
+        this.nuevoCorreo = nuevoCorreo;
+    }
+    
+    public List<EstadoRepublica> getConjuntoEstados() {
+        return conjuntoEstados;
+    }
+
+    public void setConjuntoEstados(List<EstadoRepublica> conjuntoEstados) {
+        this.conjuntoEstados = conjuntoEstados;
+    }
+
+    public List<Municipio> getConjuntoMunicipios() {
+        return conjuntoMunicipios;
+    }
+
+    public void setConjuntoMunicipios(List<Municipio> conjuntoMunicipios) {
+        this.conjuntoMunicipios = conjuntoMunicipios;
+    }
+
+    public List<Colonia> getConjuntoColonias() {
+        return conjuntoColonias;
+    }
+
+    public void setConjuntoColonias(List<Colonia> conjuntoColonias) {
+        this.conjuntoColonias = conjuntoColonias;
+    }
+
+    public EstadoRepublicaDAO getEstadoDao() {
+        return estadoDao;
+    }
+
+    public void setEstadoDao(EstadoRepublicaDAO estadoDao) {
+        this.estadoDao = estadoDao;
+    }
+
+    public MunicipioDAO getMunicipioDao() {
+        return municipioDao;
+    }
+
+    public void setMunicipioDao(MunicipioDAO municipioDao) {
+        this.municipioDao = municipioDao;
+    }
+
+    public ColoniaDAO getColoniaDao() {
+        return coloniaDao;
+    }
+
+    public void setColoniaDao(ColoniaDAO coloniaDao) {
+        this.coloniaDao = coloniaDao;
+    }
+    public EstadoRepublica getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoRepublica estado) {
+        this.estado = estado;
+    }
+    
+    public Municipio getMunicipio() {
+        return municipio;
+    }
+
+    public void setMunicipio(Municipio municipio) {
+        this.municipio = municipio;
+    }
+
 }

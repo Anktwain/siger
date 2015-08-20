@@ -58,9 +58,10 @@ public class EstadoRepublica  implements java.io.Serializable {
         this.municipios = municipios;
     }
 
-
-
-
+    @Override
+    public String toString(){
+        return nombre;
+    }
 }
 
 
