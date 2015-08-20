@@ -1,7 +1,8 @@
 package dto;
-// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
+// Generated 19/08/2015 01:24:43 PM by Hibernate Tools 4.3.1
 
 
+import dto.Producto;
 import java.util.HashSet;
 import java.util.Set;
 

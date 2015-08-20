@@ -89,10 +89,10 @@ public class DireccionBean implements Serializable {
    */
   public void agregar(Sujeto sujeto) {
     direccion.setCalle(calle);
-    direccion.setColonia(colonia);
-    direccion.setMunicipio(municipio);
-    direccion.setEstado(estado);
-    direccion.setCodigoPostal(cp);
+//    direccion.setColonia(colonia);
+//    direccion.setMunicipio(municipio);
+//    direccion.setEstado(estado);
+//    direccion.setCodigoPostal(cp);
     direccion.setTipo(tipo);
     direccion.setSujeto(sujeto);
 
