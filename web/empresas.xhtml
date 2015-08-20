@@ -105,7 +105,7 @@
                                                 <p:tooltip for="correo" value="Indique el algun correo electronico de la empresa" />
                                             </p:overlayPanel>
                                         </p:commandButton>
-                                        <p:commandButton id="btnDirsEmpresa" icon="fa fa-map-marker" type="button" actionListener="#{empresasBean.cargaEstados()}">
+                                        <p:commandButton id="btnDirsEmpresa" icon="fa fa-map-marker" actionListener="#{empresasBean.cargaEstados()}">
                                         <p:tooltip for="btnDirsEmpresa" value="Registre direcciones fisicas para esta empresa" />
                                             <p:overlayPanel id="pnlDirsEmpresa" for="btnDirsEmpresa" hideEffect="size" dynamic="true" style="width: 450px">
                                                 Calle:
@@ -124,31 +124,26 @@
                                                 <p:inputText id="int" value="#{empresasBean.nuevoInterior}" size="5" />
                                                 <p:tooltip for="int" value="Indique el numero interior, edificion, local, etc. de la empresa" />
                                                 <br />
-                                                Estado:
-                                                &nbsp;
-                                                <p:selectOneMenu id="comboboxEstados" value="#{empresasBean.estado}" style="width:150px">
-                                                    <p:ajax listener="#{empresasBean.cambioEstado}" update="comboboxMunicipios" />
-                                                    <f:selectItem itemLabel="Seleccione un estado" itemValue="" noSelectionOption="false" />
-                                                    <f:selectItems value="#{empresasBean.listaEstados}" />
-                                                </p:selectOneMenu>
-                                                <p:tooltip for="comboboxEstados" value="Indique en que estado de la republica se ubica la empresa" />
                                                 <br />
-                                                Municipio:
-                                                &nbsp;
-                                                <p:selectOneMenu id="comboboxMunicipios" value="#{empresasBean.municipio}" style="width:250px">
-                                                    <p:ajax listener="#{empresasBean.cambioMunicipio}" update="comboboxColonias" />
-                                                    <f:selectItem itemLabel="Seleccione un municipio" itemValue="" noSelectionOption="false" />
-                                                    <f:selectItems value="#{dropdownView.listaMunicipios}" />
-                                                </p:selectOneMenu>
-                                                <p:tooltip for="comboboxEstados" value="Indique el municipio en el que se ubica la empresa" />
-                                                <br />
-                                                Localidad:
-                                                &nbsp;
-                                                <p:selectOneMenu id="comboboxColonias" value="#{empresasBean.colonia}" style="width:250px">
-                                                    <f:selectItem itemLabel="Seleccione una localidad" itemValue="" noSelectionOption="false" />
-                                                    <f:selectItems value="#{dropdownView.listaColonias}" />
-                                                </p:selectOneMenu>
-                                                <p:tooltip for="comboboxColonias" value="Indique la colonia en la que se ubica la empresa" />
+                                                <h:form id="formCombos">
+                                                    Estado:
+                                                    &nbsp;
+                                                    <p:selectOneMenu id="comboboxEstados" value="#{empresasBean.estado}" style="width:250px">
+                                                        <p:ajax listener="#{empresasBean.cambioEstado()}" update="comboboxMunicipios" />
+                                                        <f:selectItem itemLabel="Seleccione un estado" itemValue="" noSelectionOption="false" />
+                                                        <f:selectItems value="#{empresasBean.conjuntoEstados}" />
+                                                    </p:selectOneMenu>
+                                                    <p:tooltip for="comboboxEstados" value="Indique en que estado de la republica se ubica la empresa" />
+                                                    <br />
+                                                    <br />
+                                                    Municipio:
+                                                    &nbsp;
+                                                    <p:selectOneMenu id="comboboxMunicipios" value="#{empresasBean.municipio}" style="width:250px">
+                                                        <f:selectItem itemLabel="Seleccione un municipio" itemValue="" noSelectionOption="false" />
+                                                        <f:selectItems value="#{dropdownView.conjuntoMunicipios}" />
+                                                    </p:selectOneMenu>
+                                                    <p:tooltip for="comboboxMunicipios" value="Indique el municipio en el que se ubica la empresa" />
+                                                </h:form>
                                             </p:overlayPanel>
                                         </p:commandButton>
                                         <p:commandButton id="btnContactosEmpresa" icon="fa fa-users" type="button">
@@ -233,7 +228,7 @@
                                     <p:inputText value="#{empresasBean.corto}" size="25" required="true" requiredMessage="Debe ingresar un nombre corto de empresa" />
                                     <br />
                                     <br />
-                                    <p:commandButton value="Aceptar" oncomplete="#{empresasBean.editarEmpresa()}" update="growl" />
+                                    <p:commandButton value="Aceptar" actionListener="#{empresasBean.editarEmpresa()}" update="growl" />
                                 </div>
                                 <div class="tab-pane fade" id="editaProductos">
                                     <!--

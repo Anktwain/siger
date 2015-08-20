@@ -1,14 +1,21 @@
 package beans;
 
+import dao.ColoniaDAO;
 import dao.EmpresaDAO;
+import dao.EstadoRepublicaDAO;
+import dao.MunicipioDAO;
 import dao.ProductoDAO;
 import dao.SubproductoDAO;
 import dao.SujetoDAO;
 import dto.Empresa;
+import dto.EstadoRepublica;
+import dto.Municipio;
+import dto.Colonia;
 import dto.Producto;
 import dto.Subproducto;
 import dto.Sujeto;
 import impl.EmpresaIMPL;
+import impl.EstadoRepublicaIMPL;
 import impl.ProductoIMPL;
 import impl.SubproductoIMPL;
 import impl.SujetoIMPL;
@@ -99,6 +106,15 @@ public class EmpresasBean implements Serializable {
     private Map<String,String> listaEstados;
     private Map<String,String> listaMunicipios;
     private Map<String,String> listaColonias;
+    private List<EstadoRepublica> conjuntoEstados;
+    private List<Municipio> conjuntoMunicipios;
+    private List<Colonia> conjuntoColonias;
+    private EstadoRepublicaDAO estadoDao;
+    private MunicipioDAO municipioDao;
+    private ColoniaDAO coloniaDao;
+    private EstadoRepublica estado;
+    private Municipio municipio;
+    private Map<String,Map<String,String>> data = new HashMap<String, Map<String,String>>();
     
     /**
      *
@@ -116,6 +132,8 @@ public class EmpresasBean implements Serializable {
         nuevaEmpresa = new Empresa();
         nuevoProducto = new Producto();
         nuevoSubproducto = new Subproducto();
+        estadoDao = new EstadoRepublicaIMPL();
+        conjuntoEstados = estadoDao.buscarTodo();
     }
 
     public boolean validarRfc(String rfc){
@@ -174,15 +192,8 @@ public class EmpresasBean implements Serializable {
             actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "El RFC proporcionado no es valido, favor de verificarlo"));
         }
     }
-    
-    public void cargaEstados(){
-        // SE REALIZARA UN "MAP" DE LOS ESTADOS
-        listaEstados = new HashMap<String, String>();
-    }
 
     public void editarEmpresa() {
-        System.out.println("Se edito a la empresa " + razonSocial);
-        /*
         sujetoSeleccionado.setNombreRazonSocial(razonSocial);
         System.out.println(razonSocial);
         sujetoSeleccionado.setRfc(auxRfc);
@@ -198,7 +209,6 @@ public class EmpresasBean implements Serializable {
         else{
             actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL,"Error", "No se guardaron los cambios de la empresa " + corto));
         }
-        */
     }
 
     public void eliminarEmpresa() {
@@ -259,6 +269,22 @@ public class EmpresasBean implements Serializable {
         System.out.println("************ CONSOLA SIGERWEB ****************");
         System.out.println("Se quiere editar el subproducto " + subprod);
         RequestContext.getCurrentInstance().update("editarSubproductos");
+    }
+    
+    public void cambioEstado() {
+        System.out.println("************ CONSOLA SIGERWEB ****************");
+        System.out.println("Cambio el estado en el combobox");
+        /*
+        if(estado !=null && !estado.equals("")){
+            System.out.println(estado.getNombre());
+            conjuntoMunicipios = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
+            RequestContext.getCurrentInstance().update("formCombos");
+        }
+        else{
+            System.out.println("************ CONSOLA SIGERWEB ****************");
+            System.out.println("No se pudio cambiar el municipio");
+        }
+        */
     }
 
     /**
@@ -730,91 +756,186 @@ public class EmpresasBean implements Serializable {
     }
     
     public String getNuevoNumero() {
-      return nuevoNumero;
+        return nuevoNumero;
     }
 
     public void setNuevoNumero(String nuevoNumero) {
-      this.nuevoNumero = nuevoNumero;
+        this.nuevoNumero = nuevoNumero;
     }
 
     public String getNuevaLada() {
-      return nuevaLada;
+        return nuevaLada;
     }
 
     public void setNuevaLada(String nuevaLada) {
-      this.nuevaLada = nuevaLada;
+        this.nuevaLada = nuevaLada;
     }
 
     public String getNuevoTipoTel() {
-      return nuevoTipoTel;
+        return nuevoTipoTel;
     }
 
     public void setNuevoTipoTel(String nuevoTipoTel) {
-      this.nuevoTipoTel = nuevoTipoTel;
+        this.nuevoTipoTel = nuevoTipoTel;
     }
 
     public String getNuevoHorarioAtencionTel() {
-      return nuevoHorarioAtencionTel;
+        return nuevoHorarioAtencionTel;
     }
 
     public void setNuevoHorarioAtencionTel(String nuevoHorarioAtencionTel) {
-      this.nuevoHorarioAtencionTel = nuevoHorarioAtencionTel;
+        this.nuevoHorarioAtencionTel = nuevoHorarioAtencionTel;
     }
 
     public String getNuevaCalle() {
-      return nuevaCalle;
+        return nuevaCalle;
     }
 
     public void setNuevaCalle(String nuevacalle) {
-      this.nuevaCalle = nuevaCalle;
+        this.nuevaCalle = nuevaCalle;
     }
 
     public String getNuevoExterior() {
-      return nuevoExterior;
+        return nuevoExterior;
     }
 
     public void setNuevoExterior(String nuevoExterior) {
-      this.nuevoExterior = nuevoExterior;
+        this.nuevoExterior = nuevoExterior;
     }
 
     public String getNuevoInterior() {
-      return nuevoInterior;
+        return nuevoInterior;
     }
 
     public void setNuevoInterior(String nuevoInterior) {
-      this.nuevoInterior = nuevoInterior;
+        this.nuevoInterior = nuevoInterior;
     }
 
     public int getIdEstado() {
-      return idEstado;
+        return idEstado;
     }
 
     public void setIdEstado(int idEstado) {
-      this.idEstado = idEstado;
+        this.idEstado = idEstado;
     }
 
     public int getIdMunicipio() {
-      return idMunicipio;
+        return idMunicipio;
     }
 
     public void setIdMunicipio(int idMunicipio) {
-      this.idMunicipio = idMunicipio;
+        this.idMunicipio = idMunicipio;
     }
 
     public int getIdColonia() {
-      return idColonia;
+        return idColonia;
     }
 
     public void setIdColonia(int idColonia) {
-      this.idColonia = idColonia;
+        this.idColonia = idColonia;
     }
     
     public String getNuevoCorreo() {
-      return nuevoCorreo;
+        return nuevoCorreo;
     }
 
     public void setNuevoCorreo(String nuevoCorreo) {
-      this.nuevoCorreo = nuevoCorreo;
+        this.nuevoCorreo = nuevoCorreo;
+    }
+    
+    public Map<String, String> getListaEstados() {
+        return listaEstados;
+    }
+
+    public void setListaEstados(Map<String, String> listaEstados) {
+        this.listaEstados = listaEstados;
+    }
+
+    public Map<String, String> getListaMunicipios() {
+        return listaMunicipios;
+    }
+
+    public void setListaMunicipios(Map<String, String> listaMunicipios) {
+        this.listaMunicipios = listaMunicipios;
+    }
+
+    public Map<String, String> getListaColonias() {
+        return listaColonias;
+    }
+
+    public void setListaColonias(Map<String, String> listaColonias) {
+        this.listaColonias = listaColonias;
+    }
+
+    public List<EstadoRepublica> getConjuntoEstados() {
+        return conjuntoEstados;
+    }
+
+    public void setConjuntoEstados(List<EstadoRepublica> conjuntoEstados) {
+        this.conjuntoEstados = conjuntoEstados;
+    }
+
+    public List<Municipio> getConjuntoMunicipios() {
+        return conjuntoMunicipios;
+    }
+
+    public void setConjuntoMunicipios(List<Municipio> conjuntoMunicipios) {
+        this.conjuntoMunicipios = conjuntoMunicipios;
+    }
+
+    public List<Colonia> getConjuntoColonias() {
+        return conjuntoColonias;
+    }
+
+    public void setConjuntoColonias(List<Colonia> conjuntoColonias) {
+        this.conjuntoColonias = conjuntoColonias;
+    }
+
+    public EstadoRepublicaDAO getEstadoDao() {
+        return estadoDao;
+    }
+
+    public void setEstadoDao(EstadoRepublicaDAO estadoDao) {
+        this.estadoDao = estadoDao;
+    }
+
+    public MunicipioDAO getMunicipioDao() {
+        return municipioDao;
+    }
+
+    public void setMunicipioDao(MunicipioDAO municipioDao) {
+        this.municipioDao = municipioDao;
+    }
+
+    public ColoniaDAO getColoniaDao() {
+        return coloniaDao;
+    }
+
+    public void setColoniaDao(ColoniaDAO coloniaDao) {
+        this.coloniaDao = coloniaDao;
+    }
+    public EstadoRepublica getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoRepublica estado) {
+        this.estado = estado;
+    }
+    
+    public Map<String, Map<String, String>> getData() {
+        return data;
+    }
+
+    public void setData(Map<String, Map<String, String>> data) {
+        this.data = data;
+    }
+    
+    public Municipio getMunicipio() {
+        return municipio;
+    }
+
+    public void setMunicipio(Municipio municipio) {
+        this.municipio = municipio;
     }
 
 }
