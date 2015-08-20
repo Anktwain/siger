@@ -2,26 +2,26 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
 <hibernate-reverse-engineering>
   <schema-selection match-catalog="sigerbd"/>
-  <table-filter match-name="direccion"/>
-  <table-filter match-name="gestor"/>
-  <table-filter match-name="contacto"/>
-  <table-filter match-name="email"/>
-  <table-filter match-name="colonia"/>
-  <table-filter match-name="fac"/>
   <table-filter match-name="estado_republica"/>
-  <table-filter match-name="empresa"/>
-  <table-filter match-name="usuario"/>
-  <table-filter match-name="linea"/>
-  <table-filter match-name="credito_remesa"/>
   <table-filter match-name="sujeto"/>
   <table-filter match-name="municipio"/>
-  <table-filter match-name="remesa"/>
-  <table-filter match-name="gestion"/>
   <table-filter match-name="credito"/>
-  <table-filter match-name="producto"/>
+  <table-filter match-name="email"/>
+  <table-filter match-name="remesa"/>
+  <table-filter match-name="credito_remesa"/>
   <table-filter match-name="administrativo"/>
-  <table-filter match-name="auto"/>
-  <table-filter match-name="subproducto"/>
-  <table-filter match-name="cliente"/>
+  <table-filter match-name="gestion"/>
   <table-filter match-name="telefono"/>
+  <table-filter match-name="colonia"/>
+  <table-filter match-name="linea"/>
+  <table-filter match-name="direccion"/>
+  <table-filter match-name="empresa"/>
+  <table-filter match-name="cliente"/>
+  <table-filter match-name="producto"/>
+  <table-filter match-name="fac"/>
+  <table-filter match-name="usuario"/>
+  <table-filter match-name="subproducto"/>
+  <table-filter match-name="gestor"/>
+  <table-filter match-name="contacto"/>
+  <table-filter match-name="auto"/>
 </hibernate-reverse-engineering>
