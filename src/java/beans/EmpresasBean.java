@@ -16,6 +16,7 @@ import dto.Subproducto;
 import dto.Sujeto;
 import impl.EmpresaIMPL;
 import impl.EstadoRepublicaIMPL;
+import impl.MunicipioIMPL;
 import impl.ProductoIMPL;
 import impl.SubproductoIMPL;
 import impl.SujetoIMPL;
@@ -42,6 +43,7 @@ import util.constantes.Sujetos;
  * @author Eduardo
  * @since SigerWeb2.0
  */
+
 @ManagedBean(name = "empresasBean")
 @SessionScoped
 public class EmpresasBean implements Serializable {
@@ -103,9 +105,6 @@ public class EmpresasBean implements Serializable {
     private Producto seleccionadoCombobox;
     private boolean okNuevoSubproducto;
     private boolean okEditarSubproducto;
-    private Map<String,String> listaEstados;
-    private Map<String,String> listaMunicipios;
-    private Map<String,String> listaColonias;
     private List<EstadoRepublica> conjuntoEstados;
     private List<Municipio> conjuntoMunicipios;
     private List<Colonia> conjuntoColonias;
@@ -114,7 +113,6 @@ public class EmpresasBean implements Serializable {
     private ColoniaDAO coloniaDao;
     private EstadoRepublica estado;
     private Municipio municipio;
-    private Map<String,Map<String,String>> data = new HashMap<String, Map<String,String>>();
     
     /**
      *
@@ -134,8 +132,10 @@ public class EmpresasBean implements Serializable {
         nuevoSubproducto = new Subproducto();
         estadoDao = new EstadoRepublicaIMPL();
         conjuntoEstados = estadoDao.buscarTodo();
+        municipioDao = new MunicipioIMPL();
+        conjuntoMunicipios = municipioDao.buscarTodo();
     }
-
+    
     public boolean validarRfc(String rfc){
         Pattern patron = Pattern.compile(Patrones.PATRON_RFC_MORAL);
         Matcher matcher = patron.matcher(rfc);
@@ -271,9 +271,15 @@ public class EmpresasBean implements Serializable {
         RequestContext.getCurrentInstance().update("editarSubproductos");
     }
     
-    public void cambioEstado() {
-        System.out.println("************ CONSOLA SIGERWEB ****************");
-        System.out.println("Cambio el estado en el combobox");
+    public void cargaMunicipios() {
+        conjuntoMunicipios.clear();
+        municipioDao = new MunicipioIMPL();
+        conjuntoMunicipios = municipioDao.buscarMunicipiosPorEstado(9);
+        int i=0;
+        for(i=0; i<(conjuntoMunicipios.size()); i++){
+            System.out.println(conjuntoMunicipios.get(i).getNombre());
+        }
+        RequestContext.getCurrentInstance().update("formCombos");
         /*
         if(estado !=null && !estado.equals("")){
             System.out.println(estado.getNombre());
@@ -843,30 +849,6 @@ public class EmpresasBean implements Serializable {
         this.nuevoCorreo = nuevoCorreo;
     }
     
-    public Map<String, String> getListaEstados() {
-        return listaEstados;
-    }
-
-    public void setListaEstados(Map<String, String> listaEstados) {
-        this.listaEstados = listaEstados;
-    }
-
-    public Map<String, String> getListaMunicipios() {
-        return listaMunicipios;
-    }
-
-    public void setListaMunicipios(Map<String, String> listaMunicipios) {
-        this.listaMunicipios = listaMunicipios;
-    }
-
-    public Map<String, String> getListaColonias() {
-        return listaColonias;
-    }
-
-    public void setListaColonias(Map<String, String> listaColonias) {
-        this.listaColonias = listaColonias;
-    }
-
     public List<EstadoRepublica> getConjuntoEstados() {
         return conjuntoEstados;
     }
@@ -920,14 +902,6 @@ public class EmpresasBean implements Serializable {
 
     public void setEstado(EstadoRepublica estado) {
         this.estado = estado;
-    }
-    
-    public Map<String, Map<String, String>> getData() {
-        return data;
-    }
-
-    public void setData(Map<String, Map<String, String>> data) {
-        this.data = data;
     }
     
     public Municipio getMunicipio() {

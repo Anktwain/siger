@@ -122,15 +122,15 @@
                                                 Numero Interior:
                                                 &nbsp;
                                                 <p:inputText id="int" value="#{empresasBean.nuevoInterior}" size="5" />
-                                                <p:tooltip for="int" value="Indique el numero interior, edificion, local, etc. de la empresa" />
+                                                <p:tooltip for="int" value="Indique el numero interior, edificio, local, etc. de la empresa" />
                                                 <br />
                                                 <br />
                                                 <h:form id="formCombos">
                                                     Estado:
                                                     &nbsp;
                                                     <p:selectOneMenu id="comboboxEstados" value="#{empresasBean.estado}" style="width:250px">
-                                                        <p:ajax listener="#{empresasBean.cambioEstado()}" update="comboboxMunicipios" />
-                                                        <f:selectItem itemLabel="Seleccione un estado" itemValue="" noSelectionOption="false" />
+                                                        <p:ajax listener="#{empresasBean.cargaMunicipios()}" update="comboboxColonias" />
+                                                        <f:selectItem itemLabel="Seleccione un estado" itemValue="" />
                                                         <f:selectItems value="#{empresasBean.conjuntoEstados}" />
                                                     </p:selectOneMenu>
                                                     <p:tooltip for="comboboxEstados" value="Indique en que estado de la republica se ubica la empresa" />
@@ -139,8 +139,8 @@
                                                     Municipio:
                                                     &nbsp;
                                                     <p:selectOneMenu id="comboboxMunicipios" value="#{empresasBean.municipio}" style="width:250px">
-                                                        <f:selectItem itemLabel="Seleccione un municipio" itemValue="" noSelectionOption="false" />
-                                                        <f:selectItems value="#{dropdownView.conjuntoMunicipios}" />
+                                                        <f:selectItem itemLabel="Seleccione un municipio" itemValue="" />
+                                                        <f:selectItems value="#{empresasBean.conjuntoMunicipios}" />
                                                     </p:selectOneMenu>
                                                     <p:tooltip for="comboboxMunicipios" value="Indique el municipio en el que se ubica la empresa" />
                                                 </h:form>
