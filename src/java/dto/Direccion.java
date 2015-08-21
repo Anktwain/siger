@@ -70,7 +70,7 @@ public class Direccion  implements java.io.Serializable {
         return this.sujeto;
     }
     
-    }
+    
     public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
@@ -87,10 +87,7 @@ public class Direccion  implements java.io.Serializable {
     }
 
 
-
-
-}
-
-
     public void setCalle(String calle) {
         this.calle = calle;
+    }
+}
