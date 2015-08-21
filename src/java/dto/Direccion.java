@@ -1,5 +1,5 @@
 package dto;
-// Generated 18/08/2015 11:07:25 AM by Hibernate Tools 4.3.1
+// Generated 19/08/2015 01:24:43 PM by Hibernate Tools 4.3.1
 
 
 
@@ -11,29 +11,30 @@ public class Direccion  implements java.io.Serializable {
 
 
      private Integer idDireccion;
+     private Colonia colonia;
+     private EstadoRepublica estadoRepublica;
+     private Municipio municipio;
      private Sujeto sujeto;
      private String calle;
-     private String colonia;
-     private String municipio;
-     private String estado;
-     private String codigoPostal;
      private String tipo;
 
     public Direccion() {
     }
 
 	
-    public Direccion(Sujeto sujeto, String calle) {
+    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle) {
+        this.colonia = colonia;
+        this.estadoRepublica = estadoRepublica;
+        this.municipio = municipio;
         this.sujeto = sujeto;
         this.calle = calle;
     }
-    public Direccion(Sujeto sujeto, String calle, String colonia, String municipio, String estado, String codigoPostal, String tipo) {
+    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle, String tipo) {
+       this.colonia = colonia;
+       this.estadoRepublica = estadoRepublica;
+       this.municipio = municipio;
        this.sujeto = sujeto;
        this.calle = calle;
-       this.colonia = colonia;
-       this.municipio = municipio;
-       this.estado = estado;
-       this.codigoPostal = codigoPostal;
        this.tipo = tipo;
     }
    
@@ -44,47 +45,38 @@ public class Direccion  implements java.io.Serializable {
     public void setIdDireccion(Integer idDireccion) {
         this.idDireccion = idDireccion;
     }
+    public Colonia getColonia() {
+        return this.colonia;
+    }
+    
+    public void setColonia(Colonia colonia) {
+        this.colonia = colonia;
+    }
+    public EstadoRepublica getEstadoRepublica() {
+        return this.estadoRepublica;
+    }
+    
+    public void setEstadoRepublica(EstadoRepublica estadoRepublica) {
+        this.estadoRepublica = estadoRepublica;
+    }
+    public Municipio getMunicipio() {
+        return this.municipio;
+    }
+    
+    public void setMunicipio(Municipio municipio) {
+        this.municipio = municipio;
+    }
     public Sujeto getSujeto() {
         return this.sujeto;
     }
     
+    }
     public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
+    
     public String getCalle() {
         return this.calle;
-    }
-    
-    public void setCalle(String calle) {
-        this.calle = calle;
-    }
-    public String getColonia() {
-        return this.colonia;
-    }
-    
-    public void setColonia(String colonia) {
-        this.colonia = colonia;
-    }
-    public String getMunicipio() {
-        return this.municipio;
-    }
-    
-    public void setMunicipio(String municipio) {
-        this.municipio = municipio;
-    }
-    public String getEstado() {
-        return this.estado;
-    }
-    
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-    public String getCodigoPostal() {
-        return this.codigoPostal;
-    }
-    
-    public void setCodigoPostal(String codigoPostal) {
-        this.codigoPostal = codigoPostal;
     }
     public String getTipo() {
         return this.tipo;
@@ -100,3 +92,5 @@ public class Direccion  implements java.io.Serializable {
 }
 
 
+    public void setCalle(String calle) {
+        this.calle = calle;

@@ -492,7 +492,7 @@
                 <p:dataTable id="clientes" var="cliente" value="#{clienteBean.listaDeClientes}"
                              rowKey="#{cliente.idCliente}" selectionMode="single" paginator="true"
                              rows="10" rowsPerPageTemplate="5,10,15" emptyMessage="No hay clientes"
-                             class="table table-bordered table-condensed table-hover table-striped table-responsive">
+                             class="table table-bordered table-condensed table-hover table-striped">
 
                   <p:ajax event="rowSelect" listener="#{clienteBean.onRowSelect}"
                           update="frmDetalleCliente,
