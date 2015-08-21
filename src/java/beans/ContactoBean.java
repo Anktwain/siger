@@ -257,7 +257,7 @@ public class ContactoBean implements Serializable {
     sujeto.setRfc(rfc);
     sujeto.setEliminado(eliminado);
 
-    return sujetoDao.insertar(sujeto);
+    return sujetoDao.insertar(sujeto).getIdSujeto();
   }
 
   private boolean agregarContacto(Cliente cliente) {

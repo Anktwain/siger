@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
 import util.constantes.Sujetos;
+import util.log.Logs;
 
 /**
  * La clase {@code SujetoIMPL} permite ...
@@ -25,27 +26,26 @@ public class SujetoIMPL implements SujetoDAO {
      * @return
      */
     @Override
-    public int insertar(Sujeto sujeto) {
+    public Sujeto insertar(Sujeto sujeto) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-        int id;
 
         try {
             sesion.save(sujeto);
             tx.commit();
-            id = sujeto.getIdSujeto();
-            //log.info("Se insertó un nuevo usuaario");
+            Logs.log.info("Se insertó un nuevo sujeto: id = " + sujeto.getIdSujeto());
         } catch (HibernateException he) {
-            id = 0;
+            sujeto = null;
             if (tx != null) {
                 tx.rollback();
             }
-            he.printStackTrace();
-            //         log.error(he.getMessage());
+            Logs.log.error("No se pudo insertar Sujeto:");
+            Logs.log.error(he.getMessage());
         } finally {
             cerrar(sesion);
         }
-        return id;
+        
+        return sujeto;
     }
 
     /**
