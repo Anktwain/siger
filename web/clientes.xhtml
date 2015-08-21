@@ -123,7 +123,7 @@
               <h:form id="frmAltaCliente">
                 <div class="form-group">
                   <p:outputLabel value="Nombre o Raz&oacute;n Social: "/>
-                  <p:inputText id="nombre" class="form-control input-sm"
+                  <p:inputText id="txtNombre" class="form-control input-sm" disabled="#{vistaClientes.txtNombreDisabled}"
                                required="true" requiredMessage="Ingrese un nombre o raz&oacute;n social"
                                validator="#{vistaClientes.clienteBean.sujetoBean.nombreEsValido()}"
                                validatorMessage="El nombre o raz&oacute;n social no es v&aacute;lido"
@@ -133,14 +133,14 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <p:outputLabel value="RFC:" />
-                      <p:inputText id="rfc" class="form-control input-sm"
+                      <p:inputText id="txtRfc" class="form-control input-sm" disabled="#{vistaClientes.txtRfcDisabled}"
                                    value="#{vistaClientes.clienteBean.sujetoBean.rfc}"/>
                     </div>
                   </div> <!-- /.col-->  
                   <div class="col-md-6">
                     <div class="form-group">
                       <p:outputLabel value="CURP:" />
-                      <p:inputText id="curp" class="form-control input-sm"
+                      <p:inputText id="txtCurp" class="form-control input-sm" disabled="#{vistaClientes.txtCurpDisabled}"
                                    value="#{vistaClientes.clienteBean.curp}"/>
                     </div>
                   </div><!-- /.col-->
@@ -149,14 +149,14 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <p:outputLabel value="N&uacute;mero de Seguro Social:" />
-                      <p:inputText id="nss" class="form-control input-sm"
+                      <p:inputText id="txtNss" class="form-control input-sm" disabled="#{vistaClientes.txtNssDisabled}"
                                    value="#{vistaClientes.clienteBean.numeroSeguroSocial}"/>
                     </div>
                   </div> <!-- /.col-->  
                   <div class="col-md-6">
                     <div class="form-group">
                       <p:outputLabel value="N&uacute;mero de cliente:" />
-                      <p:inputText id="ncte" class="form-control input-sm"
+                      <p:inputText id="txtNcte" class="form-control input-sm" disabled="#{vistaClientes.txtNcteDisabled}"
                                    value="#{vistaClientes.clienteBean.numeroCliente}"/>
                     </div>
                   </div> <!-- /.col-->  
@@ -164,9 +164,10 @@
                 <p:commandButton id="btnAltaCliente" class="btn btn-success btn-xs"
                                  disabled="#{vistaClientes.btnAltaClienteDisabled}"
                                  value="Guardar" actionListener="#{vistaClientes.agregarCliente()}"
-                                 update="growl,frmListaClientes,btnAltaCliente"/>
-                <p:commandButton id="btnAgregarOtro" class="btn btn-success btn-xs"
-                                 value="Otro"/>
+                                 update="growl,frmListaClientes,btnAltaCliente,txtNcte,txtNss,txtCurp,txtRfc,txtNombre"/>
+                <p:commandButton id="btnResetCliente" class="btn btn-success btn-xs"
+                                 value="Otro" actionListener="#{vistaClientes.incializarCliente()}"
+                                 update="frmAltaCliente,btnAltaCliente"/>
               </h:form><!-- frmAltaCliente -->
             </div><!-- personales -->
 
@@ -200,14 +201,16 @@
                           <div class="col-md-6">
                             <div class="form-group">
                               <p:outputLabel value="N&uacute;mero:" />
-                              <p:inputText id="numero" class="form-control input-sm" required="true"
-                                           requiredMessage="Ingrese un n&uacute;mero telef&oacute;nico"/>
+                              <p:inputText id="txtNumero" class="form-control input-sm" required="true"
+                                           requiredMessage="Ingrese un n&uacute;mero telef&oacute;nico"
+                                           value="#{vistaClientes.telefonoBean.numero}"/>
                             </div>
                           </div> <!-- /.col-->  
                           <div class="col-md-6">
                             <div class="form-group">
                               <p:outputLabel value="Tipo:" />
-                              <p:inputText id="tipo" class="form-control input-sm"/>
+                              <p:inputText id="txtTipo" class="form-control input-sm"
+                                           value="#{vistaClientes.telefonoBean.tipo}"/>
                             </div>
                           </div> <!-- /.col-->  
                         </div> <!-- /.row-->  
@@ -215,22 +218,26 @@
                           <div class="col-md-6">
                             <div class="form-group">
                               <p:outputLabel value="Extensi&oacute;n:" />
-                              <p:inputText id="ext" class="form-control input-sm"/>
+                              <p:inputText id="txtExt" class="form-control input-sm"
+                                           value="#{vistaClientes.telefonoBean.extension}"/>
                             </div>
                           </div> <!-- /.col-->  
                           <div class="col-md-6">
                             <div class="form-group">
                               <p:outputLabel value="Lada:" />
-                              <p:inputText id="lada" class="form-control input-sm"/>
+                              <p:inputText id="txtLada" class="form-control input-sm"
+                                           value="#{vistaClientes.telefonoBean.lada}"/>
                             </div>
                           </div> <!-- /.col-->  
                         </div> <!-- /.row-->  
                         <div class="form-group">
                           <p:outputLabel value="Horario: " />
-                          <p:inputText id="hora" class="form-control input-sm"/>
+                          <p:inputText id="txtHora" class="form-control input-sm"
+                                       value="#{vistaClientes.telefonoBean.horario}"/>
                         </div> <!-- /form-group-->  
                         <p:commandButton id="btnAltaTelefono" class="btn btn-xs btn-success btn-sm"
-                                         value="Guardar Tel&eacute;fono"/>
+                                         value="Guardar Tel&eacute;fono" actionListener="#{vistaClientes.agregarTelefono()}"
+                                         update="growl,frmAltaTelefono"/>
                       </h:form><!-- frmAltaTelefono -->
                     </div><!-- tel -->
 

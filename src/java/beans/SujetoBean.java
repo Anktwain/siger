@@ -89,5 +89,5 @@ public class SujetoBean implements Serializable {
   public void setEliminado(int eliminado) {
     this.eliminado = eliminado;
   }
-  
+
 }

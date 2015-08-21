@@ -25,27 +25,25 @@ public class TelefonoIMPL implements TelefonoDAO {
      * @return
      */
     @Override
-    public boolean insertar(Telefono telefono) {
+    public Telefono insertar(Telefono telefono) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-        boolean ok;
 
         try {
             sesion.save(telefono);
             tx.commit();
-            ok = true;
-            //log.info("Se insertó un nuevo usuaario");
+            Logs.log.info("Se insertó un nuevo Telefono: id = " + telefono.getIdTelefono());
         } catch (HibernateException he) {
-            ok = false;
+            telefono = null;
             if (tx != null) {
                 tx.rollback();
             }
-//            he.printStackTrace();
-            Logs.log.trace(he.getMessage());
+            Logs.log.error("No se pudo insertar Telefono:");
+            Logs.log.error(he.getMessage());
         } finally {
             cerrar(sesion);
         }
-        return ok;
+        return telefono;
     }
 
     /**

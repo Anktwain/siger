@@ -189,7 +189,7 @@ public class ContactoBean implements Serializable {
               "No se puede agregar un nuevo teléfono",
               "Antes debe agregar un nuevo contacto."));
     } else {
-      telefonoBean.agregar(sujeto);
+//      telefonoBean.agregar(sujeto);
       RequestContext.getCurrentInstance().execute("PF('dlgOtroTelefonoParaContacto').hide();");
     }
   }

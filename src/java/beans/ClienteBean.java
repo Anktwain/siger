@@ -71,6 +71,7 @@ public class ClienteBean implements Serializable {
     numeroCliente = null;
     curp = null;
     numeroSeguroSocial = null;
+    sujeto = new Sujeto();
   }
 
 

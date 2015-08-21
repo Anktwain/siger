@@ -19,7 +19,7 @@ public interface TelefonoDAO {
      * @param telefono
      * @return
      */
-    public boolean insertar(Telefono telefono);
+    public Telefono insertar(Telefono telefono);
 
     /**
      *

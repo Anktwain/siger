@@ -37,11 +37,10 @@ public class TelefonoBean implements Serializable {
   private TelefonoDAO telefonoDao;
 
   // Construyendo...
-
   /**
    *
    */
-    public TelefonoBean() {
+  public TelefonoBean() {
     telefono = new Telefono();
     telefonoDao = new TelefonoIMPL();
   }
@@ -49,8 +48,8 @@ public class TelefonoBean implements Serializable {
   public boolean editar(Telefono tel) {
     FacesContext context = FacesContext.getCurrentInstance();
     boolean ok = false;
-    
-    ok = telefonoDao.editar(tel); 
+
+    ok = telefonoDao.editar(tel);
     if (ok) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
               "Operación Exitosa",
@@ -60,14 +59,14 @@ public class TelefonoBean implements Serializable {
               "Operación Exitosa",
               "No se pudo editar el registro seleccionado."));
     }
-    
+
     return ok;
   }
-  
+
   public boolean eliminar(Telefono tel) {
     FacesContext context = FacesContext.getCurrentInstance();
     boolean ok = false;
-    
+
     ok = telefonoDao.eliminar(tel);
     if (ok) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -78,27 +77,26 @@ public class TelefonoBean implements Serializable {
               "Operación Exitosa",
               "No se pudo eliminar el registro seleccionado."));
     }
-    
+
     return ok;
-  }  
+  }
 
-  public void agregar(Sujeto sujeto) {
-    telefono.setNumero(numero);
-    telefono.setTipo(tipo);
-    telefono.setExtension(extension);
-    telefono.setLada(lada);
-    telefono.setHorario(horario);
-    telefono.setSujeto(sujeto);
-
-    if (telefonoDao.insertar(telefono)) {
-      FacesContext context = FacesContext.getCurrentInstance();
-      context.addMessage(null, new FacesMessage("Operación Exitosa",
-              "Se agregó un nuevo teléfono: " + numero + " para: "
-              + " " + sujeto.getNombreRazonSocial()));
-      limpiarEntradas();
-      Logs.log.info("Se agregó objeto: Telefono");
+  // GESTIÓN DE TELEFONOS
+  public Telefono insertar(Sujeto sujeto) {
+    // Verfica que el sujeto sea válido
+    if (sujeto.getIdSujeto() == null) {
+      Logs.log.error("El método TelefonoBean.insertar(sujeto) recibe un sujeto null");
+      return null;
     } else {
-      Logs.log.error("No se pudo agregar objeto: Telefono.");
+      // Crea el objeto Telefono
+      telefono.setNumero(numero);
+      telefono.setTipo(tipo);
+      telefono.setExtension(extension);
+      telefono.setLada(lada);
+      telefono.setHorario(horario);
+      telefono.setSujeto(sujeto);
+
+      return telefonoDao.insertar(telefono);
     }
   }
 
@@ -112,6 +110,15 @@ public class TelefonoBean implements Serializable {
     lada = null;
     horario = null;
   }
+  
+  // MÉTODOS AUXILIARES
+  public void resetAtributos() {
+    numero = null;
+    tipo = null;
+    extension = null;
+    lada = null;
+    horario = null;
+  }  
 
   /**
    *
