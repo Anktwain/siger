@@ -62,16 +62,16 @@ public class UsuariosBean implements Serializable {
   private List<Usuario> usuariosEncontrados;
   private List<Usuario> usuariosSeleccionados;
   private List<Usuario> todosUsuarios;
-  private List<Usuario> perfiles;
-
-  public List<Usuario> getPerfiles() {
-    return perfiles;
-  }
-
-  public void setPerfiles(List<Usuario> perfiles) {
-    this.perfiles = perfiles;
-  }
   private final String rutaImPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL;
+  private List<PerfilBean> listaPerfiles;
+
+  public List<PerfilBean> getListaPerfiles() {
+    return listaPerfiles;
+  }
+
+  public void setListaPerfiles(List<PerfilBean> listaPerfiles) {
+    this.listaPerfiles = listaPerfiles;
+  }
 
   /**
    *
@@ -106,7 +106,7 @@ public class UsuariosBean implements Serializable {
    */
   public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
     this.usuarioSeleccionado = usuarioSeleccionado;
-    Logs.log.info("#################### Seleccionando al usuario: " + this.usuarioSeleccionado.getNombre());
+    Logs.log.info("### Usuario seleccionado: " + this.usuarioSeleccionado.getNombre() + " " + this.usuarioSeleccionado.getPaterno() + " <" + this.usuarioSeleccionado.getNombreLogin()  + ">P:" + this.usuarioSeleccionado.getPerfil());
   }
 
   /**

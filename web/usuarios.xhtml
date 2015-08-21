@@ -34,203 +34,206 @@
               </li>
             </ul>
           </div>
-          <div class="panel-body">
-            <div class="tab-content">            
+          <!--<div class="panel-body">-->
+          <div class="tab-content">            
 
-              <div class="tab-pane fade in active" id="tabConfirmar">
-                <h:form>
-                  <div id="confirmagestores" class="panel bg-danger">
-                    <div class="panel-body">
-                      <h4>Confirme o elimine a los usuarios en espera de ingresar al sistema.</h4>
+            <div class="tab-pane fade in active" id="tabConfirmar">
+              <h:form>
+                <div id="confirmagestores" class="panel bg-danger">
+                  <div class="panel-body">
+                    <h4>Confirme o elimine a los usuarios en espera de ingresar al sistema.</h4>
 
-                      <h:form id="formConfirmarGestores">
-                        <h:form id="tabla">
-                          <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}" paginator="true" rows="10">
-                            <f:facet name="header"> Usuarios no confirmados </f:facet>
-                            <p:column selectionMode="multiple" style="width:30px;text-align:right" />
-                            <p:column headerText="Nombre del usuario" style="width:110px;">
-                              <h:outputText value="#{usuarios.nombre}" />
-                            </p:column>
-                            <p:column headerText="Apellido Paterno" style="width:100px;">
-                              <h:outputText value="#{usuarios.paterno}" />
-                            </p:column>
-                            <p:column headerText="Apellido Materno" style="width:100px;">
-                              <h:outputText value="#{usuarios.materno}" />
-                            </p:column>
-                            <p:column headerText="Correo" style="width:200px;">
-                              <h:outputText value="#{usuarios.correo}" />
-                            </p:column>
-                            <f:facet name="footer">
-                              <p:commandButton process="noConfirmados" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosBean.usuariosSeleccionados)}" />
-                              <p:commandButton process="noConfirmados" icon="ui-icon-trash" value="Eliminar" actionListener="#{usuariosBean.eliminarGestores(usuariosBean.usuariosSeleccionados)}" />
-                            </f:facet>
-                          </p:dataTable>
-                        </h:form>
+                    <h:form id="formConfirmarGestores">
+                      <h:form id="tabla">
+                        <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" paginator="true" paginatorAlwaysVisible="false" 
+                                     paginatorPosition="bottom" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}"  rows="10"
+                                     emptyMessage="Todos los usuarios est&aacute;n confirmados.">
+                          <f:facet name="header"> Usuarios no confirmados </f:facet>
+                          <p:column selectionMode="multiple" style="width:30px;text-align:right" />
+                          <p:column headerText="Nombre del usuario" style="width:110px;">
+                            <h:outputText value="#{usuarios.nombre}" />
+                          </p:column>
+                          <p:column headerText="Apellido Paterno" style="width:100px;">
+                            <h:outputText value="#{usuarios.paterno}" />
+                          </p:column>
+                          <p:column headerText="Apellido Materno" style="width:100px;">
+                            <h:outputText value="#{usuarios.materno}" />
+                          </p:column>
+                          <p:column headerText="Correo" style="width:200px;">
+                            <h:outputText value="#{usuarios.correo}" />
+                          </p:column>
+                          <f:facet name="footer">
+                            <p:commandButton process="noConfirmados" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosBean.usuariosSeleccionados)}" />
+                            <p:commandButton process="noConfirmados" icon="ui-icon-trash" value="Eliminar" actionListener="#{usuariosBean.eliminarGestores(usuariosBean.usuariosSeleccionados)}" />
+                          </f:facet>
+                        </p:dataTable>
                       </h:form>
-                    </div> <!-- /.panel-body -->
-                  </div> <!-- /#confirmagestores -->
-                </h:form>
-              </div>
-
-              <div class="tab-pane fade" id="tabRegistrar">
-                <h:form>
-                  <div id="nuevousuario" class="panel bg-info">
-                    <div class="panel-body">
-                      <h4>Agregue un gestor o administrativo al sistema.</h4>
-                      <h:form id="formNuevoUsuario">
-                        <div class="">
-                          <div class="">
-                            <div class="form-group">
-                              <p:outputLabel value="Nombre(s): " />
-                              <p:inputText id="nombre" type="text" class="form-control input-sm" value="#{usuariosBean.nombre}"
-                                           required="true" requiredMessage="Ingrese un nombre"/>
-                            </div><!-- /form-group -->
-                            <div class="row">
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <p:outputLabel value="Apellido Paterno:" />
-                                  <p:inputText id="paterno" type="text" class="form-control input-sm" value="#{usuariosBean.paterno}" />
-                                </div>
-                              </div><!-- /.col -->
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <p:outputLabel id="materno" value="Apellido Materno:" />
-                                  <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.materno}" />
-                                </div>
-                              </div><!-- /.col -->
-                            </div><!-- /.row -->
-                            <div class="form-group">
-                              <p:outputLabel id="nombreUsuario" value="Nombre de Usuario: " />
-                              <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.nombreLogin}"
-                                           required="true" requiredMessage="Ingrese un nombre de usuario" />
-                            </div><!-- /form-group -->
-                            <div class="row">
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <p:outputLabel value="Contraseña:" />
-                                  <p:password id="password" class="form-control input-sm" value="#{usuariosBean.password}"
-                                              required="true" requiredMessage="Ingrese una contraseña"/>
-                                </div>
-                              </div><!-- /.col -->
-                              <div class="col-md-6">
-                                <div class="form-group">
-                                  <p:outputLabel id="confirmePassword" value="Confirme su Contraseña:" />
-                                  <p:password class="form-control input-sm" value="#{usuariosBean.confirmePassword}" />
-                                </div>
-                              </div><!-- /.col -->
-                            </div><!-- /.row -->
-                            <div class="form-group">
-                              <p:outputLabel value="E-mail: " />
-                              <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.correo}"
-                                           required="true" requiredMessage="Ingrese una dirección de correo electrónico"/>
-                            </div><!-- /form-group -->
-                            <div class="form-group">
-                              <p:outputLabel value="Perfil: " />
-                              <h:selectOneMenu id="perfil" value="#{usuariosBean.perfil}" class="form-control chzn-select"
-                                               required="true" requiredMessage="Especifique perfil">
-                                <f:selectItem itemLabel="Seleccione perfil"/>
-                                <f:selectItem itemLabel="Administrador" itemValue="1" />
-                                <f:selectItem itemLabel="Gestor" itemValue="2" />
-                              </h:selectOneMenu>
-                            </div><!-- /form-group -->
-                          </div>
-                          <div class="">
-                            <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{usuariosBean.insertar}" value="Aceptar"/>
-                            <p:commandButton styleClass="btn btn-success btn-sm tooltip-test" type="reset" value="Agregar Otro" />
-                          </div> <!-- .modal-footer -->
-                        </div> <!-- /.modal-content -->
-                      </h:form> <!-- #formNuevoUsuario  -->
-                    </div> <!-- .panel-body  -->
-                  </div> <!-- #nuevousuario  -->
-                </h:form>
-              </div> <!-- #tabRegistrar -->
-
-              <div class="tab-pane fade" id="tabBuscar">
-                <div id="buscausuarios" class="panel bg-primary">
-                  <div class="panel-body form-group">
-                    <h4>Consulte y modifique a los usuarios del sistema.</h4>
-                    <h:form id="formUsuarios">
-                      <p:contextMenu for="usuarios">
-                        <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
-                      </p:contextMenu>
-
-                      <p:dataTable id="usuarios" var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usuarioDataTable" paginator="true" rows="10"
-                                   emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda." filteredValue="#{usuariosBean.usuariosEncontrados}"
-                                   rowKey="#{usuario.nombreLogin}" selection="#{usuariosBean.usuarioSeleccionado}" selectionMode="single">
-
-                        <f:facet name="header_tabBuscar">
-                          <p:outputPanel>
-                            <h:outputText value="Buscar en todos los usuarios:  " />
-                            <p:inputText id="globalFilter" onkeyup="PF('usuarioDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>
-                          </p:outputPanel>
-                        </f:facet>
-
-                        <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
-                          <h:outputText value="#{usuario.nombre}"/>
-                        </p:column>
-                        <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
-                          <h:outputText value="#{usuario.paterno}"/>
-                        </p:column>
-                        <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
-                          <h:outputText value="#{usuario.materno}"/>                         
-                        </p:column>
-
-                        <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
-                          <h:outputText value="#{usuario.nombreLogin}"/>                           
-                        </p:column>
-                      </p:dataTable>
-
-                      <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" 
-                                modal="true" showEffect="fade" hideEffect="fade" resizable="true" style="text-align:center;">
-                        <p:outputPanel id="usuarioDetail" style="text-align:center;">
-
-                          <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}" >
-
-                            <f:facet name="header">
-                              <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}"/> 
-                            </f:facet>
-
-                            <h:outputText value="Nombre: "/>
-                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombre}" /> 
-
-
-                            <h:outputText value="Apellido paterno: "/>
-                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
-
-                            <h:outputText value="Apellido materno: "/>
-                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
-
-                            <h:outputText value="Nombre login: "/>
-                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
-
-                            <h:outputText value="Perfil: "/>
-                            <p:selectOneMenu onchange="PF('carsTable').filter()" >
-                              <f:selectItem itemValue="#{usuariosBean.usuarioSeleccionado.perfil}" noSelectionOption="false" />
-                              <f:selectItems value="#{usuariosBean.perfiles}" />
-                            </p:selectOneMenu>
-
-                            <h:outputText value="Correo: "/>
-                            <p:inputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
-
-                            <f:facet name="footer" >
-                              <p:selectOneButton onchange="">
-                                <f:selectItem itemLabel="Modificar" itemValue="" />
-                                <f:selectItem itemLabel="Eliminar" itemValue="true" />
-                              </p:selectOneButton>
-                            </f:facet>
-
-                          </p:panelGrid>
-                        </p:outputPanel>
-                      </p:dialog>
                     </h:form>
-                  </div>
-                </div>
+                  </div> <!-- /.panel-body -->
+                </div> <!-- /#confirmagestores -->
+              </h:form>
+            </div>
 
-              </div> <!-- #tabBuscar -->
-            </div> <!-- .tabContent -->
-          </div> <!-- .panelbody -->
+            <div class="tab-pane fade" id="tabRegistrar">
+              <h:form>
+                <div id="nuevousuario" class="panel bg-info">
+                  <div class="panel-body">
+                    <h4>Agregue un gestor o administrativo al sistema.</h4>
+                    <h:form id="formNuevoUsuario">
+                      <div class="">
+                        <div class="">
+                          <div class="form-group">
+                            <p:outputLabel value="Nombre(s): " />
+                            <p:inputText id="nombre" type="text" class="form-control input-sm" value="#{usuariosBean.nombre}"
+                                         required="true" requiredMessage="Ingrese un nombre"/>
+                          </div><!-- /form-group -->
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <p:outputLabel value="Apellido Paterno:" />
+                                <p:inputText id="paterno" type="text" class="form-control input-sm" value="#{usuariosBean.paterno}" />
+                              </div>
+                            </div><!-- /.col -->
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <p:outputLabel id="materno" value="Apellido Materno:" />
+                                <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.materno}" />
+                              </div>
+                            </div><!-- /.col -->
+                          </div><!-- /.row -->
+                          <div class="form-group">
+                            <p:outputLabel id="nombreUsuario" value="Nombre de Usuario: " />
+                            <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.nombreLogin}"
+                                         required="true" requiredMessage="Ingrese un nombre de usuario" />
+                          </div><!-- /form-group -->
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <p:outputLabel value="Contraseña:" />
+                                <p:password id="password" class="form-control input-sm" value="#{usuariosBean.password}"
+                                            required="true" requiredMessage="Ingrese una contraseña"/>
+                              </div>
+                            </div><!-- /.col -->
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <p:outputLabel id="confirmePassword" value="Confirme su Contraseña:" />
+                                <p:password class="form-control input-sm" value="#{usuariosBean.confirmePassword}" />
+                              </div>
+                            </div><!-- /.col -->
+                          </div><!-- /.row -->
+                          <div class="form-group">
+                            <p:outputLabel value="E-mail: " />
+                            <p:inputText type="text" class="form-control input-sm" value="#{usuariosBean.correo}"
+                                         required="true" requiredMessage="Ingrese una dirección de correo electrónico"/>
+                          </div><!-- /form-group -->
+                          <div class="form-group">
+                            <p:outputLabel value="Perfil: " />
+                            <h:selectOneMenu id="perfil" value="#{usuariosBean.perfil}" class="form-control chzn-select"
+                                             required="true" requiredMessage="Especifique perfil">
+                              <f:selectItem itemLabel="Seleccione perfil"/>
+                              <f:selectItem itemLabel="Administrador" itemValue="1" />
+                              <f:selectItem itemLabel="Gestor" itemValue="2" />
+                            </h:selectOneMenu>
+                          </div><!-- /form-group -->
+                        </div>
+                        <div class="">
+                          <p:commandButton styleClass="btn btn-danger tooltip-test" actionListener="#{usuariosBean.insertar}" value="Aceptar"/>
+                          <p:commandButton styleClass="btn btn-success btn-sm tooltip-test" type="reset" value="Agregar Otro" />
+                        </div> <!-- .modal-footer -->
+                      </div> <!-- /.modal-content -->
+                    </h:form> <!-- #formNuevoUsuario  -->
+                  </div> <!-- .panel-body  -->
+                </div> <!-- #nuevousuario  -->
+              </h:form>
+            </div> <!-- #tabRegistrar -->
+
+            <div class="tab-pane fade" id="tabBuscar">
+              <div id="buscausuarios" class="panel bg-primary">
+                <div class="panel-body form-group">
+                  <h4>Consulte y modifique a los usuarios del sistema.</h4>
+                  <h:form id="formUsuarios">
+                    <p:contextMenu for="usuarios">
+                      <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
+                    </p:contextMenu>
+
+                    <p:dataTable id="usuarios" var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usuarioDataTable" paginator="true" rows="10"
+                                 paginatorAlwaysVisible="false" paginatorPosition="bottom" emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda." 
+                                 filteredValue="#{usuariosBean.usuariosEncontrados}" rowKey="#{usuario.nombreLogin}" selection="#{usuariosBean.usuarioSeleccionado}" selectionMode="single">
+
+                      <f:facet name="header_tabBuscar">
+                        <p:outputPanel>
+                          <h:outputText value="Buscar en todos los usuarios:  " />
+                          <p:inputText id="globalFilter" onkeyup="PF('usuarioDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>
+                        </p:outputPanel>
+                      </f:facet>
+
+                      <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
+                        <h:outputText value="#{usuario.nombre}"/>
+                      </p:column>
+                      <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
+                        <h:outputText value="#{usuario.paterno}"/>
+                      </p:column>
+                      <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
+                        <h:outputText value="#{usuario.materno}"/>                         
+                      </p:column>
+
+                      <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
+                        <h:outputText value="#{usuario.nombreLogin}"/>                           
+                      </p:column>
+                    </p:dataTable>
+
+                    <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" 
+                              modal="true" showEffect="fade" hideEffect="fade" resizable="true">
+                      <p:outputPanel id="usuarioDetail" style="text-align:center;">
+
+                        <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}">
+
+                          <f:facet name="header">
+                            <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}" height="200px"/> 
+                          </f:facet>
+
+                          <h:outputText value="Nombre: "/>
+                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombre}" /> 
+
+                          <h:outputText value="Apellido paterno: "/>
+                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
+
+                          <h:outputText value="Apellido materno: "/>
+                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
+
+                          <h:outputText value="Nombre login: "/>
+                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
+
+                          <h:outputText value="Perfil: "/>
+                          <p:selectOneMenu onchange="" >
+                            <f:selectItems  value="#{perfilBean.ordenarLista(usuariosBean.usuarioSeleccionado.perfil)}" />
+                          </p:selectOneMenu>
+
+                          <h:outputText value="Correo: "/>
+                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
+
+                          <f:facet name="footer">
+                            <div class="text-center">
+                              <p:commandButton value="Modificar" id="ajax" update="growl" />
+                              <p:commandButton value="Eliminar" id="nonAjax" ajax="false" />
+                              <!--<p:selectOneButton onchange="" >
+                                                                <f:selectItem id="btn-modificar" itemLabel="Modificar" itemValue="" itemDisabled="true"/>
+                                                                <f:selectItem id="btn-eliminar" itemLabel="Eliminar" itemValue="true" />
+                                                              </p:selectOneButton>-->
+                            </div>                              
+                          </f:facet>
+                        </p:panelGrid>
+                      </p:outputPanel>
+                    </p:dialog>
+                  </h:form>
+                </div>
+              </div> <!-- #buscausuarios -->
+
+            </div> <!-- #tabBuscar -->
+          </div> <!-- .tabContent -->
+          <!--</div>  .panelbody -->
         </div><!-- /panel -->
-      </div>
+      </div> <!-- #opciones -->
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />

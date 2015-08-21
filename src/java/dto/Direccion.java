@@ -70,15 +70,13 @@ public class Direccion  implements java.io.Serializable {
         return this.sujeto;
     }
     
+    
     public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
+    
     public String getCalle() {
         return this.calle;
-    }
-    
-    public void setCalle(String calle) {
-        this.calle = calle;
     }
     public String getTipo() {
         return this.tipo;
@@ -89,8 +87,7 @@ public class Direccion  implements java.io.Serializable {
     }
 
 
-
-
+    public void setCalle(String calle) {
+        this.calle = calle;
+    }
 }
-
-
