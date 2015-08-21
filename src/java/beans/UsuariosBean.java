@@ -106,7 +106,7 @@ public class UsuariosBean implements Serializable {
    */
   public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
     this.usuarioSeleccionado = usuarioSeleccionado;
-    Logs.log.info("#################### Seleccionando al usuario: " + this.usuarioSeleccionado.getNombre());
+    Logs.log.info("### Usuario seleccionado: " + this.usuarioSeleccionado.getNombre() + " " + this.usuarioSeleccionado.getPaterno() + " <" + this.usuarioSeleccionado.getNombreLogin()  + ">P:" + this.usuarioSeleccionado.getPerfil());
   }
 
   /**

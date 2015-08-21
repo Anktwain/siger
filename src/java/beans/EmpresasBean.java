@@ -173,7 +173,7 @@ public class EmpresasBean implements Serializable {
         nuevoSujeto.setNombreRazonSocial(nuevaRazonSocial);
         nuevoSujeto.setRfc(nuevoRfc);
         nuevoSujeto.setEliminado(Sujetos.ACTIVO);
-        idNuevoSujeto = sujetoDao.insertar(nuevoSujeto);
+        idNuevoSujeto = sujetoDao.insertar(nuevoSujeto).getIdSujeto();
         nuevaEmpresa.setNombreCorto(nuevoCorto);
         nuevaEmpresa.setSujeto(nuevoSujeto);
         FacesContext actual = FacesContext.getCurrentInstance();

@@ -20,7 +20,7 @@ public class PerfilBean implements Serializable {
   private LinkedList<PerfilBean> lista;
   private int tamanioLista;
 
-  public PerfilBean(){
+  public PerfilBean() {
     enlistar();
     tamanioLista = lista.size();
   }
@@ -51,7 +51,7 @@ public class PerfilBean implements Serializable {
     try {
       lista.toString();
     } catch (Exception e) {
-      Logs.log.error("La lista es una referencia a NULL. (" + e.toString() + " )");
+      Logs.log.error("La lista es una referencia a NULL. (" + e.toString() + ")");
     }
     /* Estas líneas son de prueba para ver si se inicializa como null la referencia al inicio del programa*/
 
@@ -63,19 +63,19 @@ public class PerfilBean implements Serializable {
       lista.add(new PerfilBean("gestor no confirmado", util.constantes.Perfiles.GESTOR_NO_CONFIRMADO));
     }
 
-    Logs.log.info("***********Perfiles enlistados en PerfilBean.enlistar():");
-    for (int i = 0; i < lista.size(); i++) {
+    Logs.log.info("*********** Perfiles enlistados en PerfilBean.enlistar(): ***********");
+    for (int i = 0; i < lista.size(); i++)
       Logs.log.info(lista.get(i).nombre + ": " + lista.get(i).clave);
-    }
+    Logs.log.info("***********  *******************************************  ***********");
   }
 
-  public List<PerfilBean> ordenarLista(int cvePerfActual) throws Exception{
+  public List<PerfilBean> ordenarLista(int cvePerfActual) throws Exception {
     if (lista.get(0).clave != cvePerfActual) {
       PerfilBean perfilActual = buscar(cvePerfActual);
       lista.addFirst(perfilActual);
       lista.removeLastOccurrence(perfilActual);
     }
-    if(lista.size() != tamanioLista){
+    if (lista.size() != tamanioLista) {
       throw new Exception("La lista no contiene la cantidad de perfiles con los que se inicializó");
     }
     return lista;
