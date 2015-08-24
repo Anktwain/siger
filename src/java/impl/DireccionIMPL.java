@@ -25,27 +25,25 @@ public class DireccionIMPL implements DireccionDAO {
    * @return
    */
   @Override
-  public boolean insertar(Direccion direccion) {
+  public Direccion insertar(Direccion direccion) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
-    boolean ok;
 
     try {
       sesion.save(direccion);
       tx.commit();
-      ok = true;
-      //log.info("Se insertó un nuevo usuaario");
+      Logs.log.info("Se insertó una nueva Direccion: id = " + direccion.getIdDireccion());
     } catch (HibernateException he) {
-      ok = false;
+      direccion = null;
       if (tx != null) {
         tx.rollback();
       }
-//            he.printStackTrace();
-      Logs.log.trace(he.getMessage());
+      Logs.log.error("No se pudo insertar Direccion:");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
-    return ok;
+    return direccion;
   }
 
   /**
@@ -130,16 +128,16 @@ public class DireccionIMPL implements DireccionDAO {
     Transaction tx = sesion.beginTransaction();
     List<Direccion> listaDirecciones;
     String consulta = "select d.* from direccion d join sujeto s on s.id_sujeto=d.sujetos_id_sujeto where s.id_sujeto=" + idSujeto + ";";
-    
+
     try {
       listaDirecciones = sesion.createSQLQuery(consulta).addEntity(Direccion.class).list();
-    } catch(HibernateException he) {
+    } catch (HibernateException he) {
       listaDirecciones = null;
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
-    
+
     return listaDirecciones;
   }
 

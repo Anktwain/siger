@@ -164,10 +164,10 @@
                 <p:commandButton id="btnAltaCliente" class="btn btn-success btn-xs"
                                  disabled="#{vistaClientes.btnAltaClienteDisabled}"
                                  value="Guardar" actionListener="#{vistaClientes.agregarCliente()}"
-                                 update="growl,frmListaClientes,btnAltaCliente,txtNcte,txtNss,txtCurp,txtRfc,txtNombre"/>
+                                 update="growl,frmListaClientes,btnAltaCliente,txtNcte,txtNss,txtCurp,txtRfc,txtNombre,frmAltaDireccion:cboxEdo"/>
                 <p:commandButton id="btnResetCliente" class="btn btn-success btn-xs"
                                  value="Otro" actionListener="#{vistaClientes.incializarCliente()}"
-                                 update="frmAltaCliente,btnAltaCliente"/>
+                                 update="frmAltaCliente,btnAltaCliente,txtNcte,txtNss,txtCurp,txtRfc,txtNombre"/>
               </h:form><!-- frmAltaCliente -->
             </div><!-- personales -->
 
@@ -245,11 +245,13 @@
                       <h:form id="frmAltaEmail">
                         <div class="form-group">
                           <p:outputLabel value="Direcci&oacute;n: " />
-                          <p:inputText id="email" class="form-control input-sm"
-                                       required="true" requiredMessage="Ingrese una direcci&oacute;n"/>
+                          <p:inputText id="txtEmail" class="form-control input-sm"
+                                       required="true" requiredMessage="Ingrese una direcci&oacute;n"
+                                       value="#{vistaClientes.emailBean.direccion}"/>
                         </div> <!-- /form-group-->
-                        <p:commandButton id="btnNuevoMail" class="btn btn-xs btn-success btn-sm"
-                                         value="Guardar E-mail"/>
+                        <p:commandButton id="btnAltaEmail" class="btn btn-xs btn-success btn-sm"
+                                         value="Guardar E-mail" actionListener="#{vistaClientes.agregarEmail()}"
+                                         update="growl,frmAltaEmail"/>
                       </h:form><!-- frmAltaEmail -->
                     </div><!-- mail -->
 
@@ -258,42 +260,54 @@
                         <div class="row">
                           <div class="col-md-6">
                             <div class="form-group">
-                              <p:outputLabel value="Estado:" />
-                              <p:inputText id="edo" class="form-control input-sm"/>
+                              <p:outputLabel value="Estado:" for="cboxEdo" />
+                              <p:selectOneMenu id="cboxEdo" value="#{vistaClientes.direccionBean.estado.idEstado}" style="width: 100%" filter="true">
+                                <p:ajax listener="#{vistaClientes.direccionBean.listarMunicipiosPorEstado()}" update="cboxMpio,growl"/>
+                                <f:selectItem itemLabel="Seleccione un estado" itemValue="" class="form-control chzn-select"/>
+                                <f:selectItems value="#{vistaClientes.direccionBean.estados}" var="estado" itemLabel="#{estado}" itemValue="#{estado.idEstado}" />
+                              </p:selectOneMenu>
                             </div>
                           </div> <!-- /.col-->                          
                           <div class="col-md-6">
                             <div class="form-group">
-                              <p:outputLabel value="Municipio:" />
-                              <p:inputText id="mpio" class="form-control input-sm"/>
+                              <p:outputLabel value="Municipio:" for="cboxMpio"/>
+                              <p:selectOneMenu id="cboxMpio" value="#{vistaClientes.direccionBean.municipio.idMunicipio}" style="width: 100%" filter="true">
+                                <p:ajax listener="#{vistaClientes.direccionBean.listarColoniasPorMunicipio()}" update="cboxCol,growl"/>
+                                <f:selectItem itemLabel="Seleccione un municipio o delegaci&oacute;n" itemValue="" class="form-control chzn-select"/>
+                                <f:selectItems value="#{vistaClientes.direccionBean.municipos}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}"/>
+                              </p:selectOneMenu>
                             </div>
                           </div> <!-- /.col-->  
                         </div> <!-- /.row-->
                         <div class="form-group">
                           <p:outputLabel value="Colonia: " />
-                          <p:inputText id="col" class="form-control input-sm"/>
+                          <p:selectOneMenu id="cboxCol" value="#{vistaClientes.direccionBean.colonia.idColonia}" style="width: 100%" filter="true">
+                            <p:ajax listener="#{vistaClientes.direccionBean.agregarCP()}" update="growl,frmAltaDireccion:txtCp"/>
+                                <f:selectItem itemLabel="Seleccione una colonia" itemValue="" class="form-control chzn-select"/>
+                                <f:selectItems value="#{vistaClientes.direccionBean.colonias}" var="colonia" itemLabel="#{colonia.nombre}" itemValue="#{colonia.idColonia}"/>
+                              </p:selectOneMenu>                          
                         </div> <!-- /form-group-->
                         <div class="form-group">
                           <p:outputLabel value="Calle: " />
-                          <p:inputText id="calle" class="form-control input-sm"
+                          <p:inputText id="txtCalle" class="form-control input-sm" value="#{vistaClientes.direccionBean.calle}"
                                        required="true" requiredMessage="Ingrese el nombre de la calle"/>
                         </div> <!-- /form-group-->
                         <div class="row">
                           <div class="col-md-6">
                             <div class="form-group">
                               <p:outputLabel value="C&oacute;digo postal:" />
-                              <p:inputText id="cp" class="form-control input-sm"/>
+                              <p:inputText id="txtCp" class="form-control input-sm" value="#{vistaClientes.direccionBean.colonia.codigoPostal}"/>
                             </div>
                           </div> <!-- /.col-->  
                           <div class="col-md-6">
                             <div class="form-group">
                               <p:outputLabel value="Tipo:" />
-                              <p:inputText id="tipodir" class="form-control input-sm"/>
+                              <p:inputText id="tipodir" class="form-control input-sm" value="#{vistaClientes.direccionBean.tipo}"/>
                             </div>
                           </div> <!-- /.col-->  
                         </div> <!-- /.row-->
                         <p:commandButton id="btnNuevaDir" class="btn btn-xs btn-success btn-sm"
-                                         value="Guardar Direcci&oacute;n"/>
+                                         value="Guardar Direcci&oacute;n" actionListener="#{vistaClientes.agregarDireccion()}" update="growl,frmAltaDireccion"/>
                       </h:form><!-- frmAltaDireccion -->
                     </div><!-- dir -->
                   </div>
@@ -472,5 +486,8 @@
         </div> <!-- panel-body -->
       </div><!-- panel panel-default -->
     </p:dialog><!-- dlgAltaCliente -->
+    
+    
+    
   </h:body>
 </html>

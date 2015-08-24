@@ -10,13 +10,8 @@ import dto.Email;
 import dto.Sujeto;
 import impl.EmailIMPL;
 import java.io.Serializable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import util.constantes.Patrones;
 import util.log.Logs;
 
 /**
@@ -26,92 +21,44 @@ import util.log.Logs;
 @ManagedBean
 @ViewScoped
 public class EmailBean implements Serializable {
-
-  // Objeto Email, sus propiedades y acceso a la BD
+// Objeto que gestiona este bean
   private Email email;
-
+  
+  // Atributos del objeto Email
   private String direccion;
   private String tipo;
-
+  
+  // Acceso a la BD
   private EmailDAO emailDao;
-
+  
   // Construyendo...
   public EmailBean() {
     email = new Email();
     emailDao = new EmailIMPL();
   }
-
-  public boolean editar(Email mail) {
-    FacesContext context = FacesContext.getCurrentInstance();
-    boolean ok = false;
-
-    ok = emailDao.editar(mail);
-    if (ok) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-              "Operación Exitosa",
-              "Se modificó el registro seleccionado"));
+  
+  // GESTIÓN DE EMAILS
+  public Email insertar(Sujeto sujeto) {
+    // Verfica que el sujeto sea válido
+    if (sujeto.getIdSujeto() == null) {
+      Logs.log.error("El método EmailBean.insertar(sujeto) recibe un sujeto null");
+      return null;
     } else {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-              "Operación Exitosa",
-              "No se pudo editar el registro seleccionado."));
-    }
+      // Crea el objeto Email
+      email.setDireccion(direccion);
+      email.setTipo(tipo);
+      email.setSujeto(sujeto);
 
-    return ok;
-  }
-
-  public boolean eliminar(Email mail) {
-    FacesContext context = FacesContext.getCurrentInstance();
-    boolean ok = false;
-
-    ok = emailDao.eliminar(mail);
-
-    if (ok) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-              "Operación Exitosa",
-              "Se eliminó el registro seleccionado"));
-    } else {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-              "Operación Exitosa",
-              "No se pudo eliminar el registro seleccionado."));
-    }
-
-    return ok;
-  }
-
-  public void agregar(Sujeto sujeto) {
-    email.setDireccion(direccion);
-    email.setTipo(tipo);
-    email.setSujeto(sujeto);
-
-    if (!validarCorreo()) {
-      FacesContext.getCurrentInstance().addMessage(null,
-              new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                      "No se pudo agregar el usuario", "El formato de correo electrónico no es válido."));
-    } else if (emailDao.insertar(email)) {
-      FacesContext context = FacesContext.getCurrentInstance();
-      context.addMessage(null, new FacesMessage("Operación Exitosa",
-              "Se agregó un nuevo E-mail: " + direccion + " para: "
-              + " " + sujeto.getNombreRazonSocial()));
-      limpiarEntradas();
-      Logs.log.info("Se agregó objeto: Email");
-    } else {
-      Logs.log.error("No se pudo agregar objeto: Email.");
+      return emailDao.insertar(email);
     }
   }
-
-  public void limpiarEntradas() {
+  
+  // MÉTODOS AUXILIARES
+  public void resetAtributos() {
     direccion = null;
     tipo = null;
   }
-
-  private boolean validarCorreo() {
-    // Compila la cadena PATRON_EMAIL como un patrón
-    Pattern patron = Pattern.compile(Patrones.PATRON_EMAIL);
-    // Compara el correo con el patrón dado
-    Matcher matcher = patron.matcher(direccion);
-    return matcher.matches();
-  }
-
+  
   public String getDireccion() {
     return direccion;
   }

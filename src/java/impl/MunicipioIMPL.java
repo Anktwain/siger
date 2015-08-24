@@ -12,6 +12,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.log.Logs;
 
 /**
  *
@@ -23,8 +24,12 @@ public class MunicipioIMPL implements MunicipioDAO{
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         List<Municipio> municipios;
+        String consulta = "select * from municipio where id_estado_estados = " + idEstado + " order by nombre asc;";
+        System.out.println(consulta);
         try { 
-            municipios = sesion.createSQLQuery("select * from municipio where id_estado_estados = " + idEstado + " order by nombre asc;").addEntity(Municipio.class).list();
+            municipios = sesion.createSQLQuery(consulta).addEntity(Municipio.class).list();
+            System.out.println(consulta);
+            
         } catch(HibernateException he) {
             municipios = null;
             he.printStackTrace();
@@ -59,10 +64,11 @@ public class MunicipioIMPL implements MunicipioDAO{
         Transaction tx = sesion.beginTransaction();
         Municipio municipio;
         try { 
-            municipio = (Municipio) sesion.createSQLQuery("select * from municipio where id_municipio = " + idMunicipio + " ;").uniqueResult();
+            municipio = (Municipio) sesion.get(Municipio.class, idMunicipio);
         } catch(HibernateException he) {
             municipio = null;
-            he.printStackTrace();
+            Logs.log.error("No se pudo ontener lista de objetos: Municipio");
+            Logs.log.error(he.getMessage());
         } finally {
             cerrar(sesion);
         }

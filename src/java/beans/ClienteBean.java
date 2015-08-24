@@ -19,7 +19,6 @@ import javax.faces.bean.ViewScoped;
 public class ClienteBean implements Serializable {
 
   // Objeto que gestiona este bean
-
   private Cliente cliente;
 
   // Atributos del objeto Cliente
@@ -60,11 +59,10 @@ public class ClienteBean implements Serializable {
       cliente.setCurp(curp);
       cliente.setNumeroSeguroSocial(numeroSeguroSocial);
       cliente.setSujeto(sujeto);
-      
+
       return clienteDao.insertar(cliente);
     }
   }
-
 
   // MÉTODOS AUXILIARES
   public void resetAtributos() {
@@ -73,7 +71,6 @@ public class ClienteBean implements Serializable {
     numeroSeguroSocial = null;
     sujeto = new Sujeto();
   }
-
 
   // SETTERS & GETTERS
   public String getNumeroCliente() {

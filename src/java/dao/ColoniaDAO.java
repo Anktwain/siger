@@ -5,10 +5,14 @@
  */
 package dao;
 
+import dto.Colonia;
+import java.util.List;
+
 /**
  *
  * @author Eduardo
  */
 public interface ColoniaDAO {
-  
+  public List<Colonia> buscarColoniasPorMunicipio(int idMunicipio);
+  public Colonia buscar(int idColonia);
 }

@@ -5,15 +5,23 @@
  */
 package beans;
 
+import dao.ColoniaDAO;
 import dao.DireccionDAO;
+import dao.EstadoRepublicaDAO;
+import dao.MunicipioDAO;
+import dto.Colonia;
 import dto.Direccion;
+import dto.EstadoRepublica;
+import dto.Municipio;
 import dto.Sujeto;
+import impl.ColoniaIMPL;
 import impl.DireccionIMPL;
+import impl.EstadoRepublicaIMPL;
+import impl.MunicipioIMPL;
 import java.io.Serializable;
-import javax.faces.application.FacesMessage;
+import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import util.log.Logs;
 
 /**
@@ -23,197 +31,156 @@ import util.log.Logs;
 @ManagedBean
 @ViewScoped
 public class DireccionBean implements Serializable {
-
-  // Objeto Direccion, sus propiedades y acceso a la BD
+  // Objeto que gestiona este bean
   private Direccion direccion;
-
-  private String calle;
-  private String colonia;
-  private String municipio;
-  private String estado;
-  private String cp;
+  
+  // Atributos del objeto Direccion
   private String tipo;
-
+  private String calle;
+  private Colonia colonia;
+  private Municipio municipio;
+  private EstadoRepublica estado;
+  
+  // Acceso a la BD
   private DireccionDAO direccionDao;
-
+  private ColoniaDAO coloniaDao;
+  private MunicipioDAO municipioDao;
+  private EstadoRepublicaDAO estadoDao;
+  
+  // Listas para construir direcciones
+  private List<EstadoRepublica> estados;
+  private List<Municipio> municipos;
+  private List<Colonia> colonias;
+  
   // Construyendo...
-
-  /**
-   *
-   */
-    public DireccionBean() {
+  public DireccionBean() {
     direccion = new Direccion();
     direccionDao = new DireccionIMPL();
+    colonia = new Colonia();
+    coloniaDao = new ColoniaIMPL();
+    municipio = new Municipio();
+    municipioDao = new MunicipioIMPL();
+    estado = new EstadoRepublica();
+    estadoDao = new EstadoRepublicaIMPL();
   }
   
-  public boolean editar(Direccion dir) {
-    FacesContext context = FacesContext.getCurrentInstance();
-    boolean ok = false;
-
-    ok = direccionDao.editar(dir);
-    if (ok) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-              "Operación Exitosa",
-              "Se modificó el registro seleccionado"));
+  // GESTIÓN DE DIRECCIONES
+  public Direccion insertar(Sujeto sujeto) {
+    // Verfica que el sujeto sea válido
+    if (sujeto.getIdSujeto() == null) {
+      Logs.log.error("El método DireccionBean.insertar(sujeto) recibe un sujeto null");
+      return null;
     } else {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-              "Operación Exitosa",
-              "No se pudo editar el registro seleccionado."));
-    }
+      // Crea el objeto Telefono
+      direccion.setCalle(calle);
+      direccion.setColonia(colonia);
+      direccion.setEstadoRepublica(estado);
+      direccion.setMunicipio(municipio);
+      direccion.setTipo(tipo);
+      direccion.setSujeto(sujeto);
 
-    return ok;
+      return direccionDao.insertar(direccion);
   }
-
-  public boolean eliminar(Direccion dir) {
-    FacesContext context = FacesContext.getCurrentInstance();
-    boolean ok = false;
-
-    ok = direccionDao.eliminar(dir);
-
-    if (ok) {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-              "Operación Exitosa",
-              "Se eliminó el registro seleccionado"));
-    } else {
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-              "Operación Exitosa",
-              "No se pudo eliminar el registro seleccionado."));
-    }
-
-    return ok;
   }
-
-  /**
-   *
-   * @param sujeto
-   */
-  public void agregar(Sujeto sujeto) {
-    direccion.setCalle(calle);
-//    direccion.setColonia(colonia);
-//    direccion.setMunicipio(municipio);
-//    direccion.setEstado(estado);
-//    direccion.setCodigoPostal(cp);
-    direccion.setTipo(tipo);
-    direccion.setSujeto(sujeto);
-
-    if (direccionDao.insertar(direccion)) {
-      FacesContext context = FacesContext.getCurrentInstance();
-      context.addMessage(null, new FacesMessage("Operación Exitosa",
-              "Se agregó una nueva Dirección: " + calle + "... para: "
-              + " " + sujeto.getNombreRazonSocial()));
-      limpiarEntradas();
-      Logs.log.info("Se agregó objeto: Direccion");
-    } else {
-      Logs.log.error("No se pudo agregar objeto: Direccion.");
-    }
+  
+  // AUXILIARES
+  public void listarEstados() {
+    estados = estadoDao.buscarTodo();
   }
-
-  /**
-   *
-   */
-  public void limpiarEntradas() {
-    calle = null;
-    colonia = null;
-    municipio = null;
-    estado = null;
-    cp = null;
+  
+  public void listarMunicipiosPorEstado() {
+    estado = estadoDao.buscar(estado.getIdEstado());
+    municipos = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
+  }
+  
+  public void listarColoniasPorMunicipio() {
+    municipio = municipioDao.buscar(municipio.getIdMunicipio());
+    colonias = coloniaDao.buscarColoniasPorMunicipio(municipio.getIdMunicipio());
+  }
+  
+  public void agregarCP() {
+    colonia = coloniaDao.buscar(colonia.getIdColonia());
+  }
+  
+  public void resetAtributos() {
     tipo = null;
+    calle = null;
+    colonia.setIdColonia(null);
+    municipio.setIdMunicipio(null);
+    estado.setIdEstado(null);
+  }
+  
+  // SETTERS & GETTERS
+  public Direccion getDireccion() {
+    return direccion;
   }
 
-  /**
-   *
-   * @return
-   */
-  public String getCalle() {
-    return calle;
+  public void setDireccion(Direccion direccion) {
+    this.direccion = direccion;
   }
 
-  /**
-   *
-   * @param calle
-   */
-  public void setCalle(String calle) {
-    this.calle = calle;
-  }
-
-  /**
-   *
-   * @return
-   */
-  public String getColonia() {
-    return colonia;
-  }
-
-  /**
-   *
-   * @param colonia
-   */
-  public void setColonia(String colonia) {
-    this.colonia = colonia;
-  }
-
-  /**
-   *
-   * @return
-   */
-  public String getMunicipio() {
-    return municipio;
-  }
-
-  /**
-   *
-   * @param municipio
-   */
-  public void setMunicipio(String municipio) {
-    this.municipio = municipio;
-  }
-
-  /**
-   *
-   * @return
-   */
-  public String getEstado() {
-    return estado;
-  }
-
-  /**
-   *
-   * @param estado
-   */
-  public void setEstado(String estado) {
-    this.estado = estado;
-  }
-
-  /**
-   *
-   * @return
-   */
-  public String getCp() {
-    return cp;
-  }
-
-  /**
-   *
-   * @param cp
-   */
-  public void setCp(String cp) {
-    this.cp = cp;
-  }
-
-  /**
-   *
-   * @return
-   */
   public String getTipo() {
     return tipo;
   }
 
-  /**
-   *
-   * @param tipo
-   */
   public void setTipo(String tipo) {
     this.tipo = tipo;
   }
 
+  public String getCalle() {
+    return calle;
+  }
+
+  public void setCalle(String calle) {
+    this.calle = calle;
+  }
+
+  public Colonia getColonia() {
+    return colonia;
+  }
+
+  public void setColonia(Colonia colonia) {
+    this.colonia = colonia;
+  }
+
+  public Municipio getMunicipio() {
+    return municipio;
+  }
+
+  public void setMunicipio(Municipio municipio) {
+    this.municipio = municipio;
+  }
+
+  public EstadoRepublica getEstado() {
+    return estado;
+  }
+
+  public void setEstado(EstadoRepublica estado) {
+    this.estado = estado;
+  }
+
+  public List<EstadoRepublica> getEstados() {
+    return estados;
+  }
+
+  public void setEstados(List<EstadoRepublica> estados) {
+    this.estados = estados;
+  }
+
+  public List<Municipio> getMunicipos() {
+    return municipos;
+  }
+
+  public void setMunicipos(List<Municipio> municipos) {
+    this.municipos = municipos;
+  }
+
+  public List<Colonia> getColonias() {
+    return colonias;
+  }
+
+  public void setColonias(List<Colonia> colonias) {
+    this.colonias = colonias;
+  }
+  
 }

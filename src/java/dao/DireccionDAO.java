@@ -19,7 +19,7 @@ public interface DireccionDAO {
      * @param direccion
      * @return
      */
-    public boolean insertar(Direccion direccion);
+    public Direccion insertar(Direccion direccion);
 
     /**
      *

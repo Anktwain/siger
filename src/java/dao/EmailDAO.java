@@ -19,7 +19,7 @@ public interface EmailDAO {
      * @param email
      * @return
      */
-    public boolean insertar(Email email);
+    public Email insertar(Email email);
 
     /**
      *
