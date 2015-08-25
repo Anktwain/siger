@@ -37,8 +37,8 @@
             <div class="panel panel-default">
                 <div class="panel-tab clearfix">
                     <ul class="tab-bar">
-                      <li><a href="#nueva" data-toggle="tab" title="Click aqui si desea dar de alta una empresa"><h2><i class="fa fa-plus"></i> Nueva empresa</h2></a></li>
-                      <li><a href="#editar" data-toggle="tab" title="Click aqui si desea editar una empresa que ya esta registrada en el sistema"><h2><i class="fa fa-pencil"></i> Editar empresa</h2></a></li>
+                      <li><a href="#nueva" data-toggle="tab" title="Click aqu&iacute; si desea dar de alta una empresa"><h2><i class="fa fa-plus"></i> Nueva empresa</h2></a></li>
+                      <li><a href="#editar" data-toggle="tab" title="Click aqu&iacute; si desea editar una empresa que ya est&aacute; registrada en el sistema"><h2><i class="fa fa-pencil"></i> Editar empresa</h2></a></li>
                     </ul>
                 </div>
                 <div class="panel-body">
@@ -52,9 +52,9 @@
                                     </div>
                                     <div class="modal-body">
                                         <!-- FORMULARIO PARA REGISTRAR UNA NUEVA EMPRESA -->
-                                        <h:outputText value="Razon Social:" />
+                                        <h:outputText value="Raz&oacute;n Social:" />
                                         <br />
-                                        <p:inputText id="razon" value="#{empresasBean.nuevaRazonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
+                                        <p:inputText id="razon" value="#{empresasBean.nuevaRazonSocial}" size="50" required="true" requiredMessage="Debe ingresar una raz&oacute;n social" />
                                         <p:tooltip for="razon" value="Indique el nombre completo de la empresa incluyendo el tipo de sociedad de la que se trata" />
                                         <br />
                                         <h:outputText value="RFC:" />
@@ -69,44 +69,44 @@
                                         <br />
                                         <p:separator />
                                         <h4>
-                                            <h:outputText value="Agregue telefonos, correos y direcciones:" />
+                                            <h:outputText value="Agregue tel&eacute;fonos, correos y direcciones:" />
                                         </h4>
                                         <br />
                                         <p:commandButton id="btnTelsEmpresa" icon="fa fa-phone" type="button">
-                                            <p:tooltip for="btnTelsEmpresa" value="Registre numeros telefonicos para esta empresa" />
+                                            <p:tooltip for="btnTelsEmpresa" value="Registre n&uacute;meros telefonicos para esta empresa" />
                                             <p:overlayPanel id="pnlTelsEmpresa" for="btnTelsEmpresa" hideEffect="size" dynamic="true" style="width: 300px">
-                                                Numero:
+                                                N&uacute;mero:
                                                 <br />
-                                                <p:inputText id="numero" required="true" requiredMessage="Ingrese un numero telefonico" value="#{empresasBean.nuevoNumero}" size="25" />
-                                                <p:tooltip for="numero" value="Indique el numero de la empresa sin clave lada" />
+                                                <p:inputText id="numero" required="true" requiredMessage="Ingrese un  telefonico" value="#{empresasBean.nuevoNumero}" size="25" />
+                                                <p:tooltip for="numero" value="Indique el n&uacute;mero de la empresa sin clave lada" />
                                                 <br />
                                                 Tipo:
                                                 <br />
                                                 <p:inputText id="tipo" value="#{empresasBean.nuevoTipoTel}" size="25" />
-                                                <p:tooltip for="tipo" value="Indique si es un numero de casa, oficina, etc." />
+                                                <p:tooltip for="tipo" value="Indique si es un n&uacute;mero de casa, oficina, etc." />
                                                 <br />
                                                 Clave Lada:
                                                 <br />
                                                 <p:inputText id="lada" value="#{empresasBean.nuevaLada}" size="25" />
-                                                <p:tooltip for="lada" value="Indique la clave lada del telefono proporcionado" />
+                                                <p:tooltip for="lada" value="Indique la clave lada del tel&eacute;fono proporcionado" />
                                                 <br />
                                                 Horario de llamadas:
                                                 <br />
                                             <p:inputText id="hora" value="#{empresasBean.nuevoHorarioAtencionTel}" size="25" />
-                                            <p:tooltip for="hora" value="Indique un horario de atencion para realizar llamadas" />
+                                            <p:tooltip for="hora" value="Indique un horario de atenci&oacute;n para realizar llamadas" />
                                             </p:overlayPanel>
                                         </p:commandButton>
                                         <p:commandButton id="btnMailsEmpresa" icon="fa fa-envelope" type="button">
                                         <p:tooltip for="btnMailsEmpresa" value="Registre direcciones de correo para esta empresa" />
                                             <p:overlayPanel id="pnlMailsEmpresa" for="btnMailsEmpresa" hideEffect="size" dynamic="true" style="width: 350px">
-                                                Correo electronico:
+                                                Correo electr&oacute;nico:
                                                 <br />
-                                                <p:inputText id="correo" required="true" requiredMessage="Ingrese una direccion de correo" value="#{empresasBean.nuevoCorreo}" size="35" />
-                                                <p:tooltip for="correo" value="Indique el algun correo electronico de la empresa" />
+                                                <p:inputText id="correo" required="true" requiredMessage="Ingrese una direcci&oacute;n de correo" value="#{empresasBean.nuevoCorreo}" size="35" />
+                                                <p:tooltip for="correo" value="Indique el algun correo electr&oacute;nico de la empresa" />
                                             </p:overlayPanel>
                                         </p:commandButton>
                                         <p:commandButton id="btnDirsEmpresa" icon="fa fa-map-marker" actionListener="#{empresasBean.cargaEstados()}">
-                                        <p:tooltip for="btnDirsEmpresa" value="Registre direcciones fisicas para esta empresa" />
+                                        <p:tooltip for="btnDirsEmpresa" value="Registre direcciones f&iacute;sicas para esta empresa" />
                                             <p:overlayPanel id="pnlDirsEmpresa" for="btnDirsEmpresa" hideEffect="size" dynamic="true" style="width: 450px">
                                                 Calle:
                                                 <br />
@@ -114,15 +114,15 @@
                                                 <p:tooltip for="calle" value="Indique la calle donde se ubica la empresa" />
                                                 <br />
                                                 <br />
-                                                Numero Exterior:
+                                                N&uacute;mero Exterior:
                                                 &nbsp;
-                                                <p:inputText id="ext" required="true" requiredMessage="Ingrese un numero exterior" value="#{empresasBean.nuevoExterior}" size="5" />
-                                                <p:tooltip for="ext" value="Indique el numero exterior de la empresa" />
+                                                <p:inputText id="ext" required="true" requiredMessage="Ingrese un n&uacute;mero exterior" value="#{empresasBean.nuevoExterior}" size="5" />
+                                                <p:tooltip for="ext" value="Indique el n&uacute;mero exterior de la empresa" />
                                                 &nbsp;&nbsp;
-                                                Numero Interior:
+                                                N&uacute;mero Interior:
                                                 &nbsp;
                                                 <p:inputText id="int" value="#{empresasBean.nuevoInterior}" size="5" />
-                                                <p:tooltip for="int" value="Indique el numero interior, edificio, local, etc. de la empresa" />
+                                                <p:tooltip for="int" value="Indique el n&uacute;mero interior, edificio, local, etc. de la empresa" />
                                                 <br />
                                                 <br />
                                                 <h:form id="formCombos">
@@ -133,7 +133,7 @@
                                                         <f:selectItem itemLabel="Seleccione un estado" itemValue="" />
                                                         <f:selectItems value="#{empresasBean.conjuntoEstados}" />
                                                     </p:selectOneMenu>
-                                                    <p:tooltip for="comboboxEstados" value="Indique en que estado de la republica se ubica la empresa" />
+                                                    <p:tooltip for="comboboxEstados" value="Indique en que estado de la rep&uacute;blica se ubica la empresa" />
                                                     <br />
                                                     <br />
                                                     Municipio:
@@ -154,7 +154,7 @@
                                         <br />
                                         <br />
                                         <p:commandButton id="creacion" value="Aceptar" actionListener="#{empresasBean.crearEmpresa}" update="growl" />
-                                        <p:tooltip for="creacion" value="Click aqui para registrar a la empresa de manera definitiva" />
+                                        <p:tooltip for="creacion" value="Click aqu&iacute; para registrar a la empresa de manera definitiva" />
                                     </div>
                                     <div class="modal-footer">
                                     </div>
@@ -215,9 +215,9 @@
                                     <!--
                                     EDICION DE DATOS PRIMARIOS
                                     -->
-                                    <h:outputText value="Razon Social:" />
+                                    <h:outputText value="Raz&oacute;n Social:" />
                                     <br />
-                                    <p:inputText value="#{empresasBean.razonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
+                                    <p:inputText value="#{empresasBean.razonSocial}" size="50" required="true" requiredMessage="Debe ingresar una raz&oacute;n social" />
                                     <br />
                                     <h:outputText value="RFC:" />
                                     <br />
@@ -241,7 +241,7 @@
                                         <p:column headerText="Nombre del producto" style="width: 150px;">
                                             <p:outputLabel value="#{producto.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
                                         </p:column>
-                                        <p:column headerText="Descripcion" style="width: 450px;"> 
+                                        <p:column headerText="Descripci&oacute;n" style="width: 450px;"> 
                                             <h:outputText value="#{producto.descripcion}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
                                         </p:column>
                                         <f:facet name="footer">
@@ -261,7 +261,7 @@
                                         <p:column headerText="Nombre del subproducto" style="width: 150px;">
                                             <p:outputLabel value="#{subproducto.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
                                         </p:column>
-                                        <p:column headerText="Descripcion" style="width: 450px;"> 
+                                        <p:column headerText="Descripci&oacute;n" style="width: 450px;"> 
                                             <h:outputText value="#{subproducto.descripcion}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
                                         </p:column>
                                         <f:facet name="footer">
@@ -274,7 +274,7 @@
                                     <!--
                                     ELIMINAR A LA EMPRESA
                                     -->
-                                    <h:outputText value="Esta seguro de que desea eliminar a esta empresa?" />
+                                    <h:outputText value="&iquest;Est&aacute; seguro de que desea eliminar a esta empresa?" />
                                     <br />
                                     <br />
                                     <p:commandButton value="Eliminar" actionListener="#{empresasBean.eliminarEmpresa}" oncomplete="PF('modalEmpresa').hide();" />
@@ -291,7 +291,7 @@
                 <br />
                 <p:inputText value="#{empresasBean.prod}" size="50" />
                 <br />
-                <h:outputText value="Descripcion:" />
+                <h:outputText value="Descripci&oacute;n:" />
                 <br />
                 <p:inputTextarea value="#{empresasBean.desc}" rows="10" cols="50" />
                 <br />
@@ -304,7 +304,7 @@
                 <br />
                 <p:inputText value="#{empresasBean.subprod}" size="50" />
                 <br />
-                <h:outputText value="Descripcion:" />
+                <h:outputText value="Descripci&oacute;n:" />
                 <br />
                 <p:inputTextarea value="#{empresasBean.subdesc}" rows="10" cols="50" />
                 <br />
@@ -317,7 +317,7 @@
                 <br />
                 <p:inputText value="#{empresasBean.nuevoProd}" size="50" />
                 <br />
-                <h:outputText value="Descripcion:" />
+                <h:outputText value="Descripci&oacute;n:" />
                 <br />
                 <p:inputTextarea value="#{empresasBean.nuevaDesc}" rows="10" cols="50" />
                 <br />
@@ -330,7 +330,7 @@
                 <br />
                 <p:inputText value="#{empresasBean.nuevoSubprod}" size="50" />
                 <br />
-                <h:outputText value="Descripcion:" />
+                <h:outputText value="Descripci&oacute;n:" />
                 <br />
                 <p:inputTextarea value="#{empresasBean.nuevaSubdesc}" rows="10" cols="50" />
                 <br />

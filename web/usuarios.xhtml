@@ -183,10 +183,10 @@
                     </p:dataTable>
 
                     <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" 
-                              modal="true" showEffect="fade" hideEffect="fade" resizable="true">
+                              modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                       <p:outputPanel id="usuarioDetail" style="text-align:center;">
 
-                        <p:panelGrid  columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}">
+                        <p:panelGrid columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}">
 
                           <f:facet name="header">
                             <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}" height="200px"/> 
@@ -206,7 +206,7 @@
 
                           <h:outputText value="Perfil: "/>
                           <p:selectOneMenu onchange="" >
-                            <f:selectItems  value="#{perfilBean.ordenarLista(usuariosBean.usuarioSeleccionado.perfil)}" />
+                            <f:selectItems  value="#{usuariosBean.perfilBean.ordenarLista(usuariosBean.usuarioSeleccionado.perfil)}" />
                           </p:selectOneMenu>
 
                           <h:outputText value="Correo: "/>
@@ -216,10 +216,6 @@
                             <div class="text-center">
                               <p:commandButton value="Modificar" id="ajax" update="growl" />
                               <p:commandButton value="Eliminar" id="nonAjax" ajax="false" />
-                              <!--<p:selectOneButton onchange="" >
-                                                                <f:selectItem id="btn-modificar" itemLabel="Modificar" itemValue="" itemDisabled="true"/>
-                                                                <f:selectItem id="btn-eliminar" itemLabel="Eliminar" itemValue="true" />
-                                                              </p:selectOneButton>-->
                             </div>                              
                           </f:facet>
                         </p:panelGrid>

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import util.log.Logs;
 
 /**
@@ -12,7 +13,7 @@ import util.log.Logs;
  * @author Pablo
  */
 @ManagedBean(name = "perfilBean")
-@SessionScoped
+@ViewScoped
 public class PerfilBean implements Serializable {
 
   private String nombre;

@@ -15,10 +15,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import org.primefaces.model.SelectableDataModel;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import javax.faces.bean.ViewScoped;
@@ -40,7 +37,7 @@ import util.log.Logs;
  * @since SigerWeb2.0
  */
 @ManagedBean(name = "usuariosBean")
-@SessionScoped
+@ViewScoped
 //@ApplicationScoped
 public class UsuariosBean implements Serializable {
 
@@ -62,25 +59,49 @@ public class UsuariosBean implements Serializable {
   private List<Usuario> usuariosEncontrados;
   private List<Usuario> usuariosSeleccionados;
   private List<Usuario> todosUsuarios;
-  private final String rutaImPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL;
-  private List<PerfilBean> listaPerfiles;
+//  private final String rutaImPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL;
+//  private List<PerfilBean> listaPerfiles;
 
-  public List<PerfilBean> getListaPerfiles() {
-    return listaPerfiles;
+  public PerfilBean getPerfilBean() {
+    return perfilBean;
   }
 
-  public void setListaPerfiles(List<PerfilBean> listaPerfiles) {
-    this.listaPerfiles = listaPerfiles;
+  public void setPerfilBean(PerfilBean perfilBean) {
+    this.perfilBean = perfilBean;
   }
+  
+  private PerfilBean perfilBean;
 
   /**
-   *
-   * @return
+   * Constructor por defecto. <br/>
+   * Configura ...
    */
-  public String getRutaImPerfil() {
-    return rutaImPerfil;
+  public UsuariosBean() {
+    usuarioDao = new UsuarioIMPL();
+    usuario = new Usuario();
+    perfil = Perfiles.GESTOR_NO_CONFIRMADO;
+    perfilBean = new PerfilBean();
+    imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
+    gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
+    todosUsuarios = usuarioDao.buscarTodo();
+    Logs.log.info("\n*************************** todosUsuario:");
+    int i = 0;
+    for (Usuario usuarioActual : todosUsuarios) {
+      Logs.log.info("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
+    }
   }
 
+//  public List<PerfilBean> getListaPerfiles() {
+//    return listaPerfiles;
+//  }
+//
+//  public void setListaPerfiles(List<PerfilBean> listaPerfiles) {
+//    this.listaPerfiles = listaPerfiles;
+//  }
+
+//  public String getRutaImPerfil() {
+//    return rutaImPerfil;
+//  }
   /**
    *
    *
@@ -106,7 +127,7 @@ public class UsuariosBean implements Serializable {
    */
   public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
     this.usuarioSeleccionado = usuarioSeleccionado;
-    Logs.log.info("### Usuario seleccionado: " + this.usuarioSeleccionado.getNombre() + " " + this.usuarioSeleccionado.getPaterno() + " <" + this.usuarioSeleccionado.getNombreLogin()  + ">P:" + this.usuarioSeleccionado.getPerfil());
+    Logs.log.info("### Usuario seleccionado: " + this.usuarioSeleccionado.getNombre() + " " + this.usuarioSeleccionado.getPaterno() + " <" + this.usuarioSeleccionado.getNombreLogin() + ">P:" + this.usuarioSeleccionado.getPerfil());
   }
 
   /**
@@ -116,24 +137,6 @@ public class UsuariosBean implements Serializable {
    */
   public void setTodosUsuarios(List<Usuario> todosUsuarios) {
     this.todosUsuarios = todosUsuarios;
-  }
-
-  /**
-   * Constructor por defecto. <br/>
-   * Configura ...
-   */
-  public UsuariosBean() {
-    usuarioDao = new UsuarioIMPL();
-    usuario = new Usuario();
-    perfil = Perfiles.GESTOR_NO_CONFIRMADO;
-    imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
-    gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
-    todosUsuarios = usuarioDao.buscarTodo();
-    Logs.log.info("\n*************************** todosUsuario:");
-    int i = 0;
-    for (Usuario usuarioActual : todosUsuarios) {
-      Logs.log.info("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
-    }
   }
 
   /**
