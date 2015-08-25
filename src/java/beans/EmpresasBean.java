@@ -14,6 +14,7 @@ import dto.Colonia;
 import dto.Producto;
 import dto.Subproducto;
 import dto.Sujeto;
+import impl.ColoniaIMPL;
 import impl.EmpresaIMPL;
 import impl.EstadoRepublicaIMPL;
 import impl.MunicipioIMPL;
@@ -113,6 +114,7 @@ public class EmpresasBean implements Serializable {
     private ColoniaDAO coloniaDao;
     private EstadoRepublica estado;
     private Municipio municipio;
+    private Colonia colonia;
     
     /**
      *
@@ -131,9 +133,13 @@ public class EmpresasBean implements Serializable {
         nuevoProducto = new Producto();
         nuevoSubproducto = new Subproducto();
         estadoDao = new EstadoRepublicaIMPL();
-        conjuntoEstados = estadoDao.buscarTodo();
         municipioDao = new MunicipioIMPL();
+        estado = estadoDao.buscar(1);
+        municipio = municipioDao.buscar(1);
+        coloniaDao = new ColoniaIMPL();
+        colonia = coloniaDao.buscar(1);
         conjuntoMunicipios = municipioDao.buscarTodo();
+        conjuntoColonias = coloniaDao.buscarColoniasPorMunicipio(1);
     }
     
     public boolean validarRfc(String rfc){
@@ -271,26 +277,29 @@ public class EmpresasBean implements Serializable {
         RequestContext.getCurrentInstance().update("editarSubproductos");
     }
     
+    public void cargaEstados() {
+        conjuntoEstados = estadoDao.buscarTodo();
+        municipio = null;
+        colonia = null;
+    }
+    
     public void cargaMunicipios() {
-        conjuntoMunicipios.clear();
-        municipioDao = new MunicipioIMPL();
-        conjuntoMunicipios = municipioDao.buscarMunicipiosPorEstado(9);
+        estado = estadoDao.buscar(estado.getIdEstado());
+        conjuntoMunicipios = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
         int i=0;
         for(i=0; i<(conjuntoMunicipios.size()); i++){
             System.out.println(conjuntoMunicipios.get(i).getNombre());
         }
-        RequestContext.getCurrentInstance().update("formCombos");
-        /*
-        if(estado !=null && !estado.equals("")){
-            System.out.println(estado.getNombre());
-            conjuntoMunicipios = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
-            RequestContext.getCurrentInstance().update("formCombos");
+    }
+    
+    public void cargaColonias() {
+        municipio = municipioDao.buscar(municipio.getIdMunicipio());
+        conjuntoColonias.clear();
+        conjuntoColonias = coloniaDao.buscarColoniasPorMunicipio(idMunicipio);
+        int i=0;
+        for(i=0; i<(conjuntoColonias.size()); i++){
+            System.out.println(conjuntoColonias.get(i).getNombre());
         }
-        else{
-            System.out.println("************ CONSOLA SIGERWEB ****************");
-            System.out.println("No se pudio cambiar el municipio");
-        }
-        */
     }
 
     /**
@@ -912,4 +921,11 @@ public class EmpresasBean implements Serializable {
         this.municipio = municipio;
     }
 
+    public Colonia getColonia() {
+        return colonia;
+    }
+
+    public void setColonia(Colonia colonia) {
+        this.colonia = colonia;
+    }
 }
