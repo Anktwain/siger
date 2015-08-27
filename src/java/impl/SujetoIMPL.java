@@ -201,29 +201,6 @@ public class SujetoIMPL implements SujetoDAO {
     /**
      *
      *
-     * @return
-     */
-    @Override
-    public List<Sujeto> buscarEmpresas() {
-        Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
-        List<Sujeto> listaSujeto;
-
-        try { // Buscamos todas las empresas.
-            //"select e.name, a.city from Employee e INNER JOIN e.address a"
-            listaSujeto = sesion.createSQLQuery("select * from sujeto s join empresa e where s.eliminado = " + Sujetos.ACTIVO + " and s.id_sujeto = e.sujetos_id_sujeto;").addEntity(Sujeto.class).list();
-        } catch(HibernateException he) {
-            listaSujeto = null;
-            he.printStackTrace();
-        } finally {
-            cerrar(sesion);
-        }
-        return listaSujeto;
-    }
-
-    /**
-     *
-     *
      * @param
      */
     private void cerrar(Session sesion) {

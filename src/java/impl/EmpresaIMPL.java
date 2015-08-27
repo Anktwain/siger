@@ -2,11 +2,13 @@ package impl;
 
 import dao.EmpresaDAO;
 import dto.Empresa;
+import dto.Sujeto;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.Sujetos;
 
 /**
  * La clase {@code EmpresaIMPL} permite ...
@@ -155,7 +157,29 @@ public class EmpresaIMPL implements EmpresaDAO {
          throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
          */
     }
+    /**
+     *
+     *
+     * @return
+     */
+    
+    @Override
+    public List<Sujeto> buscarEmpresas() {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        List<Sujeto> listaSujeto;
 
+        try { // Buscamos todas las empresas.
+            //"select e.name, a.city from Employee e INNER JOIN e.address a"
+            listaSujeto = sesion.createSQLQuery("select * from sujeto s join empresa e where s.eliminado = " + Sujetos.ACTIVO + " and s.id_sujeto = e.sujetos_id_sujeto;").addEntity(Sujeto.class).list();
+        } catch(HibernateException he) {
+            listaSujeto = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return listaSujeto;
+    }
     /**
      *
      *
