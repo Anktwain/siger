@@ -32,7 +32,8 @@ public class EmailIMPL implements EmailDAO {
     try {
       sesion.save(email);
       tx.commit();
-      Logs.log.info("Se insertó un nuevo Email: id = " + email.getIdEmail());
+      Logs.log.info("Se insertó un nuevo Email: id = " + email.getIdEmail() +
+              " asociado a Sujeto: id = " + email.getSujeto().getIdSujeto());
     } catch (HibernateException he) {
       email = null;
       if (tx != null) {

@@ -39,14 +39,22 @@ public class VistaClientes implements Serializable {
 
   // Listas para desplegarse en las tablas
   private List<Cliente> listaClientes;
+  private List<Telefono> listaTelefonos;
+  private List<Email> listaEmails;
+  private List<Direccion> listaDirecciones;
+  private List<Contacto> listaContactos;
 
   // Activar/Desactivar controles de la vista
   private boolean btnAltaClienteDisabled;
+  private boolean btnAltaContactoDisabled;
   private boolean txtNombreDisabled;
   private boolean txtRfcDisabled;
   private boolean txtCurpDisabled;
   private boolean txtNssDisabled;
   private boolean txtNcteDisabled;
+  private boolean txtNombreContactoDisabled;
+  private boolean txtRfcContactoDisabled;
+  private boolean txtObservacionesDisabled;
 
   // Indica tipo sujeto seleccionado actualmente
   private int tipoSujetoActual;
@@ -73,11 +81,15 @@ public class VistaClientes implements Serializable {
     direccionlActual = new Direccion();
 
     btnAltaClienteDisabled = false;
+    btnAltaContactoDisabled = false;
     txtCurpDisabled = false;
     txtNcteDisabled = false;
     txtNombreDisabled = false;
     txtNssDisabled = false;
     txtRfcDisabled = false;
+    txtNombreContactoDisabled = false;
+    txtRfcContactoDisabled = false;
+    txtObservacionesDisabled = false;
 
     tipoSujetoActual = 0;
 
@@ -87,7 +99,6 @@ public class VistaClientes implements Serializable {
   @PostConstruct
   public void listarClientes() {
     listaClientes = clienteBean.listar();
-    direccionBean.listarEstados(); //BORRARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 
     if (listaClientes == null) {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -101,10 +112,23 @@ public class VistaClientes implements Serializable {
   public void onRowClienteSelect(SelectEvent evento) {
     tipoSujetoActual = Sujetos.CLIENTE;
     clienteActual = (Cliente) evento.getObject();
+    listaTelefonos = telefonoBean.listar(clienteActual.getSujeto().getIdSujeto());
+    listaEmails = emailBean.listar(clienteActual.getSujeto().getIdSujeto());
+    listaDirecciones = direccionBean.listar(clienteActual.getSujeto().getIdSujeto());
+    listaContactos = contactoBean.listar(clienteActual.getSujeto().getIdSujeto());
   }
 
   // OTROS MÉTODOS
-  public void incializarCliente() {
+  public void terminarProceso() {
+    inicializarCliente();
+    telefonoBean.resetAtributos();
+    emailBean.resetAtributos();
+    direccionBean.resetAtributos();
+    clienteActual = new Cliente();
+    contactoActual = new Contacto();
+  }
+
+  public void inicializarCliente() {
     clienteBean.getSujetoBean().resetAtributos();
     clienteBean.resetAtributos();
     setBtnAltaClienteDisabled(false);
@@ -113,7 +137,16 @@ public class VistaClientes implements Serializable {
     setTxtNombreDisabled(false);
     setTxtNssDisabled(false);
     setTxtRfcDisabled(false);
-    // contactoBean.nuevoContacto ó mejor aún: contactoBean.inicializarContacto()
+    inicializarContacto();
+  }
+
+  public void inicializarContacto() {
+    contactoBean.getSujetoBean().resetAtributos();
+    contactoBean.resetAtributos();
+    setBtnAltaContactoDisabled(false);
+    setTxtNombreContactoDisabled(false);
+    setTxtRfcContactoDisabled(false);
+    setTxtObservacionesDisabled(false);
   }
 
   // Gestión de clientes
@@ -158,6 +191,34 @@ public class VistaClientes implements Serializable {
   }
 
   public void agregarContacto() {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    // Si no se ha dado de alta un cliente:
+    if (clienteActual.getSujeto() == null) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se puede agregar el Contacto",
+              "Primero debe agregar un nuevo Cliente"));
+      contactoBean.resetAtributos();
+
+    } else {
+      System.out.println("Cliente actual: " + clienteActual.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
+      contactoActual = contactoBean.insertar(clienteActual);
+      if (contactoActual == null) {
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "No se pudo agregar el nuevo Contacto",
+                "Reporte esta situación a Soporte Técnico"));
+        contactoBean.resetAtributos();
+      } else {
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Se agregó un nuevo Contacto:",
+                contactoActual.getSujeto().getNombreRazonSocial() + "\n" + clienteActual.getSujeto().getNombreRazonSocial()));
+        setBtnAltaContactoDisabled(true);
+        setTxtNombreContactoDisabled(true);
+        setTxtRfcContactoDisabled(true);
+        setTxtObservacionesDisabled(true);
+        System.out.println("Cliente actual: " + clienteActual.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
+      }
+    }
   }
 
   public void editarContacto() {
@@ -166,9 +227,9 @@ public class VistaClientes implements Serializable {
   public void eliminarContacto() {
   }
 
-  public void agregarDireccion() {
+  public void agregarDireccionCliente() {
     FacesContext context = FacesContext.getCurrentInstance();
-    
+
     // Si no se ha dado de alta un cliente:
     if (clienteActual.getSujeto() == null) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -176,19 +237,40 @@ public class VistaClientes implements Serializable {
               "Primero debe agregar un nuevo Cliente"));
       direccionBean.resetAtributos();
     } else {
-      direccionlActual = direccionBean.insertar(clienteActual.getSujeto());
-      if (direccionlActual == null) {
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "No se pudo agregar la nueva Dirección",
-                "Reporte esta situación a Soporte Técnico"));
-      } else {
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Se agregó una nueva Dirección:",
-                direccionlActual.getCalle() + "...\n" + clienteActual.getSujeto().getNombreRazonSocial()));
-        direccionBean.resetAtributos();
-
-      }
+      agregarDireccion(clienteActual.getSujeto());
     }
+  }
+
+  public void agregarDireccionContacto() {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    // Si no se ha dado de alta un contacto:
+    if (contactoActual.getSujeto() == null) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se puede agregar la Dirección",
+              "Primero debe agregar un nuevo Contacto"));
+      direccionBean.resetAtributos();
+    } else {
+      agregarDireccion(contactoActual.getSujeto());
+    }
+  }
+
+  private void agregarDireccion(Sujeto sujeto) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    direccionlActual = direccionBean.insertar(sujeto);
+    if (direccionlActual == null) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se pudo agregar la nueva Dirección",
+              "Reporte esta situación a Soporte Técnico"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Se agregó una nueva Dirección:",
+              direccionlActual.getCalle() + "...\n" + sujeto.getNombreRazonSocial()));
+      direccionBean.resetAtributos();
+
+    }
+
   }
 
   public void editarDireccion() {
@@ -197,7 +279,7 @@ public class VistaClientes implements Serializable {
   public void eliminarDireccion() {
   }
 
-  public void agregarTelefono() {
+  public void agregarTelefonoCliente() {
     FacesContext context = FacesContext.getCurrentInstance();
 
     // Si no se ha dado de alta un cliente:
@@ -207,18 +289,38 @@ public class VistaClientes implements Serializable {
               "Primero debe agregar un nuevo Cliente"));
       telefonoBean.resetAtributos();
     } else {
-      telefonoActual = telefonoBean.insertar(clienteActual.getSujeto());
-      if (telefonoActual == null) {
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "No se pudo agregar el nuevo Teléfono",
-                "Reporte esta situación a Soporte Técnico"));
-      } else {
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Se agregó un nuevo Teléfono:",
-                telefonoActual.getNumero() + "\n" + clienteActual.getSujeto().getNombreRazonSocial()));
-        telefonoBean.resetAtributos();
+      agregarTelefono(clienteActual.getSujeto());
+    }
+  }
 
-      }
+  public void agregarTelefonoContacto() {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    // Si no se ha dado de alta un contacto:
+    if (contactoActual.getSujeto() == null) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se puede agregar el Teléfono",
+              "Primero debe agregar un nuevo Contacto"));
+      telefonoBean.resetAtributos();
+    } else {
+      agregarTelefono(contactoActual.getSujeto());
+    }
+  }
+
+  private void agregarTelefono(Sujeto sujeto) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    telefonoActual = telefonoBean.insertar(sujeto);
+    if (telefonoActual == null) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se pudo agregar el nuevo Teléfono",
+              "Reporte esta situación a Soporte Técnico"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Se agregó un nuevo Teléfono:",
+              telefonoActual.getNumero() + "\n" + sujeto.getNombreRazonSocial()));
+      telefonoBean.resetAtributos();
+
     }
   }
 
@@ -228,7 +330,7 @@ public class VistaClientes implements Serializable {
   public void eliminarTelefono() {
   }
 
-  public void agregarEmail() {
+  public void agregarEmailCliente() {
     FacesContext context = FacesContext.getCurrentInstance();
 
     // Si no se ha dado de alta un cliente:
@@ -238,18 +340,38 @@ public class VistaClientes implements Serializable {
               "Primero debe agregar un nuevo Cliente"));
       emailBean.resetAtributos();
     } else {
-      emailActual = emailBean.insertar(clienteActual.getSujeto());
-      if (emailActual == null) {
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "No se pudo agregar el nuevo E-mail",
-                "Reporte esta situación a Soporte Técnico"));
-      } else {
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Se agregó un nuevo E-mail:",
-                emailActual.getDireccion() + "\n" + clienteActual.getSujeto().getNombreRazonSocial()));
-        emailBean.resetAtributos();
+      agregarEmail(clienteActual.getSujeto());
+    }
+  }
 
-      }
+  public void agregarEmailContacto() {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    // Si no se ha dado de alta un contacto:
+    if (contactoActual.getSujeto() == null) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se puede agregar E-mail",
+              "Primero debe agregar un nuevo Contacto"));
+      emailBean.resetAtributos();
+    } else {
+      agregarEmail(contactoActual.getSujeto());
+    }
+  }
+
+  private void agregarEmail(Sujeto sujeto) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    emailActual = emailBean.insertar(sujeto);
+    if (emailActual == null) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se pudo agregar el nuevo E-mail",
+              "Reporte esta situación a Soporte Técnico"));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Se agregó un nuevo E-mail:",
+              emailActual.getDireccion() + "\n" + sujeto.getNombreRazonSocial()));
+      emailBean.resetAtributos();
+
     }
   }
 
@@ -316,12 +438,52 @@ public class VistaClientes implements Serializable {
     this.listaClientes = listaClientes;
   }
 
+  public List<Telefono> getListaTelefonos() {
+    return listaTelefonos;
+  }
+
+  public void setListaTelefonos(List<Telefono> listaTelefonos) {
+    this.listaTelefonos = listaTelefonos;
+  }
+
+  public List<Email> getListaEmails() {
+    return listaEmails;
+  }
+
+  public void setListaEmails(List<Email> listaEmails) {
+    this.listaEmails = listaEmails;
+  }
+
+  public List<Direccion> getListaDirecciones() {
+    return listaDirecciones;
+  }
+
+  public void setListaDirecciones(List<Direccion> listaDirecciones) {
+    this.listaDirecciones = listaDirecciones;
+  }
+
+  public List<Contacto> getListaContactos() {
+    return listaContactos;
+  }
+
+  public void setListaContactos(List<Contacto> listaContactos) {
+    this.listaContactos = listaContactos;
+  }
+
   public boolean isBtnAltaClienteDisabled() {
     return btnAltaClienteDisabled;
   }
 
   public void setBtnAltaClienteDisabled(boolean btnAltaClienteDisabled) {
     this.btnAltaClienteDisabled = btnAltaClienteDisabled;
+  }
+
+  public boolean isBtnAltaContactoDisabled() {
+    return btnAltaContactoDisabled;
+  }
+
+  public void setBtnAltaContactoDisabled(boolean btnAltaContactoDisabled) {
+    this.btnAltaContactoDisabled = btnAltaContactoDisabled;
   }
 
   public boolean isTxtNombreDisabled() {
@@ -362,6 +524,30 @@ public class VistaClientes implements Serializable {
 
   public void setTxtNcteDisabled(boolean txtNcteDisabled) {
     this.txtNcteDisabled = txtNcteDisabled;
+  }
+
+  public boolean isTxtNombreContactoDisabled() {
+    return txtNombreContactoDisabled;
+  }
+
+  public void setTxtNombreContactoDisabled(boolean txtNombreContactoDisabled) {
+    this.txtNombreContactoDisabled = txtNombreContactoDisabled;
+  }
+
+  public boolean isTxtRfcContactoDisabled() {
+    return txtRfcContactoDisabled;
+  }
+
+  public void setTxtRfcContactoDisabled(boolean txtRfcContactoDisabled) {
+    this.txtRfcContactoDisabled = txtRfcContactoDisabled;
+  }
+
+  public boolean isTxtObservacionesDisabled() {
+    return txtObservacionesDisabled;
+  }
+
+  public void setTxtObservacionesDisabled(boolean txtObservacionesDisabled) {
+    this.txtObservacionesDisabled = txtObservacionesDisabled;
   }
 
   public int getTipoSujetoActual() {

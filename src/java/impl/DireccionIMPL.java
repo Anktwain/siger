@@ -32,7 +32,8 @@ public class DireccionIMPL implements DireccionDAO {
     try {
       sesion.save(direccion);
       tx.commit();
-      Logs.log.info("Se insertó una nueva Direccion: id = " + direccion.getIdDireccion());
+      Logs.log.info("Se insertó una nueva Direccion: id = " + direccion.getIdDireccion()
+              + " asociado a Sujeto: id = " + direccion.getSujeto().getIdSujeto());
     } catch (HibernateException he) {
       direccion = null;
       if (tx != null) {
