@@ -54,10 +54,4 @@ public interface SujetoDAO {
      * @return
      */
     public List<Sujeto> buscarTodo();
-
-    /**
-     *
-     * @return
-     */
-    public List<Sujeto> buscarEmpresas();
 }

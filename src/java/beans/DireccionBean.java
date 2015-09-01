@@ -96,6 +96,7 @@ public class DireccionBean implements Serializable {
   public void listarMunicipiosPorEstado() {
     estado = estadoDao.buscar(estado.getIdEstado());
     municipos = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
+    System.out.println(estado.getNombre());
   }
 
   public void listarColoniasPorMunicipio() {

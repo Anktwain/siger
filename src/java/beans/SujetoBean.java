@@ -17,7 +17,7 @@ import util.constantes.Sujetos;
  *
  * @author antonio
  */
-@ManagedBean
+@ManagedBean(name = "sujetoBean")
 @ViewScoped
 public class SujetoBean implements Serializable {
 

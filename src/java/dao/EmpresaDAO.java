@@ -54,5 +54,11 @@ public interface EmpresaDAO {
    *
    * @return
    */
-  public List<Empresa> buscarTodo();    
+  public List<Empresa> buscarTodo();
+  
+    /**
+     *
+     * @return
+     */
+    public List<Sujeto> buscarEmpresas();
 }
