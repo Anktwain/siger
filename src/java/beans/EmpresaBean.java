@@ -7,7 +7,6 @@ import impl.EmpresaIMPL;
 import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 /**
@@ -19,16 +18,10 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public class EmpresaBean implements Serializable {
 
-  // objeto empresa
+  // objetos necesarios
   private Empresa nuevaEmpresa;
-  
-  // atributo del objeto empresa
+  private Empresa empresaEditada;
   private String nombreCorto;
-  
-  // objeto sujeto
-  private Sujeto nuevoSujeto;
-  
-  // objeto dao
   private EmpresaDAO empresaDao;
 
   // Constructor
@@ -60,6 +53,26 @@ public class EmpresaBean implements Serializable {
     }
   }
   
+  // funcion para editar empresa
+  // recibe como parametro el sujeto y la empresa a editar
+  public boolean editarEmpresa(Sujeto sujetoSeleccionado){
+    // obtenemos a la empresa que se pretende editar
+    int id = sujetoSeleccionado.getIdSujeto();
+    empresaEditada = empresaDao.buscarEmpresaPorSujeto(id);
+    // primero editamos a la empresa
+    empresaEditada.setNombreCorto(nombreCorto);
+    // llamamos al metodo de editar empresa
+    boolean ok = empresaDao.editar(empresaEditada);
+    if(ok){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  
+  // setters y getters
+  
   public EmpresaDAO getEmpresaDao() {
     return empresaDao;
   }
@@ -76,20 +89,20 @@ public class EmpresaBean implements Serializable {
     this.nuevaEmpresa = nuevaEmpresa;
   }
 
-  public Sujeto getNuevoSujeto() {
-    return nuevoSujeto;
-  }
-
-  public void setNuevoSujeto(Sujeto nuevoSujeto) {
-    this.nuevoSujeto = nuevoSujeto;
-  }
-
   public String getNombreCorto() {
     return nombreCorto;
   }
 
   public void setNombreCorto(String nombreCorto) {
     this.nombreCorto = nombreCorto;
+  }
+
+  public Empresa getEmpresaEditada() {
+    return empresaEditada;
+  }
+
+  public void setEmpresaEditada(Empresa empresaEditada) {
+    this.empresaEditada = empresaEditada;
   }
 
 }

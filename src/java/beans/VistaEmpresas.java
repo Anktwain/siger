@@ -17,7 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import util.constantes.Patrones;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -30,10 +30,11 @@ import util.constantes.Patrones;
 public class VistaEmpresas implements Serializable {
 
   // objetos que se utilizaran unicamente en la vista
-  private Empresa empresaSeleccionada;
   private Empresa nuevaEmpresa;
+  private Empresa empresaSeleccionada;
   private Sujeto sujetoSeleccionado;
   private Sujeto nuevoSujeto;
+  private Sujeto nuevoSujetoContacto;
   private Producto nuevoProducto;
   private Producto productoSeleccionado;
   private Subproducto subproductoSeleccionado;
@@ -42,7 +43,12 @@ public class VistaEmpresas implements Serializable {
   private Telefono nuevoTelefono;
   private Email nuevoEmail;
   private Direccion nuevaDireccion;
-  
+
+  // variables para habilitar y deshabilitar forms
+  public boolean habilitaDatosPrimarios = false;
+  public boolean habilitaListaProductos = false;
+  public boolean habilitaListaSubproductos = false;
+
   // objetos necesarios para obtener la direccion completa
   public String calle;
   public String numext;
@@ -73,6 +79,7 @@ public class VistaEmpresas implements Serializable {
     nuevaEmpresa = new Empresa();
     sujetoSeleccionado = new Sujeto();
     nuevoSujeto = new Sujeto();
+    nuevoSujetoContacto = new Sujeto();
     productoSeleccionado = new Producto();
     nuevoProducto = new Producto();
     subproductoSeleccionado = new Subproducto();
@@ -85,14 +92,20 @@ public class VistaEmpresas implements Serializable {
 
   // post constructor para cargar la lista de empresas en madriza
   @PostConstruct
-  public void buscarEmpresas() {
-    // aprovechamos la funcion de postconstruccion y precargamos la lista de estados
+  public void cargaListas() {
+    // creamos una instancia de FacesContext para poder utilizar el growl
+    FacesContext actual = FacesContext.getCurrentInstance();
+    // cargamos la lista de estados
     direccionBean.listarEstados();
+    // si la lista esta vacia
+    if (direccionBean.getEstados() == null) {
+      actual.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo obtener la lista de estados de la republica"));
+    }
     // cargamos la lista de empresas
     listaEmpresas = empresaBean.buscarEmpresas();
+    // si la lista esta vacia
     if (listaEmpresas == null) {
-      FacesContext context = FacesContext.getCurrentInstance();
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo obtener la lista de empresas registradas"));
+      actual.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo obtener la lista de empresas registradas"));
     }
   }
 
@@ -105,18 +118,15 @@ public class VistaEmpresas implements Serializable {
     if (verificaTelefono()) {
       // mandamos a llamar al metodo que inserta un telefono
       crearTelefono();
-    }
-    else {
+    } else {
       if (verificaCorreo()) {
         // mandamos a llamar al metodo que inserta un correo
         crearCorreo();
-      }
-      else {
+      } else {
         if (verificaDireccion()) {
           // mandamos a llamar al metodo que inserta una direccion
           crearDireccion();
-        }
-        else {
+        } else {
           if (verificaContacto()) {
             // mandamos a llamar al metodo que inserta un contacto
             crearContacto();
@@ -125,7 +135,8 @@ public class VistaEmpresas implements Serializable {
       }
     }
   }
-    // es el metodo que inserta un sujeto
+
+  // es el metodo que inserta un sujeto
   public void insertarSujeto() {
     // validamos el rfc de la persona moral
     boolean okRfc = sujetoBean.validarRfc();
@@ -166,6 +177,42 @@ public class VistaEmpresas implements Serializable {
     }
   }
 
+  // es el metodo que sirve para editar a las empresas
+  public void editarEmpresa() {
+    // creamos una instancia de FacesContext para poder utilizar el growl
+    FacesContext actual = FacesContext.getCurrentInstance();
+    // enviamos los datos de la empresa seleccionada para su modificacion
+    boolean alpha = empresaBean.editarEmpresa(sujetoSeleccionado);
+    // si se logro editar a la empresa
+    if(alpha){
+      // se manda a editar al sujeto
+      boolean beta = sujetoBean.editar(sujetoSeleccionado);
+      // si se edito el sujeto
+      if(beta){
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualizacion exitosa", "Se edito a la empresa en el sistema"));
+      }
+      // si no se edito
+      else{
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se guardaron los cambios al sujeto vinculado con la empresa"));
+      }
+    }
+    // si no se logro editar la empresa
+    else{
+      actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se editaron los datos primarios de la empresa"));
+    }
+  }
+
+  // es el metodo que carga todos los datos de las empresas para que se visualicen en los input text
+  public void cargarEmpresa(){
+    // setteamos los datos
+    sujetoBean.setNombreRazonSocial(sujetoSeleccionado.getNombreRazonSocial());
+    sujetoBean.setRfc(sujetoSeleccionado.getRfc());
+    empresaBean.setNombreCorto(empresaBean.getEmpresaDao().buscarEmpresaPorSujeto(sujetoSeleccionado.getIdSujeto()).getNombreCorto());
+    // actualizamos la vista
+    RequestContext.getCurrentInstance().update("datosPrimarios");
+    // habilitamos la visibilidad del form que contiene los input text
+    habilitaDatosPrimarios = true;
+  }
   // es el metodo que verifica los campos de telefono para agregar
   public boolean verificaTelefono() {
     boolean verificacion = false;
@@ -207,31 +254,29 @@ public class VistaEmpresas implements Serializable {
       actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se pudo agregar el numero telefonico en el sistema"));
     }
   }
-  
+
   // es el metodo para verificar el campo de correo electronico
-  public boolean verificaCorreo(){
+  public boolean verificaCorreo() {
     boolean verificacion = false;
     // creamos una instancia de FacesContext para poder utilizar el growl
     FacesContext actual = FacesContext.getCurrentInstance();
     // si el campo esta vacio
-    if(emailBean.getDireccion() == null){
+    if (emailBean.getDireccion() == null) {
       verificacion = false;
-    }
-    else{
+    } else {
       String correo = emailBean.getDireccion();
       // se verifica que sea una direccion de correo valida
-      if(emailBean.validarCorreo(correo)){
+      if (emailBean.validarCorreo(correo)) {
         verificacion = true;
-      }
-      else{
+      } else {
         actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "El correo electronico no es valido. Favor de verificarlo"));
       }
-    }    
+    }
     return verificacion;
   }
-  
+
   // es el metodo que inserta un correo al sistema
-  public void crearCorreo(){
+  public void crearCorreo() {
     // creamos una instancia de FacesContext para poder utilizar el growl
     FacesContext actual = FacesContext.getCurrentInstance();
     nuevoEmail = emailBean.insertar(nuevoSujeto);
@@ -244,26 +289,56 @@ public class VistaEmpresas implements Serializable {
     }
   }
 
+  // es el metodo que verifica que se quiera ingresar una direccion valida
+  public boolean verificaDireccion() {
+    boolean verificacion = false;
+    // se verifica que los campos requeridos no esten vacios
+    // si no estan vacios
+    if ((getCalle() != null) && (getNumext() != null)) {
+      // concatenamos los camposde este bean para poderlos mandar al bean de direccion
+      String calleCompleta = getCalle() + " #" + getNumext() + " - " + getNumint();
+      // los asignamos al atributo calle del objeto direccion del bean direccionBean
+      direccionBean.setCalle(calleCompleta);
+      // imprimimos solo para saber si se concateno chingon
+      System.out.println("*************************************************");
+      System.out.println("Consola Sigerweb:");
+      System.out.println(calleCompleta);
+      verificacion = true;
+    }
+    return verificacion;
+  }
+
+  // es el metodo que inserta una direccion relacionada con la empresa
+  public void crearDireccion() {
+    // creamos una instancia de FacesContext para poder utilizar el growl
+    FacesContext actual = FacesContext.getCurrentInstance();
+    // si algun combobox esta vacio (si no se selecciono ningun valor)
+    if ((direccionBean.getEstado().getIdEstado() == null) || (direccionBean.getMunicipio().getIdMunicipio() == null) || (direccionBean.getColonia().getIdColonia() == null)) {
+      actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Faltan datos de la direccion. Verifiquela por favor"));
+    } // si todo esta bien, insertamos la direccion
+    else {
+      // llamamos al metodo de insertar direcciones
+      nuevaDireccion = direccionBean.insertar(nuevoSujeto);
+      // si se creo la direccion
+      if (nuevaDireccion != null) {
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Insercion exitosa", "Se agrego correctamente la direccion de la empresa"));
+      } // si no se creo la direccion
+      else {
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se pudo crear la direccion para la empresa"));
+      }
+    }
+  }
+
   //
-  public boolean verificaDireccion(){
+  public boolean verificaContacto() {
     boolean verificacion = false;
     return verificacion;
   }
-  
+
   //
-  public void crearDireccion(){
+  public void crearContacto() {
   }
-  
-  //
-  public boolean verificaContacto(){
-    boolean verificacion = false;
-    return verificacion;
-  }
-  
-  //
-  public void crearContacto(){
-  }
-  
+
   // setters y getters
   public Empresa getEmpresaSeleccionada() {
     return empresaSeleccionada;
@@ -455,6 +530,38 @@ public class VistaEmpresas implements Serializable {
 
   public void setCalle(String calle) {
     this.calle = calle;
+  }
+
+  public Sujeto getNuevoSujetoContacto() {
+    return nuevoSujetoContacto;
+  }
+
+  public void setNuevoSujetoContacto(Sujeto nuevoSujetoContacto) {
+    this.nuevoSujetoContacto = nuevoSujetoContacto;
+  }
+
+  public boolean isHabilitaDatosPrimarios() {
+    return habilitaDatosPrimarios;
+  }
+
+  public void setHabilitaDatosPrimarios(boolean habilitaDatosPrimarios) {
+    this.habilitaDatosPrimarios = habilitaDatosPrimarios;
+  }
+
+  public boolean isHabilitaListaProductos() {
+    return habilitaListaProductos;
+  }
+
+  public void setHabilitaListaProductos(boolean habilitaListaProductos) {
+    this.habilitaListaProductos = habilitaListaProductos;
+  }
+
+  public boolean isHabilitaListaSubproductos() {
+    return habilitaListaSubproductos;
+  }
+
+  public void setHabilitaListaSubproductos(boolean habilitaListaSubproductos) {
+    this.habilitaListaSubproductos = habilitaListaSubproductos;
   }
 
 }

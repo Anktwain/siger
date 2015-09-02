@@ -50,7 +50,7 @@ public class DireccionBean implements Serializable {
 
   // Listas para construir direcciones
   private List<EstadoRepublica> estados;
-  private List<Municipio> municipos;
+  private List<Municipio> municipios;
   private List<Colonia> colonias;
 
   // Construyendo...
@@ -94,9 +94,10 @@ public class DireccionBean implements Serializable {
   }
 
   public void listarMunicipiosPorEstado() {
+    System.out.println(estado.getIdEstado());
     estado = estadoDao.buscar(estado.getIdEstado());
-    municipos = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
-    System.out.println(estado.getNombre());
+    municipios = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
+    
   }
 
   public void listarColoniasPorMunicipio() {
@@ -173,12 +174,12 @@ public class DireccionBean implements Serializable {
     this.estados = estados;
   }
 
-  public List<Municipio> getMunicipos() {
-    return municipos;
+  public List<Municipio> getMunicipios() {
+    return municipios;
   }
 
-  public void setMunicipos(List<Municipio> municipos) {
-    this.municipos = municipos;
+  public void setMunicipios(List<Municipio> municipios) {
+    this.municipios = municipios;
   }
 
   public List<Colonia> getColonias() {
@@ -188,7 +189,7 @@ public class DireccionBean implements Serializable {
   public void setColonias(List<Colonia> colonias) {
     this.colonias = colonias;
   }
-  
+
   public DireccionDAO getDireccionDao() {
     return direccionDao;
   }
@@ -220,5 +221,5 @@ public class DireccionBean implements Serializable {
   public void setEstadoDao(EstadoRepublicaDAO estadoDao) {
     this.estadoDao = estadoDao;
   }
-  
+
 }
