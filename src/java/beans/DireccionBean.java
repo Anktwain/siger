@@ -31,6 +31,7 @@ import util.log.Logs;
 @ManagedBean
 @ViewScoped
 public class DireccionBean implements Serializable {
+
   // Objeto que gestiona este bean
   private Direccion direccion;
   
@@ -182,6 +183,38 @@ public class DireccionBean implements Serializable {
 
   public void setColonias(List<Colonia> colonias) {
     this.colonias = colonias;
+  }
+  
+  public DireccionDAO getDireccionDao() {
+    return direccionDao;
+  }
+
+  public void setDireccionDao(DireccionDAO direccionDao) {
+    this.direccionDao = direccionDao;
+  }
+
+  public ColoniaDAO getColoniaDao() {
+    return coloniaDao;
+  }
+
+  public void setColoniaDao(ColoniaDAO coloniaDao) {
+    this.coloniaDao = coloniaDao;
+  }
+
+  public MunicipioDAO getMunicipioDao() {
+    return municipioDao;
+  }
+
+  public void setMunicipioDao(MunicipioDAO municipioDao) {
+    this.municipioDao = municipioDao;
+  }
+
+  public EstadoRepublicaDAO getEstadoDao() {
+    return estadoDao;
+  }
+
+  public void setEstadoDao(EstadoRepublicaDAO estadoDao) {
+    this.estadoDao = estadoDao;
   }
   
 }

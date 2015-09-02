@@ -6,58 +6,82 @@ import dto.Sujeto;
 import impl.EmpresaIMPL;
 import java.io.Serializable;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import util.constantes.Patrones;
 
 /**
  *
  * @author Eduardo
  */
+
 @ManagedBean(name = "empresaBean")
 @ViewScoped
 public class EmpresaBean implements Serializable {
 
   // objeto empresa
-  private Empresa empresa;
+  private Empresa nuevaEmpresa;
   
-  // atributos del objeto empresa
+  // atributo del objeto empresa
   private String nombreCorto;
-  private String idEmpresa;
-  private Sujeto sujeto;
+  
+  // objeto sujeto
+  private Sujeto nuevoSujeto;
   
   // objeto dao
   private EmpresaDAO empresaDao;
-  
-  // llamada a otros beans
-  @ManagedProperty(value = "#{sujetoBean}")
-  private SujetoBean sujetoBean;
-  
+
   // Constructor
   public EmpresaBean(){
-    empresa = new Empresa();
+    nuevaEmpresa = new Empresa();
     empresaDao = new EmpresaIMPL();
   }
   
+  // funcion pàra buscar empresas
   public List<Sujeto> buscarEmpresas() {
     return empresaDao.buscarEmpresas();
   }
   
-  public boolean validarRfc(String rfc) {
-    Pattern patron = Pattern.compile(Patrones.PATRON_RFC_MORAL);
-    Matcher matcher = patron.matcher(rfc);
-    return matcher.matches();
+  // funcion para crear a la empresa segun los datos primarios brindados
+  // falta incluir los datos obtenidos de las vistas de telefonos, correos, direcciones y contactos
+  public int crearEmpresa(Sujeto nuevoSujeto) {
+    // setteamos los atributos a la empresa
+    nuevaEmpresa.setNombreCorto(nombreCorto);
+    nuevaEmpresa.setSujeto(nuevoSujeto);
+    // creamos la nueva empresa
+    boolean okNuevaEmpresa = empresaDao.insertar(nuevaEmpresa);
+    // si se creo la empresa
+    if(okNuevaEmpresa){
+      return 1;
+    }
+    // si no se creo la empresa
+    else{
+      return 0;
+    }
   }
   
-  public Empresa getEmpresa() {
-    return empresa;
+  public EmpresaDAO getEmpresaDao() {
+    return empresaDao;
   }
 
-  public void setEmpresa(Empresa empresa) {
-    this.empresa = empresa;
+  public void setEmpresaDao(EmpresaDAO empresaDao) {
+    this.empresaDao = empresaDao;
+  }
+
+  public Empresa getNuevaEmpresa() {
+    return nuevaEmpresa;
+  }
+
+  public void setNuevaEmpresa(Empresa nuevaEmpresa) {
+    this.nuevaEmpresa = nuevaEmpresa;
+  }
+
+  public Sujeto getNuevoSujeto() {
+    return nuevoSujeto;
+  }
+
+  public void setNuevoSujeto(Sujeto nuevoSujeto) {
+    this.nuevoSujeto = nuevoSujeto;
   }
 
   public String getNombreCorto() {
@@ -68,36 +92,4 @@ public class EmpresaBean implements Serializable {
     this.nombreCorto = nombreCorto;
   }
 
-  public String getIdEmpresa() {
-    return idEmpresa;
-  }
-
-  public void setIdEmpresa(String idEmpresa) {
-    this.idEmpresa = idEmpresa;
-  }
-
-  public Sujeto getSujeto() {
-    return sujeto;
-  }
-
-  public void setSujeto(Sujeto sujeto) {
-    this.sujeto = sujeto;
-  }
-
-  public EmpresaDAO getEmpresaDao() {
-    return empresaDao;
-  }
-
-  public void setEmpresaDao(EmpresaDAO empresaDao) {
-    this.empresaDao = empresaDao;
-  }
-
-  public SujetoBean getSujetoBean() {
-    return sujetoBean;
-  }
-
-  public void setSujetoBean(SujetoBean sujetoBean) {
-    this.sujetoBean = sujetoBean;
-  }
-  
 }

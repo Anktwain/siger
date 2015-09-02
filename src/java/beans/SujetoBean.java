@@ -9,8 +9,11 @@ import dao.SujetoDAO;
 import dto.Sujeto;
 import impl.SujetoIMPL;
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import util.constantes.Patrones;
 import util.constantes.Sujetos;
 
 /**
@@ -58,6 +61,15 @@ public class SujetoBean implements Serializable {
             && (!nombreRazonSocial.matches("[.*\\s*]*"));
   }
   
+  // funcion para validar el rfc de una nueva empresa
+  public boolean validarRfc() {
+    // pasamos el rfc a mayusculas para poder comparar
+    rfc = rfc.toUpperCase();
+    Pattern patron = Pattern.compile(Patrones.PATRON_RFC_MORAL);
+    Matcher matcher = patron.matcher(rfc);
+    return matcher.matches();
+  }
+  
   // MÉTODOS AUXILIARES
   public void resetAtributos() {
     nombreRazonSocial = null;
@@ -88,6 +100,22 @@ public class SujetoBean implements Serializable {
 
   public void setEliminado(int eliminado) {
     this.eliminado = eliminado;
+  }
+
+  public Sujeto getSujeto() {
+    return sujeto;
+  }
+
+  public void setSujeto(Sujeto sujeto) {
+    this.sujeto = sujeto;
+  }
+
+  public SujetoDAO getSujetoDao() {
+    return sujetoDao;
+  }
+
+  public void setSujetoDao(SujetoDAO sujetoDao) {
+    this.sujetoDao = sujetoDao;
   }
 
 }
