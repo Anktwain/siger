@@ -12,6 +12,7 @@ import impl.EmailIMPL;
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import util.constantes.Patrones;
@@ -54,6 +55,10 @@ public class EmailBean implements Serializable {
 
       return emailDao.insertar(email);
     }
+  }
+  
+  public List<Email> listar(int idSujeto) {
+    return emailDao.buscarPorSujeto(idSujeto);
   }
   
   // MÉTODOS AUXILIARES

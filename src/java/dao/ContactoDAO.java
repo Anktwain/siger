@@ -19,7 +19,7 @@ public interface ContactoDAO {
      * @param contacto
      * @return
      */
-    public boolean insertar(Contacto contacto);
+    public Contacto insertar(Contacto contacto);
 
     /**
      *

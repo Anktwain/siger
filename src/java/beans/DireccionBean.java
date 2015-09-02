@@ -34,25 +34,25 @@ public class DireccionBean implements Serializable {
 
   // Objeto que gestiona este bean
   private Direccion direccion;
-  
+
   // Atributos del objeto Direccion
   private String tipo;
   private String calle;
   private Colonia colonia;
   private Municipio municipio;
   private EstadoRepublica estado;
-  
+
   // Acceso a la BD
   private DireccionDAO direccionDao;
   private ColoniaDAO coloniaDao;
   private MunicipioDAO municipioDao;
   private EstadoRepublicaDAO estadoDao;
-  
+
   // Listas para construir direcciones
   private List<EstadoRepublica> estados;
   private List<Municipio> municipos;
   private List<Colonia> colonias;
-  
+
   // Construyendo...
   public DireccionBean() {
     direccion = new Direccion();
@@ -64,7 +64,7 @@ public class DireccionBean implements Serializable {
     estado = new EstadoRepublica();
     estadoDao = new EstadoRepublicaIMPL();
   }
-  
+
   // GESTIÓN DE DIRECCIONES
   public Direccion insertar(Sujeto sujeto) {
     // Verfica que el sujeto sea válido
@@ -81,29 +81,33 @@ public class DireccionBean implements Serializable {
       direccion.setSujeto(sujeto);
 
       return direccionDao.insertar(direccion);
+    }
   }
+
+  public List<Direccion> listar(int idSujeto) {
+    return direccionDao.buscarPorSujeto(idSujeto);
   }
-  
+
   // AUXILIARES
   public void listarEstados() {
     estados = estadoDao.buscarTodo();
   }
-  
+
   public void listarMunicipiosPorEstado() {
     estado = estadoDao.buscar(estado.getIdEstado());
     municipos = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
     System.out.println(estado.getNombre());
   }
-  
+
   public void listarColoniasPorMunicipio() {
     municipio = municipioDao.buscar(municipio.getIdMunicipio());
     colonias = coloniaDao.buscarColoniasPorMunicipio(municipio.getIdMunicipio());
   }
-  
+
   public void agregarCP() {
     colonia = coloniaDao.buscar(colonia.getIdColonia());
   }
-  
+
   public void resetAtributos() {
     tipo = null;
     calle = null;
@@ -111,7 +115,7 @@ public class DireccionBean implements Serializable {
     municipio.setIdMunicipio(null);
     estado.setIdEstado(null);
   }
-  
+
   // SETTERS & GETTERS
   public Direccion getDireccion() {
     return direccion;

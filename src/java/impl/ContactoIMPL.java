@@ -28,27 +28,28 @@ public class ContactoIMPL implements ContactoDAO {
    * @return
    */
   @Override
-  public boolean insertar(Contacto contacto) {
-    Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
-    boolean ok;
+  public Contacto insertar(Contacto contacto) {
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
 
-    try {
-      sesion.save(contacto);
-      tx.commit();
-      ok = true;
-      //log.info("Se insertó un nuevo usuaario");
-    } catch (HibernateException he) {
-      ok = false;
-      if (tx != null) {
-        tx.rollback();
-      }
-//            he.printStackTrace();
-      Logs.log.trace(he.getMessage());
-    } finally {
-      cerrar(sesion);
-    }
-    return ok;
+        try {
+            sesion.save(contacto);
+            tx.commit();
+            Logs.log.info("Se insertó un nuevo Contacto: id = " + contacto.getIdContacto()
+            + " asociado al Sujeto: id = " + contacto.getSujeto().getIdSujeto() + " que a la vez se asocia con el sujeto: id = " 
+            + contacto.getCliente().getSujeto().getIdSujeto());
+        } catch (HibernateException he) {
+            contacto = null;
+            if (tx != null) {
+                tx.rollback();
+            }
+            Logs.log.error("No se pudo insertar Contacto");
+            Logs.log.error(he.getMessage());
+        } finally {
+            cerrar(sesion);
+        }
+        
+        return contacto;
   }
 
   /**

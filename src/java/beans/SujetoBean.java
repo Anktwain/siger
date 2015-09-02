@@ -46,6 +46,7 @@ public class SujetoBean implements Serializable {
   // GESTIÓN DE USUARIOS
   public Sujeto insertar() {
     // Crea el objeto Sujeto
+    sujeto = new Sujeto();
     sujeto.setNombreRazonSocial(nombreRazonSocial);
     sujeto.setRfc(rfc);
     sujeto.setEliminado(eliminado);
