@@ -423,7 +423,7 @@ public class UsuariosBean implements Serializable {
     Logs.log.info("setUsuarioSeleccionado{");
     Logs.log.info("[" + uSelec.toString() + "] <- uSelec: " + uSelec.getNombre() + " "
             + uSelec.getPaterno() + " " + uSelec.getMaterno() + " <" + uSelec.getNombreLogin()
-            + "> P:" + " " + uSelec.getPerfil() + uSelec.getCorreo() + " " + uSelec.getImagenPerfil());
+            + "> P:" + uSelec.getPerfil() + " " + uSelec.getCorreo() + " " + uSelec.getImagenPerfil());
     if (this.usuarioSeleccionado == null) {
       this.usuarioSeleccionado = new Usuario(uSelec.getNombre(), uSelec.getPaterno(),
               uSelec.getMaterno(), uSelec.getNombreLogin(), uSelec.getPassword(),

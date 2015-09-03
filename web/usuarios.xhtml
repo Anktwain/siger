@@ -16,21 +16,85 @@
     <div id="overlay" class="transparent" style="display: none"></div>        
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
-    <div id="main-container">
-      <ui:include src="barraAdministrativo.xhtml" />          
+    <div id="main-container"> 
+      
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home"></i>
+            <a href="panelAdministrativo.xhtml">Inicio</a>
+          </li>
+          <li class="active">Usuarios</li>
+        </ul>
+      </div>
+      
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Usuarios</h3>
+          <span>Agregue o elimine usuarios del sistema, confirme o elimine a los 
+            gestores y modifique informaci&oacute;n de todos los usuarios del 
+            sistema.</span>
+        </div>
+      </div>
+      
+      <ui:include src="barraAdministrativo.xhtml" />
+      
       <div id="opciones">
+        
+        <div class="row">
+        <div class="padding-md">
+          <div class="col-xs-4">
+            <div class="panel-stat3 bg-danger">
+              <h3 class="m-top-none">Confirmar gestores</h3>
+              <p:commandButton value="Confirmar" class="btn btn-primary"
+                               actionListener="#{vistaClientes.direccionBean.listarEstados()}"
+                               onclick="PF('dlgAltaCliente').show();"/>
+
+              <div class="stat-icon">
+                <i class="fa fa-user-plus fa-2x" />
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-4">
+            <div class="panel-stat3 bg-info">
+              <h3 class="m-top-none">Dar de alta usuario</h3>
+              <p:commandButton value="Nuevo" class="btn btn-primary"
+                               actionListener="#{vistaClientes.direccionBean.listarEstados()}"
+                               onclick="PF('dlgAltaCliente').show();"/>
+
+              <div class="stat-icon">
+                <i class="fa fa-user-plus fa-2x" />
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-4">
+            <div class="panel-stat3 bg-primary">
+              <h3 class="m-top-none">Buscar usuario</h3>
+              <p:commandButton value="Buscar" class="btn btn-primary"
+                               actionListener="#{vistaClientes.direccionBean.listarEstados()}"
+                               onclick="PF('dlgAltaCliente').show();"/>
+
+              <div class="stat-icon">
+                <i class="fa fa-user-plus fa-2x" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- row -->
+        
+        
         <div class="panel panel-default">
-          <div class="panel-heading h1 text-center"> Usuarios </div>
+          <!--<div class="panel-heading h1 text-center"></div>-->
           <div class="panel-tab clearfix">
             <ul class="tab-bar h4">
               <li class="active"><a href="#tabConfirmar" data-toggle="tab">
-                  <i class="fa fa-check-circle-o"></i> Confirmar gestores</a>
+                  <i class="fa fa-check-circle-o"></i> Gestores no confirmados</a>
               </li>     
               <li><a href="#tabRegistrar" data-toggle="tab">
-                  <i class="fa fa-pencil"></i> Registrar nuevo usuario</a>
+                  <i class="fa fa-pencil"></i> Nuevos usuarios</a>
               </li>
               <li><a href="#tabBuscar" data-toggle="tab">
-                  <i class="fa fa-search"></i> Buscar usuario</a>
+                  <i class="fa fa-search"></i> Usuarios del sistema</a>
               </li>
             </ul>
           </div>
@@ -164,7 +228,7 @@
 
       <h:form id="formUsuarios">
         <p:contextMenu for="usuarios">
-          <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
+          <p:menuitem value="Ver detalle" update="usuarioDetail, usSelecNombre" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
         </p:contextMenu>
 
         <p:dataTable id="usuarios" var="usuario" value="#{usuariosBean.todosUsuarios}" rowKey="#{usuario.nombreLogin}" 
@@ -206,24 +270,24 @@
               </f:facet>
 
               <h:outputText value="Nombre: "/>
-              <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombre}" /> 
+              <p:inputText disabled="true" id="usSelecNombre" value="#{usuariosBean.usuarioSeleccionado.nombre}"  /> 
 
               <h:outputText value="Apellido paterno: "/>
-              <p:inputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
+              <p:inputText disabled="true" value="#{usuariosBean.usuarioSeleccionado.paterno}" />
 
               <h:outputText value="Apellido materno: "/>
-              <p:inputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
+              <p:inputText disabled="true" value="#{usuariosBean.usuarioSeleccionado.materno}" />
 
               <h:outputText value="Nombre login: "/>
-              <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
+              <p:inputText disabled="true" value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
 
               <h:outputText value="Perfil: "/>
-              <p:selectOneMenu onchange="" >
+              <p:selectOneMenu disabled="true" onchange="" >
                 <f:selectItems  value="#{usuariosBean.perfilBean.ordenarLista(usuariosBean.usuarioSeleccionado.perfil)}" />
-              </p:selectOneMenu>
+              </p:selectOneMenu>p
 
               <h:outputText value="Correo: "/>
-              <p:inputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
+              <h:inputText disabled="true" value="#{usuariosBean.usuarioSeleccionado.correo}" />
 
               <f:facet name="footer">
                 <div class="text-center">
