@@ -9,6 +9,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import util.constantes.Sujetos;
 
 /**
  *
@@ -62,6 +63,10 @@ public class ClienteBean implements Serializable {
 
       return clienteDao.insertar(cliente);
     }
+  }
+  
+  public boolean eliminar(Cliente c) {
+    return sujetoBean.eliminar(c.getSujeto());
   }
 
   // MÉTODOS AUXILIARES
