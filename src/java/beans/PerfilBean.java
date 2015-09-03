@@ -49,12 +49,6 @@ public class PerfilBean implements Serializable {
 
   public final void enlistar() {
     /* Estas líneas son de prueba para ver si se inicializa como null la referencia al inicio del programa*/
-    try {
-      lista.toString();
-    } catch (Exception e) {
-      Logs.log.error("La lista es una referencia a NULL. (" + e.toString() + ")");
-    }
-    /* Estas líneas son de prueba para ver si se inicializa como null la referencia al inicio del programa*/
 
     if (lista == null) {
       lista = new LinkedList<>();

@@ -4,6 +4,8 @@ import dao.AdministradorDAO;
 import dao.GestorDAO;
 import dao.UsuarioDAO;
 import dto.Administrativo;
+import dto.Car;
+import dto.CarService;
 import dto.Gestor;
 import dto.Usuario;
 import impl.AdministradorIMPL;
@@ -12,10 +14,13 @@ import impl.UsuarioIMPL;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import javax.faces.bean.ViewScoped;
@@ -38,12 +43,30 @@ import util.log.Logs;
  */
 @ManagedBean(name = "usuariosBean")
 @ViewScoped
-//@ApplicationScoped
 public class UsuariosBean implements Serializable {
 
+  /**
+   * Objeto DTO donde se almacena TEMPORALMENTE la información con la que se
+   * dará de alta a un nuevo usuario en el sistema.
+   */
   private Usuario usuario;
+  /**
+   * Objeto DTO donde se almacena la información completa del usuario que se
+   * seleccionará en la tabla.
+   */
   private Usuario usuarioSeleccionado;
-  private UsuarioDAO usuarioDao;
+  /**
+   * Objeto DTO que contiene la información que se desplegará después de
+   * seleccionar un usuario de la tabla.
+   */
+  private Usuario usuarioEnDespliegue;
+
+  /**
+   * Objeto DAO que se usa para acceder a las operaciones sobre la informacion
+   * correspondiente al usuario en la base de datos.
+   */
+  private final UsuarioDAO usuarioDao;
+
   private int perfil;
   private String nombre;
   private String paterno;
@@ -54,22 +77,35 @@ public class UsuariosBean implements Serializable {
   private String correo;
   private String imagenPerfil;
   private String extension;
-//    private SesionBean sesion;
-  private List<Usuario> gestoresNoConfirmados;
-  private List<Usuario> usuariosEncontrados;
-  private List<Usuario> usuariosSeleccionados;
-  private List<Usuario> todosUsuarios;
+
+//  private SesionBean sesion;
 //  private final String rutaImPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL;
 //  private List<PerfilBean> listaPerfiles;
-
-  public PerfilBean getPerfilBean() {
-    return perfilBean;
-  }
-
-  public void setPerfilBean(PerfilBean perfilBean) {
-    this.perfilBean = perfilBean;
-  }
-  
+  /**
+   * Lista que almacena a los gestores que no han sido confirmados en el sistema
+   * y que se desplegarán en la vista.
+   */
+  private List<Usuario> gestoresNoConfirmados;
+  /**
+   * Lista que almacena a los usuarios que coinciden con algún criterio de
+   * búsqueda solicitada desde la vista.
+   */
+  private List<Usuario> usuariosEncontrados;
+  /**
+   * Lista de los gestores que se van a confirmar según la solicitud hecha en la
+   * vista.
+   */
+  private List<Usuario> gestoresPorConfirmar;
+  /**
+   * Lista de todos los usuarios dados de alta en el sistema. Incluye
+   * administradores del sistema, gestores confirmados y no confirmados
+   */
+  private List<Usuario> todosUsuarios;
+  /**
+   * Atributo que contiene al <strong>objeto PerfilBean</strong> del usuario
+   * seleccionado, descrito por su nombre de perfil y su clave numérica
+   * correspondiente.
+   */
   private PerfilBean perfilBean;
 
   /**
@@ -84,69 +120,25 @@ public class UsuariosBean implements Serializable {
     imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
     gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
     todosUsuarios = usuarioDao.buscarTodo();
-    Logs.log.info("\n*************************** todosUsuario:");
+//    usuarioSeleccionado = new Usuario();
+    imprimirUsuarios();
+  }
+
+  /**
+   * Funcion de depuración.
+   */
+  public void imprimirUsuarios() {
+    Logs.log.info("*********************** todosUsuario: *********************");
     int i = 0;
     for (Usuario usuarioActual : todosUsuarios) {
-      Logs.log.info("***U." + (++i) + ": " + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno());
+      Logs.log.info("[" + usuarioActual.toString() + "]: " + "U." + (++i) + " - "
+              + usuarioActual.getNombre() + " " + usuarioActual.getPaterno() + " " + usuarioActual.getMaterno()
+              + " " + usuarioActual.getImagenPerfil());
     }
+    Logs.log.info("***********************              *********************");
+
   }
 
-//  public List<PerfilBean> getListaPerfiles() {
-//    return listaPerfiles;
-//  }
-//
-//  public void setListaPerfiles(List<PerfilBean> listaPerfiles) {
-//    this.listaPerfiles = listaPerfiles;
-//  }
-
-//  public String getRutaImPerfil() {
-//    return rutaImPerfil;
-//  }
-  /**
-   *
-   *
-   * @return
-   */
-  public List<Usuario> getTodosUsuarios() {
-    return todosUsuarios;
-  }
-
-  /**
-   *
-   *
-   * @return
-   */
-  public Usuario getUsuarioSeleccionado() {
-    return usuarioSeleccionado;
-  }
-
-  /**
-   *
-   *
-   * @param usuarioSeleccionado
-   */
-  public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
-    this.usuarioSeleccionado = usuarioSeleccionado;
-    Logs.log.info("### Usuario seleccionado: " + this.usuarioSeleccionado.getNombre() + " " + this.usuarioSeleccionado.getPaterno() + " <" + this.usuarioSeleccionado.getNombreLogin() + ">P:" + this.usuarioSeleccionado.getPerfil());
-  }
-
-  /**
-   *
-   *
-   * @param todosUsuarios
-   */
-  public void setTodosUsuarios(List<Usuario> todosUsuarios) {
-    this.todosUsuarios = todosUsuarios;
-  }
-
-  /**
-   *
-   *
-   * @return
-   */
-//    public SesionBean getSesion() {
-//        return sesion;
-//    }
   /**
    *
    * @throws java.io.IOException
@@ -369,11 +361,105 @@ public class UsuariosBean implements Serializable {
   /**
    *
    *
-   * @param sesion
+   * @param event
    */
-//    public void setSesion(SesionBean sesion) {
-//        this.sesion = sesion;
-//    }
+  public void onRowSelect(SelectEvent event) {
+    Logs.log.debug("*********************** Se selecciono un registro");
+  }
+
+  /**
+   *
+   *
+   * @param event
+   */
+  public void onRowUnselect(UnselectEvent event) {
+    Logs.log.debug("*********************** Se deselecciono un registro");
+  }
+
+  public void desplegarUsuario() {
+
+  }
+
+  public void limpiarBean() {
+
+  }
+
+  /**
+   * ************************** Getters y setters **************************
+   */
+  public PerfilBean getPerfilBean() {
+    return perfilBean;
+  }
+
+  public void setPerfilBean(PerfilBean perfilBean) {
+    this.perfilBean = perfilBean;
+  }
+
+  /**
+   *
+   *
+   * @return
+   */
+  public List<Usuario> getTodosUsuarios() {
+    return todosUsuarios;
+  }
+
+  /**
+   *
+   *
+   * @return
+   */
+  public Usuario getUsuarioSeleccionado() {
+    return usuarioSeleccionado;
+  }
+
+  /**
+   *
+   *
+   * @param uSelec
+   */
+  public void setUsuarioSeleccionado(Usuario uSelec) {
+
+    Logs.log.info("setUsuarioSeleccionado{");
+    Logs.log.info("[" + uSelec.toString() + "] <- uSelec: " + uSelec.getNombre() + " "
+            + uSelec.getPaterno() + " " + uSelec.getMaterno() + " <" + uSelec.getNombreLogin()
+            + "> P:" + " " + uSelec.getPerfil() + uSelec.getCorreo() + " " + uSelec.getImagenPerfil());
+    if (this.usuarioSeleccionado == null) {
+      this.usuarioSeleccionado = new Usuario(uSelec.getNombre(), uSelec.getPaterno(),
+              uSelec.getMaterno(), uSelec.getNombreLogin(), uSelec.getPassword(),
+              uSelec.getPerfil(), uSelec.getCorreo(), uSelec.getImagenPerfil(),
+              uSelec.getAdministrativos(), uSelec.getGestors());
+    } else {
+      this.usuarioSeleccionado.setAdministrativos(uSelec.getAdministrativos());
+      this.usuarioSeleccionado.setCorreo(uSelec.getCorreo());
+      this.usuarioSeleccionado.setGestors(uSelec.getGestors());
+      this.usuarioSeleccionado.setImagenPerfil(uSelec.getImagenPerfil());
+      this.usuarioSeleccionado.setMaterno(uSelec.getMaterno());
+      this.usuarioSeleccionado.setNombre(uSelec.getNombre());
+      this.usuarioSeleccionado.setNombreLogin(uSelec.getNombreLogin());
+      this.usuarioSeleccionado.setPassword(uSelec.getPassword());
+      this.usuarioSeleccionado.setPaterno(uSelec.getPaterno());
+      this.usuarioSeleccionado.setPerfil(uSelec.getPerfil());
+    }
+//    this.usuarioSeleccionado = usuarioSeleccionado;
+    imprimirUsuarios();
+    Logs.log.info("[" + this.usuarioSeleccionado.toString() + "] <- usuarioSeleccionado: "
+            + this.usuarioSeleccionado.getNombre() + " " + this.usuarioSeleccionado.getPaterno()
+            + " " + this.usuarioSeleccionado.getMaterno() + " <"
+            + this.usuarioSeleccionado.getNombreLogin() + "> P:" + this.usuarioSeleccionado.getPerfil()
+            + " " + this.usuarioSeleccionado.getCorreo() + " " + this.usuarioSeleccionado.getImagenPerfil());
+    Logs.log.info("}\n");
+  }
+
+  /**
+   *
+   *
+   * @param todosUsuarios
+   */
+  public void setTodosUsuarios(List<Usuario> todosUsuarios) {
+    this.todosUsuarios = todosUsuarios;
+  }
+
   /**
    *
    *
@@ -425,8 +511,8 @@ public class UsuariosBean implements Serializable {
    *
    * @return
    */
-  public List<Usuario> getUsuariosSeleccionados() {
-    return usuariosSeleccionados;
+  public List<Usuario> getGestoresPorConfirmar() {
+    return gestoresPorConfirmar;
   }
 
   /**
@@ -434,26 +520,8 @@ public class UsuariosBean implements Serializable {
    *
    * @param usuariosSeleccionados
    */
-  public void setUsuariosSeleccionados(List<Usuario> usuariosSeleccionados) {
-    this.usuariosSeleccionados = usuariosSeleccionados;
-  }
-
-  /**
-   *
-   *
-   * @param event
-   */
-  public void onRowSelect(SelectEvent event) {
-    Logs.log.debug("*********************** Se selecciono un registro");
-  }
-
-  /**
-   *
-   *
-   * @param event
-   */
-  public void onRowUnselect(UnselectEvent event) {
-    Logs.log.debug("*********************** Se deselecciono un registro");
+  public void setGestoresPorConfirmar(List<Usuario> usuariosSeleccionados) {
+    this.gestoresPorConfirmar = usuariosSeleccionados;
   }
 
   /**
@@ -644,4 +712,24 @@ public class UsuariosBean implements Serializable {
   public void setExtension(String extension) {
     this.extension = extension;
   }
+
+//  public SesionBean getSesion() {
+//    return sesion;
+//  }
+//
+//  public void setSesion(SesionBean sesion) {
+//    this.sesion = sesion;
+//  }
+//
+//  public List<PerfilBean> getListaPerfiles() {
+//    return listaPerfiles;
+//  }
+//
+//  public void setListaPerfiles(List<PerfilBean> listaPerfiles) {
+//    this.listaPerfiles = listaPerfiles;
+//  }
+//
+//  public String getRutaImPerfil() {
+//    return rutaImPerfil;
+//  }
 }

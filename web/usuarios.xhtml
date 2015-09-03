@@ -12,7 +12,7 @@
     <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
   </h:head>
   <h:body>
-    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!--<p:growl id="growl" showDetail="true" sticky="true" />-->
     <div id="overlay" class="transparent" style="display: none"></div>        
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
@@ -46,7 +46,7 @@
                     <h:form id="formConfirmarGestores">
                       <h:form id="tabla">
                         <p:dataTable id="noConfirmados" var="usuarios" value="#{usuariosBean.gestoresNoConfirmados}" paginator="true" paginatorAlwaysVisible="false" 
-                                     paginatorPosition="bottom" selection="#{usuariosBean.usuariosSeleccionados}" rowKey="#{usuarios.nombreLogin}"  rows="10"
+                                     paginatorPosition="bottom" selection="#{usuariosBean.gestoresPorConfirmar}" rowKey="#{usuarios.nombreLogin}"  rows="10"
                                      emptyMessage="Todos los usuarios est&aacute;n confirmados.">
                           <f:facet name="header"> Usuarios no confirmados </f:facet>
                           <p:column selectionMode="multiple" style="width:30px;text-align:right" />
@@ -63,8 +63,8 @@
                             <h:outputText value="#{usuarios.correo}" />
                           </p:column>
                           <f:facet name="footer">
-                            <p:commandButton process="noConfirmados" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosBean.usuariosSeleccionados)}" />
-                            <p:commandButton process="noConfirmados" icon="ui-icon-trash" value="Eliminar" actionListener="#{usuariosBean.eliminarGestores(usuariosBean.usuariosSeleccionados)}" />
+                            <p:commandButton process="noConfirmados" icon="ui-icon-check" value="Confirmar" actionListener="#{usuariosBean.confirmarGestores(usuariosBean.gestoresPorConfirmar)}" />
+                            <p:commandButton process="noConfirmados" icon="ui-icon-trash" value="Eliminar" actionListener="#{usuariosBean.eliminarGestores(usuariosBean.gestoresPorConfirmar)}" />
                           </f:facet>
                         </p:dataTable>
                       </h:form>
@@ -151,77 +151,7 @@
               <div id="buscausuarios" class="panel bg-primary">
                 <div class="panel-body form-group">
                   <h4>Consulte y modifique a los usuarios del sistema.</h4>
-                  <h:form id="formUsuarios">
-                    <p:contextMenu for="usuarios">
-                      <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
-                    </p:contextMenu>
 
-                    <p:dataTable id="usuarios" var="usuario" value="#{usuariosBean.todosUsuarios}" widgetVar="usuarioDataTable" paginator="true" rows="10"
-                                 paginatorAlwaysVisible="false" paginatorPosition="bottom" emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda." 
-                                 filteredValue="#{usuariosBean.usuariosEncontrados}" rowKey="#{usuario.nombreLogin}" selection="#{usuariosBean.usuarioSeleccionado}" selectionMode="single">
-
-                      <f:facet name="header_tabBuscar">
-                        <p:outputPanel>
-                          <h:outputText value="Buscar en todos los usuarios:  " />
-                          <p:inputText id="globalFilter" onkeyup="PF('usuarioDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>
-                        </p:outputPanel>
-                      </f:facet>
-
-                      <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
-                        <h:outputText value="#{usuario.nombre}"/>
-                      </p:column>
-                      <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
-                        <h:outputText value="#{usuario.paterno}"/>
-                      </p:column>
-                      <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
-                        <h:outputText value="#{usuario.materno}"/>                         
-                      </p:column>
-
-                      <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
-                        <h:outputText value="#{usuario.nombreLogin}"/>                           
-                      </p:column>
-                    </p:dataTable>
-
-                    <p:dialog header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" 
-                              modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                      <p:outputPanel id="usuarioDetail" style="text-align:center;">
-
-                        <p:panelGrid columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}">
-
-                          <f:facet name="header">
-                            <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}" height="200px"/> 
-                          </f:facet>
-
-                          <h:outputText value="Nombre: "/>
-                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombre}" /> 
-
-                          <h:outputText value="Apellido paterno: "/>
-                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
-
-                          <h:outputText value="Apellido materno: "/>
-                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
-
-                          <h:outputText value="Nombre login: "/>
-                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
-
-                          <h:outputText value="Perfil: "/>
-                          <p:selectOneMenu onchange="" >
-                            <f:selectItems  value="#{usuariosBean.perfilBean.ordenarLista(usuariosBean.usuarioSeleccionado.perfil)}" />
-                          </p:selectOneMenu>
-
-                          <h:outputText value="Correo: "/>
-                          <p:inputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
-
-                          <f:facet name="footer">
-                            <div class="text-center">
-                              <p:commandButton value="Modificar" id="ajax" update="growl" />
-                              <p:commandButton value="Eliminar" id="nonAjax" ajax="false" />
-                            </div>                              
-                          </f:facet>
-                        </p:panelGrid>
-                      </p:outputPanel>
-                    </p:dialog>
-                  </h:form>
                 </div>
               </div> <!-- #buscausuarios -->
 
@@ -230,6 +160,82 @@
           <!--</div>  .panelbody -->
         </div><!-- /panel -->
       </div> <!-- #opciones -->
+
+
+      <h:form id="formUsuarios">
+        <p:contextMenu for="usuarios">
+          <p:menuitem value="Ver detalle" update="usuarioDetail" icon="ui-icon-search" oncomplete="PF('usuarioDialog').show()"/>
+        </p:contextMenu>
+
+        <p:dataTable id="usuarios" var="usuario" value="#{usuariosBean.todosUsuarios}" rowKey="#{usuario.nombreLogin}" 
+                     selection="#{usuariosBean.usuarioSeleccionado}" selectionMode="single" widgetVar="usuarioDataTable" 
+                     paginator="true" rows="10" paginatorAlwaysVisible="false" paginatorPosition="bottom" 
+                     emptyMessage="Ning&uacute;n usuario coincide con el criterio de b&uacute;squeda." 
+                     filteredValue="#{usuariosBean.usuariosEncontrados}"  >
+
+          <f:facet name="header_tabBuscar">
+            <p:outputPanel>
+              <h:outputText value="Buscar en todos los usuarios:  " />
+              <p:inputText id="globalFilter" onkeyup="PF('usuarioDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>
+            </p:outputPanel>
+          </f:facet>
+
+          <p:column headerText="Nombre" filterBy="#{usuario.nombre}" filterMatchMode="contains"> 
+            <h:outputText value="#{usuario.nombre}"/>
+          </p:column>
+          <p:column headerText="Apellido paterno" filterBy="#{usuario.paterno}" filterMatchMode="contains">
+            <h:outputText value="#{usuario.paterno}"/>
+          </p:column>
+          <p:column headerText="Apellido materno" filterBy="#{usuario.materno}" filterMatchMode="contains">
+            <h:outputText value="#{usuario.materno}"/>                         
+          </p:column>
+
+          <p:column headerText="Nombre login" filterBy="#{usuario.nombreLogin}" filterMatchMode="contains">
+            <h:outputText value="#{usuario.nombreLogin}"/>                           
+          </p:column>
+        </p:dataTable>
+
+        <p:dialog closeOnEscape="true" header="Informaci&oacute;n detallada del usuario" widgetVar="usuarioDialog" 
+                  modal="true" showEffect="fade" hideEffect="fade" resizable="false" >
+          <p:outputPanel id="usuarioDetail" style="text-align:center;">
+
+            <p:panelGrid columns="2" rendered="#{not empty usuariosBean.usuarioSeleccionado}">
+
+              <f:facet name="header">
+                <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}" height="200px"/> 
+              </f:facet>
+
+              <h:outputText value="Nombre: "/>
+              <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombre}" /> 
+
+              <h:outputText value="Apellido paterno: "/>
+              <p:inputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
+
+              <h:outputText value="Apellido materno: "/>
+              <p:inputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
+
+              <h:outputText value="Nombre login: "/>
+              <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
+
+              <h:outputText value="Perfil: "/>
+              <p:selectOneMenu onchange="" >
+                <f:selectItems  value="#{usuariosBean.perfilBean.ordenarLista(usuariosBean.usuarioSeleccionado.perfil)}" />
+              </p:selectOneMenu>
+
+              <h:outputText value="Correo: "/>
+              <p:inputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
+
+              <f:facet name="footer">
+                <div class="text-center">
+                  <p:commandButton value="Modificar" id="ajax" update="usuarioDetail" />
+                  <p:commandButton value="Eliminar" id="nonAjax" ajax="false" />
+                </div>                              
+              </f:facet>
+            </p:panelGrid>
+          </p:outputPanel>
+        </p:dialog>
+      </h:form>
+
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
