@@ -10,8 +10,12 @@ import dto.Email;
 import dto.Sujeto;
 import impl.EmailIMPL;
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import util.constantes.Patrones;
 import util.log.Logs;
 
 /**
@@ -53,11 +57,25 @@ public class EmailBean implements Serializable {
     }
   }
   
+  public List<Email> listar(int idSujeto) {
+    return emailDao.buscarPorSujeto(idSujeto);
+  }
+  
   // MÉTODOS AUXILIARES
   public void resetAtributos() {
     direccion = null;
     tipo = null;
   }
+  
+  public boolean validarCorreo(String correo) {
+        // Compila la cadena PATRON_EMAIL como un patrón
+        Pattern patron = Pattern.compile(Patrones.PATRON_EMAIL);
+
+        // Compara el correo con el patrón dado
+        Matcher matcher = patron.matcher(correo);
+
+        return matcher.matches();
+    }
   
   public String getDireccion() {
     return direccion;

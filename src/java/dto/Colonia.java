@@ -34,6 +34,13 @@ public class Colonia  implements java.io.Serializable {
        this.codigoPostal = codigoPostal;
        this.direccions = direccions;
     }
+
+  @Override
+  public String toString() {
+    return tipo + " " + nombre;
+  }
+    
+    
    
     public Integer getIdColonia() {
         return this.idColonia;

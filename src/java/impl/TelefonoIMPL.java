@@ -32,7 +32,8 @@ public class TelefonoIMPL implements TelefonoDAO {
         try {
             sesion.save(telefono);
             tx.commit();
-            Logs.log.info("Se insertó un nuevo Telefono: id = " + telefono.getIdTelefono());
+            Logs.log.info("Se insertó un nuevo Telefono: id = " + telefono.getIdTelefono() +
+                    " asociado a Sujeto: id = " + telefono.getSujeto().getIdSujeto());
         } catch (HibernateException he) {
             telefono = null;
             if (tx != null) {

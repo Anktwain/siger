@@ -31,27 +31,28 @@ import util.log.Logs;
 @ManagedBean
 @ViewScoped
 public class DireccionBean implements Serializable {
+
   // Objeto que gestiona este bean
   private Direccion direccion;
-  
+
   // Atributos del objeto Direccion
   private String tipo;
   private String calle;
   private Colonia colonia;
   private Municipio municipio;
   private EstadoRepublica estado;
-  
+
   // Acceso a la BD
   private DireccionDAO direccionDao;
   private ColoniaDAO coloniaDao;
   private MunicipioDAO municipioDao;
   private EstadoRepublicaDAO estadoDao;
-  
+
   // Listas para construir direcciones
   private List<EstadoRepublica> estados;
-  private List<Municipio> municipos;
+  private List<Municipio> municipios;
   private List<Colonia> colonias;
-  
+
   // Construyendo...
   public DireccionBean() {
     direccion = new Direccion();
@@ -63,7 +64,7 @@ public class DireccionBean implements Serializable {
     estado = new EstadoRepublica();
     estadoDao = new EstadoRepublicaIMPL();
   }
-  
+
   // GESTIÓN DE DIRECCIONES
   public Direccion insertar(Sujeto sujeto) {
     // Verfica que el sujeto sea válido
@@ -80,28 +81,34 @@ public class DireccionBean implements Serializable {
       direccion.setSujeto(sujeto);
 
       return direccionDao.insertar(direccion);
+    }
   }
+
+  public List<Direccion> listar(int idSujeto) {
+    return direccionDao.buscarPorSujeto(idSujeto);
   }
-  
+
   // AUXILIARES
   public void listarEstados() {
     estados = estadoDao.buscarTodo();
   }
-  
+
   public void listarMunicipiosPorEstado() {
+    System.out.println(estado.getIdEstado());
     estado = estadoDao.buscar(estado.getIdEstado());
-    municipos = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
+    municipios = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
+    
   }
-  
+
   public void listarColoniasPorMunicipio() {
     municipio = municipioDao.buscar(municipio.getIdMunicipio());
     colonias = coloniaDao.buscarColoniasPorMunicipio(municipio.getIdMunicipio());
   }
-  
+
   public void agregarCP() {
     colonia = coloniaDao.buscar(colonia.getIdColonia());
   }
-  
+
   public void resetAtributos() {
     tipo = null;
     calle = null;
@@ -109,7 +116,7 @@ public class DireccionBean implements Serializable {
     municipio.setIdMunicipio(null);
     estado.setIdEstado(null);
   }
-  
+
   // SETTERS & GETTERS
   public Direccion getDireccion() {
     return direccion;
@@ -167,12 +174,12 @@ public class DireccionBean implements Serializable {
     this.estados = estados;
   }
 
-  public List<Municipio> getMunicipos() {
-    return municipos;
+  public List<Municipio> getMunicipios() {
+    return municipios;
   }
 
-  public void setMunicipos(List<Municipio> municipos) {
-    this.municipos = municipos;
+  public void setMunicipios(List<Municipio> municipios) {
+    this.municipios = municipios;
   }
 
   public List<Colonia> getColonias() {
@@ -182,5 +189,37 @@ public class DireccionBean implements Serializable {
   public void setColonias(List<Colonia> colonias) {
     this.colonias = colonias;
   }
-  
+
+  public DireccionDAO getDireccionDao() {
+    return direccionDao;
+  }
+
+  public void setDireccionDao(DireccionDAO direccionDao) {
+    this.direccionDao = direccionDao;
+  }
+
+  public ColoniaDAO getColoniaDao() {
+    return coloniaDao;
+  }
+
+  public void setColoniaDao(ColoniaDAO coloniaDao) {
+    this.coloniaDao = coloniaDao;
+  }
+
+  public MunicipioDAO getMunicipioDao() {
+    return municipioDao;
+  }
+
+  public void setMunicipioDao(MunicipioDAO municipioDao) {
+    this.municipioDao = municipioDao;
+  }
+
+  public EstadoRepublicaDAO getEstadoDao() {
+    return estadoDao;
+  }
+
+  public void setEstadoDao(EstadoRepublicaDAO estadoDao) {
+    this.estadoDao = estadoDao;
+  }
+
 }

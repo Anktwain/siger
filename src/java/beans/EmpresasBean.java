@@ -169,7 +169,7 @@ public class EmpresasBean implements Serializable {
     
     // empresa
     empresaDao = new EmpresaIMPL();
-    listaEmpresas = sujetoDao.buscarEmpresas();
+    listaEmpresas = empresaDao.buscarEmpresas();
     nuevaEmpresa = new Empresa();
     
     // producto
@@ -879,7 +879,7 @@ public class EmpresasBean implements Serializable {
     return nuevaCalle;
   }
 
-  public void setNuevaCalle(String nuevacalle) {
+  public void setNuevaCalle(String nuevaCalle) {
     this.nuevaCalle = nuevaCalle;
   }
 
