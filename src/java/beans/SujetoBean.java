@@ -9,8 +9,11 @@ import dao.SujetoDAO;
 import dto.Sujeto;
 import impl.SujetoIMPL;
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import util.constantes.Patrones;
 import util.constantes.Sujetos;
 
 /**
@@ -52,9 +55,19 @@ public class SujetoBean implements Serializable {
     return sujetoDao.insertar(sujeto);
   }
   
-  public boolean eliminar(Sujeto s) {
-    s.setEliminado(Sujetos.ELIMINADO);
-    return sujetoDao.editar(s);
+  public boolean editar(Sujeto sujeto){
+    sujeto.setNombreRazonSocial(nombreRazonSocial);
+    sujeto.setRfc(rfc);
+    // se manda el sujeto para editar
+    boolean ok = sujetoDao.editar(sujeto);
+    // si se logro regresar 1
+    if (ok){
+      return true;
+    }
+    // si no se logro regresar 0
+    else{
+      return false;
+    }
   }
 
   // VALIDACIONES
@@ -62,6 +75,15 @@ public class SujetoBean implements Serializable {
     return (nombreRazonSocial != null) && (!nombreRazonSocial.equals(""))
             && (nombreRazonSocial.length() <= Sujetos.LONGITUD_NOMBRE)
             && (!nombreRazonSocial.matches("[.*\\s*]*"));
+  }
+  
+  // funcion para validar el rfc de una nueva empresa
+  public boolean validarRfc() {
+    // pasamos el rfc a mayusculas para poder comparar
+    rfc = rfc.toUpperCase();
+    Pattern patron = Pattern.compile(Patrones.PATRON_RFC_MORAL);
+    Matcher matcher = patron.matcher(rfc);
+    return matcher.matches();
   }
   
   // MÉTODOS AUXILIARES
@@ -94,6 +116,22 @@ public class SujetoBean implements Serializable {
 
   public void setEliminado(int eliminado) {
     this.eliminado = eliminado;
+  }
+
+  public Sujeto getSujeto() {
+    return sujeto;
+  }
+
+  public void setSujeto(Sujeto sujeto) {
+    this.sujeto = sujeto;
+  }
+
+  public SujetoDAO getSujetoDao() {
+    return sujetoDao;
+  }
+
+  public void setSujetoDao(SujetoDAO sujetoDao) {
+    this.sujetoDao = sujetoDao;
   }
 
 }

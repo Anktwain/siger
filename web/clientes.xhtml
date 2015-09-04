@@ -52,6 +52,7 @@
             <div class="panel-stat3 bg-success">
               <h3 class="m-top-none">Nuevo cliente</h3>
               <p:commandButton value="Agregar" class="btn btn-success"
+                               actionListener="#{vistaClientes.direccionBean.listarEstados()}"
                                onclick="PF('dlgAltaCliente').show();"/>
 
               <div class="stat-icon">
@@ -277,7 +278,7 @@
                               <p:selectOneMenu id="cboxMpio" value="#{vistaClientes.direccionBean.municipio.idMunicipio}" style="width: 100%" filter="true">
                                 <p:ajax listener="#{vistaClientes.direccionBean.listarColoniasPorMunicipio()}" update="cboxCol,growl"/>
                                 <f:selectItem itemLabel="Seleccione un municipio o delegaci&oacute;n" itemValue="" class="form-control chzn-select"/>
-                                <f:selectItems value="#{vistaClientes.direccionBean.municipos}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}"/>
+                                <f:selectItems value="#{vistaClientes.direccionBean.municipios}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}"/>
                               </p:selectOneMenu>
                             </div>
                           </div> <!-- /.col-->  
@@ -475,7 +476,7 @@
                               <p:selectOneMenu id="cboxMpio" value="#{vistaClientes.direccionBean.municipio.idMunicipio}" style="width: 100%" filter="true">
                                 <p:ajax listener="#{vistaClientes.direccionBean.listarColoniasPorMunicipio()}" update="cboxCol,growl"/>
                                 <f:selectItem itemLabel="Seleccione un municipio o delegaci&oacute;n" itemValue="" class="form-control chzn-select"/>
-                                <f:selectItems value="#{vistaClientes.direccionBean.municipos}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}"/>
+                                <f:selectItems value="#{vistaClientes.direccionBean.municipios}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}"/>
                               </p:selectOneMenu>
                             </div>
                           </div> <!-- /.col-->  
