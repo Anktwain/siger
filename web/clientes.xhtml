@@ -649,19 +649,19 @@
                   TEL&Eacute;FONO
                   <a href="#tabTelefonos" data-toggle="tab" class="btn btn-xs btn-info"><i class="fa fa-table"></i></a>
                 </div>
-                <div class="panel-body">
+                <div class="ui-fluid">
                   <h:form id="frmDetalleTelefono">
-                    <p:panelGrid columns="2">
-                      <h:outputText value="N&uacute;mero: " />
-                      <p:inputText value="#{vistaClientes.telefonoActual.numero}" class="no-padding" />
+                      <p:panelGrid columns="2" class="table table-hover table-striped no-margin table-responsive">
+                        <h:outputText value="N&uacute;mero: "/>
+                      <p:inputText value="#{vistaClientes.telefonoActual.numero}" class="no-margin no-padding" />
                       <h:outputText value="Tipo: " />
-                      <p:inputText value="#{vistaClientes.telefonoActual.tipo}" class="no-padding"/>
+                      <p:inputText value="#{vistaClientes.telefonoActual.tipo}" class="no-margin no-padding"/>
                       <h:outputText value="Extensi&oacute;n: " />
-                      <p:inputText value="#{vistaClientes.telefonoActual.extension}" class="no-padding"/>
+                      <p:inputText value="#{vistaClientes.telefonoActual.extension}" class="no-margin no-padding"/>
                       <h:outputText value="Lada: " />
-                      <p:inputText value="#{vistaClientes.telefonoActual.lada}" class="no-padding"/>
+                      <p:inputText value="#{vistaClientes.telefonoActual.lada}" class="no-margin no-padding"/>
                       <h:outputText value="Horario: " />
-                      <p:inputText value="#{vistaClientes.telefonoActual.horario}" class="no-padding"/>
+                      <p:inputText value="#{vistaClientes.telefonoActual.horario}" class="no-margin no-padding"/>
                     </p:panelGrid>
                   </h:form>
                 </div>
@@ -755,7 +755,7 @@
                   <h:outputText value="Estado: " />
                   <p:selectOneMenu id="cboxEdo" value="#{vistaClientes.direccionlActual.estadoRepublica}" style="width: 100%" filter="true">
                     <p:ajax listener="#{vistaClientes.direccionBean.listarMunicipiosPorEstado()}"/>
-                    <f:selectItem itemLabel="Seleccione un estado" itemValue="" class="form-control chzn-select" />
+                    <f:selectItem itemLabel="Seleccione un estado" itemValue="" class="chzn-select no-padding" />
                     <f:selectItems value="#{vistaClientes.direccionBean.estados}" var="estado" itemLabel="#{estado}" itemValue="#{estado.idEstado}" />
                   </p:selectOneMenu>
                  

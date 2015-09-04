@@ -18,6 +18,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import util.constantes.Sujetos;
 
@@ -224,6 +225,7 @@ public class VistaClientes implements Serializable {
               "Se eliminó el Cliente: ",
               clienteActual.getSujeto().getNombreRazonSocial()));
       listaClientes.remove(clienteActual);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleCliente').hide();");
       } else {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
               "No se pudo eliminar el Cliente",
