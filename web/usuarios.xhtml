@@ -17,7 +17,7 @@
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container"> 
-      
+
       <div id="breadcrumb">
         <ul class="breadcrumb">
           <li>
@@ -27,7 +27,7 @@
           <li class="active">Usuarios</li>
         </ul>
       </div>
-      
+
       <div class="main-header clearfix">
         <div class="page-title">
           <h3 class="no-margin">Usuarios</h3>
@@ -36,53 +36,54 @@
             sistema.</span>
         </div>
       </div>
-      
+
       <ui:include src="barraAdministrativo.xhtml" />
-      
+
       <div id="opciones">
-        
+
         <div class="row">
-        <div class="padding-md">
-          <div class="col-xs-4">
-            <div class="panel-stat3 bg-danger">
-              <h3 class="m-top-none">Confirmar gestores</h3>
-              <p:commandButton value="Confirmar" class="btn btn-primary"
-                               actionListener="#{vistaClientes.direccionBean.listarEstados()}"
-                               onclick="PF('dlgAltaCliente').show();"/>
+          <div class="padding-md">
+            <div class="col-xs-4">
+              <div class="panel-stat3 bg-danger">
+                <h3 class="m-top-none">Confirmar gestores</h3>
+<!--                <p:commandButton value="Confirmar" class="btn btn-primary" actionListener="#{vistaClientes.direccionBean.listarEstados()}" onclick="PF('dlgAltaCliente').show();"/>-->
+                <div id="botonazo">
+                  <p:commandButton value="Confirmar" class="btn btn-default" onclick="PF('dlgNuevaEmpresa').show();" />
+                </div>
+                <div class="stat-icon">
+                  <i class="fa fa-check-circle-o fa-3x"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <div class="panel-stat3 bg-info">
+                <h3 class="m-top-none">Dar de alta usuario</h3>
+                <!--<p:commandButton value="Nuevo" class="btn btn-primary" actionListener="#{vistaClientes.direccionBean.listarEstados()}" onclick="PF('dlgAltaCliente').show();"/>-->
+                <div id="botonazo">
+                  <p:commandButton value="Nuevo" class="btn btn-default" onclick="PF('dlgNuevaEmpresa').show();" />
+                </div>
 
-              <div class="stat-icon">
-                <i class="fa fa-user-plus fa-2x" />
+                <div class="stat-icon">
+                  <i class="fa fa-pencil fa-3x"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <div class="panel-stat3 bg-primary">
+                <h3 class="m-top-none">Buscar usuario</h3>
+                <!--<p:commandButton value="Buscar" class="btn btn-primary" actionListener="#{vistaClientes.direccionBean.listarEstados()}" onclick="PF('dlgAltaCliente').show();"/>-->
+                <div id="botonazo">
+                  <p:commandButton value="Buscar" class="btn btn-default" onclick="PF('dlgNuevaEmpresa').show();" />
+                </div>
+                <div class="stat-icon">
+                  <i class="fa fa-search fa-3x"/>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-xs-4">
-            <div class="panel-stat3 bg-info">
-              <h3 class="m-top-none">Dar de alta usuario</h3>
-              <p:commandButton value="Nuevo" class="btn btn-primary"
-                               actionListener="#{vistaClientes.direccionBean.listarEstados()}"
-                               onclick="PF('dlgAltaCliente').show();"/>
+        </div> <!-- row -->
 
-              <div class="stat-icon">
-                <i class="fa fa-user-plus fa-2x" />
-              </div>
-            </div>
-          </div>
-          <div class="col-xs-4">
-            <div class="panel-stat3 bg-primary">
-              <h3 class="m-top-none">Buscar usuario</h3>
-              <p:commandButton value="Buscar" class="btn btn-primary"
-                               actionListener="#{vistaClientes.direccionBean.listarEstados()}"
-                               onclick="PF('dlgAltaCliente').show();"/>
 
-              <div class="stat-icon">
-                <i class="fa fa-user-plus fa-2x" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> <!-- row -->
-        
-        
         <div class="panel panel-default">
           <!--<div class="panel-heading h1 text-center"></div>-->
           <div class="panel-tab clearfix">
