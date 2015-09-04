@@ -18,6 +18,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import util.constantes.Sujetos;
 
@@ -117,6 +118,26 @@ public class VistaClientes implements Serializable {
     listaDirecciones = direccionBean.listar(clienteActual.getSujeto().getIdSujeto());
     listaContactos = contactoBean.listar(clienteActual.getSujeto().getIdSujeto());
   }
+  
+  public void onRowContactoSelect(SelectEvent evento) {
+    tipoSujetoActual = Sujetos.CONTACTO;
+    contactoActual = (Contacto) evento.getObject();
+    listaTelefonos = telefonoBean.listar(contactoActual.getSujeto().getIdSujeto());
+    listaEmails = emailBean.listar(contactoActual.getSujeto().getIdSujeto());
+    listaDirecciones = direccionBean.listar(contactoActual.getSujeto().getIdSujeto());
+  }
+  
+  public void onRowTelefonoSelect(SelectEvent evento) {
+    telefonoActual = (Telefono) evento.getObject();
+  }
+  
+  public void onRowEmailSelect(SelectEvent evento) {
+    emailActual = (Email) evento.getObject();
+  }
+  
+  public void onRowDireccionSelect(SelectEvent evento) {
+    direccionlActual = (Direccion) evento.getObject();
+  }
 
   // OTROS MÉTODOS
   public void terminarProceso() {
@@ -188,6 +209,30 @@ public class VistaClientes implements Serializable {
   }
 
   public void eliminarCliente() {
+    FacesContext context = FacesContext.getCurrentInstance();
+    
+    /* Primero vamos a cerciorarnos de que existe un cliente al que se va a eliminar,
+      se supone que ese objeto Cliente está almacenado en clienteActual, por lo tanto,
+      verificamos:
+    */
+    if(clienteActual == null) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se pudo eliminar el Cliente",
+              "Primero deberá seleccionar un cliente para ser eliminado"));
+    } else {
+      if(clienteBean.eliminar(clienteActual)) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Se eliminó el Cliente: ",
+              clienteActual.getSujeto().getNombreRazonSocial()));
+      listaClientes.remove(clienteActual);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleCliente').hide();");
+      } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se pudo eliminar el Cliente",
+              "Reporte esta situación a Soporte Técnico"));
+      }
+    }
+    
   }
 
   public void agregarContacto() {
@@ -201,7 +246,6 @@ public class VistaClientes implements Serializable {
       contactoBean.resetAtributos();
 
     } else {
-      System.out.println("Cliente actual: " + clienteActual.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
       contactoActual = contactoBean.insertar(clienteActual);
       if (contactoActual == null) {
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,

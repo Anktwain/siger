@@ -89,6 +89,7 @@ public class SujetoIMPL implements SujetoDAO {
 
         try {
             // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
+            sujeto.setEliminado(Sujetos.ELIMINADO);
             sesion.update(sujeto);
             tx.commit();
             ok = true;

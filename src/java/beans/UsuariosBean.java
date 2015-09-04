@@ -4,8 +4,6 @@ import dao.AdministradorDAO;
 import dao.GestorDAO;
 import dao.UsuarioDAO;
 import dto.Administrativo;
-import dto.Car;
-import dto.CarService;
 import dto.Gestor;
 import dto.Usuario;
 import impl.AdministradorIMPL;
