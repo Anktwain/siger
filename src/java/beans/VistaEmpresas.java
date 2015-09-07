@@ -45,9 +45,9 @@ public class VistaEmpresas implements Serializable {
   private Direccion nuevaDireccion;
 
   // variables para habilitar y deshabilitar forms
-  public boolean habilitaDatosPrimarios = false;
-  public boolean habilitaListaProductos = false;
-  public boolean habilitaListaSubproductos = false;
+  public boolean deshabilitaDatosPrimarios;
+  public boolean deshabilitaListaProductos;
+  public boolean deshabilitaListaSubproductos;
 
   // objetos necesarios para obtener la direccion completa
   public String calle;
@@ -72,6 +72,12 @@ public class VistaEmpresas implements Serializable {
   private DireccionBean direccionBean;
   @ManagedProperty(value = "#{sujetoBean}")
   private SujetoBean sujetoBean;
+  @ManagedProperty(value = "#{productoBean}")
+  private ProductoBean productoBean;
+  /*
+  @ManagedProperty(value = "#{subproductoBean}")
+  private SubproductoBean subproductoBean;
+  */
 
   // constructor
   public VistaEmpresas() {
@@ -88,11 +94,18 @@ public class VistaEmpresas implements Serializable {
     nuevoTelefono = new Telefono();
     nuevoEmail = new Email();
     nuevaDireccion = new Direccion();
+    deshabilitaDatosPrimarios = true;
+    deshabilitaListaProductos = true;
+    deshabilitaListaSubproductos = true;
   }
 
   // post constructor para cargar la lista de empresas en madriza
   @PostConstruct
   public void cargaListas() {
+    // volvemos a ocultar los input text
+    deshabilitaDatosPrimarios = true;
+    deshabilitaListaProductos = true;
+    deshabilitaListaSubproductos = true;
     // creamos una instancia de FacesContext para poder utilizar el growl
     FacesContext actual = FacesContext.getCurrentInstance();
     // cargamos la lista de estados
@@ -200,6 +213,7 @@ public class VistaEmpresas implements Serializable {
     else{
       actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se editaron los datos primarios de la empresa"));
     }
+    deshabilitaDatosPrimarios = false;
   }
 
   // es el metodo que carga todos los datos de las empresas para que se visualicen en los input text
@@ -208,10 +222,19 @@ public class VistaEmpresas implements Serializable {
     sujetoBean.setNombreRazonSocial(sujetoSeleccionado.getNombreRazonSocial());
     sujetoBean.setRfc(sujetoSeleccionado.getRfc());
     empresaBean.setNombreCorto(empresaBean.getEmpresaDao().buscarEmpresaPorSujeto(sujetoSeleccionado.getIdSujeto()).getNombreCorto());
-    // actualizamos la vista
-    RequestContext.getCurrentInstance().update("datosPrimarios");
     // habilitamos la visibilidad del form que contiene los input text
-    habilitaDatosPrimarios = true;
+    deshabilitaDatosPrimarios = true;
+    // se actualiza la vista
+    RequestContext.getCurrentInstance().update("datosPrimarios");
+    // cargamos la lista de productos
+    if(productoBean.listarProductos(sujetoSeleccionado.getIdSujeto())){
+      // se actualiza la vista
+      RequestContext.getCurrentInstance().update("editaProductos");
+    }
+    else{
+      
+    }
+    
   }
   // es el metodo que verifica los campos de telefono para agregar
   public boolean verificaTelefono() {
@@ -339,6 +362,13 @@ public class VistaEmpresas implements Serializable {
   public void crearContacto() {
   }
 
+  public void cargarProducto(){
+  }
+  
+  public void guardarProducto(){
+  }
+  
+  
   // setters y getters
   public Empresa getEmpresaSeleccionada() {
     return empresaSeleccionada;
@@ -540,28 +570,36 @@ public class VistaEmpresas implements Serializable {
     this.nuevoSujetoContacto = nuevoSujetoContacto;
   }
 
-  public boolean isHabilitaDatosPrimarios() {
-    return habilitaDatosPrimarios;
+  public boolean isDeshabilitaDatosPrimarios() {
+    return deshabilitaDatosPrimarios;
   }
 
-  public void setHabilitaDatosPrimarios(boolean habilitaDatosPrimarios) {
-    this.habilitaDatosPrimarios = habilitaDatosPrimarios;
+  public void setDeshabilitaDatosPrimarios(boolean deshabilitaDatosPrimarios) {
+    this.deshabilitaDatosPrimarios = deshabilitaDatosPrimarios;
   }
 
-  public boolean isHabilitaListaProductos() {
-    return habilitaListaProductos;
+  public boolean isDeshabilitaListaProductos() {
+    return deshabilitaListaProductos;
   }
 
-  public void setHabilitaListaProductos(boolean habilitaListaProductos) {
-    this.habilitaListaProductos = habilitaListaProductos;
+  public void setDeshHabilitaListaProductos(boolean deshabilitaListaProductos) {
+    this.deshabilitaListaProductos = deshabilitaListaProductos;
   }
 
-  public boolean isHabilitaListaSubproductos() {
-    return habilitaListaSubproductos;
+  public boolean isDeshabilitaListaSubproductos() {
+    return deshabilitaListaSubproductos;
   }
 
-  public void setHabilitaListaSubproductos(boolean habilitaListaSubproductos) {
-    this.habilitaListaSubproductos = habilitaListaSubproductos;
+  public void setDeshabilitaListaSubproductos(boolean deshabilitaListaSubproductos) {
+    this.deshabilitaListaSubproductos = deshabilitaListaSubproductos;
+  }
+
+  public ProductoBean getProductoBean() {
+    return productoBean;
+  }
+
+  public void setProductoBean(ProductoBean productoBean) {
+    this.productoBean = productoBean;
   }
 
 }
