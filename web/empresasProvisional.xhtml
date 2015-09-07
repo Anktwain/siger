@@ -209,43 +209,71 @@
         <h4>Seleccione la empresa y de click en "Editar"</h4>
       </div>
       <div class="modal-body">
-        <h:form id="tablaEmpresas">
-          <!-- TABLA CON LAS EMPRESAS REGISTRADAS EN EL SISTEMA -->
-          <p:dataTable id="editarEmpresa" var="sujeto" value="#{vistaEmpresas.listaEmpresas}" rowKey="#{sujeto.rfc}" selection="#{vistaEmpresas.sujetoSeleccionado}" selectionMode="single" paginator="true" rows="10" style="width: 500px; margin-right: auto;">
-            <f:facet name="header">
-              Empresas registradas en el sistema
-            </f:facet>
-            <p:column headerText="Nombre de la empresa" style="width: 290px">
-              <p:outputLabel value="#{sujeto.nombreRazonSocial}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
-            </p:column>
-            <p:column headerText="RFC" style="width: 100px"> 
-              <h:outputText value="#{sujeto.rfc}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
-            </p:column>
-            <f:facet name="footer">
-              <p:commandButton process="editarEmpresa" icon="ui-icon-pencil" value="Editar" actionListener="#{vistaEmpresas.cargarEmpresa()}" />
-            </f:facet>
-          </p:dataTable>
-        </h:form>
-        <!-- EDICION DE DATOS PRIMARIOS -->
-        <h:form id="datosPrimarios" disabled="#{vistaEmpresas.habilitaDatosPrimarios}">
-          <div style="margin-left: auto;">
-            <h:outputText value="Razon Social:" />
-            <br />
-            <p:inputText value="#{vistaEmpresas.sujetoBean.nombreRazonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
-            <br />
-            <h:outputText value="RFC:" />
-            <br />
-            <p:inputText value="#{vistaEmpresas.sujetoBean.rfc}" size="25" required="true" requiredMessage="Debe ingresar un RFC" />
-            <br />
-            <h:outputText value="Nombre Corto:" />
-            <br />
-            <p:inputText value="#{vistaEmpresas.empresaBean.nombreCorto}" size="25" required="true" requiredMessage="Debe ingresar un nombre corto de empresa" />
-            <br />
-            <br />
-            <p:commandButton value="Aceptar" actionListener="#{vistaEmpresas.editarEmpresa()}" update="growl" />
-          </div>
-        </h:form>
-        
+        <table>
+          <tr>
+            <td>
+              <h:form id="tablaEmpresas">
+                <!-- TABLA CON LAS EMPRESAS REGISTRADAS EN EL SISTEMA -->
+                <p:dataTable id="tablaListaEmpresas" var="sujeto" value="#{vistaEmpresas.listaEmpresas}" rowKey="#{sujeto.rfc}" selection="#{vistaEmpresas.sujetoSeleccionado}" selectionMode="single" paginator="true" rows="10" style="width: 500px; text-align: left;">
+                  <f:facet name="header">
+                    Empresas registradas en el sistema
+                  </f:facet>
+                  <p:column headerText="Nombre de la empresa" style="width: 290px">
+                    <p:outputLabel value="#{sujeto.nombreRazonSocial}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                  </p:column>
+                  <p:column headerText="RFC" style="width: 100px"> 
+                    <h:outputText value="#{sujeto.rfc}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton process="tablaListaEmpresas" icon="ui-icon-pencil" value="Editar" actionListener="#{vistaEmpresas.cargarEmpresa()}" />
+                  </f:facet>
+                </p:dataTable>
+              </h:form>
+            </td>
+            <td>
+              <!-- EDICION DE DATOS PRIMARIOS -->
+              <h:form id="datosPrimarios">
+                <div style="text-align: right;">
+                  <h:outputText value="Razon Social:" />
+                  <br />
+                  <p:inputText value="#{vistaEmpresas.sujetoBean.nombreRazonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
+                  <br />
+                  <h:outputText value="RFC:" />
+                  <br />
+                  <p:inputText value="#{vistaEmpresas.sujetoBean.rfc}" size="25" required="true" requiredMessage="Debe ingresar un RFC" />
+                  <br />
+                  <h:outputText value="Nombre Corto:" />
+                  <br />
+                  <p:inputText value="#{vistaEmpresas.empresaBean.nombreCorto}" size="25" required="true" requiredMessage="Debe ingresar un nombre corto de empresa" />
+                  <br />
+                  <br />
+                  <p:commandButton value="Aceptar" actionListener="#{vistaEmpresas.editarEmpresa()}" update="growl" />
+                </div>
+              </h:form>
+              <br />
+              <!-- EDICION DE PRODUCTOS -->
+              <h:form id="editaProductos">
+                <div style="text-align: right;">
+                  <p:dataTable id="tablaEditarProductos" var="producto" value="#{vistaEmpresas.productoBean.listaProductos}" rowKey="#{producto.idProducto}" selection="#{vistaEmpresas.productoSeleccionado}" selectionMode="single" paginator="true" rows="10" emptyMessage="No hay productos registrados." style="width: 620px;">
+                    <f:facet name="header">
+                      Lista de productos
+                    </f:facet>
+                    <p:column headerText="Nombre del producto" style="width: 150px;">
+                      <p:outputLabel value="#{producto.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                    </p:column>
+                    <p:column headerText="Descripcion" style="width: 450px;"> 
+                      <h:outputText value="#{producto.descripcion}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                    </p:column>
+                    <f:facet name="footer">
+                      <p:commandButton process="tablaEditarProductos" icon="ui-icon-pencil" value="Editar" actionListener="#{vistaEmpresas.guardarProducto()}" oncomplete="PF('modalProducto').show();" />
+                      <p:commandButton process="tablaEditarProductos" icon="ui-icon-plus" value="Agregar" oncomplete="PF('nuevoProducto').show();" />
+                    </f:facet>
+                  </p:dataTable>
+                </div>
+              </h:form>
+            </td>
+          </tr>
+        </table>
       </div>
       <div class="modal-footer">
       </div>
