@@ -1,53 +1,98 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
-      xmlns:h="http://xmlns.jcp.org/jsf/html" 
-      xmlns:p="http://primefaces.org/ui" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Carga</title>
-<!--    <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
-    <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
-    <h:outputStylesheet library="css" name="pace.css" />
-    <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
-    <h:outputStylesheet library="css" name="morris.css" />
-    <h:outputStylesheet library="css" name="endless.min.css" />
-    <h:outputStylesheet library="css" name="endless-skin.css" />
-    <h:outputStylesheet library="css" name="usuarios.css" />
-    <h:outputScript library="js" name="jquery-1.10.2.min.js" />
-    <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
-    <h:outputScript library="js" name="jquery.flot.min.js" />
-    <h:outputScript library="js" name="rapheal.min.js" />
-    <h:outputScript library="js" name="morris.min.js" />
-    <h:outputScript library="js" name="jquery.colorbox.min.js" />
-    <h:outputScript library="js" name="jquery.sparkline.min.js" />
-    <h:outputScript library="js" name="/uncompressed/pace.js" />
-    <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
-    <h:outputScript library="js" name="jquery.slimscroll.min.js" />
-    <h:outputScript library="js" name="modernizr.min.js" />
-    <h:outputScript library="js" name="jquery.cookie.min.js" />
-    <h:outputScript library="js" name="/endless/endless_dashboard.js" />
-    <h:outputScript library="js" name="/endless/endless.js" />-->
-    <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
-  </h:head> 
-  <body>
-    <!-- Overlay Div -->
-    <div id="overlay" class="transparent" style="display: none"></div>
-    <ui:include src="barraSuperior.xhtml" />
+  </h:head>
+  <h:body>
+    <p:growl id="growl" showDetail="true" />
+
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+              closable="false" resizable="false" showHeader="false" >
+      <p:graphicImage library="img" name="loadingBarra.gif" />
+    </p:dialog>
+
+    <div id="overlay" class="transparent" style="display: none;"></div>
     <ui:include src="barraLateral.xhtml" />
+    <ui:include src="barraSuperior.xhtml" />
+
     <div id="main-container">
       <ui:include src="barraAdministrativo.xhtml" />
-      <h1>
-        M&oacute;dulo de carga
-      </h1>
-      <h3>
-        En construcci&oacute;n.
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
-    </div><!-- /main-container -->
-    <!-- Footer ================================================== -->
-    <ui:include src="barraInferior.xhtml" />
-  </body>
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="panelAdministrativo.xhtml">Inicio</a>
+          </li>
+          <li class="active">
+            Carga
+          </li>
+        </ul>
+      </div>
+
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Carga</h3>
+          <span>Agregue r&aacute;pidamente un lote de informaci&oacute;n en el sistema
+            a trav&eacute;s de un archivo</span>
+        </div>
+      </div>
+
+      <div class="tab-content">
+        <div class="tab-pane fade in active" id="inicio">
+          <div class="row">
+            <div class="padding-md">
+              <div class="col-sm-6 col-md-3">
+                <div class="panel-stat3 bg-success">
+                  <h3 class="m-top-none">Iniciar Carga</h3>
+                  <a href="#paso1" data-toggle="tab" class="btn btn-success btn-small darkCustomModal_open">Iniciar</a>
+
+                  <div class="stat-icon">
+                    <i class="fa fa-cloud-upload fa-2x" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- row -->
+        </div>
+        <div class="tab-pane fade" id="paso1">
+          <div class="row">
+            <div class="panel-body">
+              <div class="main-header clearfix">
+                <div class="page-title">
+                  <h4 class="no-margin">PASO 1</h4>
+                  <span>Seleccione el archivo que desea cargar, este archivo deber&aacute; tener
+                    extensi&oacute;n .xls, .xlsx o .sql</span>
+                  <div class="panel-body">
+                    <fieldset class="form-horizontal form-border">
+                      <div class="form-group">
+                        <h:form>
+                          <p:fileUpload mode="advanced" dragDropSupport="true" label="Seleccionar archivo" class="upload-demo"
+                                        update="growl" sizeLimit="1000000" allowTypes="/(\.|\/)(xls|xlsx|sql)$/" auto="true"
+                                        invalidFileMessage="Tipo de archivo no v&aacute;lido. Extensiones aceptadas: .xls, .xlsx, .sql"
+                                        invalidSizeMessage="El tama&ntilde;o del archivo es demasiado grande. El archivo debe tener un tama&ntilde;o menor o igual a 1000000 B"
+                                        />
+                        </h:form>
+                      </div><!-- /form-group -->
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- row -->
+        </div>
+      </div>
+
+    </div> <!-- main-container -->
+    <ui:include src="barraInferior.xhtml"/>
+  </h:body>
 </html>
