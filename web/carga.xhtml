@@ -64,6 +64,7 @@
             </div>
           </div> <!-- row -->
         </div>
+
         <div class="tab-pane fade" id="paso1">
           <div class="row">
             <div class="panel-body">
@@ -71,25 +72,79 @@
                 <div class="page-title">
                   <h4 class="no-margin">PASO 1</h4>
                   <span>Seleccione el archivo que desea cargar, este archivo deber&aacute; tener
-                    extensi&oacute;n .xls, .xlsx o .sql</span>
+                    extensi&oacute;n .xls, .xlsx o .sql y adem&aacute;s no deber&aacute; exceder de tantos KB</span>
                   <div class="panel-body">
                     <fieldset class="form-horizontal form-border">
-                      <div class="form-group">
-                        <h:form>
-                          <p:fileUpload mode="advanced" dragDropSupport="true" label="Seleccionar archivo" class="upload-demo"
-                                        update="growl" sizeLimit="1000000" allowTypes="/(\.|\/)(xls|xlsx|sql)$/" auto="true"
-                                        invalidFileMessage="Tipo de archivo no v&aacute;lido. Extensiones aceptadas: .xls, .xlsx, .sql"
-                                        invalidSizeMessage="El tama&ntilde;o del archivo es demasiado grande. El archivo debe tener un tama&ntilde;o menor o igual a 1000000 B"
-                                        />
-                        </h:form>
-                      </div><!-- /form-group -->
+                      <div class="col-md-3 col-sm-6">
+                        <div class="form-group">
+                          <h:form>
+                            <p:fileUpload mode="advanced" dragDropSupport="true" label="Seleccionar archivo" class="upload-demo"
+                                          update="growl,btnSigPaso2" sizeLimit="1000000" allowTypes="/(\.|\/)(xls|xlsx|sql)$/" auto="true"
+                                          invalidFileMessage="Tipo de archivo no v&aacute;lido. Extensiones aceptadas: .xls, .xlsx, .sql"
+                                          invalidSizeMessage="El tama&ntilde;o del archivo es demasiado grande. El archivo debe tener un tama&ntilde;o menor o igual a 1000000 B"
+                                          fileUploadListener="#{vistaCarga.subirArchivo}"/>
+                          </h:form>
+                        </div><!-- /form-group -->
+                      </div>
                     </fieldset>
+                    
+                    <a href="#paso2" data-toggle="tab">
+                      <p:commandButton id="btnSigPaso2" value="Siguiente" class="btn btn-success btn-xs"
+                                       disabled="#{vistaCarga.btnSigPaso2Disabled}" actionListener="#{vistaCarga.crearArchivoSql()}"/>
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
           </div> <!-- row -->
         </div>
+
+        <div class="tab-pane fade" id="paso2">
+          <div class="row">
+            <div class="panel-body">
+              <div class="main-header clearfix">
+                <div class="page-title">
+                  <h4 class="no-margin">PASO 2</h4>
+                  <span>Generando archivo sql... Por favor espere</span>
+                  <div class="panel-body">
+                    <fieldset class="form-horizontal form-border">
+                      <div class="form-group">
+                        Aquí van los controles
+                      </div><!-- /form-group -->
+                    </fieldset>
+                    
+                    <a href="#paso3" data-toggle="tab">
+                      <p:commandButton id="btnSigPaso3" value="Siguiente" class="btn btn-success btn-xs"
+                                       disabled="#{vistaCarga.btnSigPaso3Disabled}"/>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- row -->
+        </div>
+        
+        <div class="tab-pane fade" id="paso3">
+          <div class="row">
+            <div class="panel-body">
+              <div class="main-header clearfix">
+                <div class="page-title">
+                  <h4 class="no-margin">PASO 3</h4>
+                  <span>Paso 3</span>
+                  <div class="panel-body">
+                    <fieldset class="form-horizontal form-border">
+                      <div class="form-group">
+                        Este ya es uno de los ultimos pasos
+                      </div><!-- /form-group -->
+                    </fieldset>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- row -->
+        </div>
+
       </div>
 
     </div> <!-- main-container -->
