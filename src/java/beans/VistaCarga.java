@@ -18,6 +18,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.apache.commons.io.FilenameUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import util.constantes.Directorios;
@@ -39,9 +40,13 @@ public class VistaCarga implements Serializable {
   // Conjunto de filas obtenidas del archivo de Excel
   // private Fila filas;
   
+  private int numeroCreditosEnLaRemesa;
+  
   // Otros beans
   @ManagedProperty(value = "#{filaBean}")
   private FilaBean filaBean;
+  @ManagedProperty(value = "#{leerExcel}")
+  private LeerExcel leerExcel;
   
   public VistaCarga() {
     btnSigPaso2Disabled = true;
@@ -75,7 +80,11 @@ public class VistaCarga implements Serializable {
   }
   
   public void crearArchivoSql() {
-    
+    LeerExcel leer = new LeerExcel();
+    numeroCreditosEnLaRemesa = leer.leerArchivoExcel(nombreArchivo);
+    if(numeroCreditosEnLaRemesa > 0) {
+      RequestContext.getCurrentInstance().execute("PF('dlgNumeroDeFilas').show();");
+    }
   }
   
   private String nombrarArchivo(String elArchivo) {
@@ -114,5 +123,29 @@ public class VistaCarga implements Serializable {
   public void setBtnSigPaso3Disabled(boolean btnSigPaso3Disabled) {
     this.btnSigPaso3Disabled = btnSigPaso3Disabled;
   }
-  
+
+  public FilaBean getFilaBean() {
+    return filaBean;
+  }
+
+  public void setFilaBean(FilaBean filaBean) {
+    this.filaBean = filaBean;
+  }
+
+  public LeerExcel getLeerExcel() {
+    return leerExcel;
+  }
+
+  public void setLeerExcel(LeerExcel leerExcel) {
+    this.leerExcel = leerExcel;
+  }
+
+  public int getNumeroCreditosEnLaRemesa() {
+    return numeroCreditosEnLaRemesa;
+  }
+
+  public void setNumeroCreditosEnLaRemesa(int numeroCreditosEnLaRemesa) {
+    this.numeroCreditosEnLaRemesa = numeroCreditosEnLaRemesa;
+  }
+
 }
