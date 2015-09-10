@@ -51,7 +51,102 @@ public class Fila implements Serializable {
   private String marcaje;
   private String fechaQuebranto;
 
-  public Fila() {
+  public Fila(String credito, String nombre, String refCobro, String linea, String tipoCredito, String estatus, String mesesVencidos, String despacho, String fechaInicioCredito, String fechaVencimientoCred, String disposicion, String mensualidad, String saldoInsoluto, String saldoVencido, String tasa, String cuenta, String fechaUltimoPago, String fechaUltimoVencimientoPagado, String idCliente, String rfc, String calle, String colonia, String estado, String municipio, String cp, ArrayList<String> anio, ArrayList<String> mes, ArrayList<String> facMes, ArrayList<String> monto, ArrayList<String> refsAdicionales, ArrayList<String> correos, ArrayList<String> telsAdicionales, ArrayList<String> direcsAdicionales, String marcaje, String fechaQuebranto) {
+    this.credito = credito;
+    this.nombre = nombre;
+    this.refCobro = refCobro;
+    this.linea = linea;
+    this.tipoCredito = tipoCredito;
+    this.estatus = estatus;
+    this.mesesVencidos = mesesVencidos;
+    this.despacho = despacho;
+    this.fechaInicioCredito = fechaInicioCredito;
+    this.fechaVencimientoCred = fechaVencimientoCred;
+    this.disposicion = disposicion;
+    this.mensualidad = mensualidad;
+    this.saldoInsoluto = saldoInsoluto;
+    this.saldoVencido = saldoVencido;
+    this.tasa = tasa;
+    this.cuenta = cuenta;
+    this.fechaUltimoPago = fechaUltimoPago;
+    this.fechaUltimoVencimientoPagado = fechaUltimoVencimientoPagado;
+    this.idCliente = idCliente;
+    this.rfc = rfc;
+    this.calle = calle;
+    this.colonia = colonia;
+    this.estado = estado;
+    this.municipio = municipio;
+    this.cp = cp;
+    this.anio = anio;
+    this.mes = mes;
+    this.facMes = facMes;
+    this.monto = monto;
+    this.refsAdicionales = refsAdicionales;
+    this.correos = correos;
+    this.telsAdicionales = telsAdicionales;
+    this.direcsAdicionales = direcsAdicionales;
+    this.marcaje = marcaje;
+    this.fechaQuebranto = fechaQuebranto;
+  }
+
+  public static void main (String [ ] args) {
+    // CREAMOS NUEVO OBJETO FILA
+    Fila filaPrueba = new Fila("90000456", "Electronica El 92 S.A. de C.V.", "55511001", "CT EXPRESS", "CT EXPRESS PF", "VE", "1", "DELRIO", "2014-09-07", "2020-09-07", "50000", "798.61", "38020.85", "798.61", "15.0", "5224963287414727", "2015-07-07", "2015-07-07", "563987", "EEN150830F49", "Avenida 513 211-Local A", "San Juan de Aragón", "Distrito Federal", "Gustavo A. Madero", "07969", null, null, null, null, null, null, null, null, "13", "2015-07-07");
+    // PREPARAMOS LOS ARRAYLIST PARA INSERTAR EN UN NUEVO OBJETO FILA
+    // AÑOS
+    filaPrueba.anio = new ArrayList<>();
+    filaPrueba.anio.add("2015");
+    filaPrueba.anio.add("2015");
+    filaPrueba.anio.add("2015");
+    // MESES
+    filaPrueba.mes = new ArrayList<>();
+    filaPrueba.mes.add("JUNIO");
+    filaPrueba.mes.add("JULIO");
+    filaPrueba.mes.add("AGOSTO");
+    // CORREOS
+    filaPrueba.correos = new ArrayList<>();
+    filaPrueba.correos.add("el92@el92.com.mx");
+    // TELEFONOS
+    filaPrueba.telsAdicionales = new ArrayList<>();
+    filaPrueba.telsAdicionales.add("5519331782");
+    // IMPRIMIMOS LO QUE RETORNA FUNCION PARA CREAR CONSULTA SQL
+    System.out.println(filaPrueba.crearSQL());
+  }
+  
+  // METODO QUE CREA LA CONSULTA SQL CON LOS PARAMETROS DEL DTO
+  public String crearSQL(){
+    // CREAMOS LA CADENA QUE GUARDARA LA CONSULTA
+    String consulta;
+    // PRIMERO CREAMOS EL SUJETO
+    consulta = "INSERT INTO sujeto (nombre_razon_social, rfc, eliminado) VALUES ('" + nombre + "', '" + rfc + "', 1); ";
+    // GUARDAMOS EL ID DEL SUJETO INSERTADO
+    consulta = consulta + "SET @idSujeto = (SELECT MAX(id_sujeto) from sujeto); ";
+    // CREAMOS AL CLIENTE QUE SERA DUEÑO DEL CREDITO
+    consulta = consulta + "INSERT INTO cliente (numero_cliente, sujetos_id_sujeto) VALUES ('" + idCliente + "', @idSujeto); ";
+    // BUSCAMOS AL CLIENTE
+    consulta = consulta + "SET @idCliente = (SELECT id_cliente FROM cliente WHERE sujetos_id_sujeto = @idSujeto); ";
+    // BUSCAMOS A LA EMPRESA
+    consulta = consulta + "SET @idEmpresa = (SELECT id_empresa FROM empresa WHERE nombre_corto = '" + despacho + "'); ";
+    // BUSCAMOS EL PRODUCTO
+    consulta = consulta + "SET @idProducto = (SELECT id_producto FROM producto WHERE nombre = '" + linea + "'); ";
+    // BUSCAMOS EL SUBPRODUCTO
+    consulta = consulta + "SET @idSubproducto = (SELECT id_subproducto FROM subproducto WHERE nombre = '" + tipoCredito + "'); ";
+    // CREAMOS EL CREDITO
+    consulta = consulta + "INSERT INTO credito (numero_credito, fecha_inicio, fecha_fin, fecha_quebranto, monto, mensualidad, tasa_interes, dias_mora, numero_cuenta, tipo_credito, empresas_id_empresa, productos_id_producto, subproductos_id_subproducto, clientes_id_cliente, gestores_id_gestor) VALUES ('" + credito + "', '" + fechaInicioCredito + "', '" + fechaVencimientoCred + "', '" + fechaQuebranto + "', " + disposicion + ", " + mensualidad + ", " + tasa + ", 0, " + cuenta + ", 1, @idEmpresa, @idProducto, @idSubproducto, @idCliente, 7); ";
+    // BUSCAMOS EL ESTADO DE LA REPUBLICA DONDE SE ENCUENTRA EL DEUDOR
+    consulta = consulta + "SET @idEstado = (SELECT id_estado FROM estado_republica WHERE nombre LIKE '%" + estado + "%'); ";
+    // BUSCAMOS EL MUNICIPIO DONDE SE ENCUENTRA EL DEUDOR
+    consulta = consulta + "SET @idMunicipio = (SELECT id_municipio FROM municipio WHERE nombre LIKE '%" + municipio + "%' AND id_estado_estados = @idEstado); ";
+    // BUSCAMOS LA COLONIA DONDE SE ENCUENTRA EL DEUDOR SEGUN CODIGO POSTAL
+    consulta = consulta + "SET @idColonia = (SELECT id_colonia FROM colonia WHERE codigo_postal =  " + cp + "  AND nombre LIKE '%" + colonia + "%' AND id_municipio_municipios = @idMunicipio LIMIT 1); ";
+    // CREAMOS LA DIRECCION DE ESTE DEUDOR
+    consulta = consulta + "INSERT INTO direccion (calle, sujetos_id_sujeto, municipio_id_municipio, estado_republica_id_estado, colonia_id_colonia) VALUES ('" + calle + "', @idSujeto, @idMunicipio, @idEstado, @idColonia); ";
+    // CREAMOS EL TELEFONO PARA EL DEUDOR
+    consulta = consulta + "INSERT INTO telefono (numero, tipo, sujetos_id_sujeto) VALUES ('" + refCobro + "', 'Referencia', @idSujeto); ";
+    // CREAMOS EL CORREO ELECTRONICO DEL DEUDOR
+    consulta = consulta + "INSERT INTO email (direccion, tipo, sujetos_id_sujeto) VALUES ('" + correos.get(0) + "', 'Referencia', @idSujeto);";
+    // SE RETORNA LA CONSULTA
+    return consulta;
   }
 
   /**
