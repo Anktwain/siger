@@ -25,6 +25,7 @@ public class FilaBean implements Serializable {
   /**
    * 
    */
+  /*
   public void validaNumCred(String numCred) throws Exception{
     if (!this.filaActual.getCredito().isEmpty()){
       if(this.filaActual.getCredito() > ){
@@ -33,7 +34,7 @@ public class FilaBean implements Serializable {
       throw new Exception("El campo se encuentra vacío");
     }
   }
-  
+  */
   /**
    * 
    */

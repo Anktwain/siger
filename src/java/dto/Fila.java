@@ -94,6 +94,7 @@ public class Fila implements Serializable {
     this.fechaQuebranto = fechaQuebranto;
   }
 
+  /*
   public static void main(String[] args) {
     // CREAMOS NUEVO OBJETO FILA
     Fila filaPrueba = new Fila("12345", "Detectives Privados Sabueso S. de R.L. de C.V.", "55511001", "CT EXPRESS", "CT EXPRESS PF", "VE", "1", "DELRIO", "2014-09-07", "2020-09-07", "50000", "798.61", "38020.85", "798.61", "15.0", "5224963287414727", "2015-07-07", "2015-07-07", "563987", "EEN150830F49", "Avenida 513 211-Local A", "San Juan de Aragón", "Distrito Federal", "Gustavo A. Madero", "07969", null, null, null, null, null, null, null, null, "13", "2015-07-07");
@@ -117,6 +118,7 @@ public class Fila implements Serializable {
     // IMPRIMIMOS LO QUE RETORNA FUNCION PARA CREAR CONSULTA SQL
     System.out.println(filaPrueba.crearSQL());
   }
+  */
 
   // METODO QUE CREA LA CONSULTA SQL CON LOS PARAMETROS DEL DTO
   public String crearSQL(){
