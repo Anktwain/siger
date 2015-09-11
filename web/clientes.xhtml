@@ -52,6 +52,7 @@
             <div class="panel-stat3 bg-success">
               <h3 class="m-top-none">Nuevo cliente</h3>
               <p:commandButton value="Agregar" class="btn btn-success"
+                               actionListener="#{vistaClientes.direccionBean.listarEstados()}"
                                onclick="PF('dlgAltaCliente').show();"/>
 
               <div class="stat-icon">
@@ -277,7 +278,7 @@
                               <p:selectOneMenu id="cboxMpio" value="#{vistaClientes.direccionBean.municipio.idMunicipio}" style="width: 100%" filter="true">
                                 <p:ajax listener="#{vistaClientes.direccionBean.listarColoniasPorMunicipio()}" update="cboxCol,growl"/>
                                 <f:selectItem itemLabel="Seleccione un municipio o delegaci&oacute;n" itemValue="" class="form-control chzn-select"/>
-                                <f:selectItems value="#{vistaClientes.direccionBean.municipos}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}"/>
+                                <f:selectItems value="#{vistaClientes.direccionBean.municipios}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}"/>
                               </p:selectOneMenu>
                             </div>
                           </div> <!-- /.col-->  
@@ -475,7 +476,7 @@
                               <p:selectOneMenu id="cboxMpio" value="#{vistaClientes.direccionBean.municipio.idMunicipio}" style="width: 100%" filter="true">
                                 <p:ajax listener="#{vistaClientes.direccionBean.listarColoniasPorMunicipio()}" update="cboxCol,growl"/>
                                 <f:selectItem itemLabel="Seleccione un municipio o delegaci&oacute;n" itemValue="" class="form-control chzn-select"/>
-                                <f:selectItems value="#{vistaClientes.direccionBean.municipos}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}"/>
+                                <f:selectItems value="#{vistaClientes.direccionBean.municipios}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}"/>
                               </p:selectOneMenu>
                             </div>
                           </div> <!-- /.col-->  
@@ -552,9 +553,17 @@
             <div class="panel-heading">
               DATOS PERSONALES
               <div class="btn-group">
-              <p:commandButton icon="fa fa-pencil-square-o" class="btn btn-xs btn-success no-padding" />
-              <p:commandButton icon="fa fa-floppy-o" class="btn btn-xs btn-success no-padding" />
-              <p:commandButton icon="fa fa-trash-o" class="btn btn-xs btn-danger no-padding"   />
+                <p:commandButton icon="fa fa-pencil-square-o" class="btn btn-xs btn-success no-padding"  />
+                <p:commandButton icon="fa fa-floppy-o" class="btn btn-xs btn-success no-padding" />
+                <p:commandButton icon="fa fa-trash-o" class="btn btn-xs btn-danger no-padding" actionListener="#{vistaClientes.eliminarCliente()}"
+                                 update="growl,frmListaClientes">
+                  <p:confirm header="Confirme que desea proseguir" message="&iquest;Est&aacute; seguro de que desea eliminar este registro?"
+                             icon="fa fa-exclamation-triangle"/>
+                </p:commandButton>
+                <p:confirmDialog global="true" showEffect="size" hideEffect="size">
+                  <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                  <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
               </div>
             </div>
             <div class="panel-body">
@@ -574,51 +583,24 @@
               </h:form>
             </div>
           </div><!-- /panel -->
-          </div>
+        </div>
 
-          <div class="col-md-6">
-            <div class="panel panel-default fadeInDown animation-delay2">
-              <div class="panel-heading">
-                CONTACTOS
-              </div>
-              <div class="panel-body">
-                <h:form id="frmDetalleContactosCliente">
-                  <p:dataTable id="tblContactos" var="contacto" value="#{vistaClientes.listaContactos}"
-                               rowKey="#{contacto.idContacto}" selectionMode="single"
-                               rows="10" emptyMessage="No hay contactos"
-                               class="table table-hover table-striped no-margin">
-                    <p:column headerText="Nombre" class="no-margin no-padding">
-                      <h:outputText id="nombre" value="#{contacto.sujeto.nombreRazonSocial}"/>
-                    </p:column>
-                    <p:column headerText="Relaci&oacute;n con el deudor" class="no-margin no-padding">
-                      <h:outputText id="relacion" value="#{contacto.observaciones}"/>
-                    </p:column>
-                  </p:dataTable>
-                </h:form>
-              </div>
-            </div><!-- /panel -->
-          </div>
-
-        
-      </div>
-
-      <div class="row">
         <div class="col-md-6">
           <div class="panel panel-default fadeInDown animation-delay2">
             <div class="panel-heading">
-              TEL&Eacute;FONOS
+              CONTACTOS
             </div>
             <div class="panel-body">
-              <h:form id="frmDetalleTelefonosCliente">
-                <p:dataTable id="tblTelefonos" var="telefono" value="#{vistaClientes.listaTelefonos}"
-                             rowKey="#{telefono.idTelefono}" selectionMode="single"
-                             rows="10" emptyMessage="No hay tel&eacute;fonos"
+              <h:form id="frmDetalleContactosCliente">
+                <p:dataTable id="tblContactos" var="contacto" value="#{vistaClientes.listaContactos}"
+                             rowKey="#{contacto.idContacto}" selectionMode="single"
+                             rows="10" emptyMessage="No hay contactos"
                              class="table table-hover table-striped no-margin">
-                  <p:column headerText="N&uacute;mero" width="60%" class="no-margin no-padding">
-                    <h:outputText id="numero" value="#{telefono.numero}"/>
+                  <p:column headerText="Nombre" class="no-margin no-padding">
+                    <h:outputText id="nombre" value="#{contacto.sujeto.nombreRazonSocial}"/>
                   </p:column>
-                  <p:column headerText="Lada" class="no-margin no-padding" width="20%">
-                    <h:outputText id="lada" value="#{telefono.lada}"/>
+                  <p:column headerText="Relaci&oacute;n con el deudor" class="no-margin no-padding">
+                    <h:outputText id="relacion" value="#{contacto.observaciones}"/>
                   </p:column>
                 </p:dataTable>
               </h:form>
@@ -627,20 +609,132 @@
         </div>
 
 
-        <div class="col-md-6">
+      </div>
+
+      <div class="row">
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="tabTelefonos">
+            <div class="col-md-6">
+              <div class="panel panel-default fadeInDown animation-delay2">
+                <div class="panel-heading">
+                  TEL&Eacute;FONOS
+                </div>
+                <div class="panel-body">
+                  <h:form id="frmDetalleTelefonosCliente">
+                    <p:dataTable id="tblTelefonos" var="telefono" value="#{vistaClientes.listaTelefonos}"
+                                 rowKey="#{telefono.idTelefono}" selectionMode="single"
+                                 rows="10" emptyMessage="No hay tel&eacute;fonos"
+                                 class="table table-hover table-striped no-margin">
+                      <p:ajax event="rowSelect" listener="#{vistaClientes.onRowTelefonoSelect}" update="frmDetalleTelefono"/>
+                      <p:column headerText="N&uacute;mero" width="60%" class="no-margin no-padding">
+                        <a href="#verTelefono" data-toggle="tab">
+                          <h:outputText id="numero" value="#{telefono.numero}"/>
+                        </a>
+                      </p:column>
+                      <p:column headerText="Lada" class="no-margin no-padding" width="20%">
+                        <a href="#verTelefono" data-toggle="tab">
+                          <h:outputText id="lada" value="#{telefono.lada}"/>
+                        </a>
+                      </p:column>
+                    </p:dataTable>
+                  </h:form>
+                </div>
+              </div><!-- /panel -->
+            </div>
+          </div>
+          <div class="tab-pane fade" id="verTelefono">
+            <div class="col-md-6">
+              <div class="panel panel-default fadeInDown animation-delay2">
+                <div class="panel-heading">
+                  TEL&Eacute;FONO
+                  <a href="#tabTelefonos" data-toggle="tab" class="btn btn-xs btn-info"><i class="fa fa-table"></i></a>
+                </div>
+                <div class="ui-fluid">
+                  <h:form id="frmDetalleTelefono">
+                      <p:panelGrid columns="2" class="table table-hover table-striped no-margin table-responsive">
+                        <h:outputText value="N&uacute;mero: "/>
+                      <p:inputText value="#{vistaClientes.telefonoActual.numero}" class="no-margin no-padding" />
+                      <h:outputText value="Tipo: " />
+                      <p:inputText value="#{vistaClientes.telefonoActual.tipo}" class="no-margin no-padding"/>
+                      <h:outputText value="Extensi&oacute;n: " />
+                      <p:inputText value="#{vistaClientes.telefonoActual.extension}" class="no-margin no-padding"/>
+                      <h:outputText value="Lada: " />
+                      <p:inputText value="#{vistaClientes.telefonoActual.lada}" class="no-margin no-padding"/>
+                      <h:outputText value="Horario: " />
+                      <p:inputText value="#{vistaClientes.telefonoActual.horario}" class="no-margin no-padding"/>
+                    </p:panelGrid>
+                  </h:form>
+                </div>
+              </div><!-- /panel -->
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="tabEmails">
+            <div class="col-md-6">
+              <div class="panel panel-default fadeInDown animation-delay2">
+                <div class="panel-heading">
+                  E-MAILS
+                </div>
+                <div class="panel-body">
+                  <h:form id="frmDetalleEmailsCliente">
+                    <p:dataTable id="tblEmails" var="email" value="#{vistaClientes.listaEmails}"
+                                 rowKey="#{email.idEmail}" selectionMode="single"
+                                 rows="10" emptyMessage="No hay e-mails"
+                                 class="table table-hover table-striped no-margin">
+                      <p:ajax event="rowSelect" listener="#{vistaClientes.onRowEmailSelect}" update="frmDetalleEmail"/>
+                      <p:column headerText="Direcci&oacute;n electr&oacute;nica" class="no-margin no-padding">
+                        <a href="#verEmail" data-toggle="tab">
+                          <h:outputText id="direccion" value="#{email.direccion}"/>
+                        </a>
+                      </p:column>
+                    </p:dataTable>
+                  </h:form>
+                </div>
+              </div><!-- /panel -->
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="verEmail">
+            <div class="col-md-6">
+              <div class="panel panel-default fadeInDown animation-delay2">
+                <div class="panel-heading">
+                  E-MAIL
+                  <a href="#tabEmails" data-toggle="tab" class="btn btn-xs btn-info"><i class="fa fa-table"></i></a>
+                </div>
+                <div class="panel-body">
+                  <h:form id="frmDetalleEmail">
+                    <p:panelGrid columns="2">
+                      <h:outputText value="Direcci&oacute;n: " />
+                      <p:inputText value="#{vistaClientes.emailActual.direccion}" class="no-padding" />
+                      <h:outputText value="Tipo: " />
+                      <p:inputText value="#{vistaClientes.emailActual.tipo}" class="no-padding"/>
+                    </p:panelGrid>
+                  </h:form>
+                </div>
+              </div><!-- /panel -->
+            </div>
+          </div>
+        </div><!-- /tab-content -->
+      </div> <!-- /row -->
+
+      <div class="tab-content">
+        <div class="tab-pane fade in active" id="tabDirecciones">
           <div class="panel panel-default fadeInDown animation-delay2">
             <div class="panel-heading">
-              E-MAILS
+              DIRECCIONES
             </div>
             <div class="panel-body">
-              <h:form id="frmDetalleEmailsCliente">
-                <p:dataTable id="tblEmails" var="email" value="#{vistaClientes.listaEmails}"
-                             rowKey="#{email.idEmail}" selectionMode="single"
-                             rows="10" emptyMessage="No hay e-mails"
+              <h:form id="frmDetalleDireccionesCliente">
+                <p:dataTable id="tblDirecciones" var="direccion" value="#{vistaClientes.listaDirecciones}"
+                             rowKey="#{direccion.idDireccion}" selectionMode="single"
+                             rows="10" emptyMessage="No hay direcciones"
                              class="table table-hover table-striped no-margin">
-                  <p:column headerText="Direcci&oacute;n electr&oacute;nica" class="no-margin no-padding">
-                    <a href="#verEmails">
-                      <h:outputText id="direccion" value="#{email.direccion}"/>
+                  <p:ajax event="rowSelect" listener="#{vistaClientes.onRowDireccionSelect}" update="frmDetalleDireccion"/>
+                  <p:column headerText="Direcci&oacute;n" class="no-margin no-padding">
+                    <a href="#verDireccion" data-toggle="tab">
+                      <h:outputText id="direccion" value="#{direccion.calle}, #{direccion.colonia}, #{direccion.municipio}, #{direccion.estadoRepublica}"/>
                     </a>
                   </p:column>
                 </p:dataTable>
@@ -648,25 +742,39 @@
             </div>
           </div><!-- /panel -->
         </div>
-      </div>
 
-      <div class="panel panel-default fadeInDown animation-delay2">
-        <div class="panel-heading">
-          DIRECCIONES
+        <div class="tab-pane fade" id="verDireccion">
+          <div class="panel panel-default fadeInDown animation-delay2">
+            <div class="panel-heading">
+              DIRECCI&Oacute;N
+              <a href="#tabDirecciones" data-toggle="tab" class="btn btn-xs btn-info"><i class="fa fa-table"></i></a>
+            </div>
+            <div class="panel-body">
+              <h:form id="frmDetalleDireccion">
+                <p:panelGrid columns="2">
+                  <h:outputText value="Estado: " />
+                  <p:selectOneMenu id="cboxEdo" value="#{vistaClientes.direccionlActual.estadoRepublica}" style="width: 100%" filter="true">
+                    <p:ajax listener="#{vistaClientes.direccionBean.listarMunicipiosPorEstado()}"/>
+                    <f:selectItem itemLabel="Seleccione un estado" itemValue="" class="chzn-select no-padding" />
+                    <f:selectItems value="#{vistaClientes.direccionBean.estados}" var="estado" itemLabel="#{estado}" itemValue="#{estado.idEstado}" />
+                  </p:selectOneMenu>
+                 
+                  <h:outputText value="Municipio/Delegaci&oacute;n: " />
+                  <p:inputText value="#{vistaClientes.direccionlActual.municipio}" class="no-padding"/>
+                  <h:outputText value="Colonia: " />
+                  <p:inputText value="#{vistaClientes.direccionlActual.colonia}" class="no-padding"/>
+                  <h:outputText value="Calle: " />
+                  <p:inputText value="#{vistaClientes.direccionlActual.calle}" class="no-padding"/>
+                  <h:outputText value="C.P.: " />
+                  <p:inputText value="#{vistaClientes.direccionlActual.colonia.codigoPostal}" class="no-padding"/>
+                  <h:outputText value="Tipo: " />
+                  <p:inputText value="#{vistaClientes.direccionlActual.tipo}" class="no-padding"/>
+                </p:panelGrid>
+              </h:form>
+            </div>
+          </div><!-- /panel -->
         </div>
-        <div class="panel-body">
-          <h:form id="frmDetalleDireccionesCliente">
-            <p:dataTable id="tblDirecciones" var="direccion" value="#{vistaClientes.listaDirecciones}"
-                         rowKey="#{direccion.idDireccion}" selectionMode="single"
-                         rows="10" emptyMessage="No hay direcciones"
-                         class="table table-hover table-striped no-margin">
-              <p:column headerText="Direcci&oacute;n" class="no-margin no-padding">
-                <h:outputText id="direccion" value="#{direccion.calle}, #{direccion.colonia}, #{direccion.municipio}, #{direccion.estadoRepublica}"/>
-              </p:column>
-            </p:dataTable>
-          </h:form>
-        </div>
-      </div><!-- /panel -->
+      </div><!-- /tab-content -->
 
 
 

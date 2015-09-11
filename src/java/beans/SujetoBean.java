@@ -54,6 +54,18 @@ public class SujetoBean implements Serializable {
     // Lo envía a la BD y regresa el resultado
     return sujetoDao.insertar(sujeto);
   }
+  
+  public boolean editar(Sujeto sujeto){
+    sujeto.setNombreRazonSocial(nombreRazonSocial);
+    sujeto.setRfc(rfc);
+    // se manda el sujeto para editar
+    
+    return sujetoDao.editar(sujeto);
+  }
+  
+  public boolean eliminar(Sujeto sujeto) {
+    return sujetoDao.eliminar(sujeto);
+  }
 
   // VALIDACIONES
   public boolean nombreEsValido() {
