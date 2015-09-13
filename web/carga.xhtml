@@ -89,8 +89,8 @@
                     </fieldset>
                     
                     <a href="#paso2" data-toggle="tab">
-                      <p:commandButton id="btnSigPaso2" value="Siguiente" class="btn btn-success btn-xs" update="dlgNumeroDeFilas"
-                                       disabled="#{vistaCarga.btnSigPaso2Disabled}" actionListener="#{vistaCarga.crearArchivoSql()}"/>
+                      <p:commandButton id="btnSigPaso2" value="Siguiente" class="btn btn-success btn-xs" update="dlgNumeroDeFilas,growl"
+                                       disabled="#{vistaCarga.btnSigPaso2Disabled}" actionListener="#{vistaCarga.leerArchivoExcel()}"/>
                     </a>
                   </div>
                 </div>
@@ -114,8 +114,8 @@
                     </fieldset>
                     
                     <a href="#paso3" data-toggle="tab">
-                      <p:commandButton id="btnSigPaso3" value="Siguiente" class="btn btn-success btn-xs"
-                                       disabled="#{vistaCarga.btnSigPaso3Disabled}"/>
+                      <p:commandButton id="btnSigPaso3" value="Siguiente" class="btn btn-success btn-xs" update="growl"
+                                       disabled="#{vistaCarga.btnSigPaso3Disabled}" actionListener="#{vistaCarga.crearArchivoSql()}"/>
                     </a>
                   </div>
                 </div>
@@ -158,7 +158,7 @@
       <h:outputText value="La remesa contiene: #{vistaCarga.numeroCreditosEnLaRemesa} cr&eacute;ditos" />
       </div>
         <div class="form-group">
-      <p:commandButton value="Aceptar" class="btn btn-success btn-xs" onclick="PF('dlgNumeroDeFilas').hide()" />
+          <p:commandButton value="Aceptar" class="btn btn-success btn-xs" onclick="PF('dlgNumeroDeFilas').hide()" update="btnSigPaso3" />
       </div>
       </div>
     </p:dialog>

@@ -5,24 +5,15 @@
  */
 package beans;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import org.apache.commons.io.FilenameUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
-import util.constantes.Directorios;
-import util.log.Logs;
 
 /**
  *
@@ -43,10 +34,8 @@ public class VistaCarga implements Serializable {
   private int numeroCreditosEnLaRemesa;
   
   // Otros beans
-  @ManagedProperty(value = "#{filaBean}")
-  private FilaBean filaBean;
-  @ManagedProperty(value = "#{leerExcel}")
-  private LeerExcel leerExcel;
+  @ManagedProperty(value = "#{cargaBean}")
+  private CargaBean cargaBean;
   
   public VistaCarga() {
     btnSigPaso2Disabled = true;
@@ -54,50 +43,45 @@ public class VistaCarga implements Serializable {
   }
   
   public void subirArchivo(FileUploadEvent e) throws IOException {
-    UploadedFile archivoRecibido = e.getFile();
-    
-    nombreArchivo = nombrarArchivo(archivoRecibido.getFileName());
-    
-    byte[] bytes = null;
-    
-    try {
-      if (archivoRecibido != null) {
-        bytes = archivoRecibido.getContents();
-        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(nombreArchivo)));
-        stream.write(bytes);
-        stream.close();
-      }
-      
+    if(cargaBean.subirArchivo(e)) {
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
               "Carga exitosa",
-              "Se cargó el archivo: " + archivoRecibido.getFileName()));
+              "Se cargó el archivo para continuar la carga de la remesa."));
       setBtnSigPaso2Disabled(false);
-    } catch (IOException ioe) {
-      Logs.log.error("No se pudo cargar el archivo de la remesa");
-      Logs.log.error(ioe.getMessage());
+    } else {
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se pudo cargar el archivo",
+              "Comunique esta situación a Soporte Técnico."));
+    }
+  }
+  
+  public void leerArchivoExcel() {
+    numeroCreditosEnLaRemesa = cargaBean.leerArchivoExcel();
+    if(numeroCreditosEnLaRemesa > 0) {
+      RequestContext.getCurrentInstance().execute("PF('dlgNumeroDeFilas').show();");
+      setBtnSigPaso3Disabled(false);
+    } else {
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se pudo leer la remesa",
+              "Comunique esta situación a Soporte Técnico"));
     }
   }
   
   public void crearArchivoSql() {
-    LeerExcel leer = new LeerExcel();
-    numeroCreditosEnLaRemesa = leer.leerArchivoExcel(nombreArchivo);
-    if(numeroCreditosEnLaRemesa > 0) {
-      RequestContext.getCurrentInstance().execute("PF('dlgNumeroDeFilas').show();");
+    if(cargaBean.crearArchivoSql()) {
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Se crearon las consultas",
+              "Verifique salida"));
+    } else {
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se pudo crear archivo sql",
+              "Comunique esta situación a Soporte Técnico"));
     }
-  }
-  
-  private String nombrarArchivo(String elArchivo) {
-    Calendar calendario = new GregorianCalendar();
-    
-    return Directorios.RUTA_REMESAS + "remesa"
-            + Integer.toString(calendario.get(Calendar.YEAR))
-            + Integer.toString(1 + calendario.get(Calendar.MONTH))
-            + Integer.toString(calendario.get(Calendar.DATE))
-            + Integer.toString(calendario.get(Calendar.HOUR_OF_DAY))
-            + Integer.toString(calendario.get(Calendar.MINUTE))
-            + Integer.toString(calendario.get(Calendar.SECOND)) + "."
-            + FilenameUtils.getExtension(elArchivo);
   }
   
   public String getNombreArchivo() {
@@ -124,20 +108,12 @@ public class VistaCarga implements Serializable {
     this.btnSigPaso3Disabled = btnSigPaso3Disabled;
   }
 
-  public FilaBean getFilaBean() {
-    return filaBean;
+  public CargaBean getCargaBean() {
+    return cargaBean;
   }
 
-  public void setFilaBean(FilaBean filaBean) {
-    this.filaBean = filaBean;
-  }
-
-  public LeerExcel getLeerExcel() {
-    return leerExcel;
-  }
-
-  public void setLeerExcel(LeerExcel leerExcel) {
-    this.leerExcel = leerExcel;
+  public void setCargaBean(CargaBean cargaBean) {
+    this.cargaBean = cargaBean;
   }
 
   public int getNumeroCreditosEnLaRemesa() {

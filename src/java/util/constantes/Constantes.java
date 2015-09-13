@@ -27,5 +27,6 @@ public interface Constantes {
   public final int limCOLONIA_nombre = 100;
   public final int limESTADO_REPUBLICA_nombre = 50;
   public final int limMUNICIPIO_nombre = 50;
-  public final int limMUNICIPIO_cp = 5;
+  public final int limCOLONIA_cp = 5;
+  
 }
