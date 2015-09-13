@@ -23,6 +23,10 @@ public class SesionBean implements Serializable {
     private Date horaFin;
     private Usuario usuarioActivo;
     private boolean sesionActiva;
+    
+    
+    public SesionBean(){
+    }
 
     /**
      *

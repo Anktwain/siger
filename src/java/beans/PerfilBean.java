@@ -47,9 +47,8 @@ public class PerfilBean implements Serializable {
     this.clave = clave;
   }
 
+  /* Estas líneas son de prueba para ver si se inicializa como null la referencia al inicio del programa*/
   public final void enlistar() {
-    /* Estas líneas son de prueba para ver si se inicializa como null la referencia al inicio del programa*/
-
     if (lista == null) {
       lista = new LinkedList<>();
       lista.add(new PerfilBean("administrador", util.constantes.Perfiles.ADMINISTRADOR));
@@ -59,8 +58,9 @@ public class PerfilBean implements Serializable {
     }
 
     Logs.log.info("*********** Perfiles enlistados en PerfilBean.enlistar(): ***********");
-    for (int i = 0; i < lista.size(); i++)
+    for (int i = 0; i < lista.size(); i++) {
       Logs.log.info(lista.get(i).nombre + ": " + lista.get(i).clave);
+    }
     Logs.log.info("***********  *******************************************  ***********");
   }
 

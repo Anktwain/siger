@@ -54,7 +54,7 @@ public class EmpresaBean implements Serializable {
   }
   
   // funcion para editar empresa
-  // recibe como parametro el sujeto y la empresa a editar
+  // recibe como parametro el sujeto
   public boolean editarEmpresa(Sujeto sujetoSeleccionado){
     // obtenemos a la empresa que se pretende editar
     int id = sujetoSeleccionado.getIdSujeto();
