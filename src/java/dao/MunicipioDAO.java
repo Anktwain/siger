@@ -16,4 +16,5 @@ public interface MunicipioDAO {
     public List<Municipio> buscarMunicipiosPorEstado(int idEstado);
     public List<Municipio> buscarTodo();
     public Municipio buscar(int idMunicipio);
+    public Municipio buscar(String cadena);
 }

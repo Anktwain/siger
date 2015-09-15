@@ -20,194 +20,211 @@ import util.log.Logs;
  */
 public class SujetoIMPL implements SujetoDAO {
 
-    /**
-     *
-     *
-     * @return
-     */
-    @Override
-    public Sujeto insertar(Sujeto sujeto) {
-        Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
+  /**
+   *
+   *
+   * @return
+   */
+  @Override
+  public Sujeto insertar(Sujeto sujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
 
-        try {
-            sesion.save(sujeto);
-            tx.commit();
-            Logs.log.info("Se insertó un nuevo sujeto: id = " + sujeto.getIdSujeto());
-        } catch (HibernateException he) {
-            sujeto = null;
-            if (tx != null) {
-                tx.rollback();
-            }
-            Logs.log.error("No se pudo insertar Sujeto:");
-            Logs.log.error(he.getMessage());
-        } finally {
-            cerrar(sesion);
-        }
-        
-        return sujeto;
+    try {
+      sesion.save(sujeto);
+      tx.commit();
+      Logs.log.info("Se insertó un nuevo sujeto: id = " + sujeto.getIdSujeto());
+    } catch (HibernateException he) {
+      sujeto = null;
+      if (tx != null) {
+        tx.rollback();
+      }
+      Logs.log.error("No se pudo insertar Sujeto:");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
     }
 
-    /**
-     *
-     *
-     * @return
-     */
-    @Override
-    public boolean editar(Sujeto sujeto) {
-        Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
-        boolean ok;
+    return sujeto;
+  }
 
-        try {
-            sesion.update(sujeto);
-            tx.commit();
-            ok = true;
-        } catch (HibernateException he) {
-            ok = false;
-            if (tx != null) {
-                tx.rollback();
-            }
-            he.printStackTrace();
-        } finally {
-            cerrar(sesion);
-        }
+  /**
+   *
+   *
+   * @return
+   */
+  @Override
+  public boolean editar(Sujeto sujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
 
-        return ok;
+    try {
+      sesion.update(sujeto);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
     }
 
-    /**
-     *
-     *
-     * @return
-     */
-    @Override
-    public boolean eliminar(Sujeto sujeto) {
-        Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
-        boolean ok;
+    return ok;
+  }
 
-        try {
-            // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
-            sujeto.setEliminado(Sujetos.ELIMINADO);
-            sesion.update(sujeto);
-            tx.commit();
-            ok = true;
-        } catch (HibernateException he) {
-            ok = false;
-            if (tx != null) {
-                tx.rollback();
-            }
-            he.printStackTrace();
-        } finally {
-            cerrar(sesion);
-        }
+  /**
+   *
+   *
+   * @return
+   */
+  @Override
+  public boolean eliminar(Sujeto sujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
 
-        return ok;
+    try {
+      // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
+      sujeto.setEliminado(Sujetos.ELIMINADO);
+      sesion.update(sujeto);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
     }
-    
-        /**
-     *
-     *
+
+    return ok;
+  }
+
+  /**
+   *
+   *
    * @param sujeto
-     * @return
-     */
-    @Override
-    public boolean eliminarEnSerio(Sujeto sujeto) {
-        Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
-        boolean ok;
+   * @return
+   */
+  @Override
+  public boolean eliminarEnSerio(Sujeto sujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
 
-        try {
-            sesion.delete(sujeto);
-            tx.commit();
-            ok = true;
-        } catch (HibernateException he) {
-            ok = false;
-            if (tx != null) {
-                tx.rollback();
-            }
-            he.printStackTrace();
-        } finally {
-            cerrar(sesion);
-        }
-
-        return ok;
+    try {
+      sesion.delete(sujeto);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
     }
 
-    /**
-     *
-     *
+    return ok;
+  }
+
+  /**
+   *
+   *
    * @param idSujeto
-     * @return
-     */
-    @Override
-    public Sujeto buscar(int idSujeto) {
-        Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
-        Sujeto sujeto;
-        /*
-        try {
-            sujeto = (Sujeto) sesion.get(Sujeto.class, idSujeto);
-            // obtuvo el usuario, solo se muestra si no ha sido eliminado:
-            if (sujeto != null) // Colocar algo similar a esto: if(usuario.getPerfil() == Perfiles.ELIMINADO)
-            {
-                sujeto = null;
-            }
-        } catch (HibernateException he) {
-            sujeto = null;
-            he.printStackTrace();
-        } finally {
-            cerrar(sesion);
-        }
+   * @return
+   */
+  @Override
+  public Sujeto buscar(int idSujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    Sujeto sujeto;
+    /*
+     try {
+     sujeto = (Sujeto) sesion.get(Sujeto.class, idSujeto);
+     // obtuvo el usuario, solo se muestra si no ha sido eliminado:
+     if (sujeto != null) // Colocar algo similar a esto: if(usuario.getPerfil() == Perfiles.ELIMINADO)
+     {
+     sujeto = null;
+     }
+     } catch (HibernateException he) {
+     sujeto = null;
+     he.printStackTrace();
+     } finally {
+     cerrar(sesion);
+     }
         
-        return sujeto;
-        */
-        try { 
-            sujeto = (Sujeto) sesion.createSQLQuery("select * from sujeto where id_sujeto = " + Integer.toString(idSujeto) + ";").addEntity(Sujeto.class).uniqueResult();
-        } catch(HibernateException he) {
-            sujeto = null;
-            he.printStackTrace();
-        } finally {
-            cerrar(sesion);
-        }
-        return sujeto;
-    }
-
-    /**
-     *
-     *
-     * @return
+     return sujeto;
      */
-    @Override
-    public List<Sujeto> buscarTodo() {
-        Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
-        List<Sujeto> listaSujeto;
-
-        try {
-            listaSujeto = sesion.createQuery("from Sujeto").list();
-        } catch (HibernateException he) {
-            listaSujeto = null;
-            he.printStackTrace();
-        } finally {
-            cerrar(sesion);
-        }
-        return listaSujeto;
-        /*
-         return null;
-         */
+    try {
+      sujeto = (Sujeto) sesion.createSQLQuery("select * from sujeto where id_sujeto = " + Integer.toString(idSujeto) + ";").addEntity(Sujeto.class).uniqueResult();
+    } catch (HibernateException he) {
+      sujeto = null;
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
     }
+    return sujeto;
+  }
 
-    /**
-     *
-     *
-     * @param
+  /**
+   *
+   *
+   * @return
+   */
+  @Override
+  public List<Sujeto> buscarTodo() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    List<Sujeto> listaSujeto;
+
+    try {
+      listaSujeto = sesion.createQuery("from Sujeto").list();
+    } catch (HibernateException he) {
+      listaSujeto = null;
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
+    }
+    return listaSujeto;
+    /*
+     return null;
      */
-    private void cerrar(Session sesion) {
-        if (sesion.isOpen()) {
-            sesion.close();
-        }
+  }
+
+  @Override
+  public Sujeto ultimoInsertado() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    Sujeto sujeto;
+    
+    try {
+      sujeto = (Sujeto) sesion.createSQLQuery("SELECT * from sujeto where id_sujeto = (SELECT MAX(id_sujeto) from sujeto);").addEntity(Sujeto.class).uniqueResult();
+    } catch (HibernateException he) {
+      sujeto = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
     }
+    return sujeto;
+  }
+
+  /**
+   *
+   *
+   * @param
+   */
+  private void cerrar(Session sesion) {
+    if (sesion.isOpen()) {
+      sesion.close();
+    }
+  }
 
 }

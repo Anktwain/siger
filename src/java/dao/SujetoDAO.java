@@ -54,4 +54,6 @@ public interface SujetoDAO {
      * @return
      */
     public List<Sujeto> buscarTodo();
+    
+    public Sujeto ultimoInsertado();
 }

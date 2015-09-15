@@ -47,5 +47,7 @@ public interface ClienteDAO {
      *
      * @return
      */
-    public List<Cliente> buscarTodo();     
+    public List<Cliente> buscarTodo();    
+    
+    public Cliente ultimoInsertado();
 }
