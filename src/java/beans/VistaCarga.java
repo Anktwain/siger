@@ -72,6 +72,7 @@ public class VistaCarga implements Serializable {
   
   public void crearArchivoSql() {
     if(cargaBean.crearArchivoSql()) {
+      boolean ok = cargaBean.leerArchivoSql();
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
               "Se crearon las consultas",
