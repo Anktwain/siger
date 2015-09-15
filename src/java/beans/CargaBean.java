@@ -28,7 +28,7 @@ import util.Query;
 
 /**
  *
- * @author antonio
+ * @author Cofradía
  */
 @ManagedBean
 @ViewScoped
@@ -133,7 +133,7 @@ public class CargaBean implements Serializable {
       String lineaSql = "";
       while ((lineaSql = bf.readLine()) != null) {
         lineas++;
-        Query.ejecutaQuery(lineaSql);
+    //    Query.ejecutaQuery(lineaSql);
         System.out.println(lineaSql);
       }
       return true;
