@@ -2,9 +2,12 @@ package beans;
 
 import dto.Fila;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,6 +24,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import util.constantes.Directorios;
 import util.log.Logs;
+import util.Query;
 
 /**
  *
@@ -110,7 +114,7 @@ public class CargaBean implements Serializable {
       crearFila(i);
       // Valida
       filaBean.setFilaActual(fila);
-      if(validarFila(i + 1)) {
+      if (validarFila(i + 1)) {
         guadarQueryEnArchivo(fila.crearSQL(), archivoSql);
       } else {
         return false;
@@ -118,7 +122,30 @@ public class CargaBean implements Serializable {
     }
     return true;
   }
-  
+
+  public boolean leerArchivoSql() {
+    String archivoSql = FilenameUtils.getBaseName(nombreArchivo);
+    archivoSql = Directorios.RUTA_REMESAS + archivoSql + ".sql";
+    try {
+      FileReader fr = new FileReader(archivoSql);
+      int lineas = 0;
+      BufferedReader bf = new BufferedReader(fr);
+      String lineaSql = "";
+      while ((lineaSql = bf.readLine()) != null) {
+        lineas++;
+        Query.ejecutaQuery(lineaSql);
+        System.out.println(lineaSql);
+      }
+      return true;
+    } catch (FileNotFoundException fnfe) {
+      fnfe.printStackTrace();
+      return false;
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+      return false;
+    }
+  }
+
   private boolean validarFila(int fila) {
     try {
       //filaBean.validarNumCred();
@@ -131,7 +158,7 @@ public class CargaBean implements Serializable {
       //filaBean.validarFechaInicio();
       //filaBean.validarFechaFin();
       return true;
-    } catch(Exception e) {
+    } catch (Exception e) {
       Logs.log.error("Ha ocurrido un error en la fila: " + fila);
       Logs.log.error(e.getMessage());
       Logs.log.error(filaBean.getFilaActual().toString());
@@ -140,7 +167,7 @@ public class CargaBean implements Serializable {
   }
 
   private void crearFila(int numFila) {
-    
+
     //fila.setCredito(hojaExcel.getCell(0, numFila).getContents());
     fila.setNombre(hojaExcel.getCell(1, numFila).getContents());
     //fila.setRefCobro(hojaExcel.getCell(2, numFila).getContents());
@@ -166,26 +193,25 @@ public class CargaBean implements Serializable {
     fila.setEstado(hojaExcel.getCell(22, numFila).getContents());
     fila.setMunicipio(hojaExcel.getCell(23, numFila).getContents());
     fila.setCp(hojaExcel.getCell(24, numFila).getContents());
-}
-  
-private void guadarQueryEnArchivo(String query, String nombreArchivoSql) {
+  }
+
+  private void guadarQueryEnArchivo(String query, String nombreArchivoSql) {
     // SE CREA UN ARCHIVO "VIRTUAL" PARA COMPROBAR SU EXISTENCIA
     File fichero = new File(nombreArchivoSql);
     // VERIFICAMOS SI EL ARCHIVO YA EXISTE
     if (fichero.exists()) {
       // SE ESCRIBE AL FINAL DEL ARCHIVO
-      try{
+      try {
         // SE CREA UN ARCHIVO DEL TIPO FILEWRITER CON LA OPCION TRUE PARA PODER AGREGAR DATOS AL FINAL DEL ARCHIVO Y NO SOBREESCRIBIRLO
         FileWriter fileWriter = new FileWriter(nombreArchivoSql, true);
         // SE ENVIA EL TEXTO PARA AGREGAR
         fileWriter.append("\n" + query);
         // CIERRE DEL ARCHIVO
         fileWriter.close();
-      }
-      catch (IOException ioe){
+      } catch (IOException ioe) {
         ioe.printStackTrace();
       }
-      
+
     } else {
       // SE CREA EL ARCHIVO
       try {
@@ -204,9 +230,9 @@ private void guadarQueryEnArchivo(String query, String nombreArchivoSql) {
         ioe.printStackTrace();
       }
     }
-}
+  }
 
-public int getNumeroDeFilas() {
+  public int getNumeroDeFilas() {
     return numeroDeFilas;
   }
 
