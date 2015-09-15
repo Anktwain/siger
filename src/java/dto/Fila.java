@@ -69,7 +69,7 @@ public class Fila implements Serializable {
     // BUSCAMOS AL CLIENTE
     consulta = consulta + "SET @idCliente = (SELECT id_cliente FROM cliente WHERE sujetos_id_sujeto = @idSujeto); ";
     // BUSCAMOS A LA EMPRESA
-    consulta = consulta + "SET @idEmpresa = (SELECT id_empresa FROM empresa WHERE nombre_corto = '" + despacho + "'); ";
+    consulta = consulta + "SET @idEmpresa = (SELECT id_empresa FROM empresa WHERE id_empresa = 1); ";
     // BUSCAMOS EL PRODUCTO
     consulta = consulta + "SET @idProducto = (SELECT id_producto FROM producto WHERE nombre = '" + linea + "'); ";
     // BUSCAMOS EL SUBPRODUCTO
