@@ -77,7 +77,7 @@
                     <fieldset class="form-horizontal form-border">
                       <div class="col-md-3 col-sm-6">
                         <div class="form-group">
-                          <h:form>
+                          <h:form id="frmPaso1">
                             <p:fileUpload mode="advanced" dragDropSupport="true" label="Seleccionar archivo" class="upload-demo"
                                           update="growl,btnSigPaso2" sizeLimit="4194304" allowTypes="/(\.|\/)(xls|xlsx|sql)$/" auto="true"
                                           invalidFileMessage="Tipo de archivo no v&aacute;lido. Extensiones aceptadas: .xls, .xlsx, .sql"
@@ -106,10 +106,14 @@
                 <div class="page-title">
                   <h4 class="no-margin">PASO 2</h4>
                   <span>Generando archivo sql... Por favor espere</span>
+                  
                   <div class="panel-body">
                     <fieldset class="form-horizontal form-border">
                       <div class="form-group">
-                        Aquí van los controles
+                        <h:form id="frmPaso2">
+                          <h3>Leyendo informaci&oacute;n</h3>
+                          <p:inputTextarea id="txtareaFilas" class="form-control" rows="15" cols="70" value=""/>
+                        </h:form>
                       </div><!-- /form-group -->
                     </fieldset>
                     

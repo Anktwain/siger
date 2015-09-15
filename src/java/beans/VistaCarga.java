@@ -46,8 +46,8 @@ public class VistaCarga implements Serializable {
     if(cargaBean.subirArchivo(e)) {
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-              "Carga exitosa",
-              "Se cargó el archivo para continuar la carga de la remesa."));
+              "El archivo de la remesa se ha cargado exitosamente",
+              "Presione el botón 'Siguiente' para continuar."));
       setBtnSigPaso2Disabled(false);
     } else {
       FacesContext context = FacesContext.getCurrentInstance();
