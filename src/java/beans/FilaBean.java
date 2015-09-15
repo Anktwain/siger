@@ -27,14 +27,22 @@ public class FilaBean implements Serializable {
   }
 
   /**
+   *
+   */
+  private void validarVarchar(String valorCampo, String nombreCampo, int limCaracteres) throws Exception {
+    if (valorCampo.length() > limCaracteres) {
+      throw new Exception("Error en el campo \"" + nombreCampo + "\"."
+              + Errores.CAMPO_DESBORDADO + " (máx: " + limCaracteres + ".)");
+    }
+
+  }
+
+  /**
    * El número de crédito es obligatorio.
    */
   public void validarNumCred() throws Exception {
     if (!this.filaActual.getCredito().isEmpty()) {
-      if (this.filaActual.getCredito().length() > Constantes.limCREDITO_numero_credito) {
-        throw new Exception("Error en el campo \"numero_credito\". "
-                + Errores.CAMPO_DESBORDADO + " (máx: " + Constantes.limCREDITO_numero_credito + ".)");
-      }
+      validarVarchar(this.filaActual.getCredito(), "numero_credito", Constantes.limCREDITO_numero_credito);
     } else {
       throw new Exception("Error en el campo \"numero_credito\". " + Errores.CAMPO_VACIO);
     }
@@ -45,10 +53,7 @@ public class FilaBean implements Serializable {
    */
   public void validarNombreRazonSoc() throws Exception {
     if (!this.filaActual.getNombre().isEmpty()) {
-      if (this.filaActual.getNombre().length() > Constantes.limSUJETO_nombre_razon_social) {
-        throw new Exception("Error en el campo \"nombre_razon_social\". "
-                + Errores.CAMPO_DESBORDADO + " (máx: " + Constantes.limSUJETO_nombre_razon_social + ".)");
-      }
+      validarVarchar(this.filaActual.getNombre(), "nombre_razon_social", Constantes.limSUJETO_nombre_razon_social);
     } else {
       throw new Exception("Error en el campo \"nombre_razon_social\". " + Errores.CAMPO_VACIO);
     }
@@ -59,12 +64,20 @@ public class FilaBean implements Serializable {
    */
   public void validarRefCobro() throws Exception {
     if (!this.filaActual.getRefCobro().isEmpty()) {
-      if (this.filaActual.getRefCobro().length() > Constantes.limLINEA_telefono) {
-        throw new Exception("Error en el campo \"linea_telefono\". "
-                + Errores.CAMPO_DESBORDADO + " (máx: " + Constantes.limLINEA_telefono + ".)");
-      }
+      validarVarchar(this.filaActual.getRefCobro(), "linea_telefono", Constantes.limLINEA_telefono);
     } else {
       throw new Exception("Error en el campo \"linea_telefono\". " + Errores.CAMPO_VACIO);
+    }
+  }
+
+  /**
+   *
+   */
+  private void validarInt(String valorCampo, String nombreCampo) throws Exception {
+    try {
+      Integer.parseInt(valorCampo);
+    } catch (NumberFormatException nfe) {
+      throw new Exception("Error en el campo \"" + nombreCampo + "\". " + Errores.CAMPO_ENTERO_REQUERIDO, nfe);
     }
   }
 
@@ -74,11 +87,7 @@ public class FilaBean implements Serializable {
    */
   public void validarIdProducto() throws Exception {
     if (!this.filaActual.getLinea().isEmpty()) {
-      try {
-        Integer.parseInt(this.filaActual.getLinea());
-      } catch (NumberFormatException nfe) {
-        throw new Exception("Error en el campo \"productos_id_producto\". " + Errores.CAMPO_ENTERO_REQUERIDO);
-      }
+      validarInt(this.filaActual.getLinea(), "productos_id_producto");
     } else {
       throw new Exception("Error en el campo \"productos_id_producto\". " + Errores.CAMPO_VACIO);
     }
@@ -90,11 +99,7 @@ public class FilaBean implements Serializable {
    */
   public void validarIdSubproducto() throws Exception {
     if (!this.filaActual.getTipoCredito().isEmpty()) {
-      try {
-        Integer.parseInt(this.filaActual.getTipoCredito());
-      } catch (NumberFormatException nfe) {
-        throw new Exception("Error en el campo \"subproductos_id_subproducto\". " + Errores.CAMPO_ENTERO_REQUERIDO);
-      }
+      validarInt(this.filaActual.getTipoCredito(), "subproductos_id_subproducto");
     }
   }
 
@@ -103,10 +108,7 @@ public class FilaBean implements Serializable {
    */
   public void validarEstatus() throws Exception {
     if (!this.filaActual.getEstatus().isEmpty()) {
-      if (this.filaActual.getEstatus().length() > Constantes.limREMESA_estatus) {
-        throw new Exception("Error en el campo \"estatus\". "
-                + Errores.CAMPO_DESBORDADO + " (máx: " + Constantes.limREMESA_estatus + ".)");
-      }
+      validarVarchar(this.filaActual.getEstatus(), "estatus", Constantes.limREMESA_estatus);
     }
   }
 
@@ -116,11 +118,7 @@ public class FilaBean implements Serializable {
    */
   public void validarMesesVencidos() throws Exception {
     if (!this.filaActual.getMesesVencidos().isEmpty()) {
-      try {
-        Integer.parseInt(this.filaActual.getMesesVencidos());
-      } catch (NumberFormatException nfe) {
-        throw new Exception("Error en el campo \"meses_vencidos\". " + Errores.CAMPO_ENTERO_REQUERIDO);
-      }
+      validarInt(this.filaActual.getMesesVencidos(), "meses_vencidos");
     }
   }
 
@@ -134,17 +132,17 @@ public class FilaBean implements Serializable {
    * <a href="https://support.office.com/es-mx/article/Especificaciones-y-l%C3%ADmites-de-Excel-16c69c74-3d6a-4aaf-ba35-e6eb276e8eaa">
    * Especificaciones y límites de Excel</a>
    */
-  public void validarFecha(String fecha, String campo) throws Exception {
-    if (!fecha.isEmpty()) {
-      if (fecha.matches(Patrones.PATRON_FECHA_DDMMAAAA)) {
-        if ((Integer.parseInt(fecha.substring(0, 2)) > 31)
-                || (Integer.parseInt(fecha.substring(3, 5)) > 12)
-                || (Integer.parseInt(fecha.substring(6, 10)) < 1900)
-                || (Integer.parseInt(fecha.substring(6, 10)) > 9999)) {
-          throw new Exception("Error en el campo \"" + campo + "\". " + Errores.CAMPO_FECHA_INVALIDO);
+  private void validarFecha(String valorCampo, String nombreCampo) throws Exception {
+    if (!valorCampo.isEmpty()) {
+      if (valorCampo.matches(Patrones.PATRON_FECHA_DDMMAAAA)) {
+        if ((Integer.parseInt(valorCampo.substring(0, 2)) > 31)
+                || (Integer.parseInt(valorCampo.substring(3, 5)) > 12)
+                || (Integer.parseInt(valorCampo.substring(6, 10)) < 1900)
+                || (Integer.parseInt(valorCampo.substring(6, 10)) > 9999)) {
+          throw new Exception("Error en el campo \"" + nombreCampo + "\". " + Errores.CAMPO_FECHA_INVALIDO);
         }
       } else {
-        throw new Exception("Error en el campo \"" + campo + "\". " + Errores.CAMPO_DDMMAAA_REQUERIDO);
+        throw new Exception("Error en el campo \"" + nombreCampo + "\". " + Errores.CAMPO_DDMMAAA_REQUERIDO);
       }
     }
   }
@@ -175,7 +173,7 @@ public class FilaBean implements Serializable {
    * @param fecha
    * @return
    */
-  public String convierteFechaToSql(String fecha, String campo) {
+  private String convierteFechaToSql(String fecha, String campo) {
     StringBuilder fechaSQL = new StringBuilder();
     fechaSQL.append(fecha.substring(6, 10));
     fechaSQL.append("-");
@@ -203,6 +201,109 @@ public class FilaBean implements Serializable {
   public String convierteFechaVencimiento() {
     return convierteFechaToSql(this.filaActual.getFechaVencimientoCred(), "fecha_fin");
   }
-  
 
+  /**
+   *
+   */
+  private void validarFloat(String valorCampo, String nombreCampo) throws Exception {
+    try {
+      Float.valueOf(valorCampo);
+    } catch (NumberFormatException nfe) {
+      throw new Exception("Error en el campo \"" + nombreCampo + "\"." + Errores.CAMPO_FLOAT_REQUERIDO, nfe);
+    }
+
+  }
+
+  /**
+   * El monto o disposición no es obligado, debe ser un float
+   */
+  public void validarMonto() throws Exception {
+    if (!this.filaActual.getDisposicion().isEmpty()) {
+      validarFloat(this.filaActual.getDisposicion(), "monto");
+    }
+  }
+
+  /**
+   * La mensualidad no es obligatoria, debe ser un float
+   */
+  public void validarMensualidad() throws Exception {
+    if (!this.filaActual.getMensualidad().isEmpty()) {
+      validarFloat(this.filaActual.getMensualidad(), "mensualidad");
+    }
+  }
+
+  /**
+   * El saldo ins (saldo insoluto) deberá guardarse en la tabla remesa, sin
+   * embargo todavía no existe un campo para hacerlo. Se creará ese campo
+   */
+  public void validarSaldoIns() {
+
+  }
+
+  /**
+   * El SaldoVen (saldo vencido) no es obligatorio. Debe ser un float
+   */
+  public void validarSaldoVen() throws Exception {
+    if (!this.filaActual.getSaldoVencido().isEmpty()) {
+      validarFloat(this.filaActual.getSaldoVencido(), "saldo_vencido");
+    }
+  }
+
+  /**
+   * La TASA (tasa de interes) no es obligatoria. Debe ser un float
+   */
+  public void validarTasaInt() throws Exception {
+    if (!this.filaActual.getTasa().isEmpty()) {
+      validarFloat(this.filaActual.getTasa(), "tasa_interes");
+    }
+  }
+
+  /**
+   * La cuenta no es obligatoria. Es un VARCHAR(30)
+   */
+  public void validarNumCta() throws Exception {
+    if (!this.filaActual.getCuenta().isEmpty()) {
+      validarVarchar(this.filaActual.getCuenta(), "numero_cuenta", Constantes.limCREDITO_numero_cuenta);
+    }
+  }
+
+  /**
+   * La Fec_FUP (fecha de ultimo pago) no es obligatorio.
+   */
+  public void validarFechaUltP() throws Exception {
+    if (!this.filaActual.getFechaUltimoPago().isEmpty()) {
+      validarFecha(this.filaActual.getFechaUltimoPago(), "fecha_ultimo_pago");
+    }
+  }
+
+  /**
+   * El Fec_UVP (fecha de ultimo vencimiento pagado)
+   */
+  public void validarFechaUltVP() throws Exception {
+    if (!this.filaActual.getFechaUltimoVencimientoPagado().isEmpty()) {
+      validarFecha(this.filaActual.getFechaUltimoVencimientoPagado(), "fecha_ultimo_vencimiento_pagado");
+    }
+  }
+
+  /**
+   * El NumCte (número de cliente) no es obligatorio. Es un VARCHAR(25) //
+   * cliente.numero_cliente
+   */
+  public void validarNumCliente() throws Exception {
+    if (!this.filaActual.getIdCliente().isEmpty()) {
+      validarVarchar(this.filaActual.getIdCliente(), "numero_cliente", Constantes.limCLIENTE_numero_cliente);
+    }
+
+  }
+
+  /**
+   * El RFC no es obligatorio. Es un VARCHAR(15) // sujeto.rfc
+   */
+  public void validarRfc() throws Exception {
+    if (!this.filaActual.getRfc().isEmpty()) {
+      validarVarchar(this.filaActual.getRfc(), "rfc", Constantes.limSUJETO_rfc);
+    }
+  }
+
+  
 }
