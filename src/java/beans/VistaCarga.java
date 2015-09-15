@@ -46,8 +46,8 @@ public class VistaCarga implements Serializable {
     if(cargaBean.subirArchivo(e)) {
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-              "Carga exitosa",
-              "Se cargó el archivo para continuar la carga de la remesa."));
+              "El archivo de la remesa se ha cargado exitosamente",
+              "Presione el botón 'Siguiente' para continuar."));
       setBtnSigPaso2Disabled(false);
     } else {
       FacesContext context = FacesContext.getCurrentInstance();
@@ -72,7 +72,6 @@ public class VistaCarga implements Serializable {
   
   public void crearArchivoSql() {
     if(cargaBean.crearArchivoSql()) {
-      boolean ok = cargaBean.leerArchivoSql();
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
               "Se crearon las consultas",
@@ -81,6 +80,20 @@ public class VistaCarga implements Serializable {
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
               "No se pudo crear archivo sql",
+              "Comunique esta situación a Soporte Técnico"));
+    }
+  }
+  
+  public void leerArchivoSql() {
+    if(cargaBean.leerArchivoSql()) {
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Ejecutando consultas",
+              "Esto puede tomar algunos minutos."));
+    } else {
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+              "No se pudo leer archivo sql",
               "Comunique esta situación a Soporte Técnico"));
     }
   }

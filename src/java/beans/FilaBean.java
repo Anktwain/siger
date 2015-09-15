@@ -361,7 +361,10 @@ public class FilaBean implements Serializable {
   }
 
   /**
-   *
+   * Comprueba que el año sea válido segun la especificación de excel, que el mes
+   * sea un mes del año y que el monto sea un float no negativo. Así como que
+   * exista el mismo numero de valores en año, mes y monto, para evitar
+   * registros incompletos.
    */
   public void validarFacs() throws Exception {
     int maxIndex = Math.max(this.filaActual.getAnio().size(), this.filaActual.getMes().size());
@@ -391,6 +394,8 @@ public class FilaBean implements Serializable {
         }
       } catch (IndexOutOfBoundsException iobe) {
         throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + ". Se esperaba un valor, dado que alguna(s) otra(s) celda(s) del fac lo contiene(n).", iobe);
+      } catch (NumberFormatException nfe) {
+        throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + "." + Errores.CAMPO_FLOAT_REQUERIDO, nfe);
       }
     }
   }

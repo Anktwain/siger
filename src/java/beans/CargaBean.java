@@ -28,7 +28,7 @@ import util.Query;
 
 /**
  *
- * @author antonio
+ * @author Cofradía
  */
 @ManagedBean
 @ViewScoped

@@ -9,4 +9,5 @@ import java.util.List;
 public interface EstadoRepublicaDAO {
     public List<EstadoRepublica> buscarTodo();
     public EstadoRepublica buscar(int idEstado);
+    public EstadoRepublica buscar(String cadena);
 }

@@ -24,7 +24,8 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
       estados = sesion.createSQLQuery("select * from estado_republica order by nombre asc;").addEntity(EstadoRepublica.class).list();
     } catch (HibernateException he) {
       estados = null;
-      he.printStackTrace();
+      Logs.log.error("No se pudo obtener lista: EstadoRepublica");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -41,7 +42,7 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
       estado = (EstadoRepublica) sesion.get(EstadoRepublica.class, idEstado);
     } catch (HibernateException he) {
       estado = null;
-      Logs.log.error("No se pudo ontener lista de objetos: EstadoRepublica");
+      Logs.log.error("No se pudo obtener: EstadoRepublica");
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
@@ -49,6 +50,26 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
 
     return estado;
   }
+
+  @Override
+  public EstadoRepublica buscar(String cadena) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    EstadoRepublica estado;
+
+    try {
+      estado = (EstadoRepublica) sesion.createSQLQuery("SELECT * from estado_republica WHERE nombre LIKE '%"+cadena+"%';").addEntity(EstadoRepublica.class).uniqueResult();
+    } catch (HibernateException he) {
+      estado = null;
+      Logs.log.error("No se pudo obtener: EstadoRepublica");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+
+    return estado;
+  }
+
 
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {

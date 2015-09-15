@@ -142,6 +142,24 @@ public class ClienteIMPL implements ClienteDAO {
         return listaClientes;
     }
 
+  @Override
+  public Cliente ultimoInsertado() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    Cliente cliente;
+    
+    try {
+      cliente = (Cliente) sesion.createSQLQuery("SELECT * from cliente where id_cliente = (SELECT MAX(id_cliente) from cliente);").addEntity(Sujeto.class).uniqueResult();
+    } catch (HibernateException he) {
+      cliente = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return cliente;
+  }
+
+
     /**
      *
      *

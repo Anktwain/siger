@@ -15,4 +15,6 @@ import java.util.List;
 public interface ColoniaDAO {
   public List<Colonia> buscarColoniasPorMunicipio(int idMunicipio);
   public Colonia buscar(int idColonia);
+  public List<Colonia> buscar(String cadena);
+  public Colonia buscar(String cadena, String cp);
 }
