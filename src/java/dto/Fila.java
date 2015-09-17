@@ -1,15 +1,5 @@
 package dto;
 
-import dao.ClienteDAO;
-import dao.ColoniaDAO;
-import dao.EstadoRepublicaDAO;
-import dao.MunicipioDAO;
-import dao.SujetoDAO;
-import impl.ClienteIMPL;
-import impl.ColoniaIMPL;
-import impl.EstadoRepublicaIMPL;
-import impl.MunicipioIMPL;
-import impl.SujetoIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -66,47 +56,34 @@ public class Fila implements Serializable {
     // CREAMOS LA CADENA QUE GUARDARA LA CONSULTA
     String consulta;
     // PRIMERO CREAMOS EL SUJETO
-    consulta = "INSERT INTO sujeto (nombre_razon_social, rfc, eliminado) VALUES ('" + nombre + "', '" + rfc + "', 1);\n";
+    consulta = "INSERT INTO sujeto (nombre_razon_social, rfc, eliminado) VALUES ('" + nombre + "', '" + rfc + "', 1);";
     // GUARDAMOS EL ID DEL SUJETO INSERTADO
-    SujetoDAO sujetoDao = new SujetoIMPL();
-    Sujeto sujeto = sujetoDao.ultimoInsertado();
-    //consulta = consulta + "SET @idSujeto = (SELECT MAX(id_sujeto) from sujeto);\n";
+    consulta = consulta + "SET @idSujeto = (SELECT MAX(id_sujeto) from sujeto);";
     // CREAMOS AL CLIENTE QUE SERA DUEÑO DEL CREDITO
-    consulta = consulta + "INSERT INTO cliente (numero_cliente, sujetos_id_sujeto) VALUES ('" + idCliente + "', " + sujeto.getIdSujeto() + ");\n";
+    consulta = consulta + "INSERT INTO cliente (numero_cliente, sujetos_id_sujeto) VALUES ('" + idCliente + "', @idSujeto);";
     // BUSCAMOS AL CLIENTE
-    ClienteDAO clienteDao = new ClienteIMPL();
-    Cliente cliente = clienteDao.ultimoInsertado();
-    //consulta = consulta + "SET @idCliente = (SELECT id_cliente FROM cliente WHERE sujetos_id_sujeto = @idSujeto);\n";
+    consulta = consulta + "SET @idCliente = (SELECT id_cliente FROM cliente WHERE sujetos_id_sujeto = @idSujeto);";
     // BUSCAMOS A LA EMPRESA
-    //consulta = consulta + "SET @idEmpresa = (SELECT id_empresa FROM empresa WHERE id_empresa = 1);\n";
+    consulta = consulta + "SET @idEmpresa = (SELECT id_empresa FROM empresa WHERE id_empresa = 1);";
     // BUSCAMOS EL PRODUCTO
-    //consulta = consulta + "SET @idProducto = (SELECT id_producto FROM producto WHERE nombre = '" + linea + "');\n";
+    consulta = consulta + "SET @idProducto = (SELECT id_producto FROM producto WHERE nombre = '" + linea + "');";
     // BUSCAMOS EL SUBPRODUCTO
-    //consulta = consulta + "SET @idSubproducto = (SELECT id_subproducto FROM subproducto WHERE nombre = '" + tipoCredito + "');\n";
+    consulta = consulta + "SET @idSubproducto = (SELECT id_subproducto FROM subproducto WHERE nombre = '" + tipoCredito + "');";
     // CREAMOS EL CREDITO
-//    consulta = consulta + "INSERT INTO credito (numero_credito, fecha_inicio, fecha_fin, fecha_quebranto, monto, mensualidad, tasa_interes, dias_mora, numero_cuenta, tipo_credito, empresas_id_empresa, productos_id_producto, subproductos_id_subproducto, clientes_id_cliente, gestores_id_gestor) VALUES ('" + credito + "', '" + fechaInicioCredito + "', '" + fechaVencimientoCred + "', '" + fechaQuebranto + "', " + disposicion + ", " + mensualidad + ", " + tasa + ", 0, " + cuenta + ", 1, @idEmpresa, @idProducto, @idSubproducto, @idCliente, 7); ";
+    consulta = consulta + "INSERT INTO credito (numero_credito, fecha_inicio, fecha_fin, fecha_quebranto, monto, mensualidad, tasa_interes, dias_mora, numero_cuenta, tipo_credito, empresas_id_empresa, productos_id_producto, subproductos_id_subproducto, clientes_id_cliente, gestores_id_gestor) VALUES ('" + credito + "', '" + fechaInicioCredito + "', '" + fechaVencimientoCred + "', '" + fechaQuebranto + "', " + disposicion + ", " + mensualidad + ", " + tasa + ", 0, " + cuenta + ", 1, @idEmpresa, @idProducto, @idSubproducto, @idCliente, 7);";
     // BUSCAMOS EL ESTADO DE LA REPUBLICA DONDE SE ENCUENTRA EL DEUDOR
-    //consulta = consulta + "SET @idEstado = (SELECT id_estado FROM estado_republica WHERE nombre LIKE '%" + estado + "%');\n";
+    consulta = consulta + "SET @idEstado = (SELECT id_estado FROM estado_republica WHERE nombre LIKE '%" + estado + "%');";
     // BUSCAMOS EL MUNICIPIO DONDE SE ENCUENTRA EL DEUDOR
-    //consulta = consulta + "SET @idMunicipio = (SELECT id_municipio FROM municipio WHERE nombre LIKE '%" + municipio + "%' AND id_estado_estados = @idEstado);\n";
+    consulta = consulta + "SET @idMunicipio = (SELECT id_municipio FROM municipio WHERE nombre LIKE '%" + municipio + "%' AND id_estado_estados = @idEstado);";
     // BUSCAMOS LA COLONIA DONDE SE ENCUENTRA EL DEUDOR SEGUN CODIGO POSTAL
-    //consulta = consulta + "SET @idColonia = (SELECT id_colonia FROM colonia WHERE codigo_postal =  " + cp + "  AND nombre LIKE '%" + colonia + "%' AND id_municipio_municipios = @idMunicipio LIMIT 1);\n";
-
-    EstadoRepublicaDAO estadoDao = new EstadoRepublicaIMPL();
-    EstadoRepublica edo = estadoDao.buscar(estado);
-    MunicipioDAO municipioDao = new MunicipioIMPL();
-    Municipio mpio = municipioDao.buscar(municipio);
-    ColoniaDAO coloniaDao = new ColoniaIMPL();
-    Colonia col = coloniaDao.buscar(colonia,cp);
+    consulta = consulta + "SET @idColonia = (SELECT id_colonia FROM colonia WHERE codigo_postal =  " + cp + "  AND nombre LIKE '%" + colonia + "%' AND id_municipio_municipios = @idMunicipio LIMIT 1);";
 
     // CREAMOS LA DIRECCION DE ESTE DEUDOR
-    if (edo != null && mpio != null && col != null) {
-      consulta = consulta + "INSERT INTO direccion (calle, sujetos_id_sujeto, municipio_id_municipio, estado_republica_id_estado, colonia_id_colonia) VALUES ('" + calle + "', " + sujeto.getIdSujeto() + ", " + mpio.getIdMunicipio() + ", " + edo.getIdEstado() + ", " + col.getIdColonia() + ");\n";
-    }
+      consulta = consulta + "INSERT INTO direccion (calle, sujetos_id_sujeto, municipio_id_municipio, estado_republica_id_estado, colonia_id_colonia) VALUES ('" + calle + "', @idSujeto, @idMunicipio, @idEstado, @idColonia);";
     // CREAMOS EL TELEFONO PARA EL DEUDOR
-    consulta = consulta + "INSERT INTO telefono (numero, tipo, sujetos_id_sujeto) VALUES ('" + refCobro + "', 'Referencia', " + sujeto.getIdSujeto() + ");\n";
+    consulta = consulta + "INSERT INTO telefono (numero, tipo, sujetos_id_sujeto) VALUES ('" + refCobro + "', 'Referencia', @idSujeto);";
     // CREAMOS EL CORREO ELECTRONICO DEL DEUDOR
-    //consulta = consulta + "INSERT INTO email (direccion, tipo, sujetos_id_sujeto) VALUES ('" + correos.get(0) + "', 'Referencia', @idSujeto);";
+//    consulta = consulta + "INSERT INTO email (direccion, tipo, sujetos_id_sujeto) VALUES ('" + correos.get(0) + "', 'Referencia', @idSujeto);";
 
     return consulta;
   }
