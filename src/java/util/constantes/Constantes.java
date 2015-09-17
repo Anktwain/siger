@@ -1,5 +1,7 @@
 package util.constantes;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Pablo
@@ -9,24 +11,31 @@ public interface Constantes {
   /**
    *
    */
-  public final int longNombreUsuario = 20;
+  public static final int longNombreUsuario = 20;
 
   /**
    *
    */
-  public final int longPassword = 20;
+  public static final int longPassword = 20;
 
-  public final int limCREDITO_numero_credito = 30;
-  public final int limSUJETO_nombre_razon_social = 100;
-  public final int limLINEA_telefono = 30;
-  public final int limREMESA_estatus = 10;
-  public final int limCREDITO_numero_cuenta = 30;
-  public final int limCLIENTE_numero_cliente = 25;
-  public final int limSUJETO_rfc = 15;
-  public final int limDIRECCION_calle = 150;
-  public final int limCOLONIA_nombre = 100;
-  public final int limESTADO_REPUBLICA_nombre = 50;
-  public final int limMUNICIPIO_nombre = 50;
-  public final int limCOLONIA_cp = 5;
-  
+  public static final int LIM_CREDITO_numero_credito = 30;
+  public static final int LIM_SUJETO_nombre_razon_social = 100;
+  public static final int LIM_LINEA_telefono = 30;
+  public static final int LIM_REMESA_estatus = 10;
+  public static final int LIM_CREDITO_numero_cuenta = 30;
+  public static final int LIM_CLIENTE_numero_cliente = 25;
+  public static final int LIM_SUJETO_rfc = 15;
+  public static final int LIM_DIRECCION_calle = 150;
+  public static final int LIM_COLONIA_nombre = 100;
+  public static final int LIM_ESTADO_REPUBLICA_nombre = 50;
+  public static final int LIM_MUNICIPIO_nombre = 50;
+  public static final int LIM_COLONIA_cp = 5;
+
+  public static final int LIM_INF_ANIO_EXCEL = 1900;
+  public static final int LIM_SUP_ANIO_EXCEL = 9999;
+
+  public static final String[] MESES_DEL_ANIO = {"enero", "febrero", "marzo",
+    "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre",
+    "noviembre", "diciembre"};
+
 }

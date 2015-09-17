@@ -2,6 +2,7 @@ package beans;
 
 import dto.Fila;
 import java.io.Serializable;
+import java.util.Arrays;
 import util.constantes.Constantes;
 import util.constantes.Errores;
 import util.constantes.Patrones;
@@ -42,7 +43,7 @@ public class FilaBean implements Serializable {
    */
   public void validarNumCred() throws Exception {
     if (!this.filaActual.getCredito().isEmpty()) {
-      validarVarchar(this.filaActual.getCredito(), "numero_credito", Constantes.limCREDITO_numero_credito);
+      validarVarchar(this.filaActual.getCredito(), "numero_credito", Constantes.LIM_CREDITO_numero_credito);
     } else {
       throw new Exception("Error en el campo \"numero_credito\". " + Errores.CAMPO_VACIO);
     }
@@ -53,7 +54,7 @@ public class FilaBean implements Serializable {
    */
   public void validarNombreRazonSoc() throws Exception {
     if (!this.filaActual.getNombre().isEmpty()) {
-      validarVarchar(this.filaActual.getNombre(), "nombre_razon_social", Constantes.limSUJETO_nombre_razon_social);
+      validarVarchar(this.filaActual.getNombre(), "nombre_razon_social", Constantes.LIM_SUJETO_nombre_razon_social);
     } else {
       throw new Exception("Error en el campo \"nombre_razon_social\". " + Errores.CAMPO_VACIO);
     }
@@ -64,7 +65,7 @@ public class FilaBean implements Serializable {
    */
   public void validarRefCobro() throws Exception {
     if (!this.filaActual.getRefCobro().isEmpty()) {
-      validarVarchar(this.filaActual.getRefCobro(), "linea_telefono", Constantes.limLINEA_telefono);
+      validarVarchar(this.filaActual.getRefCobro(), "linea_telefono", Constantes.LIM_LINEA_telefono);
     } else {
       throw new Exception("Error en el campo \"linea_telefono\". " + Errores.CAMPO_VACIO);
     }
@@ -108,7 +109,7 @@ public class FilaBean implements Serializable {
    */
   public void validarEstatus() throws Exception {
     if (!this.filaActual.getEstatus().isEmpty()) {
-      validarVarchar(this.filaActual.getEstatus(), "estatus", Constantes.limREMESA_estatus);
+      validarVarchar(this.filaActual.getEstatus(), "estatus", Constantes.LIM_REMESA_estatus);
     }
   }
 
@@ -137,8 +138,8 @@ public class FilaBean implements Serializable {
       if (valorCampo.matches(Patrones.PATRON_FECHA_DDMMAAAA)) {
         if ((Integer.parseInt(valorCampo.substring(0, 2)) > 31)
                 || (Integer.parseInt(valorCampo.substring(3, 5)) > 12)
-                || (Integer.parseInt(valorCampo.substring(6, 10)) < 1900)
-                || (Integer.parseInt(valorCampo.substring(6, 10)) > 9999)) {
+                || (Integer.parseInt(valorCampo.substring(6, 10)) < Constantes.LIM_INF_ANIO_EXCEL)
+                || (Integer.parseInt(valorCampo.substring(6, 10)) > Constantes.LIM_SUP_ANIO_EXCEL)) {
           throw new Exception("Error en el campo \"" + nombreCampo + "\". " + Errores.CAMPO_FECHA_INVALIDO);
         }
       } else {
@@ -263,7 +264,7 @@ public class FilaBean implements Serializable {
    */
   public void validarNumCta() throws Exception {
     if (!this.filaActual.getCuenta().isEmpty()) {
-      validarVarchar(this.filaActual.getCuenta(), "numero_cuenta", Constantes.limCREDITO_numero_cuenta);
+      validarVarchar(this.filaActual.getCuenta(), "numero_cuenta", Constantes.LIM_CREDITO_numero_cuenta);
     }
   }
 
@@ -286,24 +287,116 @@ public class FilaBean implements Serializable {
   }
 
   /**
-   * El NumCte (número de cliente) no es obligatorio. Es un VARCHAR(25) //
-   * cliente.numero_cliente
+   * El NumCte (número de cliente) no es obligatorio. cliente.numero_cliente
    */
   public void validarNumCliente() throws Exception {
     if (!this.filaActual.getIdCliente().isEmpty()) {
-      validarVarchar(this.filaActual.getIdCliente(), "numero_cliente", Constantes.limCLIENTE_numero_cliente);
+      validarVarchar(this.filaActual.getIdCliente(), "numero_cliente", Constantes.LIM_CLIENTE_numero_cliente);
     }
 
   }
 
   /**
-   * El RFC no es obligatorio. Es un VARCHAR(15) // sujeto.rfc
+   * El RFC no es obligatorio.
    */
   public void validarRfc() throws Exception {
     if (!this.filaActual.getRfc().isEmpty()) {
-      validarVarchar(this.filaActual.getRfc(), "rfc", Constantes.limSUJETO_rfc);
+      validarVarchar(this.filaActual.getRfc(), "rfc", Constantes.LIM_SUJETO_rfc);
     }
   }
 
-  
+  /**
+   * La CALLE es obligatoria.
+   */
+  public void validarCalle() throws Exception {
+    if (!this.filaActual.getCalle().isEmpty()) {
+      validarVarchar(this.filaActual.getCalle(), "calle", Constantes.LIM_DIRECCION_calle);
+    } else {
+      throw new Exception("Error en el campo \"calle\". " + Errores.CAMPO_VACIO);
+    }
+  }
+
+  /**
+   * La COLONIA es obligatoria.
+   */
+  public void validarColonia() throws Exception {
+    if (!this.filaActual.getColonia().isEmpty()) {
+      validarVarchar(this.filaActual.getColonia(), "colonia", Constantes.LIM_COLONIA_nombre);
+    } else {
+      throw new Exception("Error en el campo \"colonia\". " + Errores.CAMPO_VACIO);
+    }
+  }
+
+  /**
+   * El ESTADO es obligatorio.
+   */
+  public void validarEstadoRep() throws Exception {
+    if (!this.filaActual.getEstado().isEmpty()) {
+      validarVarchar(this.filaActual.getEstado(), "estado_republica", Constantes.LIM_ESTADO_REPUBLICA_nombre);
+    } else {
+      throw new Exception("Error en el campo \"estado_republica\". " + Errores.CAMPO_VACIO);
+    }
+  }
+
+  /**
+   * El MUNICIPIO es obligatorio.
+   */
+  public void validarMunicipio() throws Exception {
+    if (!this.filaActual.getMunicipio().isEmpty()) {
+      validarVarchar(this.filaActual.getMunicipio(), "municipio", Constantes.LIM_MUNICIPIO_nombre);
+    } else {
+      throw new Exception("Error en el campo \"municipio\". " + Errores.CAMPO_VACIO);
+    }
+  }
+
+  /**
+   * El CP es obligatorio.
+   */
+  public void validarCodPost() throws Exception {
+    if (!this.filaActual.getCp().isEmpty()) {
+      validarVarchar(this.filaActual.getCp(), "codigo_postal", Constantes.LIM_COLONIA_cp);
+    } else {
+      throw new Exception("Error en el campo \"codigo_postal\". " + Errores.CAMPO_VACIO);
+    }
+  }
+
+  /**
+   * Comprueba que el año sea válido segun la especificación de excel, que el mes
+   * sea un mes del año y que el monto sea un float no negativo. Así como que
+   * exista el mismo numero de valores en año, mes y monto, para evitar
+   * registros incompletos.
+   */
+  public void validarFacs() throws Exception {
+    int maxIndex = Math.max(this.filaActual.getAnio().size(), this.filaActual.getMes().size());
+    maxIndex = Math.max(maxIndex, this.filaActual.getMonto().size());
+    int i;
+    for (i = 0; i < maxIndex; i++) {
+      try {
+        if ((Integer.parseInt(this.filaActual.getAnio().get(i)) < Constantes.LIM_INF_ANIO_EXCEL)
+                || (Integer.parseInt(this.filaActual.getAnio().get(i)) > Constantes.LIM_SUP_ANIO_EXCEL)) {
+          throw new Exception("Error en el campo \"AÑO\" en el fac No." + (i + 1) + "." + Errores.ANIO_FUERA_DE_RANGO_EXCEL);
+        }
+      } catch (NumberFormatException nfe) {
+        throw new Exception("Error en el campo \"AÑO\" en el fac No." + (i + 1) + "." + Errores.CAMPO_ENTERO_REQUERIDO, nfe);
+      } catch (IndexOutOfBoundsException iobe) {
+        throw new Exception("Error en el campo \"AÑO\" en el fac No." + (i + 1) + ". Se esperaba un valor, dado que alguna(s) otra(s) celda(s) del fac lo contiene(n).", iobe);
+      }
+      try {
+        if (Arrays.binarySearch(Constantes.MESES_DEL_ANIO, this.filaActual.getFacMes().get(i).toLowerCase()) < 0) {
+          throw new Exception("Error en el campo \"MES\" en el fac No." + (i + 1) + ". Se esperaba un mes del año escrito con palabra.");
+        }
+      } catch (IndexOutOfBoundsException iobe) {
+        throw new Exception("Error en el campo \"MES\" en el fac No." + (i + 1) + ". Se esperaba un valor, dado que alguna(s) otra(s) celda(s) del fac lo contiene(n).", iobe);
+      }
+      try {
+        if (Float.valueOf(this.filaActual.getMonto().get(i)) < 0f) {
+          throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + ". Se esperaba un valor de monto no negativo.");
+        }
+      } catch (IndexOutOfBoundsException iobe) {
+        throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + ". Se esperaba un valor, dado que alguna(s) otra(s) celda(s) del fac lo contiene(n).", iobe);
+      } catch (NumberFormatException nfe) {
+        throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + "." + Errores.CAMPO_FLOAT_REQUERIDO, nfe);
+      }
+    }
+  }
 }
