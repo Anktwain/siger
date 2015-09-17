@@ -1,5 +1,6 @@
 package beans;
 
+import carga.EjecutarScript;
 import dto.Fila;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.faces.bean.ManagedBean;
@@ -40,6 +42,7 @@ public class CargaBean implements Serializable {
   private Workbook archivoExcel;
   private Sheet hojaExcel;
   private Fila fila;
+  private String archivoSql;
 
   // Otro bean
   @ManagedProperty(value = "#{filaBean}")
@@ -105,7 +108,8 @@ public class CargaBean implements Serializable {
   }
 
   public boolean crearArchivoSql() {
-    String archivoSql = FilenameUtils.getBaseName(nombreArchivo);
+    //String archivoSql = FilenameUtils.getBaseName(nombreArchivo);
+    archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = Directorios.RUTA_REMESAS + archivoSql + ".sql";
     // Crea los objetos fila tomando los datos del archivo excel
     fila = new Fila();
@@ -144,6 +148,13 @@ public class CargaBean implements Serializable {
       ioe.printStackTrace();
       return false;
     }
+  }
+  
+  public boolean ejecutarScriptSql() throws IOException, SQLException {
+    EjecutarScript ejecutarScript = new EjecutarScript();
+    ejecutarScript.setFile(archivoSql);
+    ejecutarScript.ejecutar();
+    return true;
   }
 
   private boolean validarFila(int fila) {

@@ -7,6 +7,7 @@ package beans;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLException;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -84,8 +85,8 @@ public class VistaCarga implements Serializable {
     }
   }
   
-  public void leerArchivoSql() {
-    if(cargaBean.leerArchivoSql()) {
+  public void leerArchivoSql() throws IOException, SQLException {
+    if(cargaBean.ejecutarScriptSql()) {
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
               "Ejecutando consultas",
