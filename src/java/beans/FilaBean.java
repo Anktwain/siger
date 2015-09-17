@@ -361,9 +361,9 @@ public class FilaBean implements Serializable {
   }
 
   /**
-   * Comprueba que el año sea válido segun la especificación de excel, que el mes
-   * sea un mes del año y que el monto sea un float no negativo. Así como que
-   * exista el mismo numero de valores en año, mes y monto, para evitar
+   * Comprueba que el año sea válido segun la especificación de excel, que el
+   * mes sea un mes del año y que el monto sea un float no negativo. Así como
+   * que exista el mismo numero de valores en año, mes y monto, para evitar
    * registros incompletos.
    */
   public void validarFacs() throws Exception {
@@ -379,24 +379,46 @@ public class FilaBean implements Serializable {
       } catch (NumberFormatException nfe) {
         throw new Exception("Error en el campo \"AÑO\" en el fac No." + (i + 1) + "." + Errores.CAMPO_ENTERO_REQUERIDO, nfe);
       } catch (IndexOutOfBoundsException iobe) {
-        throw new Exception("Error en el campo \"AÑO\" en el fac No." + (i + 1) + ". Se esperaba un valor, dado que alguna(s) otra(s) celda(s) del fac lo contiene(n).", iobe);
+        throw new Exception("Error en el campo \"AÑO\" en el fac No." + (i + 1) + ". " + Errores.FILA_CON_CELDAS_VACIAS, iobe);
       }
       try {
         if (Arrays.binarySearch(Constantes.MESES_DEL_ANIO, this.filaActual.getFacMes().get(i).toLowerCase()) < 0) {
           throw new Exception("Error en el campo \"MES\" en el fac No." + (i + 1) + ". Se esperaba un mes del año escrito con palabra.");
         }
       } catch (IndexOutOfBoundsException iobe) {
-        throw new Exception("Error en el campo \"MES\" en el fac No." + (i + 1) + ". Se esperaba un valor, dado que alguna(s) otra(s) celda(s) del fac lo contiene(n).", iobe);
+        throw new Exception("Error en el campo \"MES\" en el fac No." + (i + 1) + ". " + Errores.FILA_CON_CELDAS_VACIAS, iobe);
       }
       try {
         if (Float.valueOf(this.filaActual.getMonto().get(i)) < 0f) {
           throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + ". Se esperaba un valor de monto no negativo.");
         }
       } catch (IndexOutOfBoundsException iobe) {
-        throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + ". Se esperaba un valor, dado que alguna(s) otra(s) celda(s) del fac lo contiene(n).", iobe);
+        throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + ". " + Errores.FILA_CON_CELDAS_VACIAS, iobe);
       } catch (NumberFormatException nfe) {
         throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + "." + Errores.CAMPO_FLOAT_REQUERIDO, nfe);
       }
+    }
+  }
+
+  /**
+   * 
+   */
+  public void validarEmail() throws Exception {
+    for (String correoActual : this.filaActual.getCorreos()) {
+      if (!correoActual.isEmpty()) {
+        if (!correoActual.matches(Patrones.PATRON_EMAIL)) {
+          throw new Exception("Error en el campo \"email\". " + Errores.FORMATO_EMAIL_INVALIDO);
+        }
+      }
+    }
+  }
+  
+  /**
+   * 
+   */
+  public void validarMarcaje() throws Exception{
+    if(!this.filaActual.getMarcaje().isEmpty()){
+      validarInt(this.filaActual.getMarcaje(), "marcaje");
     }
   }
 }
