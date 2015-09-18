@@ -32,6 +32,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import util.log.Logs;
 
 /**
  * Tool to run database scripts
@@ -164,7 +165,7 @@ public class ScriptRunner {
             if (stopOnError) {
               throw new SQLException(errText, e);
             } else {
-              println(errText);
+              Logs.log.error(errText);
             }
           }
 
