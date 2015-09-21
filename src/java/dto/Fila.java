@@ -1,7 +1,14 @@
 package dto;
 
+import dao.ColoniaDAO;
+import dao.EstadoRepublicaDAO;
+import dao.MunicipioDAO;
+import impl.ColoniaIMPL;
+import impl.EstadoRepublicaIMPL;
+import impl.MunicipioIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
+import util.log.Logs;
 
 /**
  *
@@ -71,15 +78,43 @@ public class Fila implements Serializable {
     consulta = consulta + "SET @idSubproducto = (SELECT id_subproducto FROM subproducto WHERE nombre = '" + tipoCredito + "');\n";
     // CREAMOS EL CREDITO
     consulta = consulta + "INSERT INTO credito (numero_credito, fecha_inicio, fecha_fin, fecha_quebranto, monto, mensualidad, tasa_interes, dias_mora, numero_cuenta, tipo_credito, empresas_id_empresa, productos_id_producto, subproductos_id_subproducto, clientes_id_cliente, gestores_id_gestor) VALUES ('" + credito + "', '" + fechaInicioCredito + "', '" + fechaVencimientoCred + "', '" + fechaQuebranto + "', " + disposicion + ", " + mensualidad + ", " + tasa + ", 0, " + cuenta + ", 1, @idEmpresa, @idProducto, @idSubproducto, @idCliente, 7);\n";
+    
+    // propcesa dirección:
+    EstadoRepublicaDAO estadoDao = new EstadoRepublicaIMPL();
+    EstadoRepublica edo = estadoDao.buscar(estado);
+    
+    MunicipioDAO municipioDao = new MunicipioIMPL();
+    Municipio mpio = new Municipio();
+    
+    ColoniaDAO coloniaDao = new ColoniaIMPL();
+    Colonia col = new Colonia();
+    
+    if(edo != null) { // Si el estado se encuentra en la BD, entonces busca el municipio
+      mpio = municipioDao.buscar(municipio);
+      if(mpio != null) { // Si el municipio se encuentra en la BD, entonces busca la colonia
+        col = coloniaDao.buscar(colonia, cp);
+        if(col != null) { // Si la colonia se encuantra en la BD, entonces se crea el municipio
+          consulta = consulta + "INSERT INTO direccion (calle, sujetos_id_sujeto, municipio_id_municipio, estado_republica_id_estado, colonia_id_colonia) VALUES ('" + calle + "', @idSujeto, "+mpio.getIdMunicipio()+", "+edo.getIdEstado()+", "+col.getIdColonia()+");\n";
+        } else {
+          Logs.log.error("No se encontró la colonia: " + colonia);
+        }
+      } else {
+        Logs.log.error("No se encontró el municipio: " + municipio);
+      }
+    } else {
+      Logs.log.error("No se encontró el estado: " + estado);
+    }
+    
+
     // BUSCAMOS EL ESTADO DE LA REPUBLICA DONDE SE ENCUENTRA EL DEUDOR
-    consulta = consulta + "SET @idEstado = (SELECT id_estado FROM estado_republica WHERE nombre LIKE '%" + estado + "%');\n";
+   // consulta = consulta + "SET @idEstado = (SELECT id_estado FROM estado_republica WHERE nombre LIKE '%" + estado + "%');\n";
     // BUSCAMOS EL MUNICIPIO DONDE SE ENCUENTRA EL DEUDOR
-    consulta = consulta + "SET @idMunicipio = (SELECT id_municipio FROM municipio WHERE nombre LIKE '%" + municipio + "%' AND id_estado_estados = @idEstado);\n";
+   // consulta = consulta + "SET @idMunicipio = (SELECT id_municipio FROM municipio WHERE nombre LIKE '%" + municipio + "%' AND id_estado_estados = @idEstado);\n";
     // BUSCAMOS LA COLONIA DONDE SE ENCUENTRA EL DEUDOR SEGUN CODIGO POSTAL
-    consulta = consulta + "SET @idColonia = (SELECT id_colonia FROM colonia WHERE codigo_postal =  " + cp + "  AND nombre LIKE '%" + colonia + "%' AND id_municipio_municipios = @idMunicipio LIMIT 1);\n";
+   // consulta = consulta + "SET @idColonia = (SELECT id_colonia FROM colonia WHERE codigo_postal =  " + cp + "  AND nombre LIKE '%" + colonia + "%' AND id_municipio_municipios = @idMunicipio LIMIT 1);\n";
 
     // CREAMOS LA DIRECCION DE ESTE DEUDOR
-      consulta = consulta + "INSERT INTO direccion (calle, sujetos_id_sujeto, municipio_id_municipio, estado_republica_id_estado, colonia_id_colonia) VALUES ('" + calle + "', @idSujeto, @idMunicipio, @idEstado, @idColonia);\n";
+   //   consulta = consulta + "INSERT INTO direccion (calle, sujetos_id_sujeto, municipio_id_municipio, estado_republica_id_estado, colonia_id_colonia) VALUES ('" + calle + "', @idSujeto, @idMunicipio, @idEstado, @idColonia);\n";
     // CREAMOS EL TELEFONO PARA EL DEUDOR
     consulta = consulta + "INSERT INTO telefono (numero, tipo, sujetos_id_sujeto) VALUES ('" + refCobro + "', 'Referencia', @idSujeto);\n";
     // CREAMOS EL CORREO ELECTRONICO DEL DEUDOR
