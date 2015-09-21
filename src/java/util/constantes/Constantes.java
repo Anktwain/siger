@@ -1,7 +1,5 @@
 package util.constantes;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Pablo
@@ -30,8 +28,13 @@ public interface Constantes {
   public static final int LIM_ESTADO_REPUBLICA_nombre = 50;
   public static final int LIM_MUNICIPIO_nombre = 50;
   public static final int LIM_COLONIA_cp = 5;
-
+  /**
+   * Límite inferior para el valor del año en excel
+   */
   public static final int LIM_INF_ANIO_EXCEL = 1900;
+  /**
+   * Límite superior para el valor del año en excel
+   */
   public static final int LIM_SUP_ANIO_EXCEL = 9999;
 
   public static final String[] MESES_DEL_ANIO = {"enero", "febrero", "marzo",
