@@ -19,14 +19,15 @@ import java.util.GregorianCalendar;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import jxl.Sheet;
-import jxl.Workbook;
+import jxl.*;
 import org.apache.commons.io.FilenameUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import util.constantes.Directorios;
 import util.log.Logs;
 import util.Query;
+import carga.GestionDeDirecciones;
+import java.util.List;
 
 /**
  *
@@ -149,7 +150,7 @@ public class CargaBean implements Serializable {
       return false;
     }
   }
-  
+
   public boolean ejecutarScriptSql() throws IOException, SQLException {
     EjecutarScript ejecutarScript = new EjecutarScript();
     ejecutarScript.setFile(archivoSql);
@@ -159,7 +160,7 @@ public class CargaBean implements Serializable {
 
   private boolean validarFila(int fila) {
     try {
-      //filaBean.validarNumCred();
+      filaBean.validarNumCred();
       filaBean.validarNombreRazonSoc();
       //filaBean.validarRefCobro();
       //filaBean.validarIdProducto();
@@ -179,31 +180,50 @@ public class CargaBean implements Serializable {
 
   private void crearFila(int numFila) {
 
-    //fila.setCredito(hojaExcel.getCell(0, numFila).getContents());
+    fila.setCredito(hojaExcel.getCell(0, numFila).getContents());
     fila.setNombre(hojaExcel.getCell(1, numFila).getContents());
-    //fila.setRefCobro(hojaExcel.getCell(2, numFila).getContents());
-    //fila.setLinea(hojaExcel.getCell(3, numFila).getContents());
-    //fila.setTipoCredito(hojaExcel.getCell(4, numFila).getContents());
-    //fila.setEstatus(hojaExcel.getCell(5, numFila).getContents());
-    //fila.setMesesVencidos(hojaExcel.getCell(6, numFila).getContents());
-    //fila.setDespacho(hojaExcel.getCell(7, numFila).getContents());
-    //fila.setFechaInicioCredito(hojaExcel.getCell(8, numFila).getContents());
-    //fila.setFechaVencimientoCred(hojaExcel.getCell(9, numFila).getContents());
-    //fila.setDisposicion(hojaExcel.getCell(10, numFila).getContents());
-    //fila.setMensualidad(hojaExcel.getCell(11, numFila).getContents());
-    //fila.setSaldoInsoluto(hojaExcel.getCell(12, numFila).getContents());
-    //fila.setSaldoVencido(hojaExcel.getCell(13, numFila).getContents());
-    //fila.setTasa(hojaExcel.getCell(14, numFila).getContents());
-    //fila.setCuenta(hojaExcel.getCell(15, numFila).getContents());
-    //fila.setFechaUltimoPago(hojaExcel.getCell(16, numFila).getContents());
-    //fila.setFechaUltimoVencimientoPagado(hojaExcel.getCell(17, numFila).getContents());
+    fila.setRefCobro(hojaExcel.getCell(2, numFila).getContents());
+    fila.setLinea(hojaExcel.getCell(3, numFila).getContents());
+    fila.setTipoCredito(hojaExcel.getCell(4, numFila).getContents());
+    fila.setEstatus(hojaExcel.getCell(5, numFila).getContents());
+    fila.setMesesVencidos(hojaExcel.getCell(6, numFila).getContents());
+    fila.setDespacho(hojaExcel.getCell(7, numFila).getContents());
+    fila.setFechaInicioCredito(hojaExcel.getCell(8, numFila).getContents());
+    fila.setFechaVencimientoCred(hojaExcel.getCell(9, numFila).getContents());
+    fila.setDisposicion(hojaExcel.getCell(10, numFila).getContents());
+    fila.setMensualidad(hojaExcel.getCell(11, numFila).getContents());
+    fila.setSaldoInsoluto(hojaExcel.getCell(12, numFila).getContents());
+    fila.setSaldoVencido(hojaExcel.getCell(13, numFila).getContents());
+    fila.setTasa(hojaExcel.getCell(14, numFila).getContents());
+    fila.setCuenta(hojaExcel.getCell(15, numFila).getContents());
+    fila.setFechaUltimoPago(hojaExcel.getCell(16, numFila).getContents());
+    fila.setFechaUltimoVencimientoPagado(hojaExcel.getCell(17, numFila).getContents());
     fila.setIdCliente(hojaExcel.getCell(18, numFila).getContents());
     fila.setRfc(hojaExcel.getCell(19, numFila).getContents());
     fila.setCalle(hojaExcel.getCell(20, numFila).getContents());
-    fila.setColonia(hojaExcel.getCell(21, numFila).getContents());
-    fila.setEstado(hojaExcel.getCell(22, numFila).getContents());
-    fila.setMunicipio(hojaExcel.getCell(23, numFila).getContents());
     fila.setCp(hojaExcel.getCell(24, numFila).getContents());
+    // VALIDACION POR CODIGO POSTAL
+    if (fila.getCp() != null) {
+      try{
+        // RECIBIMOS LA LISTA CON IDS ENVIANDO EL CODIGO POSTAL
+        List<String> ids = GestionDeDirecciones.verificaPorCodigoPostal(fila.getCp());
+        // TOMAMOS LOS VALORES DE LA LISTA Y LOS ASIGNAMOS AL OBJETO FILA
+        fila.setEstado(ids.get(0));
+        fila.setMunicipio(ids.get(1));
+        fila.setColonia(ids.get(2));
+      }
+      catch (Exception e){
+        System.out.println("NO SE VERIFICO CODIGO POSTAL EN FILA " + numFila + ". COLONIA NO COINCIDE");
+      }
+    } 
+    // VALIDACION POR NOMBRES DE ESTADOS Y MUNICIPIOS
+    else {
+      // FALTA VALIDAR POR NOMBRE DE ESTADO, MUNICIPIO Y COLONIA
+      // AL TENER ESAS VALIDACIONES, BORRAR ESTAS INSTRUCCIONES
+      fila.setColonia(hojaExcel.getCell(21, numFila).getContents());
+      fila.setEstado(hojaExcel.getCell(22, numFila).getContents());
+      fila.setMunicipio(hojaExcel.getCell(23, numFila).getContents());
+    }
   }
 
   private void guadarQueryEnArchivo(String query, String nombreArchivoSql) {
