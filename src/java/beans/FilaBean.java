@@ -3,6 +3,7 @@ package beans;
 import dto.Fila;
 import java.io.Serializable;
 import java.util.Arrays;
+import util.BuscadorTxt;
 import util.constantes.Constantes;
 import util.constantes.Errores;
 import util.constantes.Patrones;
@@ -13,7 +14,7 @@ import util.constantes.Patrones;
  */
 public class FilaBean implements Serializable {
 
-  private Fila filaActual;
+  private static Fila filaActual;
 
   /**
    * Constructor nulo.
@@ -528,4 +529,10 @@ public class FilaBean implements Serializable {
       validarInt(this.filaActual.getMarcaje(), "marcaje");
     }
   }
+  
+  public static void main(String[] args){
+    BuscadorTxt buscador = new BuscadorTxt(filaActual); 
+  }
+
+  
 }
