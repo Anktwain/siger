@@ -1,5 +1,6 @@
 package beans;
 
+import carga.Analizador;
 import carga.EjecutarScript;
 import dto.Fila;
 import java.io.BufferedOutputStream;
@@ -114,16 +115,41 @@ public class CargaBean implements Serializable {
     // Crea los objetos fila tomando los datos del archivo excel
     fila = new Fila();
     filaBean = new FilaBean();
+    //** Borrar:
+    int ok,edo,mpio,col;
+    ok=edo=mpio=col=0;
+    Analizador analizador = new Analizador();
+    //** borra.
+    
     for (int i = 1; i < numeroDeFilas; i++) {
       crearFila(i);
       // Valida
       filaBean.setFilaActual(fila);
       if (validarFila(i + 1)) {
-        guadarQueryEnArchivo(fila.crearSQL(), archivoSql);
+        String resultado = analizador.analizarDireccion(fila);
+        switch(resultado) {
+          case "ok":
+            ok++;
+            break;
+            case "edo":
+            edo++;
+            break;
+              case "mpio":
+            mpio++;
+            break;
+                case "col":
+            col++;
+            break;
+        }
+        //guadarQueryEnArchivo(fila.crearSQL(), archivoSql);
       } else {
         return false;
       }
     }
+    Logs.log.info("Hubieron " + ok + " direcciones correctas, el resto son incorrectas");
+    Logs.log.info(edo + " estados incorrectos");
+    Logs.log.info(mpio + " municipios incorrectos");
+    Logs.log.info(col + " colonias incorrectas");
     return true;
   }
 
