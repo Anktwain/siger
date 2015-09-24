@@ -535,7 +535,7 @@ public class FilaBean implements Serializable {
   
   public static void main(String[] args){
     try { 
-      BuscadorTxt buscador = new BuscadorTxt(filaActual);
+      BuscadorTxt.buscarTxt("06800", 1);
       
     } catch (Exception ex) {
       Logs.log.error(ex);

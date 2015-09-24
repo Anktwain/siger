@@ -8,6 +8,7 @@ package carga;
 import dto.Fila;
 import java.util.List;
 import util.BuscadorTxt;
+import util.log.Logs;
 
 /**
  *
@@ -46,6 +47,17 @@ public class ClasificadorDeCreditos {
     return consulta;
   }
 
+  /**
+   * @return direccion: La dirección física expresada como un int[] que contiene
+   * los siguientes valores:
+   * <ul>
+   * <li>direccion[0]: La clave numérica, entre 1 y 32, del estado de la
+   * república.</li>
+   * <li>direccion[1]: La clave numérica del municipio</li>
+   * <li>direccion[2]: La clave numérica de la colonia</li>
+   * </ul>
+   *
+   */
   private static int[] obtenerDireccion(Fila fila) {
     int[] direccion = new int[3];
     int estado = 0;
@@ -245,12 +257,15 @@ public class ClasificadorDeCreditos {
         lineaInicio = 141552;
         break;
     } // fin switch
-    
-    int resultado[] = obtenerColMpio(BuscadorTxt.buscarTxt(cp, lineaInicio), fila.getColonia());
-    direccion[0] = estado;
-    direccion[1] = resultado[0]; // municipio
-    direccion[2] = resultado[1]; // colonia
-    
+
+    try {
+      int resultado[] = obtenerColMpio(BuscadorTxt.buscarTxt(cp, lineaInicio), fila.getColonia());
+      direccion[0] = estado;
+      direccion[1] = resultado[0]; // municipio
+      direccion[2] = resultado[1]; // colonia
+    } catch (Exception e) {
+      Logs.log.error(e);
+    }
     return direccion;
   }
 
