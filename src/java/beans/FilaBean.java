@@ -3,10 +3,13 @@ package beans;
 import dto.Fila;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.BuscadorTxt;
 import util.constantes.Constantes;
 import util.constantes.Errores;
 import util.constantes.Patrones;
+import util.log.Logs;
 
 /**
  *
@@ -531,7 +534,12 @@ public class FilaBean implements Serializable {
   }
   
   public static void main(String[] args){
-    BuscadorTxt buscador = new BuscadorTxt(filaActual); 
+    try { 
+      BuscadorTxt buscador = new BuscadorTxt(filaActual);
+      
+    } catch (Exception ex) {
+      Logs.log.error(ex);
+    }
   }
 
   

@@ -22,7 +22,7 @@ public class BuscadorTxt {
     this.lineasCoincidentes = lineasCoincidentes;
   }
 
-  public BuscadorTxt(Fila filaActual) {
+  public BuscadorTxt(Fila filaActual) throws Exception {
 
     try (BufferedReader buferLectura = new BufferedReader(new FileReader("C:\\Users\\Pablo.CORPDELRIO\\Documents\\NetBeansProjects\\Siger_web_2\\src\\java\\direcciones\\colonias.csv"))) {
 
@@ -35,9 +35,8 @@ public class BuscadorTxt {
           lineasCoincidentes.add(lineaActual);
         }
       }
-
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (IOException ioe) {
+      throw new Exception("Error de lectura/escritura.", ioe);
     }
   }
 }
