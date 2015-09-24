@@ -5,6 +5,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import util.constantes.Directorios;
 
 /**
  *
@@ -12,31 +14,23 @@ import java.util.ArrayList;
  */
 public class BuscadorTxt {
 
-  private ArrayList<String> lineasCoincidentes;
+  public static List<String> buscarTxt(String cp, int lineaInicio) {
 
-  public ArrayList<String> getLineasCoincidentes() {
-    return lineasCoincidentes;
-  }
-
-  public void setLineasCoincidentes(ArrayList<String> lineasCoincidentes) {
-    this.lineasCoincidentes = lineasCoincidentes;
-  }
-
-  public BuscadorTxt(Fila filaActual) throws Exception {
-
-    try (BufferedReader buferLectura = new BufferedReader(new FileReader("C:\\Users\\Pablo.CORPDELRIO\\Documents\\NetBeansProjects\\Siger_web_2\\src\\java\\direcciones\\colonias.csv"))) {
-
-      lineasCoincidentes = new ArrayList<>();
-      String cp = filaActual.getCp();
+    List<String> coincidencias = new ArrayList<>();
+    try (BufferedReader buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_COLONIAS))) {
       String lineaActual;
+      
+      for(int i = 1; i < lineaInicio; i++)
+        buferLectura.readLine(); // Recorre el bufer de lectura hasta la línea indicada
 
       while ((lineaActual = buferLectura.readLine()) != null) {
         if (lineaActual.substring(lineaActual.length() - 5).equals(cp)) {
-          lineasCoincidentes.add(lineaActual);
+          coincidencias.add(lineaActual);
         }
       }
     } catch (IOException ioe) {
       throw new Exception("Error de lectura/escritura.", ioe);
     }
+    return coincidencias;
   }
 }

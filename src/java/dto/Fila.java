@@ -1,11 +1,5 @@
 package dto;
 
-import dao.ColoniaDAO;
-import dao.EstadoRepublicaDAO;
-import dao.MunicipioDAO;
-import impl.ColoniaIMPL;
-import impl.EstadoRepublicaIMPL;
-import impl.MunicipioIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
 import util.log.Logs;

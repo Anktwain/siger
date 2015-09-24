@@ -1,5 +1,6 @@
 package beans;
 
+import carga.ClasificadorDeCreditos;
 import carga.EjecutarScript;
 import dto.Fila;
 import java.io.BufferedOutputStream;
@@ -112,20 +113,49 @@ public class CargaBean implements Serializable {
     //String archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = Directorios.RUTA_REMESAS + archivoSql + ".sql";
-    // Crea los objetos fila tomando los datos del archivo excel
-    fila = new Fila();
-    filaBean = new FilaBean();
-    for (int i = 1; i < numeroDeFilas; i++) {
-      crearFila(i);
-      // Valida
+
+    
+    // Recorre el archivo xls, pasando por todas sus filas
+    for (int i = 1; i < numeroDeFilas; i++) { // Comienza en la fila 1, dado que la fila 0 contiene los encabezados
+      crearFila(i); // Crea un objeto Fila para cada fila del archivo xls
       filaBean.setFilaActual(fila);
-      if (validarFila(i + 1)) {
-        guadarQueryEnArchivo(fila.crearSQL(), archivoSql);
-      } else {
+      // Valida la fila a través de filaBean. Suma 1 para mantener la concordancia
+      // con el archivo xls en cuanto al etiquetado de las filas: 1, 2, 3, ...
+      if (validarFila(i + 1)) { 
+        // Dado que la fila es válida, prosigue...
+        // A continuación clasificamos a los créditos como: en la fiesta, estaba en la fiesta, nuevo crédito, nuevo total
+        // AQUÍ SE INSERTA LA LLAMADA A UNA FUNCIÓN QUE BUSCA UNA CRÉDITO EN LA BD, RECIBE COMO PARÁMETRO EL CRÉDITO
+        // A BUSCAR Y DEVUELVE TRUE O FALSE SI ENCONTRÓ O NO ENCONTRÓ EL CRÉDITO, RESPECTIVAMENTE
+        if(buscarCredito(fila.getCredito())){ // Sí se encontró el crédito
+          if(seGestionoEnElPeriodoAnterior(fila.getCredito())){
+            ClasificadorDeCreditos.enLaFiesta(fila);
+          } else {
+            ClasificadorDeCreditos.estabaEnLaFiesta(fila);
+          }
+        } else { // No se encontró el crédito
+          if(buscarCliente(fila.getIdCliente())){ // Sí se encontró el cliente
+            ClasificadorDeCreditos.nuevoCredito(fila);
+          } else { // No se encontró el cliente
+            ClasificadorDeCreditos.nuevoTotal(fila);
+          }
+        }
+      } else { // Si la fila no es válida...
         return false;
       }
     }
     return true;
+  }
+  
+  private boolean buscarCredito(String credito) {
+    return false;
+  }
+  
+  private boolean seGestionoEnElPeriodoAnterior(String credito) {
+    return false;
+  }
+  
+  private boolean buscarCliente(String cliente) {
+    return false;
   }
 
   public boolean leerArchivoSql() {
