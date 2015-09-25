@@ -52,6 +52,17 @@ public class ClasificadorDeCreditos {
     }
   }
 
+  /**
+   * @return direccion: La dirección física expresada como un int[] que contiene
+   * los siguientes valores:
+   * <ul>
+   * <li>direccion[0]: La clave numérica, entre 1 y 32, del estado de la
+   * república.</li>
+   * <li>direccion[1]: La clave numérica del municipio</li>
+   * <li>direccion[2]: La clave numérica de la colonia</li>
+   * </ul>
+   *
+   */
   private static int[] obtenerDireccion(Fila fila) {
     int[] direccion = new int[3];
     direccion[0] = direccion[1] = direccion[2] = 0;
