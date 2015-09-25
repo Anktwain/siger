@@ -47,22 +47,22 @@ public class BuscadorTxt {
    * Ejemplo 1
    */
   private static String currentLine(String filepath, long currentPosition) throws FileNotFoundException, IOException {
-    RandomAccessFile f = new RandomAccessFile(Directorios.RUTA_COLONIAS, "rw");
+    RandomAccessFile archivoAccAleat = new RandomAccessFile(Directorios.RUTA_COLONIAS, "rw");
 
-    byte b = f.readByte();
+    byte b = archivoAccAleat.readByte();
     while (b != 10) {
       currentPosition -= 1;
-      f.seek(currentPosition);
-      b = f.readByte();
+      archivoAccAleat.seek(currentPosition);
+      b = archivoAccAleat.readByte();
       if (currentPosition <= 0) {
-        f.seek(0);
-        String currentLine = f.readLine();
-        f.close();
+        archivoAccAleat.seek(0);
+        String currentLine = archivoAccAleat.readLine();
+        archivoAccAleat.close();
         return currentLine;
       }
     }
-    String line = f.readLine();
-    f.close();
+    String line = archivoAccAleat.readLine();
+    archivoAccAleat.close();
     return line;
 
   }
