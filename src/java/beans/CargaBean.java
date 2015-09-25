@@ -51,6 +51,8 @@ public class CargaBean implements Serializable {
   private FilaBean filaBean;
 
   public CargaBean() {
+    fila = new Fila();
+    filaBean = new FilaBean();
   }
 
   public boolean subirArchivo(FileUploadEvent e) throws IOException {
@@ -113,7 +115,9 @@ public class CargaBean implements Serializable {
     //String archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = Directorios.RUTA_REMESAS + archivoSql + ".sql";
-
+    int[] ns = {0,0};
+    filaBean = new FilaBean();
+    fila = new Fila();
     
     // Recorre el archivo xls, pasando por todas sus filas
     for (int i = 1; i < numeroDeFilas; i++) { // Comienza en la fila 1, dado que la fila 0 contiene los encabezados
@@ -136,13 +140,20 @@ public class CargaBean implements Serializable {
           if(buscarCliente(fila.getIdCliente())){ // Sí se encontró el cliente
             ClasificadorDeCreditos.nuevoCredito(fila);
           } else { // No se encontró el cliente
-            ClasificadorDeCreditos.nuevoTotal(fila);
+            if(ClasificadorDeCreditos.nuevoTotal(fila).equals("n")){
+              ns[0]++;
+              Logs.log.error("No se encontró dirección de la fila " + i + 1);
+            }
+            if(ClasificadorDeCreditos.nuevoTotal(fila).equals("s"))
+              ns[1]++;
           }
         }
       } else { // Si la fila no es válida...
         return false;
       }
     }
+    System.out.println(ns[1] + " direcciones encontradas");
+    System.out.println(ns[0] + " direcciones NO encontradas");
     return true;
   }
   
@@ -192,6 +203,7 @@ public class CargaBean implements Serializable {
     try {
       filaBean.validarNumCred();
       filaBean.validarNombreRazonSoc();
+      filaBean.validarCodPost();
       //filaBean.validarRefCobro();
       //filaBean.validarIdProducto();
       //filaBean.validarIdSubproducto();
@@ -232,27 +244,33 @@ public class CargaBean implements Serializable {
     fila.setRfc(hojaExcel.getCell(19, numFila).getContents());
     fila.setCalle(hojaExcel.getCell(20, numFila).getContents());
     fila.setCp(hojaExcel.getCell(24, numFila).getContents());
+    fila.setColonia(hojaExcel.getCell(21, numFila).getContents());
     // VALIDACION POR CODIGO POSTAL
-    if (fila.getCp() != null) {
+    if ((fila.getCp() == null) && (fila.getColonia() == null)) {
       try{
         // RECIBIMOS LA LISTA CON IDS ENVIANDO EL CODIGO POSTAL
-        List<String> ids = GestionDeDirecciones.verificaPorCodigoPostal(fila.getCp());
+        List<String> ids = GestionDeDirecciones.verificaPorCodigoPostal(fila.getCp(), fila.getColonia());
+        // VERIFICACION DE ERRORES
+        if(ids.get(2) == null){
+          System.out.println("NO SE VERIFICO EL CODIGO POSTAL " + fila.getCp() + " EN LA FILA " + numFila + " DEL ARCHIVO");
+        }
+        else{
         // TOMAMOS LOS VALORES DE LA LISTA Y LOS ASIGNAMOS AL OBJETO FILA
         fila.setEstado(ids.get(0));
         fila.setMunicipio(ids.get(1));
         fila.setColonia(ids.get(2));
+          System.out.println("FILA: " + numFila + ", COLONIA: " + fila.getColonia().toLowerCase() + " , ID ENCONTRADO:  " + ids.get(2));
+        }
       }
       catch (Exception e){
-        System.out.println("NO SE VERIFICO CODIGO POSTAL EN FILA " + numFila + ". COLONIA NO COINCIDE");
+        // VERIFICACION DE ERRORES
+        System.out.println("NO SE VERIFICO EL CODIGO POSTAL " + fila.getCp() + " EN LA FILA " + numFila + " DEL ARCHIVO. COLONIA " + fila.getColonia().toLowerCase());
       }
-    } 
-    // VALIDACION POR NOMBRES DE ESTADOS Y MUNICIPIOS
+    }
     else {
+      // VERIFICACION DE ERRORES
+      System.out.println("NO SE VERIFICO DIRECCION EN LA FILA " + numFila + " DEL ARCHIVO. CODIGO POSTAL VACIO");
       // FALTA VALIDAR POR NOMBRE DE ESTADO, MUNICIPIO Y COLONIA
-      // AL TENER ESAS VALIDACIONES, BORRAR ESTAS INSTRUCCIONES
-      fila.setColonia(hojaExcel.getCell(21, numFila).getContents());
-      fila.setEstado(hojaExcel.getCell(22, numFila).getContents());
-      fila.setMunicipio(hojaExcel.getCell(23, numFila).getContents());
     }
   }
 
