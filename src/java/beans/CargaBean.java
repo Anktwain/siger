@@ -142,7 +142,7 @@ public class CargaBean implements Serializable {
           } else { // No se encontró el cliente
             if(ClasificadorDeCreditos.nuevoTotal(fila).equals("n")){
               ns[0]++;
-              Logs.log.error("No se encontró dirección de la fila " + i);
+              Logs.log.error("No se encontró dirección de la fila " + i + 1);
             }
             if(ClasificadorDeCreditos.nuevoTotal(fila).equals("s"))
               ns[1]++;
