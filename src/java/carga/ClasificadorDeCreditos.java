@@ -28,7 +28,7 @@ public class ClasificadorDeCreditos {
 
   }
 
-  public static String nuevoTotal(Fila fila) {
+  public static String nuevoTotal(Fila fila) throws Exception {
     // CREAMOS LA CADENA QUE GUARDARA LA CONSULTA
     String consulta = null;
     int[] ns = {0, 0};
@@ -63,7 +63,7 @@ public class ClasificadorDeCreditos {
    * </ul>
    *
    */
-  private static int[] obtenerDireccion(Fila fila) {
+  private static int[] obtenerDireccion(Fila fila) throws Exception {
     int[] direccion = new int[3];
     direccion[0] = direccion[1] = direccion[2] = 0;
     if (fila.getCp() == null || fila.getCp().length() < 4) {
