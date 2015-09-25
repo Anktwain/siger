@@ -8,6 +8,7 @@ package carga;
 import dto.Fila;
 import java.util.List;
 import util.BuscadorTxt;
+import util.Levenshtein;
 
 /**
  *
@@ -29,25 +30,34 @@ public class ClasificadorDeCreditos {
 
   public static String nuevoTotal(Fila fila) {
     // CREAMOS LA CADENA QUE GUARDARA LA CONSULTA
-    String consulta;
-    // PRIMERO CREAMOS EL SUJETO
-    consulta = "INSERT INTO sujeto (nombre_razon_social, rfc, eliminado) VALUES ('" + fila.getNombre() + "', '" + fila.getRfc() + "', 1);\n";
-    consulta = consulta + "SET @idSujeto = (SELECT LAST_INSERT_ID());\n";
-    consulta = consulta + "INSERT INTO cliente (numero_cliente, sujetos_id_sujeto) VALUES ('" + fila.getIdCliente() + "', @idSujeto);\n";
-    consulta = consulta + "SET @idCliente = (SELECT id_cliente FROM cliente WHERE sujetos_id_sujeto = @idSujeto);\n";
-    consulta = consulta + "SET @idEmpresa = (SELECT id_empresa FROM empresa WHERE id_empresa = 1);\n";
-    consulta = consulta + "SET @idProducto = (SELECT id_producto FROM producto WHERE id_producto = 1);\n";
-    consulta = consulta + "SET @idSubproducto = (SELECT id_subproducto FROM subproducto WHERE id_subproducto = 1);\n";
-//    consulta = consulta + "INSERT INTO credito (numero_credito, fecha_inicio, fecha_fin, fecha_quebranto, monto, mensualidad, tasa_interes, dias_mora, numero_cuenta, tipo_credito, empresas_id_empresa, productos_id_producto, subproductos_id_subproducto, clientes_id_cliente, gestores_id_gestor) VALUES ('" + credito + "', '" + fechaInicioCredito + "', '" + fechaVencimientoCred + "', '" + fechaQuebranto + "', " + disposicion + ", " + mensualidad + ", " + tasa + ", 0, " + cuenta + ", 1, @idEmpresa, @idProducto, @idSubproducto, @idCliente, 7);\n";
-    consulta = consulta + "INSERT INTO direccion (calle, sujetos_id_sujeto, municipio_id_municipio, estado_republica_id_estado, colonia_id_colonia) VALUES ('" + fila.getCalle() + "', @idSujeto, " + fila.getMunicipio() + ", " + fila.getEstado() + ", " + fila.getColonia() + ");\n";
-    consulta = consulta + "INSERT INTO telefono (numero, tipo, sujetos_id_sujeto) VALUES ('" + fila.getRefCobro() + "', 'Referencia', @idSujeto);\n";
-    //consulta = consulta + "INSERT INTO email (direccion, tipo, sujetos_id_sujeto) VALUES ('" + correos.get(0) + "', 'Referencia', @idSujeto);";
-
-    return consulta;
+    String consulta = null;
+    int[] ns = {0, 0};
+//    // PRIMERO CREAMOS EL SUJETO
+//    consulta = "INSERT INTO sujeto (nombre_razon_social, rfc, eliminado) VALUES ('" + fila.getNombre() + "', '" + fila.getRfc() + "', 1);\n";
+//    consulta = consulta + "SET @idSujeto = (SELECT LAST_INSERT_ID());\n";
+//    consulta = consulta + "INSERT INTO cliente (numero_cliente, sujetos_id_sujeto) VALUES ('" + fila.getIdCliente() + "', @idSujeto);\n";
+//    consulta = consulta + "SET @idCliente = (SELECT id_cliente FROM cliente WHERE sujetos_id_sujeto = @idSujeto);\n";
+//    consulta = consulta + "SET @idEmpresa = (SELECT id_empresa FROM empresa WHERE id_empresa = 1);\n";
+//    consulta = consulta + "SET @idProducto = (SELECT id_producto FROM producto WHERE id_producto = 1);\n";
+//    consulta = consulta + "SET @idSubproducto = (SELECT id_subproducto FROM subproducto WHERE id_subproducto = 1);\n";
+////    consulta = consulta + "INSERT INTO credito (numero_credito, fecha_inicio, fecha_fin, fecha_quebranto, monto, mensualidad, tasa_interes, dias_mora, numero_cuenta, tipo_credito, empresas_id_empresa, productos_id_producto, subproductos_id_subproducto, clientes_id_cliente, gestores_id_gestor) VALUES ('" + credito + "', '" + fechaInicioCredito + "', '" + fechaVencimientoCred + "', '" + fechaQuebranto + "', " + disposicion + ", " + mensualidad + ", " + tasa + ", 0, " + cuenta + ", 1, @idEmpresa, @idProducto, @idSubproducto, @idCliente, 7);\n";
+//    consulta = consulta + "INSERT INTO direccion (calle, sujetos_id_sujeto, municipio_id_municipio, estado_republica_id_estado, colonia_id_colonia) VALUES ('" + fila.getCalle() + "', @idSujeto, " + fila.getMunicipio() + ", " + fila.getEstado() + ", " + fila.getColonia() + ");\n";
+//    consulta = consulta + "INSERT INTO telefono (numero, tipo, sujetos_id_sujeto) VALUES ('" + fila.getRefCobro() + "', 'Referencia', @idSujeto);\n";
+//    //consulta = consulta + "INSERT INTO email (direccion, tipo, sujetos_id_sujeto) VALUES ('" + correos.get(0) + "', 'Referencia', @idSujeto);";
+    int[] hola = obtenerDireccion(fila);
+    if (hola[2] == 0) {
+      return "n";
+    } else {
+      return "s";
+    }
   }
 
   private static int[] obtenerDireccion(Fila fila) {
     int[] direccion = new int[3];
+    direccion[0] = direccion[1] = direccion[2] = 0;
+    if (fila.getCp() == null || fila.getCp().length() < 4) {
+      return direccion;
+    }
     int estado = 0;
     int lineaInicio = 1;
     String cp = fila.getCp();
@@ -245,29 +255,43 @@ public class ClasificadorDeCreditos {
         lineaInicio = 141552;
         break;
     } // fin switch
-    
+
     int resultado[] = obtenerColMpio(BuscadorTxt.buscarTxt(cp, lineaInicio), fila.getColonia());
     direccion[0] = estado;
     direccion[1] = resultado[0]; // municipio
     direccion[2] = resultado[1]; // colonia
-    
+
+    if (direccion[2] != 0) {
+      System.out.println("Estado: " + direccion[0] + " Municipio: " + direccion[1] + " Colonia: " + direccion[2] + "-----------> " + fila.getColonia());
+    } else {
+      System.out.println("No se encontró colonia: " + fila.getColonia());
+    }
+
     return direccion;
   }
 
   private static int[] obtenerColMpio(List<String> coincidencias, String colonia) {
     int resultado[] = new int[2];
+    resultado[0] = resultado[1] = 0;
     String[] registro;
 
     for (String coincidencia : coincidencias) {
       //coincidencia{id_colonia;id_municipio;tipo;nombre;codigo_potal}
       registro = coincidencia.split(";");
-      if (colonia.toUpperCase().equals(registro[3].toUpperCase())) {
+      if (colonia.toLowerCase().equals(registro[3].toLowerCase())) {
         resultado[1] = Integer.parseInt(registro[0]); // id colonia
         resultado[0] = Integer.parseInt(registro[1]); // id municipio
         break;
+      } else {
+        if (Levenshtein.computeLevenshteinDistance(colonia.toLowerCase(), registro[3].toLowerCase()) < 4) {
+          resultado[1] = Integer.parseInt(registro[0]); // id colonia
+          resultado[0] = Integer.parseInt(registro[1]); // id municipio
+          break;
+        }
       }
 
     }
+
     return resultado;
   }
 }

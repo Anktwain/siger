@@ -18,10 +18,10 @@ public class BuscadorTxt {
 
     List<String> coincidencias = new ArrayList<>();
     try (BufferedReader buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_COLONIAS))) {
-      String lineaActual;
+      String lineaActual = null;
       
       for(int i = 1; i < lineaInicio; i++)
-        buferLectura.readLine(); // Recorre el bufer de lectura hasta la línea indicada
+        lineaActual = buferLectura.readLine(); // Recorre el bufer de lectura hasta la línea indicada
 
       while ((lineaActual = buferLectura.readLine()) != null) {
         if (lineaActual.substring(lineaActual.length() - 5).equals(cp)) {

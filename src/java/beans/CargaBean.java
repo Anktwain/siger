@@ -51,6 +51,8 @@ public class CargaBean implements Serializable {
   private FilaBean filaBean;
 
   public CargaBean() {
+    fila = new Fila();
+    filaBean = new FilaBean();
   }
 
   public boolean subirArchivo(FileUploadEvent e) throws IOException {
@@ -113,7 +115,9 @@ public class CargaBean implements Serializable {
     //String archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = Directorios.RUTA_REMESAS + archivoSql + ".sql";
-
+    int[] ns = {0,0};
+    filaBean = new FilaBean();
+    fila = new Fila();
     
     // Recorre el archivo xls, pasando por todas sus filas
     for (int i = 1; i < numeroDeFilas; i++) { // Comienza en la fila 1, dado que la fila 0 contiene los encabezados
@@ -136,13 +140,20 @@ public class CargaBean implements Serializable {
           if(buscarCliente(fila.getIdCliente())){ // Sí se encontró el cliente
             ClasificadorDeCreditos.nuevoCredito(fila);
           } else { // No se encontró el cliente
-            ClasificadorDeCreditos.nuevoTotal(fila);
+            if(ClasificadorDeCreditos.nuevoTotal(fila).equals("n")){
+              ns[0]++;
+              Logs.log.error("No se encontró dirección de la fila " + i);
+            }
+            if(ClasificadorDeCreditos.nuevoTotal(fila).equals("s"))
+              ns[1]++;
           }
         }
       } else { // Si la fila no es válida...
         return false;
       }
     }
+    System.out.println(ns[1] + " direcciones encontradas");
+    System.out.println(ns[0] + " direcciones NO encontradas");
     return true;
   }
   
@@ -233,27 +244,27 @@ public class CargaBean implements Serializable {
     fila.setCalle(hojaExcel.getCell(20, numFila).getContents());
     fila.setCp(hojaExcel.getCell(24, numFila).getContents());
     // VALIDACION POR CODIGO POSTAL
-    if (fila.getCp() != null) {
-      try{
-        // RECIBIMOS LA LISTA CON IDS ENVIANDO EL CODIGO POSTAL
-        List<String> ids = GestionDeDirecciones.verificaPorCodigoPostal(fila.getCp());
-        // TOMAMOS LOS VALORES DE LA LISTA Y LOS ASIGNAMOS AL OBJETO FILA
-        fila.setEstado(ids.get(0));
-        fila.setMunicipio(ids.get(1));
-        fila.setColonia(ids.get(2));
-      }
-      catch (Exception e){
-        System.out.println("NO SE VERIFICO CODIGO POSTAL EN FILA " + numFila + ". COLONIA NO COINCIDE");
-      }
-    } 
+//    if (fila.getCp() != null) {
+//      try{
+//        // RECIBIMOS LA LISTA CON IDS ENVIANDO EL CODIGO POSTAL
+//        List<String> ids = GestionDeDirecciones.verificaPorCodigoPostal(fila.getCp());
+//        // TOMAMOS LOS VALORES DE LA LISTA Y LOS ASIGNAMOS AL OBJETO FILA
+//        fila.setEstado(ids.get(0));
+//        fila.setMunicipio(ids.get(1));
+//        fila.setColonia(ids.get(2));
+//      }
+//      catch (Exception e){
+//        System.out.println("NO SE VERIFICO CODIGO POSTAL EN FILA " + numFila + ". COLONIA NO COINCIDE");
+//      }
+//    } 
     // VALIDACION POR NOMBRES DE ESTADOS Y MUNICIPIOS
-    else {
-      // FALTA VALIDAR POR NOMBRE DE ESTADO, MUNICIPIO Y COLONIA
-      // AL TENER ESAS VALIDACIONES, BORRAR ESTAS INSTRUCCIONES
+//    else {
+//      // FALTA VALIDAR POR NOMBRE DE ESTADO, MUNICIPIO Y COLONIA
+//      // AL TENER ESAS VALIDACIONES, BORRAR ESTAS INSTRUCCIONES
       fila.setColonia(hojaExcel.getCell(21, numFila).getContents());
       fila.setEstado(hojaExcel.getCell(22, numFila).getContents());
       fila.setMunicipio(hojaExcel.getCell(23, numFila).getContents());
-    }
+//    }
   }
 
   private void guadarQueryEnArchivo(String query, String nombreArchivoSql) {

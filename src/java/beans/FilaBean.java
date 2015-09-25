@@ -530,9 +530,4 @@ public class FilaBean implements Serializable {
     }
   }
   
-  public static void main(String[] args){
-    BuscadorTxt buscador = new BuscadorTxt(filaActual); 
-  }
-
-  
 }
