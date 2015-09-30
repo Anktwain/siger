@@ -71,7 +71,7 @@ public class VistaCarga implements Serializable {
     }
   }
   
-  public void crearArchivoSql() {
+  public void crearArchivoSql() throws Exception {
     if(cargaBean.crearArchivoSql()) {
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,

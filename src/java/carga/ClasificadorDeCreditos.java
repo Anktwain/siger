@@ -287,8 +287,8 @@ public class ClasificadorDeCreditos {
     String[] registro;
 
     for (String coincidencia : coincidencias) {
-      //coincidencia{id_colonia;id_municipio;tipo;nombre;codigo_potal}
-      registro = coincidencia.split(";");
+      //coincidencia{id_colonia;id_municipio;tipo;nombre;codigo_postal}
+      registro = coincidencia.split(";"); // PRIMER INTENTO: CADENA 
       if (colonia.toLowerCase().equals(registro[3].toLowerCase())) {
         resultado[1] = Integer.parseInt(registro[0]); // id colonia
         resultado[0] = Integer.parseInt(registro[1]); // id municipio

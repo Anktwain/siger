@@ -24,7 +24,6 @@ import java.nio.file.StandardOpenOption;
 public class BuscadorTxt {
 
   public static List<String> buscarTxt(String cp, int lineaInicio) throws Exception {
-
     List<String> coincidencias = new ArrayList<>();
     try (BufferedReader buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_COLONIAS))) {
       String lineaActual;
