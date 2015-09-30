@@ -300,7 +300,8 @@ public class ClasificadorDeCreditos {
         break;
     } // fin switch
 
-    int resultado[] = obtenerColMpio(BuscadorTxt.buscarTxt(cp, lineaInicio), fila.getColonia());
+    //int resultado[] = obtenerColMpio(BuscadorTxt.buscarTxt(cp, lineaInicio), fila.getColonia());
+    int resultado[] = obtenerColMpio(BuscadorTxt.buscarTxt(cp, byteInicio), fila.getColonia());
     direccion[0] = estado;
     direccion[1] = resultado[0]; // municipio
     direccion[2] = resultado[1]; // colonia

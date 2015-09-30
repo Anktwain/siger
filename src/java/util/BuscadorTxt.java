@@ -49,12 +49,14 @@ public class BuscadorTxt {
   public static List<String> buscarTxt(String cp, long byteInicio) throws FileNotFoundException, IOException{
     List<String> listaCoincidencias = new ArrayList<>();
     // Crea un archivo de acceso aleatorio:
-    RandomAccessFile randomAccessFile = new RandomAccessFile(Directorios.RUTA_COLONIAS, "rw");
+    RandomAccessFile randomAccessFile = new RandomAccessFile(Directorios.RUTA_COLONIAS, "r");
     // Almacena la líne leída actualmente
     String lineaActual;
     
     // coloca el puntero a donde indica byteInicio:
     randomAccessFile.seek(byteInicio);
+    // deshecha la línea siguiente:
+    randomAccessFile.readLine();
     
     while((lineaActual=randomAccessFile.readLine()) != null) {
         if (lineaActual.substring(lineaActual.length() - 5).equals(cp)) {
@@ -66,6 +68,7 @@ public class BuscadorTxt {
         }
     }
     
+    randomAccessFile.close();
     return listaCoincidencias;
   }  
 
