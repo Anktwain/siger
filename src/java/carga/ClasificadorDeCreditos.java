@@ -53,6 +53,9 @@ public class ClasificadorDeCreditos {
   }
 
   /**
+   * Crea un arreglo de int que contiene las claves correspondientes al estado,
+   * al municipio y a la colonia, en ese orden.
+   *
    * @return direccion: La dirección física expresada como un int[] que contiene
    * los siguientes valores:
    * <ul>
@@ -281,6 +284,9 @@ public class ClasificadorDeCreditos {
     return direccion;
   }
 
+  /**
+   *
+   */
   private static int[] obtenerColMpio(List<String> coincidencias, String colonia) {
     int resultado[] = new int[2];
     resultado[0] = resultado[1] = 0;
