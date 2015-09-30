@@ -203,6 +203,7 @@ public class CargaBean implements Serializable {
     try {
       filaBean.validarNumCred();
       filaBean.validarNombreRazonSoc();
+      filaBean.validarCodPost();
       //filaBean.validarRefCobro();
       //filaBean.validarIdProducto();
       //filaBean.validarIdSubproducto();
@@ -243,28 +244,34 @@ public class CargaBean implements Serializable {
     fila.setRfc(hojaExcel.getCell(19, numFila).getContents());
     fila.setCalle(hojaExcel.getCell(20, numFila).getContents());
     fila.setCp(hojaExcel.getCell(24, numFila).getContents());
+    fila.setColonia(hojaExcel.getCell(21, numFila).getContents());
     // VALIDACION POR CODIGO POSTAL
-//    if (fila.getCp() != null) {
-//      try{
-//        // RECIBIMOS LA LISTA CON IDS ENVIANDO EL CODIGO POSTAL
-//        List<String> ids = GestionDeDirecciones.verificaPorCodigoPostal(fila.getCp());
-//        // TOMAMOS LOS VALORES DE LA LISTA Y LOS ASIGNAMOS AL OBJETO FILA
-//        fila.setEstado(ids.get(0));
-//        fila.setMunicipio(ids.get(1));
-//        fila.setColonia(ids.get(2));
-//      }
-//      catch (Exception e){
-//        System.out.println("NO SE VERIFICO CODIGO POSTAL EN FILA " + numFila + ". COLONIA NO COINCIDE");
-//      }
-//    } 
-    // VALIDACION POR NOMBRES DE ESTADOS Y MUNICIPIOS
-//    else {
-//      // FALTA VALIDAR POR NOMBRE DE ESTADO, MUNICIPIO Y COLONIA
-//      // AL TENER ESAS VALIDACIONES, BORRAR ESTAS INSTRUCCIONES
-      fila.setColonia(hojaExcel.getCell(21, numFila).getContents());
-      fila.setEstado(hojaExcel.getCell(22, numFila).getContents());
-      fila.setMunicipio(hojaExcel.getCell(23, numFila).getContents());
-//    }
+    if ((fila.getCp() == null) && (fila.getColonia() == null)) {
+      try{
+        // RECIBIMOS LA LISTA CON IDS ENVIANDO EL CODIGO POSTAL
+        List<String> ids = GestionDeDirecciones.verificaPorCodigoPostal(fila.getCp(), fila.getColonia());
+        // VERIFICACION DE ERRORES
+        if(ids.get(2) == null){
+          System.out.println("NO SE VERIFICO EL CODIGO POSTAL " + fila.getCp() + " EN LA FILA " + numFila + " DEL ARCHIVO");
+        }
+        else{
+        // TOMAMOS LOS VALORES DE LA LISTA Y LOS ASIGNAMOS AL OBJETO FILA
+        fila.setEstado(ids.get(0));
+        fila.setMunicipio(ids.get(1));
+        fila.setColonia(ids.get(2));
+          System.out.println("FILA: " + numFila + ", COLONIA: " + fila.getColonia().toLowerCase() + " , ID ENCONTRADO:  " + ids.get(2));
+        }
+      }
+      catch (Exception e){
+        // VERIFICACION DE ERRORES
+        System.out.println("NO SE VERIFICO EL CODIGO POSTAL " + fila.getCp() + " EN LA FILA " + numFila + " DEL ARCHIVO. COLONIA " + fila.getColonia().toLowerCase());
+      }
+    }
+    else {
+      // VERIFICACION DE ERRORES
+      System.out.println("NO SE VERIFICO DIRECCION EN LA FILA " + numFila + " DEL ARCHIVO. CODIGO POSTAL VACIO");
+      // FALTA VALIDAR POR NOMBRE DE ESTADO, MUNICIPIO Y COLONIA
+    }
   }
 
   private void guadarQueryEnArchivo(String query, String nombreArchivoSql) {
