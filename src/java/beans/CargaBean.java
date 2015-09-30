@@ -111,7 +111,7 @@ public class CargaBean implements Serializable {
     return numeroDeFilas - 1;
   }
 
-  public boolean crearArchivoSql() {
+  public boolean crearArchivoSql() throws Exception {
     //String archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = Directorios.RUTA_REMESAS + archivoSql + ".sql";
