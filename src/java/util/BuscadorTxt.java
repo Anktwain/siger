@@ -34,7 +34,11 @@ public class BuscadorTxt {
       }
       while ((lineaActual = buferLectura.readLine()) != null) {
         if (lineaActual.substring(lineaActual.length() - 5).equals(cp)) {
+          do{
           coincidencias.add(lineaActual);
+          lineaActual = buferLectura.readLine();
+          } while(lineaActual.substring(lineaActual.length() - 5).equals(cp));
+          break;
         }
       }
     } catch (IOException ioe) {
@@ -83,9 +87,9 @@ class SeekableByteChannelExample {
     for (int i = posicionInicial; canal.read(buferBytes) > 0; i++) {
       cadActual = String.valueOf(buferBytes.flip().array());
       if (cadActual.equals(cp)) {
-        
+
       }
-      coincidencia = cadActual;   
+      coincidencia = cadActual;
       buferBytes.clear();
     }
   }
