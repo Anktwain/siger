@@ -24,20 +24,51 @@ import java.util.stream.Stream;
  */
 public class BuscadorTxt {
 
+  private static BufferedReader buferLectura;
+  private static RandomAccessFile randomAccessFile;
+  private SeekableByteChannel canalBytes;
+  private Stream<String> archPorLineas;
+
+  public BuscadorTxt() throws Exception {
+
+    try { // 
+      buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_COLONIAS));
+    } catch (Exception e) {
+      throw new Exception("Error al crear el archivo para lectura secuencial.", e);
+    }
+    try { // 
+      // Crea un archivo de acceso aleatorio:
+      randomAccessFile = new RandomAccessFile(Directorios.RUTA_COLONIAS, "r");
+    } catch (Exception e) {
+      throw new Exception("Error al crear el archivo de acceso aleatorio.", e);
+    }
+    try { // 
+      canalBytes = Files.newByteChannel(Paths.get(Directorios.RUTA_COLONIAS), StandardOpenOption.READ);
+    } catch (Exception e) {
+      throw new Exception("Error al crear el archivo de lectura ByteChannel.", e);
+    }
+    try { // 
+      archPorLineas = Files.lines(Paths.get(Directorios.RUTA_COLONIAS));
+    } catch (Exception e) {
+      throw new Exception("Error al crear el archivo de lectura por numero de lineas.", e);
+    }
+  }
+
   public static List<String> buscarTxt(String cp, int lineaInicio) throws Exception {
     List<String> coincidencias = new ArrayList<>();
-    try (BufferedReader buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_COLONIAS))) {
-      String lineaActual;
+    String lineaActual;
 
+    try {
       for (int i = 1; i < lineaInicio; i++) {
-        buferLectura.readLine(); // Recorre el bufer de lectura hasta la línea indicada
+        // Solo recorre el bufer de lectura hasta la línea indicada
+        buferLectura.readLine();
       }
       while ((lineaActual = buferLectura.readLine()) != null) {
         if (lineaActual.substring(lineaActual.length() - 5).equals(cp)) {
-          do{
-          coincidencias.add(lineaActual);
-          lineaActual = buferLectura.readLine();
-          } while(lineaActual.substring(lineaActual.length() - 5).equals(cp));
+          do {
+            coincidencias.add(lineaActual);
+            lineaActual = buferLectura.readLine();
+          } while (lineaActual.substring(lineaActual.length() - 5).equals(cp));
           break;
         }
       }
@@ -46,32 +77,31 @@ public class BuscadorTxt {
     }
     return coincidencias;
   }
-  
-  public static List<String> buscarTxt(String cp, long byteInicio) throws FileNotFoundException, IOException{
+
+  public static List<String> buscarTxt(String cp, long byteInicio) throws FileNotFoundException, IOException {
     List<String> listaCoincidencias = new ArrayList<>();
-    // Crea un archivo de acceso aleatorio:
-    RandomAccessFile randomAccessFile = new RandomAccessFile(Directorios.RUTA_COLONIAS, "r");
+
     // Almacena la líne leída actualmente
     String lineaActual;
-    
+
     // coloca el puntero a donde indica byteInicio:
     randomAccessFile.seek(byteInicio);
     // deshecha la línea siguiente:
     randomAccessFile.readLine();
-    
-    while((lineaActual=randomAccessFile.readLine()) != null) {
-        if (lineaActual.substring(lineaActual.length() - 5).equals(cp)) {
-          do{
+
+    while ((lineaActual = randomAccessFile.readLine()) != null) {
+      if (lineaActual.substring(lineaActual.length() - 5).equals(cp)) {
+        do {
           listaCoincidencias.add(lineaActual);
           lineaActual = randomAccessFile.readLine();
-          } while(lineaActual.substring(lineaActual.length() - 5).equals(cp));
-          break;
-        }
+        } while (lineaActual.substring(lineaActual.length() - 5).equals(cp));
+        break;
+      }
     }
-    
+
     randomAccessFile.close();
     return listaCoincidencias;
-  }  
+  }
 
   /**
    * Ejemplo 1
@@ -96,37 +126,50 @@ public class BuscadorTxt {
     return line;
 
   }
-  
+
   /**
    * Ejemplo 2
    */
-  public void seekableByteChannelExample(String[] args) throws IOException {
-    String cp = args[1];
-    SeekableByteChannel canal = Files.newByteChannel(Paths.get(Directorios.RUTA_COLONIAS), StandardOpenOption.READ);
+  public void seekableByteChannelExample(String codigoPostal) throws IOException {
+
     ByteBuffer buferBytes = ByteBuffer.allocate(512);
     int posicionInicial = 1;
     String cadActual, coincidencia;
-    for (int i = posicionInicial; canal.read(buferBytes) > 0; i++) {
+
+    for (int i = posicionInicial; canalBytes.read(buferBytes) > 0; i++) {
       cadActual = String.valueOf(buferBytes.flip().array());
-      if (cadActual.equals(cp)) {
+      if (cadActual.equals(codigoPostal)) {
 
       }
       coincidencia = cadActual;
       buferBytes.clear();
     }
   }
-  
+
   /**
-   * Ejemplo 3. 
+   * Ejemplo 3.
    */
   public void irALinea(long numElem) throws Exception {
-
-    try (Stream<String> lines = Files.lines(Paths.get(Directorios.RUTA_COLONIAS))) {
-      String lineaEnCuestion = lines.skip(numElem).findFirst().get();
-    } catch (IOException ioe) {
-      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, ioe);
+    String lineaEnCuestion;
+    try {
+      lineaEnCuestion = archPorLineas.skip(numElem).findFirst().get();
+    } catch (Exception e) {
+      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
     }
     System.out.println("");
   }
 
+  /**
+   * Cierra todos los archivos abiertos por el constructor de la clase
+   */
+  public void cerrar() throws Exception {
+    try {
+      buferLectura.close();
+      randomAccessFile.close();
+      canalBytes.close();
+    } catch (IOException ioe) {
+      throw new Exception("Error al cerrar alguno de los archivos abiertos.", ioe);
+    }
+    archPorLineas.close();
+  }
 }
