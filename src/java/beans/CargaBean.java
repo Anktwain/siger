@@ -111,11 +111,12 @@ public class CargaBean implements Serializable {
     return numeroDeFilas - 1;
   }
 
-  public boolean crearArchivoSql() {
+  public boolean crearArchivoSql() throws Exception {
     //String archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = Directorios.RUTA_REMESAS + archivoSql + ".sql";
-    int[] ns = {0,0};
+    int[] ns = {0,0}; // el primer elemento del arreglo indica los casos no exitosos, el segundo, los exitosos.
+    String resultado;
     filaBean = new FilaBean();
     fila = new Fila();
     
@@ -125,7 +126,7 @@ public class CargaBean implements Serializable {
       filaBean.setFilaActual(fila);
       // Valida la fila a través de filaBean. Suma 1 para mantener la concordancia
       // con el archivo xls en cuanto al etiquetado de las filas: 1, 2, 3, ...
-      if (validarFila(i + 1)) { 
+      if (validarFila(i + 1)) { // i+1 el sólo para efectos de imprimir el número de línea en la cual ocurrió el error en caso de que lo hubiera. Se envía i + 1 para que el número de línea corresponda con el de excel, por ejemplo si el error ocurre en la línea 1, en excel corresponde a la línea 1+1=2, dado que la primera línea es de encabezados
         // Dado que la fila es válida, prosigue...
         // A continuación clasificamos a los créditos como: en la fiesta, estaba en la fiesta, nuevo crédito, nuevo total
         // AQUÍ SE INSERTA LA LLAMADA A UNA FUNCIÓN QUE BUSCA UNA CRÉDITO EN LA BD, RECIBE COMO PARÁMETRO EL CRÉDITO
@@ -140,18 +141,19 @@ public class CargaBean implements Serializable {
           if(buscarCliente(fila.getIdCliente())){ // Sí se encontró el cliente
             ClasificadorDeCreditos.nuevoCredito(fila);
           } else { // No se encontró el cliente
-            if(ClasificadorDeCreditos.nuevoTotal(fila).equals("n")){
+            resultado = ClasificadorDeCreditos.nuevoTotal(fila);
+            if(resultado.equals("n")){
               ns[0]++;
-              Logs.log.error("No se encontró dirección de la fila " + i + 1);
+              Logs.log.error("No se encontró dirección de la fila " + (i + 1));
             }
-            if(ClasificadorDeCreditos.nuevoTotal(fila).equals("s"))
+            else if(resultado.equals("s"))
               ns[1]++;
           }
         }
       } else { // Si la fila no es válida...
         return false;
       }
-    }
+    } // fin de for
     System.out.println(ns[1] + " direcciones encontradas");
     System.out.println(ns[0] + " direcciones NO encontradas");
     return true;
@@ -246,32 +248,32 @@ public class CargaBean implements Serializable {
     fila.setCp(hojaExcel.getCell(24, numFila).getContents());
     fila.setColonia(hojaExcel.getCell(21, numFila).getContents());
     // VALIDACION POR CODIGO POSTAL
-    if ((fila.getCp() == null) && (fila.getColonia() == null)) {
-      try{
-        // RECIBIMOS LA LISTA CON IDS ENVIANDO EL CODIGO POSTAL
-        List<String> ids = GestionDeDirecciones.verificaPorCodigoPostal(fila.getCp(), fila.getColonia());
-        // VERIFICACION DE ERRORES
-        if(ids.get(2) == null){
-          System.out.println("NO SE VERIFICO EL CODIGO POSTAL " + fila.getCp() + " EN LA FILA " + numFila + " DEL ARCHIVO");
-        }
-        else{
-        // TOMAMOS LOS VALORES DE LA LISTA Y LOS ASIGNAMOS AL OBJETO FILA
-        fila.setEstado(ids.get(0));
-        fila.setMunicipio(ids.get(1));
-        fila.setColonia(ids.get(2));
-          System.out.println("FILA: " + numFila + ", COLONIA: " + fila.getColonia().toLowerCase() + " , ID ENCONTRADO:  " + ids.get(2));
-        }
-      }
-      catch (Exception e){
-        // VERIFICACION DE ERRORES
-        System.out.println("NO SE VERIFICO EL CODIGO POSTAL " + fila.getCp() + " EN LA FILA " + numFila + " DEL ARCHIVO. COLONIA " + fila.getColonia().toLowerCase());
-      }
-    }
-    else {
-      // VERIFICACION DE ERRORES
-      System.out.println("NO SE VERIFICO DIRECCION EN LA FILA " + numFila + " DEL ARCHIVO. CODIGO POSTAL VACIO");
-      // FALTA VALIDAR POR NOMBRE DE ESTADO, MUNICIPIO Y COLONIA
-    }
+//    if ((fila.getCp() == null) && (fila.getColonia() == null)) { // Si el objeto Fila no tiene ni Colonia ni código postal...
+//      try{
+//        // RECIBIMOS LA LISTA CON IDS ENVIANDO EL CODIGO POSTAL
+//        List<String> ids = GestionDeDirecciones.verificaPorCodigoPostal(fila.getCp(), fila.getColonia());
+//        // VERIFICACION DE ERRORES
+//        if(ids.get(2) == null){
+//          System.out.println("NO SE VERIFICO EL CODIGO POSTAL " + fila.getCp() + " EN LA FILA " + numFila + " DEL ARCHIVO");
+//        }
+//        else{
+//        // TOMAMOS LOS VALORES DE LA LISTA Y LOS ASIGNAMOS AL OBJETO FILA
+//        fila.setEstado(ids.get(0));
+//        fila.setMunicipio(ids.get(1));
+//        fila.setColonia(ids.get(2));
+//          System.out.println("FILA: " + numFila + ", COLONIA: " + fila.getColonia().toLowerCase() + " , ID ENCONTRADO:  " + ids.get(2));
+//        }
+//      }
+//      catch (Exception e){
+//        // VERIFICACION DE ERRORES
+//        System.out.println("NO SE VERIFICO EL CODIGO POSTAL " + fila.getCp() + " EN LA FILA " + numFila + " DEL ARCHIVO. COLONIA " + fila.getColonia().toLowerCase());
+//      }
+//    }
+//    else {
+//      // VERIFICACION DE ERRORES
+//      System.out.println("NO SE VERIFICO DIRECCION EN LA FILA " + numFila + " DEL ARCHIVO. CODIGO POSTAL VACIO");
+//      // FALTA VALIDAR POR NOMBRE DE ESTADO, MUNICIPIO Y COLONIA
+//    }
   }
 
   private void guadarQueryEnArchivo(String query, String nombreArchivoSql) {
