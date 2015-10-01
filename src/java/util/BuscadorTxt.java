@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.stream.Stream;
 
 /**
  *
@@ -95,15 +96,11 @@ public class BuscadorTxt {
     return line;
 
   }
-
-}
-
-/**
- * Ejemplo 2
- */
-class SeekableByteChannelExample {
-
-  public static void main(String[] args) throws IOException {
+  
+  /**
+   * Ejemplo 2
+   */
+  public void seekableByteChannelExample(String[] args) throws IOException {
     String cp = args[1];
     SeekableByteChannel canal = Files.newByteChannel(Paths.get(Directorios.RUTA_COLONIAS), StandardOpenOption.READ);
     ByteBuffer buferBytes = ByteBuffer.allocate(512);
@@ -118,4 +115,18 @@ class SeekableByteChannelExample {
       buferBytes.clear();
     }
   }
+  
+  /**
+   * Ejemplo 3. 
+   */
+  public void irALinea(long numElem) throws Exception {
+
+    try (Stream<String> lines = Files.lines(Paths.get(Directorios.RUTA_COLONIAS))) {
+      String lineaEnCuestion = lines.skip(numElem).findFirst().get();
+    } catch (IOException ioe) {
+      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, ioe);
+    }
+    System.out.println("");
+  }
+
 }
