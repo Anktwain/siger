@@ -9,6 +9,7 @@ import dto.Fila;
 import java.util.List;
 import util.BuscadorTxt;
 import util.Levenshtein;
+import util.constantes.Directorios;
 
 /**
  *
@@ -73,10 +74,10 @@ public class ClasificadorDeCreditos {
       return direccion;
     }
     int estado = 0;
-    int lineaInicio = 1;
-    long byteInicio = 0;
     String cp = fila.getCp();
-    switch (cp.substring(0, 2)) {
+    String prefijoCP = cp.substring(0,2);
+    String archivoAExaminar = Directorios.RUTA_COLONIAS + prefijoCP + ".csv";
+    switch (prefijoCP) {
       case "01":
       case "02":
       case "03":
@@ -94,80 +95,54 @@ public class ClasificadorDeCreditos {
       case "15":
       case "16":
         estado = 9; // Distrito Federal
-        lineaInicio = 1;
-        byteInicio = 0;
         break;
       case "20":
         estado = 1; // Aguascalientes
-        lineaInicio = 2087;
-        byteInicio = 98740;
         break;
       case "21":
       case "22": // Baja California
         estado = 2;
-        lineaInicio = 3426;
-        byteInicio = 155426;
         break;
       case "23": //Baja California Sur
         estado = 3;
-        lineaInicio = 5807;
-        byteInicio = 257604;
         break;
       case "24": // Campeche
         estado = 4;
-        lineaInicio = 6730;
-        byteInicio = 296090;
         break;
       case "25":
       case "26":
       case "27": // Coahuila
         estado = 5;
-        lineaInicio = 8037;
-        byteInicio = 348064;
         break;
       case "28": // Colima
         estado = 6;
-        lineaInicio = 12135;
-        byteInicio = 521654;
         break;
       case "29":
       case "30": // Chiapas
         estado = 7;
-        lineaInicio = 12945;
-        byteInicio = 555147;
         break;
       case "31":
       case "32":
       case "33": // Chihuahua
         estado = 8;
-        lineaInicio = 20191;
-        byteInicio = 845987;
         break;
       case "34":
       case "35": // Durango
         estado = 10;
-        lineaInicio = 29661;
-        byteInicio = 1253818;
         break;
       case "36":
       case "37":
       case "38": // Guanajuato
         estado = 11;
-        lineaInicio = 36799;
-        byteInicio = 1562254;
         break;
       case "39":
       case "40":
       case "41": // Guerrero
         estado = 12;
-        lineaInicio = 46477;
-        byteInicio = 2004088;
         break;
       case "42":
       case "43": // Hidalgo
         estado = 13;
-        lineaInicio = 51337;
-        byteInicio = 2203566;
         break;
       case "44":
       case "45":
@@ -176,8 +151,6 @@ public class ClasificadorDeCreditos {
       case "48":
       case "49": // Jalisco
         estado = 14;
-        lineaInicio = 57470;
-        byteInicio = 2462563;
         break;
       case "50":
       case "51":
@@ -188,97 +161,67 @@ public class ClasificadorDeCreditos {
       case "56":
       case "57": // México
         estado = 15;
-        lineaInicio = 63062;
-        byteInicio = 2707475;
         break;
       case "58":
       case "59":
       case "60":
       case "61": // Michoacán
         estado = 16;
-        lineaInicio = 71267;
-        byteInicio = 3078352;
         break;
       case "62": // Morelos
         estado = 17;
-        lineaInicio = 80802;
-        byteInicio = 3487597;
         break;
       case "63": // Nayarit
         estado = 18;
-        lineaInicio = 82587;
-        byteInicio = 3563775;
         break;
       case "64":
       case "65":
       case "66":
       case "67": // Nuevo León
         estado = 19;
-        lineaInicio = 84501;
-        byteInicio = 3644119;
         break;
       case "68":
       case "69":
       case "70":
       case "71": // Oaxaca
         estado = 20;
-        lineaInicio = 89507;
-        byteInicio = 3876867;
         break;
       case "72":
       case "73":
       case "74":
       case "75": // Puebla
         estado = 21;
-        lineaInicio = 95514;
-        byteInicio = 4143034;
         break;
       case "76": // Querétaro
         estado = 22;
-        lineaInicio = 100764;
-        byteInicio = 4377630;
         break;
       case "77": // Quintana Roo
         estado = 23;
-        lineaInicio = 103892;
-        byteInicio = 4524718;
         break;
       case "78":
       case "79": // San Luis Potosí
         estado = 24;
-        lineaInicio = 105042;
-        byteInicio = 4576366;
         break;
       case "80":
       case "81":
       case "82": // Sinaloa
         estado = 25;
-        lineaInicio = 111023;
-        byteInicio = 4859525;
         break;
       case "83":
       case "84":
       case "85": // Sonora
         estado = 26;
-        lineaInicio = 113970;
-        byteInicio = 4992496;
         break;
       case "86": // Tabasco
         estado = 27;
-        lineaInicio = 123504;
-        byteInicio = 5433904;
         break;
       case "87":
       case "88":
       case "89": // Tamaulipas
         estado = 28;
-        lineaInicio = 126297;
-        byteInicio = 5566510;
         break;
       case "90": // Tlaxcala
         estado = 29;
-        lineaInicio = 129596;
-        byteInicio = 5716704;
         break;
       case "91":
       case "92":
@@ -287,24 +230,17 @@ public class ClasificadorDeCreditos {
       case "95":
       case "96": //Veracruz
         estado = 30;
-        lineaInicio = 131157;
-        byteInicio = 5788683;
         break;
       case "97": // Yucatán
         estado = 31;
-        lineaInicio = 139751;
-        byteInicio = 6167365;
         break;
       case "98":
       case "99": // Zacatecas
         estado = 32;
-        lineaInicio = 141552;
-        byteInicio = 6243624;
         break;
     } // fin switch
 
-    //int resultado[] = obtenerColMpio(BuscadorTxt.buscarTxt(cp, lineaInicio), fila.getColonia());
-    int resultado[] = obtenerColMpio(BuscadorTxt.buscarTxt(cp, byteInicio), fila.getColonia());
+    int resultado[] = obtenerColMpio(BuscadorTxt.buscarTxt(cp, archivoAExaminar), fila.getColonia());
     direccion[0] = estado;
     direccion[1] = resultado[0]; // municipio
     direccion[2] = resultado[1]; // colonia
