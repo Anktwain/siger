@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+
 import util.constantes.Directorios;
 
 import java.nio.ByteBuffer;
@@ -16,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.stream.Stream;
 
 /**
  *
@@ -46,7 +48,7 @@ public class BuscadorTxt {
   /**
    * Ejemplo 1
    */
-  private static String currentLine(String filepath, long currentPosition) throws FileNotFoundException, IOException {
+  public static String getCurrentLine(String filepath, long currentPosition) throws FileNotFoundException, IOException {
     RandomAccessFile archivoAccAleat = new RandomAccessFile(Directorios.RUTA_COLONIAS, "rw");
 
     byte b = archivoAccAleat.readByte();
@@ -67,14 +69,10 @@ public class BuscadorTxt {
 
   }
 
-}
-
-/**
- * Ejemplo 2
- */
-class SeekableByteChannelExample {
-
-  public static void main(String[] args) throws IOException {
+  /**
+   * Ejemplo 2
+   */
+  public void seekableByteChannelExample(String[] args) throws IOException {
     String cp = args[1];
     SeekableByteChannel canal = Files.newByteChannel(Paths.get(Directorios.RUTA_COLONIAS), StandardOpenOption.READ);
     ByteBuffer buferBytes = ByteBuffer.allocate(512);
@@ -83,10 +81,24 @@ class SeekableByteChannelExample {
     for (int i = posicionInicial; canal.read(buferBytes) > 0; i++) {
       cadActual = String.valueOf(buferBytes.flip().array());
       if (cadActual.equals(cp)) {
-        
+
       }
-      coincidencia = cadActual;   
+      coincidencia = cadActual;
       buferBytes.clear();
     }
   }
+
+  /**
+   * Ejemplo 3. 
+   */
+  public void irALinea(long numElem) throws Exception {
+
+    try (Stream<String> lines = Files.lines(Paths.get(Directorios.RUTA_COLONIAS))) {
+      String lineaEnCuestion = lines.skip(numElem).findFirst().get();
+    } catch (IOException ioe) {
+      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, ioe);
+    }
+    System.out.println("");
+  }
+
 }
