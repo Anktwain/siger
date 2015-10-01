@@ -1,5 +1,6 @@
 package util;
 
+import com.mysql.jdbc.log.Log;
 import dto.Fila;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -16,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import util.log.Logs;
 
 /**
  *
@@ -23,54 +25,31 @@ import java.nio.file.StandardOpenOption;
  */
 public class BuscadorTxt {
 
-  public static List<String> buscarTxt(String cp, int lineaInicio) throws Exception {
-    List<String> coincidencias = new ArrayList<>();
-    try (BufferedReader buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_COLONIAS))) {
-      String lineaActual;
-
-      for (int i = 1; i < lineaInicio; i++) {
-        buferLectura.readLine(); // Recorre el bufer de lectura hasta la línea indicada
-      }
-      while ((lineaActual = buferLectura.readLine()) != null) {
-        if (lineaActual.substring(lineaActual.length() - 5).equals(cp)) {
+  public static List<String> buscarTxt(String cp, String archivoaLeer)
+  {
+    List<String> coincidencias = new ArrayList<>(); // La lista de colonias cuyo CP coincide con el CP dado
+    String lineaActual; // La línea leída en un momento determinado.
+    
+    try{
+      BufferedReader buferLectura = new BufferedReader(new FileReader(archivoaLeer));
+      
+      while((lineaActual = buferLectura.readLine()) != null){
+        if(lineaActual.substring(lineaActual.length() - 5).equals(cp)){
           do{
-          coincidencias.add(lineaActual);
-          lineaActual = buferLectura.readLine();
+            coincidencias.add(lineaActual);
+            lineaActual = buferLectura.readLine();
+            if(lineaActual == null) break;
           } while(lineaActual.substring(lineaActual.length() - 5).equals(cp));
-          break;
-        }
-      }
-    } catch (IOException ioe) {
-      throw new Exception("Error de lectura/escritura.", ioe);
+          break; // Rompe el ciclo dado que no habrán más coincidencias
+        } // fin de if
+      } // fin de while
+    } catch(IOException ioe){
+      Logs.log.error("Error de lectura/escritura");
+      Logs.log.error(ioe.getMessage());
     }
+    
     return coincidencias;
   }
-  
-  public static List<String> buscarTxt(String cp, long byteInicio) throws FileNotFoundException, IOException{
-    List<String> listaCoincidencias = new ArrayList<>();
-    // Crea un archivo de acceso aleatorio:
-    RandomAccessFile randomAccessFile = new RandomAccessFile(Directorios.RUTA_COLONIAS, "r");
-    // Almacena la líne leída actualmente
-    String lineaActual;
-    
-    // coloca el puntero a donde indica byteInicio:
-    randomAccessFile.seek(byteInicio);
-    // deshecha la línea siguiente:
-    randomAccessFile.readLine();
-    
-    while((lineaActual=randomAccessFile.readLine()) != null) {
-        if (lineaActual.substring(lineaActual.length() - 5).equals(cp)) {
-          do{
-          listaCoincidencias.add(lineaActual);
-          lineaActual = randomAccessFile.readLine();
-          } while(lineaActual.substring(lineaActual.length() - 5).equals(cp));
-          break;
-        }
-    }
-    
-    randomAccessFile.close();
-    return listaCoincidencias;
-  }  
 
   /**
    * Ejemplo 1
