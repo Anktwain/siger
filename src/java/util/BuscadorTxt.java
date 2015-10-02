@@ -29,7 +29,7 @@ public class BuscadorTxt {
   private static BufferedReader buferLectura;
   private static RandomAccessFile randomAccessFile;
   private SeekableByteChannel canalBytes;
-  private Stream<String> archPorLineas;
+  private static Stream<String> archPorLineas;
 
   public BuscadorTxt() throws Exception {
 
@@ -57,7 +57,22 @@ public class BuscadorTxt {
   }
 
   /**
-   * La buena
+   * La buena. 
+   *
+   * @return La {@code List<String>} que contiene todas las coincidencias
+   * encontradas en el archivo de texto de colonias correspondiente. Cada uno de
+   * los elementos en la lista es un solo {@code String} que describe un tipo de
+   * asentamiento. dicha cadena es de la forma:
+   * <strong>a;b;c;d;e</strong>
+   * tal que:
+   * <ul>
+   * <li><strong>a</strong>: entero: clave de la colonia (o tipo de
+   * asentamiento)</li>
+   * <li><strong>b</strong>: entero; clave del municipio (o delegación)</li>
+   * <li><strong>c</strong>: alfabético: Tipo de asentamiento </li>
+   * <li><strong>d</strong>: alfabético: Nombre del tipo de asentamiento</li>
+   * <li><strong>e</strong>: entero, 5 cifras: código postal</li>
+   * </ul>
    */
   public static List<String> buscarTxt(String cp, String archivoaLeer) {
     List<String> coincidencias = new ArrayList<>(); // La lista de colonias cuyo CP coincide con el CP dado
@@ -94,6 +109,16 @@ public class BuscadorTxt {
     List<String> coincidencias = new ArrayList<>();
     String lineaActual;
 
+    
+    String lineaEnCuestion;
+    try {
+      lineaEnCuestion = archPorLineas.skip(lineaInicio).findFirst().get();
+    } catch (Exception e) {
+      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
+    }
+    System.out.println("");
+        
+    
     try {
       for (int i = 1; i < lineaInicio; i++) {
         // Solo recorre el bufer de lectura hasta la línea indicada
@@ -112,6 +137,10 @@ public class BuscadorTxt {
       throw new Exception("Error de lectura/escritura.", ioe);
     }
     return coincidencias;
+    
+    
+    
+    
   }
 
   public static List<String> buscarTxt(String cp, long byteInicio) throws FileNotFoundException, IOException {
