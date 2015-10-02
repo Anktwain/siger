@@ -269,16 +269,18 @@ public class ClasificadorDeCreditos {
         resultado[1] = Integer.parseInt(registro[0]); // id colonia
         resultado[0] = Integer.parseInt(registro[1]); // id municipio
         break;
-      } else {
-        if (Levenshtein.computeLevenshteinDistance(colonia.toLowerCase(), registro[3].toLowerCase()) < 4) {
+      } else if (Levenshtein.computeLevenshteinDistance(colonia.toLowerCase(), registro[3].toLowerCase()) < 4) {
           resultado[1] = Integer.parseInt(registro[0]); // id colonia
           resultado[0] = Integer.parseInt(registro[1]); // id municipio
           break;
-        }
+      } else if (EliminadorDeAsentaminetos.eliminaAsentamiento(colonia).equals(registro[3].toLowerCase())) {
+        resultado[1] = Integer.parseInt(registro[0]); // id colonia
+        resultado[0] = Integer.parseInt(registro[1]); // id municipio
+        break;
+      } else{
+        
       }
-
-    }
-
-    return resultado;
   }
+    return resultado;
+}
 }
