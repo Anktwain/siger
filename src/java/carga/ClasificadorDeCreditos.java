@@ -260,25 +260,29 @@ public class ClasificadorDeCreditos {
   private static int[] obtenerColMpio(List<String> coincidencias, String colonia) {
     int resultado[] = new int[2];
     resultado[0] = resultado[1] = 0;
-    String[] registro;
-
-    for (String coincidencia : coincidencias) {
-      //coincidencia{id_colonia;id_municipio;tipo;nombre;codigo_postal}
-      registro = coincidencia.split(";"); // PRIMER INTENTO: CADENA 
-      if (colonia.toLowerCase().equals(registro[3].toLowerCase())) {
-        resultado[1] = Integer.parseInt(registro[0]); // id colonia
-        resultado[0] = Integer.parseInt(registro[1]); // id municipio
-        break;
-      } else {
-        if (Levenshtein.computeLevenshteinDistance(colonia.toLowerCase(), registro[3].toLowerCase()) < 4) {
-          resultado[1] = Integer.parseInt(registro[0]); // id colonia
-          resultado[0] = Integer.parseInt(registro[1]); // id municipio
-          break;
-        }
-      }
-
+    List<String> colonias = Busqueda.buscarDireccion(coincidencias, colonia);
+    String[] coloniaResultado;
+    
+    if(colonias == null)
+      return resultado;
+    
+    System.out.println("Lista de coincidencias: ");
+    for(String c:colonias)
+      System.out.println(c);
+    
+    if(colonias.size() == 1){
+      coloniaResultado = colonias.get(0).split(";");
+      colonias.clear();
+      resultado[1] = Integer.parseInt(coloniaResultado[0]); //id colonia
+      resultado[0] = Integer.parseInt(coloniaResultado[1]); // id municipio
     }
-
+    
+    if(colonias.size() > 1){
+      colonias.clear();
+      resultado[1] = 55;
+      resultado[0] = 55;
+    }
+    
     return resultado;
   }
 }
