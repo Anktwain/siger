@@ -14,24 +14,20 @@ import java.util.Scanner;
  * @author Eduardo
  */
 public class EliminadorDeAsentaminetos {
-  
-/*
+
+  /*
   public static void main (String [ ] args) {
     Scanner sc = new Scanner(System.in);
     System.out.print("INGRESE UNA COLONIA:\n");
     String alpha = sc.nextLine();
     System.out.println("CADENA TRATADA:" + eliminaAsentamiento(alpha));
   }
-*/  
-  
+  */
+
   // METODO QUE ELIMINA LA SUBCADENA QUE INDIQUE EL ASENTAMIENTO DE UNA COLONIA
   public static String eliminaAsentamiento(String nombreColonia){
     // VARIABLE DE RETORNO
-    String cadena = "";
-    // VARIABLE RECIBIDA
-    //System.out.println("CADENA RECIBIDA: " + nombreColonia);
-    // PASAMOS A MINUSCULAS LA CADENA RECIBIDA
-    nombreColonia = nombreColonia.toLowerCase();
+    String cadena;
     // LISTA DE POSIBLES ABREVIATURAS DE COLONIAS
     List<String> colonia = new ArrayList<>();
     // LISTA DE POSIBLES ABREVIATURAS DE FRACCIONAMIENTOS
@@ -48,6 +44,10 @@ public class EliminadorDeAsentaminetos {
     List<String> villa = new ArrayList<>();
     // LISTA DE POSIBLES ABREVIATURAS DE CONGREGACION
     List<String> congregacion = new ArrayList<>();
+    // LISTA DE POSIBLES ABREVIATURAS DE HACIENDA
+    List<String> hacienda = new ArrayList<>();
+    // LISTA DE POSIBLES ABREVIATURAS DE "HABITACIONAL"
+    List<String> habitacional = new ArrayList<>();
     // AGREGANDO ABREVIATURAS DE COLONIA
     colonia.add("colonia ");
     colonia.add("col. ");
@@ -98,6 +98,15 @@ public class EliminadorDeAsentaminetos {
     congregacion.add("cong ");
     congregacion.add("con. ");
     congregacion.add("con ");
+    // AGREGANDO ABREVIATURAS DE HACIENDA
+    hacienda.add("hacienda ");
+    hacienda.add("ex hacienda ");
+    hacienda.add("ex h. ");
+    hacienda.add("h. ");
+    // AGREGANDO ABREVIATURAS DE "HABITACIONAL"
+    habitacional.add("habitacional ");
+    habitacional.add("hab. ");
+    habitacional.add("hab ");
     // VERIFICAMOS EL PRIMER CARACTER DE LA CADENA RECIBIDA
     String tipo = nombreColonia.substring(0, 1);
     // DECLARAMOS UNA VARIABLE A USAR COMO SUBCADENA
@@ -116,7 +125,6 @@ public class EliminadorDeAsentaminetos {
           // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
           if(posicion == 0){
             cadena = nombreColonia.replaceAll(sub, "");
-            System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
             return cadena;
           }
         }
@@ -129,7 +137,6 @@ public class EliminadorDeAsentaminetos {
         // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
         if(posicion == 0){
           cadena = nombreColonia.replaceAll(sub, "");
-          System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
           return cadena;
         }
       // CUANDO LA CADENA COMIENCE CON C, SE VERIFICARA SI SE TRATA DE UNA COLONIA, CONJUNTO HABITACIONAL O CONGREGACION
@@ -144,7 +151,6 @@ public class EliminadorDeAsentaminetos {
           // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
           if(posicion == 0){
             cadena = nombreColonia.replaceAll(sub, "");
-            System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
             return cadena;
           }
         }
@@ -158,7 +164,6 @@ public class EliminadorDeAsentaminetos {
             // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
             if(posicion == 0){
               cadena = nombreColonia.replaceAll(sub, "");
-              System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
               return cadena;
             }
           }
@@ -172,7 +177,6 @@ public class EliminadorDeAsentaminetos {
           // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
           if(posicion == 0){
             cadena = nombreColonia.replaceAll(sub, "");
-            System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
             return cadena;
           }
         }
@@ -185,7 +189,6 @@ public class EliminadorDeAsentaminetos {
         // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
         if(posicion == 0){
           cadena = nombreColonia.replaceAll(sub, "");
-          System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
           return cadena;
         }
       // CUANDO LA CADENA COMIENCE CON F, SE VERIFICARA SI SE TRATA DE UN FRACCIONAMIENTO
@@ -199,10 +202,37 @@ public class EliminadorDeAsentaminetos {
           // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
           if(posicion == 0){
             cadena = nombreColonia.replaceAll(sub, "");
-            System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
             return cadena;
           }
         }
+      // CUANDO LA CADENA COMIENCE CON H, SE VERIFICARA SI SE TRATA DE UNA HACIENDA O DE UN "HABITACIONAL"
+      case "h":
+        // HACIENDA
+        //BUSCAMOS PARA CADA COINCIDENCIA DE LA LISTA
+        for (int i = 0; i < hacienda.size(); i++) {
+          // IGUALAMOS LA SUBCADENA A LA COINCIDENCIA DE LA LISTA
+          sub = hacienda.get(i);
+          // REGRESA UN VALOR DISTINTO A -1 SI SE ENCUENTRA UNA COINCIDENCIA
+          posicion = nombreColonia.indexOf(sub);
+          // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
+          if(posicion == 0){
+            cadena = nombreColonia.replaceAll(sub, "");
+            return cadena;
+          }
+        }
+        // HABITACIONAL
+        //BUSCAMOS PARA CADA COINCIDENCIA DE LA LISTA
+          for (int i = 0; i < habitacional.size(); i++) {
+            // IGUALAMOS LA SUBCADENA A LA COINCIDENCIA DE LA LISTA
+            sub = habitacional.get(i);
+            // REGRESA UN VALOR DISTINTO A -1 SI SE ENCUENTRA UNA COINCIDENCIA
+            posicion = nombreColonia.indexOf(sub);
+            // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
+            if(posicion == 0){
+              cadena = nombreColonia.replaceAll(sub, "");
+              return cadena;
+            }
+          }
       // CUANDO LA CADENA COMIENCE CON R, SE VERIFICARA SI SE TRATA DE UNA RANCHERIA
       case "r":
         //BUSCAMOS PARA CADA COINCIDENCIA DE LA LISTA
@@ -214,7 +244,6 @@ public class EliminadorDeAsentaminetos {
           // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
           if(posicion == 0){
             cadena = nombreColonia.replaceAll(sub, "");
-            System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
             return cadena;
           }
         }
@@ -229,7 +258,6 @@ public class EliminadorDeAsentaminetos {
           // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
           if(posicion == 0){
             cadena = nombreColonia.replaceAll(sub, "");
-            System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
             return cadena;
           }
         }
@@ -244,10 +272,11 @@ public class EliminadorDeAsentaminetos {
           // SI SE ENCONTRO LA COINCIDENCIA AL INICIO DEL ARREGLO
           if(posicion == 0){
             cadena = nombreColonia.replaceAll(sub, "");
-            System.out.println("REEMPLAZO: " + nombreColonia + " POR: " + cadena);
             return cadena;
           }
         }
+      default:
+        cadena = nombreColonia;
     }
     return cadena;
   }

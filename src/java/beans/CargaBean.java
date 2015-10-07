@@ -122,6 +122,7 @@ public class CargaBean implements Serializable {
     
     // Recorre el archivo xls, pasando por todas sus filas
     for (int i = 1; i < numeroDeFilas; i++) { // Comienza en la fila 1, dado que la fila 0 contiene los encabezados
+      System.out.println("FILA " + i);
       crearFila(i); // Crea un objeto Fila para cada fila del archivo xls
       filaBean.setFilaActual(fila);
       // Valida la fila a través de filaBean. Suma 1 para mantener la concordancia
