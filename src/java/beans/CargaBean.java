@@ -28,6 +28,7 @@ import util.constantes.Directorios;
 import util.log.Logs;
 import util.Query;
 import carga.GestionDeDirecciones;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,6 +46,8 @@ public class CargaBean implements Serializable {
   private Sheet hojaExcel;
   private Fila fila;
   private String archivoSql;
+  
+  private List<Fila> listaFilas;
 
   // Otro bean
   @ManagedProperty(value = "#{filaBean}")
@@ -53,6 +56,7 @@ public class CargaBean implements Serializable {
   public CargaBean() {
     fila = new Fila();
     filaBean = new FilaBean();
+    listaFilas = new ArrayList<>();
   }
 
   public boolean subirArchivo(FileUploadEvent e) throws IOException {
@@ -119,6 +123,14 @@ public class CargaBean implements Serializable {
     String resultado;
     filaBean = new FilaBean();
     fila = new Fila();
+    
+    // Proceso de validación
+    for(int i = 1; i < numeroDeFilas; i++) {
+      crearFila(i);
+      filaBean.setFilaActual(fila);
+      if(validarFila(i))
+        listaFilas.add(fila);
+    }
     
     // Recorre el archivo xls, pasando por todas sus filas
     for (int i = 1; i < numeroDeFilas; i++) { // Comienza en la fila 1, dado que la fila 0 contiene los encabezados

@@ -30,8 +30,7 @@ public class BuscadorTxt {
     List<String> coincidencias = new ArrayList<>(); // La lista de colonias cuyo CP coincide con el CP dado
     String lineaActual; // La línea leída en un momento determinado.
     
-    try{
-      BufferedReader buferLectura = new BufferedReader(new FileReader(archivoaLeer));
+    try(BufferedReader buferLectura = new BufferedReader(new FileReader(archivoaLeer))){
       
       while((lineaActual = buferLectura.readLine()) != null){
         if(lineaActual.substring(lineaActual.length() - 5).equals(cp)){
