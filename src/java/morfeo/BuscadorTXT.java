@@ -16,8 +16,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Stream;
+//import java.util.function.Function;
+//import java.util.stream.Stream;
 import util.BuscadorTxt;
 import util.constantes.Directorios;
 
@@ -30,8 +30,12 @@ public class BuscadorTXT {
   private static BufferedReader buferLectura;
   private static RandomAccessFile randomAccessFile;
   private SeekableByteChannel canalBytes;
-  private static Stream<String> archPorLineas;
+//  private static Stream<String> archPorLineas;
 
+  /**
+   *
+   * @throws Exception
+   */
   public BuscadorTXT() throws Exception {
     try { // 
       buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_COLONIAS));
@@ -49,11 +53,11 @@ public class BuscadorTXT {
     } catch (Exception e) {
       throw new Exception("Error al crear el archivo de lectura ByteChannel.", e);
     }
-    try { // 
-      archPorLineas = Files.lines(Paths.get(Directorios.RUTA_COLONIAS));
-    } catch (Exception e) {
-      throw new Exception("Error al crear el archivo de lectura por numero de lineas.", e);
-    }
+//    try { // 
+//      archPorLineas = Files.lines(Paths.get(Directorios.RUTA_COLONIAS));
+//    } catch (Exception e) {
+//      throw new Exception("Error al crear el archivo de lectura por numero de lineas.", e);
+//    }
   }
   // COMENTADO POR INCOMPATIBILIDAD CON JAVA 8
   /*
@@ -67,6 +71,10 @@ public class BuscadorTXT {
    *
    * Esta es una version sobrecargada de la anterior que se utilizara para solo
    * leer un archivo y dirigirse con base en el numero de linea
+   * @param cp
+   * @param lineaInicio
+   * @return 
+   * @throws java.lang.Exception 
    */
   public static List<String> buscarTxt(String cp, int lineaInicio) throws Exception {
     List<String> coincidencias = new ArrayList<>();
@@ -111,6 +119,14 @@ public class BuscadorTXT {
     return coincidencias;
   }
 
+  /**
+   *
+   * @param cp
+   * @param byteInicio
+   * @return
+   * @throws FileNotFoundException
+   * @throws IOException
+   */
   public static List<String> buscarTxt(String cp, long byteInicio) throws FileNotFoundException, IOException {
     List<String> listaCoincidencias = new ArrayList<>();
 
@@ -161,6 +177,8 @@ public class BuscadorTXT {
 
   /**
    * Ejemplo 2
+   * @param codigoPostal
+   * @throws java.io.IOException
    */
   public void seekableByteChannelExample(String codigoPostal) throws IOException {
 
@@ -180,25 +198,17 @@ public class BuscadorTXT {
 
   /**
    * Ejemplo 3.
+   * @param numElem
+   * @throws java.lang.Exception
    */
   public void irALinea(long numElem) throws Exception {
     String lineaEnCuestion;
-    try {
-      lineaEnCuestion = archPorLineas.skip(numElem).findFirst().get();
-    } catch (Exception e) {
-      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
-    }
+//    try {
+//      lineaEnCuestion = archPorLineas.skip(numElem).findFirst().get();
+//    } catch (Exception e) {
+//      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
+//    }
 
-    try {
-//            lineaEnCuestion = archPorLineas.skip(lineaInicio).findFirst().get();
-      // COMENTADO POR INCOMPATIBILIDAD CON JAVA 8
-      /*
-      archPorLineas.forEach(s -> System.out.println(s));
-      */
-
-    } catch (Exception e) {
-      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
-    }
 
     System.out.println("");
   }
@@ -219,6 +229,7 @@ public class BuscadorTXT {
 
   /**
    * Cierra todos los archivos abiertos por el constructor de la clase
+   * @throws java.lang.Exception
    */
   public void cerrar() throws Exception {
     try {
@@ -228,6 +239,16 @@ public class BuscadorTXT {
     } catch (IOException ioe) {
       throw new Exception("Error al cerrar alguno de los archivos abiertos.", ioe);
     }
-    archPorLineas.close();
+//    archPorLineas.close();
   }
 }
+    try {
+//            lineaEnCuestion = archPorLineas.skip(lineaInicio).findFirst().get();
+      // COMENTADO POR INCOMPATIBILIDAD CON JAVA 8
+      /*
+      archPorLineas.forEach(s -> System.out.println(s));
+      */
+
+    } catch (Exception e) {
+      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
+    }
