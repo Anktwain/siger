@@ -59,11 +59,13 @@ public class BuscadorTXT {
 //      throw new Exception("Error al crear el archivo de lectura por numero de lineas.", e);
 //    }
   }
-
-//  static Function<String, BuscadorTxt.Person> mapToPerson = (line) -> {
-//    String[] p = line.split(", ");
-//    return new BuscadorTxt.Person(p[0], Integer.parseInt(p[1]), p[2], p[3]);
-//  };
+  // COMENTADO POR INCOMPATIBILIDAD CON JAVA 8
+  /*
+  static Function<String, BuscadorTxt.Person> mapToPerson = (line) -> {
+    String[] p = line.split(", ");
+    return new BuscadorTxt.Person(p[0], Integer.parseInt(p[1]), p[2], p[3]);
+  };
+  */
 
   /**
    *
@@ -82,12 +84,15 @@ public class BuscadorTXT {
     InputStream is = new FileInputStream(new File("persons.csv"));
     BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-//    List<BuscadorTxt.Person> persons = br.lines()
-//            .substream(1)
-//            .map(mapToPerson)
-//            .filter(person -> person.getAge() > 17)
-//            .limit(50)
-//            .collect(toList());
+    // COMENTADO POR INCOMPATIBILIDAD CON JAVA 8
+    /*
+    List<BuscadorTxt.Person> persons = br.lines()
+            .substream(1)
+            .map(mapToPerson)
+            .filter(person -> person.getAge() > 17)
+            .limit(50)
+            .collect(toList());
+    */
     //In the example we see that we skip the first line (this is the header line in our CSV file), using the substream(1) function.
     //Next we map the person from a CSV line to a Person object. We use a predefined lambda function for this:
     //A bit hackish
@@ -204,13 +209,6 @@ public class BuscadorTXT {
 //      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
 //    }
 
-//    try {
-////            lineaEnCuestion = archPorLineas.skip(lineaInicio).findFirst().get();
-//      archPorLineas.forEach(s -> System.out.println(s));
-//
-//    } catch (Exception e) {
-//      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
-//    }
 
     System.out.println("");
   }
@@ -244,3 +242,13 @@ public class BuscadorTXT {
 //    archPorLineas.close();
   }
 }
+    /*
+    try {
+//            lineaEnCuestion = archPorLineas.skip(lineaInicio).findFirst().get();
+      // COMENTADO POR INCOMPATIBILIDAD CON JAVA 8
+      archPorLineas.forEach(s -> System.out.println(s));
+      
+    } catch (Exception e) {
+      throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
+    }
+*/
