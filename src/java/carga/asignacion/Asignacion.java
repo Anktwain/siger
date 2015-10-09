@@ -15,7 +15,12 @@ import java.util.Comparator;
  * @author Pablo
  */
 public class Asignacion {
-
+  
+  // MAIN PARA HACER PRUEBAS SOBRE LA ROTACION DE LOS GESTORES
+  public static void main(String[] args) {
+    List<String> aux = rotacionGestores();
+  }
+  
   // METODO QUE RECIBE LAS FILAS DEL ARCHIVO DE EXCEL Y CREA UNA LISTA CON LOS DATOS QUE NOS INTERESAN
   public ArrayList<ArrayList<String>> recibeFilas(List<Fila> listaFilas) {
     // CREAMOS UNA LISTA. PARA GUARDAR LAS LISTAS AUXILIARES
@@ -117,10 +122,10 @@ public class Asignacion {
   }
 
   // METODO QUE HACE LA ROTACION DE LOS GESTORES EN EL ARCHIVO Y PREPARA UN ARREGLO CON EL ORDEN DE LOS MISMOS
-  public List<String> rotacionGestores() {
+  public static List<String> rotacionGestores() {
     List<String> ordenGestores = new ArrayList<>();
     // LEEMOS EL ARCHIVO PARA OBTENER EL ORDEN ACTUAL DE LOS GESTORES
-    String archivo = Directorios.RUTA_REMESAS + "rotacion.txt";
+    String archivo = Directorios.RUTA_ASIGNACION + "rotacion.txt";
     try {
       FileReader fr = new FileReader(archivo);
       BufferedReader bf = new BufferedReader(fr);
@@ -129,17 +134,29 @@ public class Asignacion {
       while ((linea = bf.readLine()) != null) {
         ordenGestores.add(linea);
       }
+      // CERREMOS EL ARCHIVO PARA LECTURA
+      bf.close();
+      fr.close();
       // AHORA HACEMOS LA ROTACION DE LOS GESTORES UN LUGAR HACIA ABAJO
-      // OBTENEMOS LA POSICION DEL ULTIMO ELEMENTO
-      int ultimo = (ordenGestores.size() - 1);
       // GUARDAMOS EL ID DEL GESTOR EN EL ULTIMO ELEMENTO
-      String ultimoGestor = ordenGestores.get(ultimo);
-      // RECORREMOS LOS VALORES A PARTIR DEL PRIMER ELEMENTO HASTA EL PENULTIMO
-      for (int i = 0; i < (ordenGestores.size() - 1); i++) {
-        ordenGestores.set(i+1, ordenGestores.get(i));
+      String ultimoGestor = ordenGestores.get(ordenGestores.size()-1);
+      System.out.println("ULTIMO GESTOR: " + ultimoGestor);
+      // RECORREMOS LOS VALORES A PARTIR DEL ULTIMO ELEMENTO HASTA EL SEGUNDO
+      for (int i = ordenGestores.size()-1; i > 0; i--) {
+        ordenGestores.set(i, ordenGestores.get(i-1));
       }
-      // RECORREMOS EL ULTIMO ELEMENTO AL PRIMER LUGAR
+      // RECORREMOS EL ULTIMO GESTOR QUE GUARDAMOS AL PRIMER LUGAR
       ordenGestores.set(0, ultimoGestor);
+      // IMPRIMIMOS EL ID DE LOS GESTORES EN EL NUEVO ORDEN
+      for (int i = 0; i < ordenGestores.size(); i++) {
+        System.out.println(ordenGestores.get(i));
+      }
+      // ESCRIBIMOS ESTOS CAMBIOS EN EL ARCHIVO
+      BufferedWriter bw = new BufferedWriter(new FileWriter(archivo));
+      for (int i = 0; i < ordenGestores.size(); i++) {
+        bw.write(ordenGestores.get(i) + "\n");
+      }
+      bw.close();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -150,43 +167,4 @@ public class Asignacion {
   public void asignacionNuevosTotales(ArrayList<ArrayList<String>> nuevosCreditos, List<String> gestores) {
     // RIFATE JAAAAAAAAAAI!!!
   }
-  private ArrayList<Fila> nuevosTotales;
-  private ArrayList<ArrayList<String>> gestores;
-
-  /**
-   * Ordena {@code nuevosTotales} de mayor a menor con base en el monto de su saldo
-   * vencido.
-   */
-  public void ordenarDecreceiente() {
-    Collections.sort(nuevosTotales, new Comparator<Fila>() {
-      @Override
-      public int compare(Fila f1, Fila f2) {
-        if (Float.valueOf(f1.getSaldoVencido()) < Float.valueOf(f2.getSaldoVencido())) {
-          return -1;
-        } else if (Float.parseFloat(f1.getSaldoVencido()) == Float.parseFloat(f2.getSaldoVencido())) {
-          return 0;
-        } else {
-          return 1;
-        }
-      }
-    });
-  }
-/**
- * 
- */
-  public void asignarNuevosTotales() {
-   
-    /**
-     * 
-     *
-     */
-    
-    int iteraciones = this.nuevosTotales.size() / (2 * gestores.size());
-
-    for (int i = 0; i < iteraciones; i++) {
-
-    }
-
-  }
-
 }
