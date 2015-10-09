@@ -242,13 +242,13 @@ public class BuscadorTXT {
 //    archPorLineas.close();
   }
 }
+    /*
     try {
 //            lineaEnCuestion = archPorLineas.skip(lineaInicio).findFirst().get();
       // COMENTADO POR INCOMPATIBILIDAD CON JAVA 8
-      /*
       archPorLineas.forEach(s -> System.out.println(s));
-      */
-
+      
     } catch (Exception e) {
       throw new Exception("Error de I/O en el archivo " + Directorios.RUTA_COLONIAS, e);
     }
+*/

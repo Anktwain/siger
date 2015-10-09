@@ -117,7 +117,7 @@ public class Asignacion {
   }
 
   // METODO QUE HACE LA ROTACION DE LOS GESTORES EN EL ARCHIVO Y PREPARA UN ARREGLO CON EL ORDEN DE LOS MISMOS
-  public List<String> rotacionGestores(ArrayList<ArrayList<String>> lista) {
+  public List<String> rotacionGestores() {
     List<String> ordenGestores = new ArrayList<>();
     // LEEMOS EL ARCHIVO PARA OBTENER EL ORDEN ACTUAL DE LOS GESTORES
     String archivo = Directorios.RUTA_REMESAS + "rotacion.txt";
