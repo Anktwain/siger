@@ -3,16 +3,13 @@ package carga.asignacion;
 import dto.Fila;
 import java.io.*;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import util.constantes.Directorios;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  *
- * @author Pablo
+ * @authors Pablo y el Cisne
  */
 public class Asignacion {
 
@@ -31,12 +28,8 @@ public class Asignacion {
       aux.add(listaFilas.get(i).getCredito());
       aux.add(listaFilas.get(i).getSaldoVencido());
       aux.add(listaFilas.get(i).getIdCliente());
-      // CREAMOS UNA VARIABLE PARA GUARDAR EL ID GESTOR
-      String idGestor;
       // LLENAMOS LA COLUMNA FALTANTE CON EL ID DEL GESTOR DEL CREDITO
       for (int j = 0; j < listaFilas.size(); j++) {
-        // PONEMOS UN VALOR DEFAULT POR SI HAY NULL
-        idGestor = "0";
         // INICIAMOS UNA CONEXION A BASE DE DATOS
         try {
           DriverManager.registerDriver(new com.mysql.jdbc.Driver());
