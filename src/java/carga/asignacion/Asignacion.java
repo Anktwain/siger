@@ -15,12 +15,7 @@ import java.util.Comparator;
  * @author Pablo
  */
 public class Asignacion {
-  
-  // MAIN PARA HACER PRUEBAS SOBRE LA ROTACION DE LOS GESTORES
-  public static void main(String[] args) {
-    List<String> aux = rotacionGestores();
-  }
-  
+
   // METODO QUE RECIBE LAS FILAS DEL ARCHIVO DE EXCEL Y CREA UNA LISTA CON LOS DATOS QUE NOS INTERESAN
   public ArrayList<ArrayList<String>> recibeFilas(List<Fila> listaFilas) {
     // CREAMOS UNA LISTA. PARA GUARDAR LAS LISTAS AUXILIARES
