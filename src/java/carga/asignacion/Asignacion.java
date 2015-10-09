@@ -3,12 +3,9 @@ package carga.asignacion;
 import dto.Fila;
 import java.io.*;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import util.constantes.Directorios;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  *
@@ -51,12 +48,8 @@ public class Asignacion {
       aux.add(listaFilas.get(i).getCredito());
       aux.add(listaFilas.get(i).getSaldoVencido());
       aux.add(listaFilas.get(i).getIdCliente());
-      // CREAMOS UNA VARIABLE PARA GUARDAR EL ID GESTOR
-      String idGestor;
       // LLENAMOS LA COLUMNA FALTANTE CON EL ID DEL GESTOR DEL CREDITO
       for (int j = 0; j < listaFilas.size(); j++) {
-        // PONEMOS UN VALOR DEFAULT POR SI HAY NULL
-        idGestor = "0";
         // INICIAMOS UNA CONEXION A BASE DE DATOS
         try {
           DriverManager.registerDriver(new com.mysql.jdbc.Driver());
@@ -146,7 +139,7 @@ public class Asignacion {
   public void rotacionGestores() {
     ordenGestores = new ArrayList<>();
     // LEEMOS EL ARCHIVO PARA OBTENER EL ORDEN ACTUAL DE LOS GESTORES
-    String archivo = Directorios.RUTA_REMESAS + "rotacion.txt";
+    String archivo = Directorios.RUTA_ASIGNACION + "rotacion.txt";
     try {
       FileReader fr = new FileReader(archivo);
       BufferedReader bf = new BufferedReader(fr);
@@ -155,17 +148,29 @@ public class Asignacion {
       while ((linea = bf.readLine()) != null) {
         ordenGestores.add(linea);
       }
+      // CERREMOS EL ARCHIVO PARA LECTURA
+      bf.close();
+      fr.close();
       // AHORA HACEMOS LA ROTACION DE LOS GESTORES UN LUGAR HACIA ABAJO
-      // OBTENEMOS LA POSICION DEL ULTIMO ELEMENTO
-      int ultimo = (ordenGestores.size() - 1);
       // GUARDAMOS EL ID DEL GESTOR EN EL ULTIMO ELEMENTO
-      String ultimoGestor = ordenGestores.get(ultimo);
-      // RECORREMOS LOS VALORES A PARTIR DEL PRIMER ELEMENTO HASTA EL PENULTIMO
-      for (int i = 0; i < (ordenGestores.size() - 1); i++) {
-        ordenGestores.set(i + 1, ordenGestores.get(i));
+      String ultimoGestor = ordenGestores.get(ordenGestores.size()-1);
+      System.out.println("ULTIMO GESTOR: " + ultimoGestor);
+      // RECORREMOS LOS VALORES A PARTIR DEL ULTIMO ELEMENTO HASTA EL SEGUNDO
+      for (int i = ordenGestores.size()-1; i > 0; i--) {
+        ordenGestores.set(i, ordenGestores.get(i-1));
       }
-      // RECORREMOS EL ULTIMO ELEMENTO AL PRIMER LUGAR
+      // RECORREMOS EL ULTIMO GESTOR QUE GUARDAMOS AL PRIMER LUGAR
       ordenGestores.set(0, ultimoGestor);
+      // IMPRIMIMOS EL ID DE LOS GESTORES EN EL NUEVO ORDEN
+      for (int i = 0; i < ordenGestores.size(); i++) {
+        System.out.println(ordenGestores.get(i));
+      }
+      // ESCRIBIMOS ESTOS CAMBIOS EN EL ARCHIVO
+      BufferedWriter bw = new BufferedWriter(new FileWriter(archivo));
+      for (int i = 0; i < ordenGestores.size(); i++) {
+        bw.write(ordenGestores.get(i) + "\n");
+      }
+      bw.close();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
