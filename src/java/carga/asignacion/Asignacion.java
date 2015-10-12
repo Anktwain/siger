@@ -6,6 +6,8 @@ import java.sql.*;
 import java.util.List;
 import util.constantes.Directorios;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *
@@ -13,10 +15,30 @@ import java.util.ArrayList;
  */
 public class Asignacion {
 
-  // METODO QUE RECIBE LAS FILAS DEL ARCHIVO DE EXCEL Y CREA UNA LISTA CON LOS DATOS QUE NOS INTERESAN
-  public ArrayList<ArrayList<String>> recibeFilas(List<Fila> listaFilas) {
-    // CREAMOS UNA LISTA. PARA GUARDAR LAS LISTAS AUXILIARES
-    ArrayList<ArrayList<String>> listaPrincipal = new ArrayList<>();
+  /**
+   *
+   */
+  private ArrayList<ArrayList<String>> credsListaPrincipal;
+  /**
+   * // CREAMOS UNA LISTA AUXILIAR PARA GUARDAR LOS SIGUIENTES DATOS EN ESE
+   * ORDEN: // - NUMERO DE CREDITO // - SALDO VENCIDO // - NUMERO DE CLIENTE //
+   * - CLAVE DEL GESTOR ASIGNADO
+   */
+  private ArrayList<ArrayList<String>> credsNuevosTotales;
+
+  /**/
+  private List<String> ordenGestores;
+
+  public Asignacion() {
+  }
+
+  /**
+   * METODO QUE RECIBE LAS FILAS DEL ARCHIVO DE EXCEL Y CREA UNA LISTA CON LOS
+   * DATOS QUE NOS INTERESAN
+   */
+  public void recibeFilas(List<Fila> listaFilas) {
+// CREAMOS UNA LISTA. PARA GUARDAR LAS LISTAS AUXILIARES
+    credsListaPrincipal = new ArrayList<>();
     // LLENAMOS LA LISTA CON LOS DATOS 
     for (int i = 0; i < listaFilas.size(); i++) {
       // CREAMOS UNA LISTA AUXILIAR PARA GUARDAR LOS SIGUIENTES DATOS EN ESE ORDEN:
@@ -43,7 +65,7 @@ public class Asignacion {
             aux.add(r.getString("gestores_id_gestor"));
           }
           // AGREGAMOS LA LISTA AUXILIAR A LA LISTA
-          listaPrincipal.add((ArrayList<String>) aux);
+          credsListaPrincipal.add((ArrayList<String>) aux);
           // CERRAMOS LA CONEXION
           r.close();
           consulta.close();
@@ -53,23 +75,27 @@ public class Asignacion {
         }
       }
     }
-    return asignacionPorDefecto(listaPrincipal);
   }
 
-  // METODO QUE REALIZA LAS ASIGNACIONES AUTOMATICAS: CREDITOS CONSERVADOS Y NUEVOS CREDITOS
-  public ArrayList<ArrayList<String>> asignacionPorDefecto(ArrayList<ArrayList<String>> lista) {
+  /**
+   * METODO QUE REALIZA LAS ASIGNACIONES AUTOMATICAS: CREDITOS CONSERVADOS Y
+   * NUEVOS CREDITOS
+   */
+  public void asignacionPorDefecto() {
+    credsNuevosTotales = (ArrayList<ArrayList<String>>) credsListaPrincipal.clone();
+
     // OBTENEMOS EL ID DEL GESTOR DE CADA LISTA EN LA LISTA. ELIMINACION DE CONSERVADOS
-    for (int i = 0; i < lista.size(); i++) {
+    for (int i = 0; i < credsNuevosTotales.size(); i++) {
       //// SI EL VALOR ES DIFERENTE DE 0, ES QUE YA TIENE GESTOR ASIGNADO
-      if (!lista.get(i).get(3).equals("0")) {
+      if (!credsNuevosTotales.get(i).get(3).equals("0")) {
         // ELIMINAMOS ESA FILA DE LA LISTA
-        lista.remove(i);
-        // DECREMENTAMOS LA VARIABLE i EN UNA UNIDAD PARA NO DESBALANCEAR EL FOR Y NO SALTARNOS ELEMENTOS DE LA LISTA
+        credsNuevosTotales.remove(i);
+        // DISMINUIMOS LA VARIABLE i EN UNA UNIDAD PARA NO DESBALANCEAR EL FOR
         i--;
       }
     }
     // VERIFICAMOS SI LOS CREDITOS YA TIENEN UN CLIENTE ASOCIADO. ELIMINACION DE NUEVOS CREDITOS
-    for (int i = 0; i < lista.size(); i++) {
+    for (int i = 0; i < credsNuevosTotales.size(); i++) {
       // PONEMOS UN VALOR DEFAULT POR SI HAY NULL
       String idGestor = "0";
       // INICIAMOS UNA CONEXION A BASE DE DATOS
@@ -78,7 +104,7 @@ public class Asignacion {
         Connection conexion = DriverManager.getConnection("jdbc:mysql://10.0.0.26:3306/sigerbd?zeroDateTimeBehavior=convertToNull", "cofradia", "cofradiaDB");
         Statement consulta = conexion.createStatement();
         // CONSULTA PARA SABER SI UN CLIENTE YA TIENE CREDITOS EN EL SISTEMA, REGRESA EL ID DEL GESTOR
-        String query = "SELECT gestores_id_gestor FROM credito WHERE clientes_id_cliente = (SELECT id_cliente FROM cliente WHERE numero_cliente = '" + lista.get(i).get(2) + "' LIMIT 1) LIMIT 1;";
+        String query = "SELECT gestores_id_gestor FROM credito WHERE clientes_id_cliente = (SELECT id_cliente FROM cliente WHERE numero_cliente = '" + credsNuevosTotales.get(i).get(2) + "' LIMIT 1) LIMIT 1;";
         ResultSet r = consulta.executeQuery(query);
         while (r.next()) {
           idGestor = r.getString("gestores_id_gestor");
@@ -86,7 +112,7 @@ public class Asignacion {
         // CREAMOS UNA VARIABLE PARA GUARDAR EL ID DEL CREDITO A ACTUALIZAR
         String idCredito = null;
         // BUSCAMOS EL ID PARA ESTE NUMERO DE CREDITO
-        query = "SELECT id_credito FROM credito WHERE numero_credito = '" + lista.get(i).get(2) + "' LIMIT 1;";
+        query = "SELECT id_credito FROM credito WHERE numero_credito = '" + credsNuevosTotales.get(i).get(2) + "' LIMIT 1;";
         r = consulta.executeQuery(query);
         while (r.next()) {
           idCredito = r.getString("id_credito");
@@ -95,8 +121,8 @@ public class Asignacion {
         query = "UPDATE credito SET gestores_id_gestor = " + idGestor + " WHERE id_credito = " + idCredito + ";";
         consulta.executeUpdate(query);
         // ELIMINAMOS ESA FILA DE LA LISTA
-        lista.remove(i);
-        // DECREMENTAMOS LA VARIABLE i EN UNA UNIDAD PARA NO DESBALANCEAR EL FOR Y NO SALTARNOS ELEMENTOS DE LA LISTA
+        credsNuevosTotales.remove(i);
+        // DISMINUIMOS LA VARIABLE i EN UNA UNIDAD PARA NO DESBALANCEAR EL FOR
         i--;
         // CERRAMOS LA CONEXION
         r.close();
@@ -106,12 +132,14 @@ public class Asignacion {
         e.printStackTrace();
       }
     }
-    return lista;
   }
 
-  // METODO QUE HACE LA ROTACION DE LOS GESTORES EN EL ARCHIVO Y PREPARA UN ARREGLO CON EL ORDEN DE LOS MISMOS
-  public static List<String> rotacionGestores() {
-    List<String> ordenGestores = new ArrayList<>();
+  /**
+   * METODO QUE HACE LA ROTACION DE LOS GESTORES EN EL ARCHIVO Y PREPARA UN
+   * ARREGLO CON EL ORDEN DE LOS MISMOS
+   */
+  public void rotacionGestores() {
+    ordenGestores = new ArrayList<>();
     // LEEMOS EL ARCHIVO PARA OBTENER EL ORDEN ACTUAL DE LOS GESTORES
     String archivo = Directorios.RUTA_ASIGNACION + "rotacion.txt";
     try {
@@ -127,11 +155,11 @@ public class Asignacion {
       fr.close();
       // AHORA HACEMOS LA ROTACION DE LOS GESTORES UN LUGAR HACIA ABAJO
       // GUARDAMOS EL ID DEL GESTOR EN EL ULTIMO ELEMENTO
-      String ultimoGestor = ordenGestores.get(ordenGestores.size()-1);
+      String ultimoGestor = ordenGestores.get(ordenGestores.size() - 1);
       System.out.println("ULTIMO GESTOR: " + ultimoGestor);
       // RECORREMOS LOS VALORES A PARTIR DEL ULTIMO ELEMENTO HASTA EL SEGUNDO
-      for (int i = ordenGestores.size()-1; i > 0; i--) {
-        ordenGestores.set(i, ordenGestores.get(i-1));
+      for (int i = ordenGestores.size() - 1; i > 0; i--) {
+        ordenGestores.set(i, ordenGestores.get(i - 1));
       }
       // RECORREMOS EL ULTIMO GESTOR QUE GUARDAMOS AL PRIMER LUGAR
       ordenGestores.set(0, ultimoGestor);
@@ -148,16 +176,86 @@ public class Asignacion {
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
-    return ordenGestores;
   }
 
-  // METODO QUE REALIZA LA ASIGNACION DE LOS CREDITOS NUEVOS TOTALES
-  public void asignacionNuevosTotales(ArrayList<ArrayList<String>> nuevosCreditos, List<String> gestores) {
-    for (int i = 0; i < nuevosCreditos.size(); i++) {
-      for (int j = 0; j < nuevosCreditos.get(i).size(); j++) {
-        System.out.println(nuevosCreditos.get(i).get(j));
+  }
+
+  /**
+   *
+   */
+  public void asignarNuevosTotales() {
+    /**
+     * Calculamos el número de iteraciones. Por iteracion se reparten dos
+     * créditos a cada gestor.
+     */
+    int iteraciones = this.credsNuevosTotales.size() / (2 * ordenGestores.size());
+
+    /**
+     * Se reparten de a dos en dos los créditos entre los gestores, dandole a
+     * cada uno el mayor y el menor disponibles en cada iteración. Pueden sobrar
+     * hasta (2*n)-1 creditos por repartir.
+     */
+    for (int i = 0; i < iteraciones; i++) {
+      credsNuevosTotales.get(i).set(3, ordenGestores.get(i));
+      credsNuevosTotales.get(credsNuevosTotales.size() - (i + 1)).set(3, ordenGestores.get(i));
+    }
+
+    int restantes = this.credsNuevosTotales.size() % (2 * ordenGestores.size());
+
+    /**
+     * Quedan a lo más (2*n)-1 créditos por repartir
+     */
+    if (restantes > 0) {
+      ArrayList<ArrayList<String>> disponibles = new ArrayList<>();
+      for (int i = 0; i < restantes; i++) {
+        disponibles.add(credsNuevosTotales.get((iteraciones * ordenGestores.size()) + i));
+      }
+
+      /**
+       * Se reparte una vez más entre todos los gestores, ahora comenzando por
+       * el último en la lista. Pueden sobrar hasta n-1 creditos por repartir.
+       */
+      for (int i = 0; disponibles.size() >= ordenGestores.size(); i++) {
+        disponibles.get(0).set(3, ordenGestores.get(i % ordenGestores.size()));
+        disponibles.remove(0);
+      }
+      /**
+       *
+       */
+      for (int i = 0; disponibles.size() > 0; i++) {
+        Collections.max(disponibles, new ComparadorFila()).set(3, Collections.min(ordenGestores, new Comparator<String>() {
+
+          @Override
+          public int compare(String o1, String o2) {
+            throw new UnsupportedOperationException("Not supported yet.");
+          }
+
+        }));
+
+      }
+
+    }
+
+  }
+
+  class ComparadorFila implements Comparator {
+
+    @Override
+    public int compare(Object o1, Object o2) {
+      if (Float.parseFloat(((ArrayList<String>) o1).get(2)) < Float.parseFloat(((ArrayList<String>) o2).get(2))) {
+        return -1;
+      } else if (Float.parseFloat(((ArrayList<String>) o1).get(2)) == Float.parseFloat(((ArrayList<String>) o2).get(2))) {
+        return 0;
+      } else {
+        return 1;
       }
     }
-    // RIFATE JAAAAAAAAAAI!!!
   }
+
 }
+  /**
+   * Ordena {@code nuevosTotales} de mayor a menor con base en el monto de su
+   * saldo vencido.
+   */
+  public void ordenarDecreceiente() {
+    Collections.sort(credsNuevosTotales, new ComparadorFila());
