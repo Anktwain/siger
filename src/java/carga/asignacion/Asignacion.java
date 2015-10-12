@@ -64,8 +64,8 @@ public class Asignacion {
       if (!lista.get(i).get(3).equals("0")) {
         // ELIMINAMOS ESA FILA DE LA LISTA
         lista.remove(i);
-        // AUMENTOMOS LA VARIABLE i EN UNA UNIDAD PARA NO DESBALANCEAR EL FOR
-        i++;
+        // DECREMENTAMOS LA VARIABLE i EN UNA UNIDAD PARA NO DESBALANCEAR EL FOR Y NO SALTARNOS ELEMENTOS DE LA LISTA
+        i--;
       }
     }
     // VERIFICAMOS SI LOS CREDITOS YA TIENEN UN CLIENTE ASOCIADO. ELIMINACION DE NUEVOS CREDITOS
@@ -96,8 +96,8 @@ public class Asignacion {
         consulta.executeUpdate(query);
         // ELIMINAMOS ESA FILA DE LA LISTA
         lista.remove(i);
-        // AUMENTOMOS LA VARIABLE i EN UNA UNIDAD PARA NO DESBALANCEAR EL FOR
-        i++;
+        // DECREMENTAMOS LA VARIABLE i EN UNA UNIDAD PARA NO DESBALANCEAR EL FOR Y NO SALTARNOS ELEMENTOS DE LA LISTA
+        i--;
         // CERRAMOS LA CONEXION
         r.close();
         consulta.close();
@@ -153,6 +153,11 @@ public class Asignacion {
 
   // METODO QUE REALIZA LA ASIGNACION DE LOS CREDITOS NUEVOS TOTALES
   public void asignacionNuevosTotales(ArrayList<ArrayList<String>> nuevosCreditos, List<String> gestores) {
+    for (int i = 0; i < nuevosCreditos.size(); i++) {
+      for (int j = 0; j < nuevosCreditos.get(i).size(); j++) {
+        System.out.println(nuevosCreditos.get(i).get(j));
+      }
+    }
     // RIFATE JAAAAAAAAAAI!!!
   }
 }

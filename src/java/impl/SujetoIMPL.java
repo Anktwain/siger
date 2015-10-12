@@ -215,6 +215,11 @@ public class SujetoIMPL implements SujetoDAO {
     }
     return sujeto;
   }
+  
+  @Override
+  public Number calcularPagosRealizados() {
+    return 0;
+  }
 
   /**
    *
