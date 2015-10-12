@@ -6,6 +6,8 @@ import java.sql.*;
 import java.util.List;
 import util.constantes.Directorios;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *
@@ -17,11 +19,11 @@ public class Asignacion {
    *
    */
   private ArrayList<ArrayList<String>> credsListaPrincipal;
-  /** // CREAMOS UNA LISTA AUXILIAR PARA GUARDAR LOS SIGUIENTES DATOS EN ESE ORDEN:
-      //  - NUMERO DE CREDITO
-      //  - SALDO VENCIDO
-      //  - NUMERO DE CLIENTE
-      //  - CLAVE DEL GESTOR ASIGNADO*/
+  /**
+   * // CREAMOS UNA LISTA AUXILIAR PARA GUARDAR LOS SIGUIENTES DATOS EN ESE
+   * ORDEN: // - NUMERO DE CREDITO // - SALDO VENCIDO // - NUMERO DE CLIENTE //
+   * - CLAVE DEL GESTOR ASIGNADO
+   */
   private ArrayList<ArrayList<String>> credsNuevosTotales;
 
   /**/
@@ -153,11 +155,11 @@ public class Asignacion {
       fr.close();
       // AHORA HACEMOS LA ROTACION DE LOS GESTORES UN LUGAR HACIA ABAJO
       // GUARDAMOS EL ID DEL GESTOR EN EL ULTIMO ELEMENTO
-      String ultimoGestor = ordenGestores.get(ordenGestores.size()-1);
+      String ultimoGestor = ordenGestores.get(ordenGestores.size() - 1);
       System.out.println("ULTIMO GESTOR: " + ultimoGestor);
       // RECORREMOS LOS VALORES A PARTIR DEL ULTIMO ELEMENTO HASTA EL SEGUNDO
-      for (int i = ordenGestores.size()-1; i > 0; i--) {
-        ordenGestores.set(i, ordenGestores.get(i-1));
+      for (int i = ordenGestores.size() - 1; i > 0; i--) {
+        ordenGestores.set(i, ordenGestores.get(i - 1));
       }
       // RECORREMOS EL ULTIMO GESTOR QUE GUARDAMOS AL PRIMER LUGAR
       ordenGestores.set(0, ultimoGestor);
@@ -181,18 +183,7 @@ public class Asignacion {
    * saldo vencido.
    */
   public void ordenarDecreceiente() {
-    Collections.sort(credsNuevosTotales, new Comparator<ArrayList<String>>() {
-      @Override
-      public int compare(ArrayList<String> f1, ArrayList<String> f2) {
-        if (Float.parseFloat(f1.get(2)) < Float.parseFloat(f2.get(2))) {
-          return -1;
-        } else if (Float.parseFloat(f1.get(2)) == Float.parseFloat(f2.get(2))) {
-          return 0;
-        } else {
-          return 1;
-        }
-      }
-    });
+    Collections.sort(credsNuevosTotales, new ComparadorFila());
   }
 
   /**
@@ -207,42 +198,64 @@ public class Asignacion {
 
     /**
      * Se reparten de a dos en dos los créditos entre los gestores, dandole a
-     * cada uno el mayor y el menor dispoinibles en cada iteración. Pueden
-     * sobrar hasta (2*n)-1 creditos por repartir.
+     * cada uno el mayor y el menor disponibles en cada iteración. Pueden sobrar
+     * hasta (2*n)-1 creditos por repartir.
      */
     for (int i = 0; i < iteraciones; i++) {
-      credsNuevosTotales.get(i).get(4) = ordenGestores.get(i);
+      credsNuevosTotales.get(i).set(3, ordenGestores.get(i));
+      credsNuevosTotales.get(credsNuevosTotales.size() - (i + 1)).set(3, ordenGestores.get(i));
     }
 
     int restantes = this.credsNuevosTotales.size() % (2 * ordenGestores.size());
 
+    /**
+     * Quedan a lo más (2*n)-1 créditos por repartir
+     */
     if (restantes > 0) {
       ArrayList<ArrayList<String>> disponibles = new ArrayList<>();
       for (int i = 0; i < restantes; i++) {
-        disponibles.add(credsNuevosTotales.get(iteraciones + i));
+        disponibles.add(credsNuevosTotales.get((iteraciones * ordenGestores.size()) + i));
       }
-      if (restantes % ordenGestores.size() != 0) {
-        /**
-         * Se reparte una vez más entre todos los gestores, ahora comenzando por
-         * el último en la lista. Pueden sobrar hasta n-1 creditos por repartir.
-         */
-        for (int i = 0; i < ordenGestores.size(); i++) {
 
-          disponibles.remove();
-        }
-      } else if (restantes > 0) {
-        Collections.min(ordenGestores, new Comparator<String>() {
+      /**
+       * Se reparte una vez más entre todos los gestores, ahora comenzando por
+       * el último en la lista. Pueden sobrar hasta n-1 creditos por repartir.
+       */
+      for (int i = 0; disponibles.size() >= ordenGestores.size(); i++) {
+        disponibles.get(0).set(3, ordenGestores.get(i % ordenGestores.size()));
+        disponibles.remove(0);
+      }
+      /**
+       *
+       */
+      for (int i = 0; disponibles.size() > 0; i++) {
+        Collections.max(disponibles, new ComparadorFila()).set(3, Collections.min(ordenGestores, new Comparator<String>() {
 
           @Override
           public int compare(String o1, String o2) {
             throw new UnsupportedOperationException("Not supported yet.");
           }
 
-        });
+        }));
+
       }
 
     }
 
+  }
+
+  class ComparadorFila implements Comparator {
+
+    @Override
+    public int compare(Object o1, Object o2) {
+      if (Float.parseFloat(((ArrayList<String>) o1).get(2)) < Float.parseFloat(((ArrayList<String>) o2).get(2))) {
+        return -1;
+      } else if (Float.parseFloat(((ArrayList<String>) o1).get(2)) == Float.parseFloat(((ArrayList<String>) o2).get(2))) {
+        return 0;
+      } else {
+        return 1;
+      }
+    }
   }
 
 }
