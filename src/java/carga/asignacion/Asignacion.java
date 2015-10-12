@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Cofradia
+ * @authors Pablo y el Cisne
  */
 public class Asignacion {
 
