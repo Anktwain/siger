@@ -56,4 +56,6 @@ public interface SujetoDAO {
     public List<Sujeto> buscarTodo();
     
     public Sujeto ultimoInsertado();
+    
+    public Number calcularPagosRealizados();
 }

@@ -224,7 +224,6 @@ public class CargaBean implements Serializable {
   }
 
   private void crearFila(int numFila) {
-
     fila.setCredito(hojaExcel.getCell(0, numFila).getContents());
     fila.setNombre(hojaExcel.getCell(1, numFila).getContents());
     fila.setRefCobro(hojaExcel.getCell(2, numFila).getContents());

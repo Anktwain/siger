@@ -61,4 +61,6 @@ public interface EmpresaDAO {
      * @return
      */
     public List<Sujeto> buscarEmpresas();
+    
+    public Number calcularRecuperacionDeEmpresa();
 }

@@ -179,12 +179,6 @@ public class Asignacion {
     }
   }
 
-  /**
-   * Ordena {@code nuevosTotales} de mayor a menor con base en el monto de su
-   * saldo vencido.
-   */
-  public void ordenarDecreceiente() {
-    Collections.sort(credsNuevosTotales, new ComparadorFila());
   }
 
   /**
@@ -268,3 +262,9 @@ public class Asignacion {
   }
 
 }
+  /**
+   * Ordena {@code nuevosTotales} de mayor a menor con base en el monto de su
+   * saldo vencido.
+   */
+  public void ordenarDecreceiente() {
+    Collections.sort(credsNuevosTotales, new ComparadorFila());
