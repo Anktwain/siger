@@ -8,6 +8,7 @@ import util.constantes.Directorios;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import util.log.Logs;
 
 /**
  *
@@ -190,6 +191,7 @@ public class Asignacion {
    *
    */
   public void asignarNuevosTotales() {
+    int contAsignados = 0;
     /**
      * Calculamos el número de iteraciones. Por iteracion se reparten dos
      * créditos a cada gestor.
@@ -204,6 +206,7 @@ public class Asignacion {
     for (int i = 0; i < iteraciones; i++) {
       credsNuevosTotales.get(i).set(3, ordenGestores.get(i));
       credsNuevosTotales.get(credsNuevosTotales.size() - (i + 1)).set(3, ordenGestores.get(i));
+      contAsignados += 2;
     }
 
     int restantes = this.credsNuevosTotales.size() % (2 * ordenGestores.size());
@@ -224,6 +227,7 @@ public class Asignacion {
       for (int i = 0; disponibles.size() >= ordenGestores.size(); i++) {
         disponibles.get(0).set(3, ordenGestores.get(i % ordenGestores.size()));
         disponibles.remove(0);
+        contAsignados ++;
       }
       /**
        *
@@ -237,7 +241,12 @@ public class Asignacion {
           }
 
         }));
+        contAsignados ++;
 
+      }
+      
+      if(contAsignados == credsNuevosTotales.size()){
+        Logs.log.debug("Se asigno el total (%d) créditos satisfactoriamente.");
       }
 
     }
