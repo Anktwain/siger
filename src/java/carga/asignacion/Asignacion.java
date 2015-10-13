@@ -179,12 +179,21 @@ public class Asignacion {
     }
   }
 
-  }
+}
 
-  /**
-   *
-   */
-  public void asignarNuevosTotales() {
+/**
+ * Ordena {@code nuevosTotales} de mayor a menor con base en el monto de su
+ * saldo vencido.
+ */
+public void ordenarDecreceiente() {
+    Collections.sort(credsNuevosTotales, new ComparadorFila());
+}
+
+
+/**
+ *
+ */
+public void asignarNuevosTotales() {
     int contAsignados = 0;
     /**
      * Calculamos el número de iteraciones. Por iteracion se reparten dos
@@ -230,7 +239,7 @@ public class Asignacion {
         Collections.max(disponibles, new ComparadorFila()).set(3, Collections.min(ordenGestores, new Comparator<String>() {
 
           @Override
-          public int compare(String o1, String o2) {
+        public int compare(String o1, String o2) {
             throw new UnsupportedOperationException("Not supported yet.");
           }
 
@@ -241,30 +250,27 @@ public class Asignacion {
       
       if(contAsignados == credsNuevosTotales.size()){
         Logs.log.debug("Se asigno el total (%d) créditos satisfactoriamente.");
-      }
+      
 
-    }
 
-  }
-
-  class ComparadorFila implements Comparator {
-
-    @Override
-    public int compare(Object o1, Object o2) {
-      if (Float.parseFloat(((ArrayList<String>) o1).get(2)) < Float.parseFloat(((ArrayList<String>) o2).get(2))) {
-        return -1;
-      } else if (Float.parseFloat(((ArrayList<String>) o1).get(2)) == Float.parseFloat(((ArrayList<String>) o2).get(2))) {
-        return 0;
-      } else {
-        return 1;
-      }
-    }
-  }
 
 }
-  /**
-   * Ordena {@code nuevosTotales} de mayor a menor con base en el monto de su
-   * saldo vencido.
-   */
-  public void ordenarDecreceiente() {
-    Collections.sort(credsNuevosTotales, new ComparadorFila());
+
+    }
+}
+
+  
+ 
+class ComparadorFila implements Comparator {
+
+  @Override
+  public int compare(Object o1, Object o2) {
+    if (Float.parseFloat(((ArrayList<String>) o1).get(2)) < Float.parseFloat(((ArrayList<String>) o2).get(2))) {
+      return -1;
+    } else if (Float.parseFloat(((ArrayList<String>) o1).get(2)) == Float.parseFloat(((ArrayList<String>) o2).get(2))) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+}
