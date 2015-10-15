@@ -21,14 +21,20 @@ public class Asignacion {
    */
   private ArrayList<ArrayList<String>> credsListaPrincipal;
   /**
-   * // CREAMOS UNA LISTA AUXILIAR PARA GUARDAR LOS SIGUIENTES DATOS EN ESE
-   * ORDEN: // - NUMERO DE CREDITO // - SALDO VENCIDO // - NUMERO DE CLIENTE //
-   * - CLAVE DEL GESTOR ASIGNADO
+   * CREAMOS UNA LISTA AUXILIAR PARA GUARDAR LOS SIGUIENTES DATOS EN ESE
+   * ORDEN:
+   * <ul>
+   * <li>NUMERO DE CREDITO</li>
+   * <li>SALDO VENCIDO</li>
+   * <li>NUMERO DE CLIENTE</li>
+   * <li>CLAVE DEL GESTOR ASIGNADO</li>
+   * </ul>
    */
   private ArrayList<ArrayList<String>> credsNuevosTotales;
 
   /**/
   private List<String> ordenGestores;
+  private List<Gestor> gestores;
 
   public Asignacion() {
   }
@@ -141,6 +147,7 @@ public class Asignacion {
    */
   public void rotacionGestores() {
     ordenGestores = new ArrayList<>();
+    gestores = new ArrayList<>();
     // LEEMOS EL ARCHIVO PARA OBTENER EL ORDEN ACTUAL DE LOS GESTORES
     String archivo = Directorios.RUTA_ASIGNACION + "rotacion.txt";
     try {
@@ -150,6 +157,7 @@ public class Asignacion {
       // MIENTRAS LA LINEA NO ESTE VACIA, AGREGAREMOS EL NUMERO DE GESTOR AL ARREGLO
       while ((linea = bf.readLine()) != null) {
         ordenGestores.add(linea);
+        gestores.add(new Gestor(Integer.parseInt(linea), 0, 0));
       }
       // CERREMOS EL ARCHIVO PARA LECTURA
       bf.close();
@@ -179,27 +187,25 @@ public class Asignacion {
     }
   }
 
-}
-
-/**
- * Ordena {@code nuevosTotales} de mayor a menor con base en el monto de su
- * saldo vencido.
- */
-public void ordenarDecreceiente() {
+  /**
+   * Ordena {@code nuevosTotales} de mayor a menor con base en el monto de su
+   * saldo vencido.
+   */
+  public void ordenarDecreceiente() {
     Collections.sort(credsNuevosTotales, new ComparadorFila());
-}
+  }
 
-
-/**
- *
- */
-public void asignarNuevosTotales() {
+  /**
+   *
+   */
+  public void asignarNuevosTotales() {
+    this.ordenarDecreceiente();
     int contAsignados = 0;
     /**
      * Calculamos el número de iteraciones. Por iteracion se reparten dos
      * créditos a cada gestor.
      */
-    int iteraciones = this.credsNuevosTotales.size() / (2 * ordenGestores.size());
+    int iteraciones = this.credsNuevosTotales.size() / (2 * gestores.size());
 
     /**
      * Se reparten de a dos en dos los créditos entre los gestores, dandole a
@@ -207,12 +213,13 @@ public void asignarNuevosTotales() {
      * hasta (2*n)-1 creditos por repartir.
      */
     for (int i = 0; i < iteraciones; i++) {
-      credsNuevosTotales.get(i).set(3, ordenGestores.get(i));
-      credsNuevosTotales.get(credsNuevosTotales.size() - (i + 1)).set(3, ordenGestores.get(i));
+      credsNuevosTotales.get(i).set(3, String.valueOf(gestores.get(i).getId()));
+      credsNuevosTotales.get(credsNuevosTotales.size() - (i + 1)).set(3, String.valueOf(gestores.get(i).getId()));
+      // actualizar el montoNuevoTotal del gestor
       contAsignados += 2;
     }
 
-    int restantes = this.credsNuevosTotales.size() % (2 * ordenGestores.size());
+    int restantes = this.credsNuevosTotales.size() % (2 * gestores.size());
 
     /**
      * Quedan a lo más (2*n)-1 créditos por repartir
@@ -220,47 +227,45 @@ public void asignarNuevosTotales() {
     if (restantes > 0) {
       ArrayList<ArrayList<String>> disponibles = new ArrayList<>();
       for (int i = 0; i < restantes; i++) {
-        disponibles.add(credsNuevosTotales.get((iteraciones * ordenGestores.size()) + i));
+        disponibles.add(credsNuevosTotales.get((iteraciones * gestores.size()) + i));
       }
 
       /**
        * Se reparte una vez más entre todos los gestores, ahora comenzando por
        * el último en la lista. Pueden sobrar hasta n-1 creditos por repartir.
        */
-      for (int i = 0; disponibles.size() >= ordenGestores.size(); i++) {
-        disponibles.get(0).set(3, ordenGestores.get(i % ordenGestores.size()));
+      for (int i = 0; disponibles.size() >= gestores.size(); i++) {
+        disponibles.get(0).set(3, String.valueOf(gestores.get(i % gestores.size()).getId()));
         disponibles.remove(0);
-        contAsignados ++;
+        contAsignados++;
       }
       /**
        *
        */
       for (int i = 0; disponibles.size() > 0; i++) {
         Collections.max(disponibles, new ComparadorFila()).set(3, Collections.min(ordenGestores, new Comparator<String>() {
-
           @Override
-        public int compare(String o1, String o2) {
+          public int compare(String gestor1, String gestor2) {
+            for (int i = 0; i < credsNuevosTotales.size(); i++) {
+              if (credsNuevosTotales.get(i).get) {
+              }
+
+            }
             throw new UnsupportedOperationException("Not supported yet.");
           }
-
         }));
-        contAsignados ++;
-
+        contAsignados++;
       }
-      
-      if(contAsignados == credsNuevosTotales.size()){
-        Logs.log.debug("Se asigno el total (%d) créditos satisfactoriamente.");
-      
 
-
-
-}
-
+      if (contAsignados == credsNuevosTotales.size()) {
+        Logs.log.debug("Se asigno el total (" + contAsignados + ") de créditos satisfactoriamente.");
+      } else {
+        Logs.log.debug("Solo se asignaron satisfactoriamente " + contAsignados + " de " + credsNuevosTotales.size() + " créditos.");
+      }
     }
+  }
 }
 
-  
- 
 class ComparadorFila implements Comparator {
 
   @Override
