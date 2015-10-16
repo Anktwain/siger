@@ -3,6 +3,7 @@ package carga;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import util.FuncionLike;
 import util.Levenshtein;
 
 /**
@@ -18,7 +19,18 @@ public class Busqueda {
     String colonia = coloniaABuscar.toLowerCase();
     String coloniaSinArticulo;
     String coloniaSinAsentamiento;
-    
+ //   List<String> resultados = new ArrayList<>();
+
+    System.out.println("Para la colonia " + coloniaABuscar);
+//    List<String> colonias = FuncionLike.buscarLikeLevenshtein(coincidencias, coloniaABuscar, 4);
+//
+//    if (colonias != null) {
+//      resultados = buscarExacto(colonias, colonia);
+//      if (resultados != null) {
+//        return resultados;
+//      }
+//    }
+
     List<String> colonias = buscarExacto(coincidencias, colonia);
 
     if(colonias != null){
@@ -42,7 +54,11 @@ public class Busqueda {
     colonias = buscarLike(coincidencias, colonia);
     if(colonias != null)
       return colonias;
-
+    
+    colonias = FuncionLike.buscarLikeLevenshtein(coincidencias, colonia, 4);
+        if(colonias != null)
+      return colonias;
+    
     return null;
   }
 
@@ -55,7 +71,7 @@ public class Busqueda {
         resultado.add(coincidencia);
         return resultado;
       }
-    } // fin de for  
+    } // fin de for
     return buscarLevenshtein(coincidencias, colonia);
   }
 
@@ -70,19 +86,21 @@ public class Busqueda {
     } // fin de for
     return null;
   }
-  
+
   private static List<String> buscarLike(List<String> coincidencias, String colonia) {
-    for(String coincidencia : coincidencias){
+    for (String coincidencia : coincidencias) {
       coloniaDivididaEnPalabras = coincidencia.split(";");
       Pattern patron = Pattern.compile(".*" + colonia + ".*"); // formamos expresión regular
       System.out.println("buscarLike:Compara: " + colonia + " con: " + coloniaDivididaEnPalabras[3].toLowerCase());
-      if(patron.matcher(coloniaDivididaEnPalabras[3].toLowerCase()).matches())
+      if (patron.matcher(coloniaDivididaEnPalabras[3].toLowerCase()).matches()) {
         resultado.add(coincidencia);
+      }
     }
-    
-    if(resultado.size() > 0)
+
+    if (resultado.size() > 0) {
       return resultado;
-    
+    }
+
     return null;
   }
 

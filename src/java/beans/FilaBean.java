@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import util.BuscadorTxt;
+import carga.BuscadorTxt;
 import util.constantes.Constantes;
 import util.constantes.Errores;
 import util.constantes.Patrones;

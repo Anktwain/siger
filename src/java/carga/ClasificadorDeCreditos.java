@@ -7,7 +7,6 @@ package carga;
 
 import dto.Fila;
 import java.util.List;
-import util.BuscadorTxt;
 import util.Levenshtein;
 import util.constantes.Directorios;
 
