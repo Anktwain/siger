@@ -180,6 +180,12 @@ public class EmpresaIMPL implements EmpresaDAO {
         }
         return listaSujeto;
     }
+    
+    @Override
+    public Number calcularRecuperacionDeEmpresa() {
+    return 0;
+  }
+    
     /**
      *
      *

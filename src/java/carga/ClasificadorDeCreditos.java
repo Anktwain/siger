@@ -6,6 +6,7 @@
 package carga;
 
 import dto.Fila;
+import java.text.Normalizer;
 import java.util.List;
 import util.Levenshtein;
 import util.constantes.Directorios;
@@ -69,12 +70,12 @@ public class ClasificadorDeCreditos {
   private static int[] obtenerDireccion(Fila fila) throws Exception {
     int[] direccion = new int[3];
     direccion[0] = direccion[1] = direccion[2] = 0;
-    if (fila.getCp() == null || fila.getCp().length() < 4) {
+    if (fila.getCp() == null || fila.getCp().length() < 5) {
       return direccion;
     }
     int estado = 0;
     String cp = fila.getCp();
-    String prefijoCP = cp.substring(0,2);
+    String prefijoCP = cp.substring(0, 2);
     String archivoAExaminar = Directorios.RUTA_COLONIAS + prefijoCP + ".csv";
     switch (prefijoCP) {
       case "01":
@@ -243,13 +244,11 @@ public class ClasificadorDeCreditos {
     direccion[0] = estado;
     direccion[1] = resultado[0]; // municipio
     direccion[2] = resultado[1]; // colonia
-
     if (direccion[2] != 0) {
       System.out.println("Estado: " + direccion[0] + " Municipio: " + direccion[1] + " Colonia: " + direccion[2] + "-----------> " + fila.getColonia());
     } else {
-      System.out.println("No se encontró colonia: " + fila.getColonia());
+      System.out.println("No se encontró colonia: " + fila.getColonia() + " para el codigo postal: " + fila.getCp());
     }
-
     return direccion;
   }
 
@@ -259,30 +258,39 @@ public class ClasificadorDeCreditos {
   private static int[] obtenerColMpio(List<String> coincidencias, String colonia) {
     int resultado[] = new int[2];
     resultado[0] = resultado[1] = 0;
-    List<String> colonias = Busqueda.buscarDireccion(coincidencias, colonia);
-    String[] coloniaResultado;
-    
-    if(colonias == null)
-      return resultado;
-    
-    System.out.println("Lista de coincidencias: ");
-    for(String c:colonias)
-      System.out.println(c);
-    
-    if(colonias.size() == 1){
-      coloniaResultado = colonias.get(0).split(";");
-      colonias.clear();
-      resultado[1] = Integer.parseInt(coloniaResultado[0]); //id colonia
-      resultado[0] = Integer.parseInt(coloniaResultado[1]); // id municipio
+    String[] registro;
+    for (String coincidencia : coincidencias) {
+      //coincidencia{id_colonia;id_municipio;tipo;nombre;codigo_postal}
+      registro = coincidencia.split(";"); // PRIMER INTENTO: CADENA
+      registro[3] = registro[3].toLowerCase();
+      //registro[3] = Normalizer.normalize(registro[3], Normalizer.Form.NFD);
+      if (colonia.toLowerCase().equals(registro[3])) {
+        resultado[1] = Integer.parseInt(registro[0]); // id colonia
+        resultado[0] = Integer.parseInt(registro[1]); // id municipio
+        System.out.println("COLONIA REMESA: " + colonia + " | COLONIA DB: " + registro[3] + " | COINCIDENCIA EXACTA");
+        break;
+      } else if (Levenshtein.computeLevenshteinDistance(colonia.toLowerCase(), registro[3]) < 4) {
+        resultado[1] = Integer.parseInt(registro[0]); // id colonia
+        resultado[0] = Integer.parseInt(registro[1]); // id municipio
+        System.out.println("COLONIA REMESA: " + colonia + " | COLONIA DB: " + registro[3] + " | LEVENSHTEIN");
+        break;
+      } else if (EliminadorDeAsentaminetos.eliminaAsentamiento(colonia).equals(registro[3])) {
+        resultado[1] = Integer.parseInt(registro[0]); // id colonia
+        resultado[0] = Integer.parseInt(registro[1]); // id 
+        System.out.println("COLONIA REMESA: " + colonia + " | COLONIA DB: " + registro[3] + " | ELIMINADOR ASENTAMIENTOS");
+        break;
+      } else if (EliminadorDeArticulos.eliminaArticulos(colonia).equals(registro[3])){
+        resultado[1] = Integer.parseInt(registro[0]); // id colonia
+        resultado[0] = Integer.parseInt(registro[1]); // id 
+        System.out.println("COLONIA REMESA: " + colonia + " | COLONIA DB: " + registro[3] + " | ELIMINADOR ARTICULOS");
+        break;
+      } else if (Like.like(colonia, registro[3])) {
+        resultado[1] = Integer.parseInt(registro[0]); // id colonia
+        resultado[0] = Integer.parseInt(registro[1]); // id 
+        System.out.println("COLONIA REMESA: " + colonia + " | COLONIA DB: " + registro[3] + " | LIKE");
+        break;
+      }
     }
-    
-    if(colonias.size() > 1){
-      colonias.clear();
-      resultado[1] = 55;
-      resultado[0] = 55;
-    }
-    
     return resultado;
   }
-
 }
