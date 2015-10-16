@@ -20,9 +20,10 @@ public class Asignacion {
    *
    */
   private ArrayList<ArrayList<String>> credsListaPrincipal;
+  private ArrayList<Credito> asigListaPrincipal;
+
   /**
-   * CREAMOS UNA LISTA AUXILIAR PARA GUARDAR LOS SIGUIENTES DATOS EN ESE
-   * ORDEN:
+   * CREAMOS UNA LISTA AUXILIAR PARA GUARDAR LOS SIGUIENTES DATOS EN ESE ORDEN:
    * <ul>
    * <li>NUMERO DE CREDITO</li>
    * <li>SALDO VENCIDO</li>
@@ -31,6 +32,7 @@ public class Asignacion {
    * </ul>
    */
   private ArrayList<ArrayList<String>> credsNuevosTotales;
+  private ArrayList<Credito> asigNuevosTotales;
 
   /**/
   private List<String> ordenGestores;
@@ -89,9 +91,13 @@ public class Asignacion {
    * NUEVOS CREDITOS
    */
   public void asignacionPorDefecto() {
+    /**
+     * Duplicado
+     */
     credsNuevosTotales = (ArrayList<ArrayList<String>>) credsListaPrincipal.clone();
+    asigNuevosTotales = (ArrayList<Credito>) asigListaPrincipal.clone();
 
-    // OBTENEMOS EL ID DEL GESTOR DE CADA LISTA EN LA LISTA. ELIMINACION DE CONSERVADOS
+// OBTENEMOS EL ID DEL GESTOR DE CADA LISTA EN LA LISTA. ELIMINACION DE CONSERVADOS
     for (int i = 0; i < credsNuevosTotales.size(); i++) {
       //// SI EL VALOR ES DIFERENTE DE 0, ES QUE YA TIENE GESTOR ASIGNADO
       if (!credsNuevosTotales.get(i).get(3).equals("0")) {
@@ -208,14 +214,22 @@ public class Asignacion {
     int iteraciones = this.credsNuevosTotales.size() / (2 * gestores.size());
 
     /**
-     * Se reparten de a dos en dos los créditos entre los gestores, dandole a
-     * cada uno el mayor y el menor disponibles en cada iteración. Pueden sobrar
-     * hasta (2*n)-1 creditos por repartir.
+     * Fase 1/3: Se reparten de a dos en dos los créditos entre los gestores,
+     * dandole a cada uno el mayor y el menor disponibles en cada iteración.
+     * Pueden sobrar hasta (2*n)-1 creditos por repartir.
      */
     for (int i = 0; i < iteraciones; i++) {
+      /**
+       * Duplicado
+       */
       credsNuevosTotales.get(i).set(3, String.valueOf(gestores.get(i).getId()));
       credsNuevosTotales.get(credsNuevosTotales.size() - (i + 1)).set(3, String.valueOf(gestores.get(i).getId()));
-      // actualizar el montoNuevoTotal del gestor
+
+      asigNuevosTotales.get(i).setIdGestor(gestores.get(i).getId());
+      asigNuevosTotales.get(asigNuevosTotales.size() - (i + 1)).setIdGestor(gestores.get(i).getId());
+
+      gestores.get(i).getCredsNuevosTotales().add(asigNuevosTotales.get(i));
+      gestores.get(i).getCredsNuevosTotales().add(asigNuevosTotales.get(asigNuevosTotales.size() - (i + 1)));
       contAsignados += 2;
     }
 
@@ -225,33 +239,51 @@ public class Asignacion {
      * Quedan a lo más (2*n)-1 créditos por repartir
      */
     if (restantes > 0) {
-      ArrayList<ArrayList<String>> disponibles = new ArrayList<>();
+      ArrayList<ArrayList<String>> credsDisponibles = new ArrayList<>();
+      ArrayList<Credito> asigNuevosTotalesDisponibles = new ArrayList<>();
+
       for (int i = 0; i < restantes; i++) {
-        disponibles.add(credsNuevosTotales.get((iteraciones * gestores.size()) + i));
+        credsDisponibles.add(credsNuevosTotales.get((iteraciones * gestores.size()) + i));
+        asigNuevosTotalesDisponibles.add(asigNuevosTotales.get((iteraciones * gestores.size()) + i));
       }
 
       /**
-       * Se reparte una vez más entre todos los gestores, ahora comenzando por
-       * el último en la lista. Pueden sobrar hasta n-1 creditos por repartir.
+       * Fase 2/3: Se reparte una vez más entre todos los gestores, ahora
+       * comenzando por el último en la lista y terminando por el primero.
+       * Pueden sobrar hasta n-1 creditos por repartir.
        */
-      for (int i = 0; disponibles.size() >= gestores.size(); i++) {
-        disponibles.get(0).set(3, String.valueOf(gestores.get(i % gestores.size()).getId()));
-        disponibles.remove(0);
+      for (int i = 0; credsDisponibles.size() >= gestores.size(); i++) {
+        /**
+         * Asignamos en el arreglo de creditos a reemplazar
+         */
+        credsDisponibles.get(0).set(3, String.valueOf(gestores.get(gestores.size() - ((i % gestores.size()) + 1)).getId()));
+        /**
+         * Asignamos en el arreglo de creditos nuevo
+         */
+        asigNuevosTotalesDisponibles.get(0).setIdGestor(gestores.get(gestores.size() - ((i % gestores.size()) + 1)).getId());
+
+        gestores.get(gestores.size() - ((i % gestores.size()) + 1)).getCredsNuevosTotales().add(asigNuevosTotales.get(0));
+
+        credsDisponibles.remove(0);
+        asigNuevosTotalesDisponibles.remove(0);
         contAsignados++;
       }
       /**
-       *
+       * Fase 3/3: Se reparten los hasta n-1 creditos restantes. Se reparten
+       * otorgando al gestor que tenga el menor monto total por nuevos totales
+       * el mayor crédito restante cada vez.
        */
-      for (int i = 0; disponibles.size() > 0; i++) {
-        Collections.max(disponibles, new ComparadorFila()).set(3, Collections.min(ordenGestores, new Comparator<String>() {
+      for (int i = 0; credsDisponibles.size() > 0; i++) {
+        Collections.max(credsDisponibles, new ComparadorFila()).set(3, Collections.min(gestores, new Comparator<Gestor>() {
           @Override
-          public int compare(String gestor1, String gestor2) {
-            for (int i = 0; i < credsNuevosTotales.size(); i++) {
-              if (credsNuevosTotales.get(i).get) {
-              }
-
+          public int compare(Gestor g1, Gestor g2) {
+            if (g1.getNuevoTotalAsignado() < g2.getNuevoTotalAsignado()) {
+              return -1;
+            } else if (g1.getNuevoTotalAsignado() == g2.getNuevoTotalAsignado()) {
+              return 0;
+            } else {
+              return 1;
             }
-            throw new UnsupportedOperationException("Not supported yet.");
           }
         }));
         contAsignados++;

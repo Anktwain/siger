@@ -1,6 +1,8 @@
 
 package carga.asignacion;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Cofradía
@@ -12,10 +14,20 @@ public class Gestor {
   private double nuevoTotalAsignado;
   private double granTotalPorCobrar;
 
+  public ArrayList<Credito> getCredsNuevosTotales() {
+    return credsNuevosTotales;
+  }
+
+  public void setCredsNuevosTotales(ArrayList<Credito> credsNuevosTotales) {
+    this.credsNuevosTotales = credsNuevosTotales;
+  }
+  private ArrayList<Credito> credsNuevosTotales;
+
   public Gestor(int id, double nuevoTotalAsignado, double granTotalPorCobrar) {
     this.id = id;
     this.nuevoTotalAsignado = nuevoTotalAsignado;
     this.granTotalPorCobrar = granTotalPorCobrar;
+    credsNuevosTotales = new ArrayList<>();
   }
 
   public int getId() {
