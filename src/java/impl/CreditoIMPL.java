@@ -6,8 +6,6 @@
 package impl;
 
 import dao.CreditoDAO;
-import dto.Credito;
-import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -25,7 +23,25 @@ public class CreditoIMPL implements CreditoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Number creditos;
-    String consulta = "select count(*) from credito_remesa where remesas_id_remesa in (select max(id_remesa) from remesa);";
+    String consulta = "SELECT COUNT(*) FROM credito_remesa WHERE remesas_id_remesa IN (SELECT MAX(id_remesa) FROM remesa);";
+    try {
+      creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      creditos = -1;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+  
+  @Override
+  public Number contarCreditosActivosPorGestor(int idGestor){
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    Number creditos;
+    String consulta = "SELECT COUNT(creditos_id_credito) FROM credito_remesa WHERE remesas_id_remesa = (SELECT MAX(id_remesa) FROM remesa) AND creditos_id_credito IN (select id_credito FROM credito WHERE gestores_id_gestor = " + idGestor + ");";
     try {
       creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
       Logs.log.info("Se ejecutó query: " + consulta);

@@ -12,5 +12,5 @@ package dao;
 public interface GestionDAO {
   
   public Number calcularVisitasDomiciliarias();
-  
+  public Number calcularVisitasDomiciliariasPorGestor(int idGestor);
 }

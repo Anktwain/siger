@@ -18,4 +18,9 @@ public class GestionIMPL implements GestionDAO {
     return 0;
   }
   
+  @Override
+  public Number calcularVisitasDomiciliariasPorGestor(int idGestor) {
+    return 0;
+  }
+  
 }

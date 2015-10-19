@@ -6,7 +6,6 @@
 package carga;
 
 import dto.Fila;
-import java.text.Normalizer;
 import java.util.List;
 import util.BuscadorTxt;
 import util.Levenshtein;
@@ -32,7 +31,7 @@ public class ClasificadorDeCreditos {
 
   public static String nuevoTotal(Fila fila) throws Exception {
     // CREAMOS LA CADENA QUE GUARDARA LA CONSULTA
-    String consulta = null;
+//    String consulta = null;
     int[] ns = {0, 0};
 //    // PRIMERO CREAMOS EL SUJETO
 //    consulta = "INSERT INTO sujeto (nombre_razon_social, rfc, eliminado) VALUES ('" + fila.getNombre() + "', '" + fila.getRfc() + "', 1);\n";
@@ -264,7 +263,6 @@ public class ClasificadorDeCreditos {
       //coincidencia{id_colonia;id_municipio;tipo;nombre;codigo_postal}
       registro = coincidencia.split(";"); // PRIMER INTENTO: CADENA
       registro[3] = registro[3].toLowerCase();
-      //registro[3] = Normalizer.normalize(registro[3], Normalizer.Form.NFD);
       if (colonia.toLowerCase().equals(registro[3])) {
         resultado[1] = Integer.parseInt(registro[0]); // id colonia
         resultado[0] = Integer.parseInt(registro[1]); // id municipio

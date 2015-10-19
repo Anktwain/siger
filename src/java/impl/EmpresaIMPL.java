@@ -184,7 +184,12 @@ public class EmpresaIMPL implements EmpresaDAO {
     @Override
     public Number calcularRecuperacionDeEmpresa() {
     return 0;
-  }
+    }
+    
+    @Override
+    public Number calcularRecuperacionPorGestor(int idGestor) {
+    return 0;
+    }
     
     /**
      *

@@ -7,14 +7,14 @@ package beans;
 
 import dao.CreditoDAO;
 import dao.EmpresaDAO;
-import dao.SujetoDAO;
 import dao.GestionDAO;
+import dao.SujetoDAO;
 import impl.CreditoIMPL;
 import impl.EmpresaIMPL;
 import impl.GestionIMPL;
 import impl.SujetoIMPL;
-import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import util.log.Logs;
 
@@ -22,55 +22,60 @@ import util.log.Logs;
  *
  * @author Eduardo
  */
-@ManagedBean(name = "barraProgresoAdminBean")
+
+@ManagedBean(name = "barraProgresoGestorBean")
 @SessionScoped
 
-public class BarraProgresoAdminBean implements Serializable {
+public class BarraProgresoGestorBean {
 
   private CreditoDAO creditoDao;
   private GestionDAO gestionDao;
   private SujetoDAO sujetoDao;
   private EmpresaDAO empresaDao;
 
-  public BarraProgresoAdminBean() {
+  public BarraProgresoGestorBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     sujetoDao = new SujetoIMPL();
     empresaDao = new EmpresaIMPL();
   }
-
-  public String calcularCreditos() {
-    Number total = creditoDao.contarCreditosActivos();
+  
+  // llamada a otros beans
+  @ManagedProperty(value = "#{indexBean}")
+  private IndexBean indexBean;
+  
+  public String calcularCuentasActivas(){
+    Number total = creditoDao.contarCreditosActivosPorGestor(indexBean.getUsuario().getIdUsuario());
     String creditos = total.toString();
     Logs.log.info("************ CONSOLA SIGERWEB ****************");
-    Logs.log.info("Existen " + total + " creditos activos en el sistema");
+    Logs.log.info("Existen " + total + " creditos activos en el sistema para el gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno());
     return creditos;
   }
-
-  public String calcularVisitas() {
-    Number total = gestionDao.calcularVisitasDomiciliarias();
+  
+  public String calcularVisitasPorGestor() {
+    Number total = gestionDao.calcularVisitasDomiciliariasPorGestor(indexBean.getUsuario().getIdUsuario());
     String visitas = total.toString();
     Logs.log.info("************ CONSOLA SIGERWEB ****************");
-    Logs.log.info("Se han hecho " + total + " visitas domiciliarias");
+    Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " ha realizado " + total + " visitas este mes");
     return visitas;
   }
-
-  public String calcularPagos() {
-    Number total = sujetoDao.calcularPagosRealizados();
+  
+  public String calcularPagosPorAprobarPorGestor() {
+    Number total = sujetoDao.calcularPagosPorAprobarPorGestor(indexBean.getUsuario().getIdUsuario());
     String pagos = total.toString();
     Logs.log.info("************ CONSOLA SIGERWEB ****************");
-    Logs.log.info("Se han realizado " + total + " pagos");
+    Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " tiene " + total + " pagos por aprobar");
     return pagos;
   }
-
-  public String calcularRecuperacion() {
-    Number total = empresaDao.calcularRecuperacionDeEmpresa();
-    String recuperacion = total.toString();
+  
+  public String calcularRecuperacionPorGestor() {
+    Number total = empresaDao.calcularRecuperacionPorGestor(indexBean.getUsuario().getIdUsuario());
+    String pagos = total.toString();
     Logs.log.info("************ CONSOLA SIGERWEB ****************");
-    Logs.log.info("Se ha recuperado un %" + total + " del saldo a recuperar");
-    return (recuperacion + " %");
+    Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " ha recuperado $" + total + " este mes");
+    return pagos;
   }
-
+  
   public CreditoDAO getCreditoDao() {
     return creditoDao;
   }
@@ -78,7 +83,7 @@ public class BarraProgresoAdminBean implements Serializable {
   public void setCreditoDao(CreditoDAO creditoDao) {
     this.creditoDao = creditoDao;
   }
-  
+
   public GestionDAO getGestionDao() {
     return gestionDao;
   }
@@ -103,4 +108,12 @@ public class BarraProgresoAdminBean implements Serializable {
     this.empresaDao = empresaDao;
   }
 
+  public IndexBean getIndexBean() {
+    return indexBean;
+  }
+
+  public void setIndexBean(IndexBean indexBean) {
+    this.indexBean = indexBean;
+  }
+  
 }
