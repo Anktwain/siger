@@ -37,7 +37,7 @@ public class ContactoIMPL implements ContactoDAO {
             tx.commit();
             Logs.log.info("Se insertó un nuevo Contacto: id = " + contacto.getIdContacto()
             + " asociado al Sujeto: id = " + contacto.getSujeto().getIdSujeto() + " que a la vez se asocia con el sujeto: id = " 
-            + contacto.getCliente().getSujeto().getIdSujeto());
+            + contacto.getDeudor().getSujeto().getIdSujeto());
         } catch (HibernateException he) {
             contacto = null;
             if (tx != null) {

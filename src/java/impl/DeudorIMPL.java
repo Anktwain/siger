@@ -1,7 +1,7 @@
 package impl;
 
-import dao.ClienteDAO;
-import dto.Cliente;
+import dao.DeudorDAO;
+import dto.Deudor;
 import dto.Sujeto;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -12,14 +12,14 @@ import util.constantes.Sujetos;
 import util.log.Logs;
 
 /**
- * La clase {@code ClienteIMPL} permite ...
+ * La clase {@code DeudorIMPL} permite ...
  *
  * @author
  * @author
  * @author brionvega
  * @since SigerWeb2.0
  */
-public class ClienteIMPL implements ClienteDAO {
+public class DeudorIMPL implements DeudorDAO {
 
     /**
      *
@@ -27,27 +27,27 @@ public class ClienteIMPL implements ClienteDAO {
      * @return
      */
     @Override
-    public Cliente insertar(Cliente cliente) {
+    public Deudor insertar(Deudor deudor) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
 
         try {
-            sesion.save(cliente);
+            sesion.save(deudor);
             tx.commit();
-            Logs.log.info("Se insertó un nuevo Cliente: id = " + cliente.getIdCliente()
-            + " asociado al Sujeto: " + cliente.getSujeto().getIdSujeto());
+            Logs.log.info("Se insertó un nuevo Deudor: id = " + deudor.getIdDeudor()
+            + " asociado al Sujeto: " + deudor.getSujeto().getIdSujeto());
         } catch (HibernateException he) {
-            cliente = null;
+            deudor = null;
             if (tx != null) {
                 tx.rollback();
             }
-            Logs.log.error("No se pudo insertar Cliente");
+            Logs.log.error("No se pudo insertar Deudor");
             Logs.log.error(he.getMessage());
         } finally {
             cerrar(sesion);
         }
         
-        return cliente;
+        return deudor;
     }
 
     /**
@@ -56,13 +56,13 @@ public class ClienteIMPL implements ClienteDAO {
      * @return
      */
     @Override
-    public boolean editar(Cliente cliente) {
+    public boolean editar(Deudor deudor) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
 
         try {
-            sesion.update(cliente);
+            sesion.update(deudor);
             tx.commit();
             ok = true;
         } catch (HibernateException he) {
@@ -84,14 +84,14 @@ public class ClienteIMPL implements ClienteDAO {
      * @return
      */
     @Override
-    public boolean eliminar(Cliente cliente) {
+    public boolean eliminar(Deudor deudor) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
 
         try {
             // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
-            sesion.update(cliente);
+            sesion.update(deudor);
             tx.commit();
             ok = true;
         } catch (HibernateException he) {
@@ -113,7 +113,7 @@ public class ClienteIMPL implements ClienteDAO {
      * @return
      */
     @Override
-    public Cliente buscar(int idCliente) {
+    public Deudor buscar(int idDeudor) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -123,40 +123,40 @@ public class ClienteIMPL implements ClienteDAO {
      * @return
      */
     @Override
-    public List<Cliente> buscarTodo() {
+    public List<Deudor> buscarTodo() {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-        List<Cliente> listaClientes;
+        List<Deudor> listaDeudors;
 
         try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
-            listaClientes = sesion.createSQLQuery("select c.* from sujeto s join cliente c"
+            listaDeudors = sesion.createSQLQuery("select c.* from sujeto s join deudor c"
                     + " on s.id_sujeto = c.sujetos_id_sujeto"
-                    + " where s.eliminado != " + Sujetos.ELIMINADO).addEntity(Cliente.class).list();
+                    + " where s.eliminado != " + Sujetos.ELIMINADO).addEntity(Deudor.class).list();
         } catch (HibernateException he) {
-            listaClientes = null;
+            listaDeudors = null;
             Logs.log.error(he.getMessage());
         } finally {
             cerrar(sesion);
         }
 
-        return listaClientes;
+        return listaDeudors;
     }
 
   @Override
-  public Cliente ultimoInsertado() {
+  public Deudor ultimoInsertado() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
-    Cliente cliente;
+    Deudor deudor;
     
     try {
-      cliente = (Cliente) sesion.createSQLQuery("SELECT * from cliente where id_cliente = (SELECT MAX(id_cliente) from cliente);").addEntity(Sujeto.class).uniqueResult();
+      deudor = (Deudor) sesion.createSQLQuery("SELECT * from deudor where id_deudor = (SELECT MAX(id_deudor) from deudor);").addEntity(Sujeto.class).uniqueResult();
     } catch (HibernateException he) {
-      cliente = null;
+      deudor = null;
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
-    return cliente;
+    return deudor;
   }
 
 

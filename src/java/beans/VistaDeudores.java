@@ -1,10 +1,10 @@
 /*
- * Esta clase va unida a la vista clientes.xhtml
+ * Esta clase va unida a la vista deudors.xhtml
  * Se muestran las variables necesarias para interactuar con esa vista...
  */
 package beans;
 
-import dto.Cliente;
+import dto.Deudor;
 import dto.Contacto;
 import dto.Direccion;
 import dto.Email;
@@ -28,10 +28,10 @@ import util.constantes.Sujetos;
  */
 @ManagedBean
 @ViewScoped
-public class VistaClientes implements Serializable {
+public class VistaDeudores implements Serializable {
 
   // Datos seleccionados de alguna tabla
-  private Cliente clienteActual;
+  private Deudor deudorActual;
   private Contacto contactoActual;
   private Sujeto sujetoActual;
   private Telefono telefonoActual;
@@ -39,14 +39,14 @@ public class VistaClientes implements Serializable {
   private Direccion direccionlActual;
 
   // Listas para desplegarse en las tablas
-  private List<Cliente> listaClientes;
+  private List<Deudor> listaDeudors;
   private List<Telefono> listaTelefonos;
   private List<Email> listaEmails;
   private List<Direccion> listaDirecciones;
   private List<Contacto> listaContactos;
 
   // Activar/Desactivar controles de la vista
-  private boolean btnAltaClienteDisabled;
+  private boolean btnAltaDeudorDisabled;
   private boolean btnAltaContactoDisabled;
   private boolean txtNombreDisabled;
   private boolean txtRfcDisabled;
@@ -61,8 +61,8 @@ public class VistaClientes implements Serializable {
   private int tipoSujetoActual;
 
   // Otros beans
-  @ManagedProperty(value = "#{clienteBean}")
-  private ClienteBean clienteBean;
+  @ManagedProperty(value = "#{deudorBean}")
+  private DeudorBean deudorBean;
   @ManagedProperty(value = "#{contactoBean}")
   private ContactoBean contactoBean;
   @ManagedProperty(value = "#{telefonoBean}")
@@ -73,15 +73,15 @@ public class VistaClientes implements Serializable {
   private DireccionBean direccionBean;
 
   // Construyendo...
-  public VistaClientes() {
-    clienteActual = new Cliente();
+  public VistaDeudores() {
+    deudorActual = new Deudor();
     contactoActual = new Contacto();
     sujetoActual = new Sujeto();
     telefonoActual = new Telefono();
     emailActual = new Email();
     direccionlActual = new Direccion();
 
-    btnAltaClienteDisabled = false;
+    btnAltaDeudorDisabled = false;
     btnAltaContactoDisabled = false;
     txtCurpDisabled = false;
     txtNcteDisabled = false;
@@ -98,25 +98,25 @@ public class VistaClientes implements Serializable {
 
   // Método que se llama inmediatamente después de crear el bean
   @PostConstruct
-  public void listarClientes() {
-    listaClientes = clienteBean.listar();
+  public void listarDeudors() {
+    listaDeudors = deudorBean.listar();
 
-    if (listaClientes == null) {
+    if (listaDeudors == null) {
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-              "No se pudo obtener la lista de clientes",
+              "No se pudo obtener la lista de deudors",
               "Comunique esta situación a Soporte Técnico"));
     }
   }
 
   // EVENTOS DE LA VISTA
-  public void onRowClienteSelect(SelectEvent evento) {
+  public void onRowDeudorSelect(SelectEvent evento) {
     tipoSujetoActual = Sujetos.CLIENTE;
-    clienteActual = (Cliente) evento.getObject();
-    listaTelefonos = telefonoBean.listar(clienteActual.getSujeto().getIdSujeto());
-    listaEmails = emailBean.listar(clienteActual.getSujeto().getIdSujeto());
-    listaDirecciones = direccionBean.listar(clienteActual.getSujeto().getIdSujeto());
-    listaContactos = contactoBean.listar(clienteActual.getSujeto().getIdSujeto());
+    deudorActual = (Deudor) evento.getObject();
+    listaTelefonos = telefonoBean.listar(deudorActual.getSujeto().getIdSujeto());
+    listaEmails = emailBean.listar(deudorActual.getSujeto().getIdSujeto());
+    listaDirecciones = direccionBean.listar(deudorActual.getSujeto().getIdSujeto());
+    listaContactos = contactoBean.listar(deudorActual.getSujeto().getIdSujeto());
   }
   
   public void onRowContactoSelect(SelectEvent evento) {
@@ -141,18 +141,18 @@ public class VistaClientes implements Serializable {
 
   // OTROS MÉTODOS
   public void terminarProceso() {
-    inicializarCliente();
+    inicializarDeudor();
     telefonoBean.resetAtributos();
     emailBean.resetAtributos();
     direccionBean.resetAtributos();
-    clienteActual = new Cliente();
+    deudorActual = new Deudor();
     contactoActual = new Contacto();
   }
 
-  public void inicializarCliente() {
-    clienteBean.getSujetoBean().resetAtributos();
-    clienteBean.resetAtributos();
-    setBtnAltaClienteDisabled(false);
+  public void inicializarDeudor() {
+    deudorBean.getSujetoBean().resetAtributos();
+    deudorBean.resetAtributos();
+    setBtnAltaDeudorDisabled(false);
     setTxtCurpDisabled(false);
     setTxtNcteDisabled(false);
     setTxtNombreDisabled(false);
@@ -170,65 +170,65 @@ public class VistaClientes implements Serializable {
     setTxtObservacionesDisabled(false);
   }
 
-  // Gestión de clientes
-  // Gestión de Teléfonos de Clientes
-  // Gestión de E-mails de Clientes
-  // Gestión de Direcciones de Clientes
-  // Gestión de Contactos de Clientes
+  // Gestión de deudors
+  // Gestión de Teléfonos de Deudors
+  // Gestión de E-mails de Deudors
+  // Gestión de Direcciones de Deudors
+  // Gestión de Contactos de Deudors
   // Gestión de Teléfonos de Contactos
   // Gestión de E-mails de Contactos
   // Gestión de Direcciones de Contactos
   // Gestión de Sujetos
   // GESTIÓN DE CLIENTES
-  public void agregarCliente() {
+  public void agregarDeudor() {
     FacesContext context = FacesContext.getCurrentInstance();
-    clienteActual = clienteBean.insertar();
+    deudorActual = deudorBean.insertar();
 
-    if (clienteActual == null) {
+    if (deudorActual == null) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-              "No se pudo agregar el nuevo Cliente",
+              "No se pudo agregar el nuevo Deudor",
               "Reporte esta situación a Soporte Técnico"));
     } else {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-              "Se agregó un nuevo Cliente:",
-              clienteActual.getSujeto().getNombreRazonSocial()));
-//      clienteBean.resetAtributos();
-//      clienteBean.getSujetoBean().resetAtributos();
-      setBtnAltaClienteDisabled(true);
+              "Se agregó un nuevo Deudor:",
+              deudorActual.getSujeto().getNombreRazonSocial()));
+//      deudorBean.resetAtributos();
+//      deudorBean.getSujetoBean().resetAtributos();
+      setBtnAltaDeudorDisabled(true);
       setTxtCurpDisabled(true);
       setTxtNcteDisabled(true);
       setTxtNombreDisabled(true);
       setTxtNssDisabled(true);
       setTxtRfcDisabled(true);
-      listarClientes();
+      listarDeudors();
       direccionBean.listarEstados();
     }
   }
 
-  public void editarCliente() {
+  public void editarDeudor() {
   }
 
-  public void eliminarCliente() {
+  public void eliminarDeudor() {
     FacesContext context = FacesContext.getCurrentInstance();
     
-    /* Primero vamos a cerciorarnos de que existe un cliente al que se va a eliminar,
-      se supone que ese objeto Cliente está almacenado en clienteActual, por lo tanto,
+    /* Primero vamos a cerciorarnos de que existe un deudor al que se va a eliminar,
+      se supone que ese objeto Deudor está almacenado en deudorActual, por lo tanto,
       verificamos:
     */
-    if(clienteActual == null) {
+    if(deudorActual == null) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-              "No se pudo eliminar el Cliente",
-              "Primero deberá seleccionar un cliente para ser eliminado"));
+              "No se pudo eliminar el Deudor",
+              "Primero deberá seleccionar un deudor para ser eliminado"));
     } else {
-      if(clienteBean.eliminar(clienteActual)) {
+      if(deudorBean.eliminar(deudorActual)) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-              "Se eliminó el Cliente: ",
-              clienteActual.getSujeto().getNombreRazonSocial()));
-      listaClientes.remove(clienteActual);
-        RequestContext.getCurrentInstance().execute("PF('dlgDetalleCliente').hide();");
+              "Se eliminó el Deudor: ",
+              deudorActual.getSujeto().getNombreRazonSocial()));
+      listaDeudors.remove(deudorActual);
+        RequestContext.getCurrentInstance().execute("PF('dlgDetalleDeudor').hide();");
       } else {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-              "No se pudo eliminar el Cliente",
+              "No se pudo eliminar el Deudor",
               "Reporte esta situación a Soporte Técnico"));
       }
     }
@@ -238,15 +238,15 @@ public class VistaClientes implements Serializable {
   public void agregarContacto() {
     FacesContext context = FacesContext.getCurrentInstance();
 
-    // Si no se ha dado de alta un cliente:
-    if (clienteActual.getSujeto() == null) {
+    // Si no se ha dado de alta un deudor:
+    if (deudorActual.getSujeto() == null) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
               "No se puede agregar el Contacto",
-              "Primero debe agregar un nuevo Cliente"));
+              "Primero debe agregar un nuevo Deudor"));
       contactoBean.resetAtributos();
 
     } else {
-      contactoActual = contactoBean.insertar(clienteActual);
+      contactoActual = contactoBean.insertar(deudorActual);
       if (contactoActual == null) {
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
                 "No se pudo agregar el nuevo Contacto",
@@ -255,12 +255,12 @@ public class VistaClientes implements Serializable {
       } else {
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                 "Se agregó un nuevo Contacto:",
-                contactoActual.getSujeto().getNombreRazonSocial() + "\n" + clienteActual.getSujeto().getNombreRazonSocial()));
+                contactoActual.getSujeto().getNombreRazonSocial() + "\n" + deudorActual.getSujeto().getNombreRazonSocial()));
         setBtnAltaContactoDisabled(true);
         setTxtNombreContactoDisabled(true);
         setTxtRfcContactoDisabled(true);
         setTxtObservacionesDisabled(true);
-        System.out.println("Cliente actual: " + clienteActual.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
+        System.out.println("Deudor actual: " + deudorActual.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
       }
     }
   }
@@ -271,17 +271,17 @@ public class VistaClientes implements Serializable {
   public void eliminarContacto() {
   }
 
-  public void agregarDireccionCliente() {
+  public void agregarDireccionDeudor() {
     FacesContext context = FacesContext.getCurrentInstance();
 
-    // Si no se ha dado de alta un cliente:
-    if (clienteActual.getSujeto() == null) {
+    // Si no se ha dado de alta un deudor:
+    if (deudorActual.getSujeto() == null) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
               "No se puede agregar la Dirección",
-              "Primero debe agregar un nuevo Cliente"));
+              "Primero debe agregar un nuevo Deudor"));
       direccionBean.resetAtributos();
     } else {
-      agregarDireccion(clienteActual.getSujeto());
+      agregarDireccion(deudorActual.getSujeto());
     }
   }
 
@@ -323,17 +323,17 @@ public class VistaClientes implements Serializable {
   public void eliminarDireccion() {
   }
 
-  public void agregarTelefonoCliente() {
+  public void agregarTelefonoDeudor() {
     FacesContext context = FacesContext.getCurrentInstance();
 
-    // Si no se ha dado de alta un cliente:
-    if (clienteActual.getSujeto() == null) {
+    // Si no se ha dado de alta un deudor:
+    if (deudorActual.getSujeto() == null) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
               "No se puede agregar el Teléfono",
-              "Primero debe agregar un nuevo Cliente"));
+              "Primero debe agregar un nuevo Deudor"));
       telefonoBean.resetAtributos();
     } else {
-      agregarTelefono(clienteActual.getSujeto());
+      agregarTelefono(deudorActual.getSujeto());
     }
   }
 
@@ -374,17 +374,17 @@ public class VistaClientes implements Serializable {
   public void eliminarTelefono() {
   }
 
-  public void agregarEmailCliente() {
+  public void agregarEmailDeudor() {
     FacesContext context = FacesContext.getCurrentInstance();
 
-    // Si no se ha dado de alta un cliente:
-    if (clienteActual.getSujeto() == null) {
+    // Si no se ha dado de alta un deudor:
+    if (deudorActual.getSujeto() == null) {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
               "No se puede agregar E-mail",
-              "Primero debe agregar un nuevo Cliente"));
+              "Primero debe agregar un nuevo Deudor"));
       emailBean.resetAtributos();
     } else {
-      agregarEmail(clienteActual.getSujeto());
+      agregarEmail(deudorActual.getSujeto());
     }
   }
 
@@ -426,12 +426,12 @@ public class VistaClientes implements Serializable {
   }
 
   // Setters & Getters
-  public Cliente getClienteActual() {
-    return clienteActual;
+  public Deudor getDeudorActual() {
+    return deudorActual;
   }
 
-  public void setClienteActual(Cliente clienteActual) {
-    this.clienteActual = clienteActual;
+  public void setDeudorActual(Deudor deudorActual) {
+    this.deudorActual = deudorActual;
   }
 
   public Contacto getContactoActual() {
@@ -474,12 +474,12 @@ public class VistaClientes implements Serializable {
     this.direccionlActual = direccionlActual;
   }
 
-  public List<Cliente> getListaClientes() {
-    return listaClientes;
+  public List<Deudor> getListaDeudors() {
+    return listaDeudors;
   }
 
-  public void setListaClientes(List<Cliente> listaClientes) {
-    this.listaClientes = listaClientes;
+  public void setListaDeudors(List<Deudor> listaDeudors) {
+    this.listaDeudors = listaDeudors;
   }
 
   public List<Telefono> getListaTelefonos() {
@@ -514,12 +514,12 @@ public class VistaClientes implements Serializable {
     this.listaContactos = listaContactos;
   }
 
-  public boolean isBtnAltaClienteDisabled() {
-    return btnAltaClienteDisabled;
+  public boolean isBtnAltaDeudorDisabled() {
+    return btnAltaDeudorDisabled;
   }
 
-  public void setBtnAltaClienteDisabled(boolean btnAltaClienteDisabled) {
-    this.btnAltaClienteDisabled = btnAltaClienteDisabled;
+  public void setBtnAltaDeudorDisabled(boolean btnAltaDeudorDisabled) {
+    this.btnAltaDeudorDisabled = btnAltaDeudorDisabled;
   }
 
   public boolean isBtnAltaContactoDisabled() {
@@ -602,12 +602,12 @@ public class VistaClientes implements Serializable {
     this.tipoSujetoActual = tipoSujetoActual;
   }
 
-  public ClienteBean getClienteBean() {
-    return clienteBean;
+  public DeudorBean getDeudorBean() {
+    return deudorBean;
   }
 
-  public void setClienteBean(ClienteBean clienteBean) {
-    this.clienteBean = clienteBean;
+  public void setDeudorBean(DeudorBean deudorBean) {
+    this.deudorBean = deudorBean;
   }
 
   public ContactoBean getContactoBean() {

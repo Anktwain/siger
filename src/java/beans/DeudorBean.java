@@ -1,9 +1,9 @@
 package beans;
 
-import dao.ClienteDAO;
-import dto.Cliente;
+import dao.DeudorDAO;
+import dto.Deudor;
 import dto.Sujeto;
-import impl.ClienteIMPL;
+import impl.DeudorIMPL;
 import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -17,73 +17,73 @@ import util.constantes.Sujetos;
  */
 @ManagedBean
 @ViewScoped
-public class ClienteBean implements Serializable {
+public class DeudorBean implements Serializable {
 
   // Objeto que gestiona este bean
-  private Cliente cliente;
+  private Deudor deudor;
 
-  // Atributos del objeto Cliente
-  private String numeroCliente;
+  // Atributos del objeto Deudor
+  private String numeroDeudor;
   private String curp;
   private String numeroSeguroSocial;
   
   private Sujeto sujeto;
 
   // DAO, para acceso a la BD
-  private ClienteDAO clienteDao;
+  private DeudorDAO deudorDao;
 
   // Otros beans
   @ManagedProperty(value = "#{sujetoBean}")
   private SujetoBean sujetoBean;
 
   // Construyendo...
-  public ClienteBean() {
-    cliente = new Cliente();
-    clienteDao = new ClienteIMPL();
+  public DeudorBean() {
+    deudor = new Deudor();
+    deudorDao = new DeudorIMPL();
   }
 
   // GESTIÓN DE CLIENTES
-  public List<Cliente> listar() {
-    return clienteDao.buscarTodo();
+  public List<Deudor> listar() {
+    return deudorDao.buscarTodo();
   }
 
-  public Cliente insertar() {
-    // Crea el Sujeto asociado al cliente
+  public Deudor insertar() {
+    // Crea el Sujeto asociado al deudor
     sujeto = sujetoBean.insertar();
 
     // Verfica que el sujeto se haya creado correctamente
     if (sujeto == null) {
       return null;
     } else {
-      // Crea el objeto Cliente
-      cliente.setNumeroCliente(numeroCliente);
-      cliente.setCurp(curp);
-      cliente.setNumeroSeguroSocial(numeroSeguroSocial);
-      cliente.setSujeto(sujeto);
+      // Crea el objeto Deudor
+      deudor.setNumeroDeudor(numeroDeudor);
+      deudor.setCurp(curp);
+      deudor.setNumeroSeguroSocial(numeroSeguroSocial);
+      deudor.setSujeto(sujeto);
 
-      return clienteDao.insertar(cliente);
+      return deudorDao.insertar(deudor);
     }
   }
   
-  public boolean eliminar(Cliente c) {
+  public boolean eliminar(Deudor c) {
     return sujetoBean.eliminar(c.getSujeto());
   }
 
   // MÉTODOS AUXILIARES
   public void resetAtributos() {
-    numeroCliente = null;
+    numeroDeudor = null;
     curp = null;
     numeroSeguroSocial = null;
     sujeto = new Sujeto();
   }
 
   // SETTERS & GETTERS
-  public String getNumeroCliente() {
-    return numeroCliente;
+  public String getNumeroDeudor() {
+    return numeroDeudor;
   }
 
-  public void setNumeroCliente(String numeroCliente) {
-    this.numeroCliente = numeroCliente;
+  public void setNumeroDeudor(String numeroDeudor) {
+    this.numeroDeudor = numeroDeudor;
   }
 
   public String getCurp() {

@@ -6,7 +6,7 @@
 package beans;
 
 import dao.ContactoDAO;
-import dto.Cliente;
+import dto.Deudor;
 import dto.Contacto;
 import dto.Sujeto;
 import impl.ContactoIMPL;
@@ -54,23 +54,23 @@ public class ContactoBean implements Serializable {
     return contactoDao.buscarPorSujeto(idSujeto);
   }
 
-  public Contacto insertar(Cliente cliente) {
-    if (cliente.getIdCliente() == null) {
-      Logs.log.error("El método ContactoBean.insertar(cliente) recibe un cliente null");
+  public Contacto insertar(Deudor deudor) {
+    if (deudor.getIdDeudor() == null) {
+      Logs.log.error("El método ContactoBean.insertar(deudor) recibe un deudor null");
       return null;
     } else {
-      System.out.println("Cliente actual(ContactoBean.insertar): " + cliente.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
+      System.out.println("Deudor actual(ContactoBean.insertar): " + deudor.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
       // Crea el sujeto asociado al Contacto
       sujeto = sujetoBean.insertar();
-      System.out.println("Cliente actual(ContactoBean.insertar), después de insertar sujeto contacto: " + cliente.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
+      System.out.println("Deudor actual(ContactoBean.insertar), después de insertar sujeto contacto: " + deudor.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
       // Verifica que el sujeto se haya creado correctamente
       if (sujeto == null) {
-        Logs.log.error("El método ContactoBean.insertar(cliente) recibe un sujeto null");
+        Logs.log.error("El método ContactoBean.insertar(deudor) recibe un sujeto null");
         return null;
       } else {
         // Crea el objeto Contacto
         contacto.setObservaciones(observaciones);
-        contacto.setCliente(cliente);
+        contacto.setDeudor(deudor);
         contacto.setSujeto(sujeto);
 
         return contactoDao.insertar(contacto);

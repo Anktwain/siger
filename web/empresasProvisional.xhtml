@@ -191,7 +191,7 @@
               <p:selectOneMenu id="comboboxCol" value="#{vistaEmpresas.direccionBean.colonia.idColonia}" style="width: 250px" filter="true">
                 <p:ajax listener="#{vistaEmpresas.direccionBean.agregarCP()}" update="growl" />
                 <f:selectItem itemLabel="Seleccione una colonia" itemValue="" />
-                <f:selectItems value="#{vistaClientes.direccionBean.colonias}" var="colonia" itemLabel="#{colonia.nombre}" itemValue="#{colonia.idColonia}" />
+                <f:selectItems value="#{vistaDeudores.direccionBean.colonias}" var="colonia" itemLabel="#{colonia.nombre}" itemValue="#{colonia.idColonia}" />
               </p:selectOneMenu>
               <p:tooltip for="comboboxCol" value="Indique la colonia o localidad en el que se ubica la empresa" />
             </p:overlayPanel>
