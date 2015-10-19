@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19/10/2015 12:46:46 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Region" optimistic-lock="version" table="region">
+    <id name="idRegion" type="java.lang.Integer">
+      <column name="id_region"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Colonia" fetch="select" name="colonia">
+      <column name="id_colonia"/>
+    </many-to-one>
+    <many-to-one class="dto.EstadoRepublica" fetch="select" name="estadoRepublica">
+      <column name="id_estado"/>
+    </many-to-one>
+    <many-to-one class="dto.Municipio" fetch="select" name="municipio">
+      <column name="id_municipio"/>
+    </many-to-one>
+    <many-to-one class="dto.Zona" fetch="select" name="zona">
+      <column name="id_zona" not-null="true"/>
+    </many-to-one>
+  </class>
+</hibernate-mapping>

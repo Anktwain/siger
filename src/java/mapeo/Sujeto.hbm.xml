@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 19/08/2015 01:24:44 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 19/10/2015 12:46:46 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Sujeto" optimistic-lock="version" table="sujeto">
     <id name="idSujeto" type="java.lang.Integer">
@@ -18,37 +18,43 @@
     </property>
     <set fetch="select" inverse="true" lazy="true" name="direccions" table="direccion">
       <key>
-        <column name="sujetos_id_sujeto" not-null="true"/>
+        <column name="id_sujeto" not-null="true"/>
       </key>
       <one-to-many class="dto.Direccion"/>
     </set>
     <set fetch="select" inverse="true" lazy="true" name="emails" table="email">
       <key>
-        <column name="sujetos_id_sujeto" not-null="true"/>
+        <column name="id_sujeto" not-null="true"/>
       </key>
       <one-to-many class="dto.Email"/>
     </set>
-    <set fetch="select" inverse="true" lazy="true" name="empresas" table="empresa">
+    <set fetch="select" inverse="true" lazy="true" name="institucioneses" table="instituciones">
       <key>
-        <column name="sujetos_id_sujeto" not-null="true"/>
+        <column name="id_sujeto" not-null="true"/>
       </key>
-      <one-to-many class="dto.Empresa"/>
+      <one-to-many class="dto.Instituciones"/>
     </set>
-    <set fetch="select" inverse="true" lazy="true" name="clientes" table="cliente">
+    <set fetch="select" inverse="true" lazy="true" name="despachos" table="despacho">
       <key>
-        <column name="sujetos_id_sujeto" not-null="true"/>
+        <column name="id_sujeto" not-null="true"/>
       </key>
-      <one-to-many class="dto.Cliente"/>
+      <one-to-many class="dto.Despacho"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="deudors" table="deudor">
+      <key>
+        <column name="id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Deudor"/>
     </set>
     <set fetch="select" inverse="true" lazy="true" name="telefonos" table="telefono">
       <key>
-        <column name="sujetos_id_sujeto" not-null="true"/>
+        <column name="id_sujeto" not-null="true"/>
       </key>
       <one-to-many class="dto.Telefono"/>
     </set>
     <set fetch="select" inverse="true" lazy="true" name="contactos" table="contacto">
       <key>
-        <column name="sujetos_id_sujeto" not-null="true"/>
+        <column name="id_sujeto" not-null="true"/>
       </key>
       <one-to-many class="dto.Contacto"/>
     </set>

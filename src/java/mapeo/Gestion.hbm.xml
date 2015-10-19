@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 19/08/2015 01:24:44 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 19/10/2015 12:46:46 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Gestion" optimistic-lock="version" table="gestion">
     <id name="idGestion" type="java.lang.Integer">
@@ -8,7 +8,7 @@
       <generator class="identity"/>
     </id>
     <many-to-one class="dto.Credito" fetch="select" name="credito">
-      <column name="creditos_id_credito" not-null="true"/>
+      <column name="id_credito" not-null="true"/>
     </many-to-one>
     <property name="fecha" type="timestamp">
       <column length="19" name="fecha"/>

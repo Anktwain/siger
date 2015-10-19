@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 19/08/2015 01:24:44 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 19/10/2015 12:46:46 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Colonia" optimistic-lock="version" table="colonia">
     <id name="idColonia" type="java.lang.Integer">
@@ -8,7 +8,7 @@
       <generator class="identity"/>
     </id>
     <many-to-one class="dto.Municipio" fetch="select" name="municipio">
-      <column name="id_municipio_municipios" not-null="true"/>
+      <column name="id_municipio" not-null="true"/>
     </many-to-one>
     <property name="tipo" type="string">
       <column length="45" name="tipo"/>
@@ -21,9 +21,15 @@
     </property>
     <set fetch="select" inverse="true" lazy="true" name="direccions" table="direccion">
       <key>
-        <column name="colonia_id_colonia" not-null="true"/>
+        <column name="id_colonia" not-null="true"/>
       </key>
       <one-to-many class="dto.Direccion"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="regions" table="region">
+      <key>
+        <column name="id_colonia"/>
+      </key>
+      <one-to-many class="dto.Region"/>
     </set>
   </class>
 </hibernate-mapping>

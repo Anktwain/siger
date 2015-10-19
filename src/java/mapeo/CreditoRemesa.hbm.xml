@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 19/08/2015 01:24:44 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 19/10/2015 12:46:46 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.CreditoRemesa" optimistic-lock="version" table="credito_remesa">
     <composite-id class="dto.CreditoRemesaId" name="id">
-      <key-property name="remesasIdRemesa" type="int">
-        <column name="remesas_id_remesa"/>
+      <key-property name="idRemesa" type="int">
+        <column name="id_remesa"/>
       </key-property>
-      <key-property name="creditosIdCredito" type="int">
-        <column name="creditos_id_credito"/>
+      <key-property name="idCredito" type="int">
+        <column name="id_credito"/>
       </key-property>
     </composite-id>
     <many-to-one class="dto.Credito" fetch="select" insert="false" name="credito" update="false">
-      <column name="creditos_id_credito" not-null="true"/>
+      <column name="id_credito" not-null="true"/>
     </many-to-one>
     <many-to-one class="dto.Remesa" fetch="select" insert="false" name="remesa" update="false">
-      <column name="remesas_id_remesa" not-null="true"/>
+      <column name="id_remesa" not-null="true"/>
     </many-to-one>
   </class>
 </hibernate-mapping>

@@ -1,7 +1,8 @@
 package dto;
-// Generated 19/08/2015 01:24:43 PM by Hibernate Tools 4.3.1
+// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
 
 
+import dto.EstadoRepublica;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ public class Municipio  implements java.io.Serializable {
      private String nombre;
      private Set direccions = new HashSet(0);
      private Set colonias = new HashSet(0);
+     private Set regions = new HashSet(0);
 
     public Municipio() {
     }
@@ -25,11 +27,12 @@ public class Municipio  implements java.io.Serializable {
         this.estadoRepublica = estadoRepublica;
         this.nombre = nombre;
     }
-    public Municipio(EstadoRepublica estadoRepublica, String nombre, Set direccions, Set colonias) {
+    public Municipio(EstadoRepublica estadoRepublica, String nombre, Set direccions, Set colonias, Set regions) {
        this.estadoRepublica = estadoRepublica;
        this.nombre = nombre;
        this.direccions = direccions;
        this.colonias = colonias;
+       this.regions = regions;
     }
    
     public Integer getIdMunicipio() {
@@ -67,11 +70,16 @@ public class Municipio  implements java.io.Serializable {
     public void setColonias(Set colonias) {
         this.colonias = colonias;
     }
-
-    @Override
-    public String toString(){
-        return nombre;
+    public Set getRegions() {
+        return this.regions;
     }
+    
+    public void setRegions(Set regions) {
+        this.regions = regions;
+    }
+
+
+
 
 }
 

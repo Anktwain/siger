@@ -1,5 +1,5 @@
 package dto;
-// Generated 19/08/2015 01:24:43 PM by Hibernate Tools 4.3.1
+// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -13,9 +13,10 @@ public class Credito  implements java.io.Serializable {
 
 
      private Integer idCredito;
-     private Cliente cliente;
-     private Empresa empresa;
+     private Despacho despacho;
+     private Deudor deudor;
      private Gestor gestor;
+     private Instituciones instituciones;
      private Producto producto;
      private Subproducto subproducto;
      private String numeroCredito;
@@ -37,18 +38,20 @@ public class Credito  implements java.io.Serializable {
     }
 
 	
-    public Credito(Cliente cliente, Empresa empresa, Gestor gestor, Producto producto, String numeroCredito, int tipoCredito) {
-        this.cliente = cliente;
-        this.empresa = empresa;
+    public Credito(Despacho despacho, Deudor deudor, Gestor gestor, Instituciones instituciones, Producto producto, String numeroCredito, int tipoCredito) {
+        this.despacho = despacho;
+        this.deudor = deudor;
         this.gestor = gestor;
+        this.instituciones = instituciones;
         this.producto = producto;
         this.numeroCredito = numeroCredito;
         this.tipoCredito = tipoCredito;
     }
-    public Credito(Cliente cliente, Empresa empresa, Gestor gestor, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set lineas, Set creditoRemesas, Set gestions, Set autos) {
-       this.cliente = cliente;
-       this.empresa = empresa;
+    public Credito(Despacho despacho, Deudor deudor, Gestor gestor, Instituciones instituciones, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set lineas, Set creditoRemesas, Set gestions, Set autos) {
+       this.despacho = despacho;
+       this.deudor = deudor;
        this.gestor = gestor;
+       this.instituciones = instituciones;
        this.producto = producto;
        this.subproducto = subproducto;
        this.numeroCredito = numeroCredito;
@@ -74,19 +77,19 @@ public class Credito  implements java.io.Serializable {
     public void setIdCredito(Integer idCredito) {
         this.idCredito = idCredito;
     }
-    public Cliente getCliente() {
-        return this.cliente;
+    public Despacho getDespacho() {
+        return this.despacho;
     }
     
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setDespacho(Despacho despacho) {
+        this.despacho = despacho;
     }
-    public Empresa getEmpresa() {
-        return this.empresa;
+    public Deudor getDeudor() {
+        return this.deudor;
     }
     
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
+    public void setDeudor(Deudor deudor) {
+        this.deudor = deudor;
     }
     public Gestor getGestor() {
         return this.gestor;
@@ -94,6 +97,13 @@ public class Credito  implements java.io.Serializable {
     
     public void setGestor(Gestor gestor) {
         this.gestor = gestor;
+    }
+    public Instituciones getInstituciones() {
+        return this.instituciones;
+    }
+    
+    public void setInstituciones(Instituciones instituciones) {
+        this.instituciones = instituciones;
     }
     public Producto getProducto() {
         return this.producto;

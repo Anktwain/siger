@@ -1,5 +1,5 @@
 package dto;
-// Generated 19/08/2015 01:24:43 PM by Hibernate Tools 4.3.1
+// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -17,8 +17,9 @@ public class Sujeto  implements java.io.Serializable {
      private int eliminado;
      private Set direccions = new HashSet(0);
      private Set emails = new HashSet(0);
-     private Set empresas = new HashSet(0);
-     private Set clientes = new HashSet(0);
+     private Set institucioneses = new HashSet(0);
+     private Set despachos = new HashSet(0);
+     private Set deudors = new HashSet(0);
      private Set telefonos = new HashSet(0);
      private Set contactos = new HashSet(0);
 
@@ -30,14 +31,15 @@ public class Sujeto  implements java.io.Serializable {
         this.nombreRazonSocial = nombreRazonSocial;
         this.eliminado = eliminado;
     }
-    public Sujeto(String nombreRazonSocial, String rfc, int eliminado, Set direccions, Set emails, Set empresas, Set clientes, Set telefonos, Set contactos) {
+    public Sujeto(String nombreRazonSocial, String rfc, int eliminado, Set direccions, Set emails, Set institucioneses, Set despachos, Set deudors, Set telefonos, Set contactos) {
        this.nombreRazonSocial = nombreRazonSocial;
        this.rfc = rfc;
        this.eliminado = eliminado;
        this.direccions = direccions;
        this.emails = emails;
-       this.empresas = empresas;
-       this.clientes = clientes;
+       this.institucioneses = institucioneses;
+       this.despachos = despachos;
+       this.deudors = deudors;
        this.telefonos = telefonos;
        this.contactos = contactos;
     }
@@ -84,19 +86,26 @@ public class Sujeto  implements java.io.Serializable {
     public void setEmails(Set emails) {
         this.emails = emails;
     }
-    public Set getEmpresas() {
-        return this.empresas;
+    public Set getInstitucioneses() {
+        return this.institucioneses;
     }
     
-    public void setEmpresas(Set empresas) {
-        this.empresas = empresas;
+    public void setInstitucioneses(Set institucioneses) {
+        this.institucioneses = institucioneses;
     }
-    public Set getClientes() {
-        return this.clientes;
+    public Set getDespachos() {
+        return this.despachos;
     }
     
-    public void setClientes(Set clientes) {
-        this.clientes = clientes;
+    public void setDespachos(Set despachos) {
+        this.despachos = despachos;
+    }
+    public Set getDeudors() {
+        return this.deudors;
+    }
+    
+    public void setDeudors(Set deudors) {
+        this.deudors = deudors;
     }
     public Set getTelefonos() {
         return this.telefonos;

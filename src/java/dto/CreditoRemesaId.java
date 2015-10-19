@@ -1,5 +1,5 @@
 package dto;
-// Generated 19/08/2015 01:24:43 PM by Hibernate Tools 4.3.1
+// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
 
 
 
@@ -9,30 +9,30 @@ package dto;
 public class CreditoRemesaId  implements java.io.Serializable {
 
 
-     private int remesasIdRemesa;
-     private int creditosIdCredito;
+     private int idRemesa;
+     private int idCredito;
 
     public CreditoRemesaId() {
     }
 
-    public CreditoRemesaId(int remesasIdRemesa, int creditosIdCredito) {
-       this.remesasIdRemesa = remesasIdRemesa;
-       this.creditosIdCredito = creditosIdCredito;
+    public CreditoRemesaId(int idRemesa, int idCredito) {
+       this.idRemesa = idRemesa;
+       this.idCredito = idCredito;
     }
    
-    public int getRemesasIdRemesa() {
-        return this.remesasIdRemesa;
+    public int getIdRemesa() {
+        return this.idRemesa;
     }
     
-    public void setRemesasIdRemesa(int remesasIdRemesa) {
-        this.remesasIdRemesa = remesasIdRemesa;
+    public void setIdRemesa(int idRemesa) {
+        this.idRemesa = idRemesa;
     }
-    public int getCreditosIdCredito() {
-        return this.creditosIdCredito;
+    public int getIdCredito() {
+        return this.idCredito;
     }
     
-    public void setCreditosIdCredito(int creditosIdCredito) {
-        this.creditosIdCredito = creditosIdCredito;
+    public void setIdCredito(int idCredito) {
+        this.idCredito = idCredito;
     }
 
 
@@ -42,15 +42,15 @@ public class CreditoRemesaId  implements java.io.Serializable {
 		 if ( !(other instanceof CreditoRemesaId) ) return false;
 		 CreditoRemesaId castOther = ( CreditoRemesaId ) other; 
          
-		 return (this.getRemesasIdRemesa()==castOther.getRemesasIdRemesa())
- && (this.getCreditosIdCredito()==castOther.getCreditosIdCredito());
+		 return (this.getIdRemesa()==castOther.getIdRemesa())
+ && (this.getIdCredito()==castOther.getIdCredito());
    }
    
    public int hashCode() {
          int result = 17;
          
-         result = 37 * result + this.getRemesasIdRemesa();
-         result = 37 * result + this.getCreditosIdCredito();
+         result = 37 * result + this.getIdRemesa();
+         result = 37 * result + this.getIdCredito();
          return result;
    }   
 

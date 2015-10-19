@@ -1,7 +1,8 @@
 package dto;
-// Generated 19/08/2015 01:24:43 PM by Hibernate Tools 4.3.1
+// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
 
 
+import dto.Despacho;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ public class Usuario  implements java.io.Serializable {
 
 
      private Integer idUsuario;
+     private Despacho despacho;
      private String nombre;
      private String paterno;
      private String materno;
@@ -27,7 +29,8 @@ public class Usuario  implements java.io.Serializable {
     }
 
 	
-    public Usuario(String nombre, String paterno, String nombreLogin, String password, int perfil, String correo) {
+    public Usuario(Despacho despacho, String nombre, String paterno, String nombreLogin, String password, int perfil, String correo) {
+        this.despacho = despacho;
         this.nombre = nombre;
         this.paterno = paterno;
         this.nombreLogin = nombreLogin;
@@ -35,7 +38,8 @@ public class Usuario  implements java.io.Serializable {
         this.perfil = perfil;
         this.correo = correo;
     }
-    public Usuario(String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagenPerfil, Set administrativos, Set gestors) {
+    public Usuario(Despacho despacho, String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagenPerfil, Set administrativos, Set gestors) {
+       this.despacho = despacho;
        this.nombre = nombre;
        this.paterno = paterno;
        this.materno = materno;
@@ -54,6 +58,13 @@ public class Usuario  implements java.io.Serializable {
     
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
+    }
+    public Despacho getDespacho() {
+        return this.despacho;
+    }
+    
+    public void setDespacho(Despacho despacho) {
+        this.despacho = despacho;
     }
     public String getNombre() {
         return this.nombre;

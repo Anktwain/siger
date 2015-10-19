@@ -1,8 +1,7 @@
 package dto;
-// Generated 19/08/2015 01:24:43 PM by Hibernate Tools 4.3.1
+// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
 
 
-import dto.Empresa;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +12,7 @@ public class Producto  implements java.io.Serializable {
 
 
      private Integer idProducto;
-     private Empresa empresa;
+     private Instituciones instituciones;
      private String nombre;
      private String descripcion;
      private Set creditos = new HashSet(0);
@@ -23,12 +22,12 @@ public class Producto  implements java.io.Serializable {
     }
 
 	
-    public Producto(Empresa empresa, String nombre) {
-        this.empresa = empresa;
+    public Producto(Instituciones instituciones, String nombre) {
+        this.instituciones = instituciones;
         this.nombre = nombre;
     }
-    public Producto(Empresa empresa, String nombre, String descripcion, Set creditos, Set subproductos) {
-       this.empresa = empresa;
+    public Producto(Instituciones instituciones, String nombre, String descripcion, Set creditos, Set subproductos) {
+       this.instituciones = instituciones;
        this.nombre = nombre;
        this.descripcion = descripcion;
        this.creditos = creditos;
@@ -42,12 +41,12 @@ public class Producto  implements java.io.Serializable {
     public void setIdProducto(Integer idProducto) {
         this.idProducto = idProducto;
     }
-    public Empresa getEmpresa() {
-        return this.empresa;
+    public Instituciones getInstituciones() {
+        return this.instituciones;
     }
     
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
+    public void setInstituciones(Instituciones instituciones) {
+        this.instituciones = instituciones;
     }
     public String getNombre() {
         return this.nombre;

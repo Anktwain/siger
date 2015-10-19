@@ -1,5 +1,5 @@
 package dto;
-// Generated 19/08/2015 01:24:43 PM by Hibernate Tools 4.3.1
+// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
 
 
 
@@ -70,13 +70,15 @@ public class Direccion  implements java.io.Serializable {
         return this.sujeto;
     }
     
-    
     public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    
     public String getCalle() {
         return this.calle;
+    }
+    
+    public void setCalle(String calle) {
+        this.calle = calle;
     }
     public String getTipo() {
         return this.tipo;
@@ -87,7 +89,8 @@ public class Direccion  implements java.io.Serializable {
     }
 
 
-    public void setCalle(String calle) {
-        this.calle = calle;
-    }
+
+
 }
+
+
