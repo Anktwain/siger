@@ -11,4 +11,5 @@ package dao;
  */
 public interface CreditoDAO {
   public Number contarCreditosActivos();
+  public Number contarCreditosActivosPorGestor(int idUsuario);
 }

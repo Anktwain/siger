@@ -58,4 +58,6 @@ public interface SujetoDAO {
     public Sujeto ultimoInsertado();
     
     public Number calcularPagosRealizados();
+    
+    public Number calcularPagosPorAprobarPorGestor(int idgestor);
 }

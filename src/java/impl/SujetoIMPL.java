@@ -220,6 +220,11 @@ public class SujetoIMPL implements SujetoDAO {
   public Number calcularPagosRealizados() {
     return 0;
   }
+  
+  @Override
+  public Number calcularPagosPorAprobarPorGestor(int idGestor) {
+    return 0;
+  }
 
   /**
    *

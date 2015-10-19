@@ -63,4 +63,6 @@ public interface EmpresaDAO {
     public List<Sujeto> buscarEmpresas();
     
     public Number calcularRecuperacionDeEmpresa();
+    
+    public Number calcularRecuperacionPorGestor(int idGestor);
 }

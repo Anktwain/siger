@@ -13,7 +13,9 @@
       <div class="row">
         <div class="col-sm-6 col-md-3">
           <div class="panel-stat3 bg-danger">
-            <h2 class="m-top-none" id="userCount">363</h2>
+            <h2 class="m-top-none" id="userCount">
+              <p:outputLabel id="creditos" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{barraProgresoGestorBean.calcularCuentasActivas()}" />
+            </h2>
             <h5>Cuentas en gestion</h5>
             <div class="stat-icon">
               <i class="fa fa-group fa-3x"></i>
@@ -25,7 +27,11 @@
         </div><!-- /.col -->
         <div class="col-sm-6 col-md-3">
           <div class="panel-stat3 bg-info">
-            <h2 class="m-top-none"><span id="serverloadCount">15</span></h2>
+            <h2 class="m-top-none">
+              <span id="serverloadCount">
+                <p:outputLabel id="creditos" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{barraProgresoGestorBean.calcularVisitasPorGestor()}" />
+              </span>
+            </h2>
             <h5>Visitas domiciliarias</h5>
             <div class="stat-icon">
               <i class="fa fa-envelope-o fa-3x"></i>
@@ -37,7 +43,9 @@
         </div><!-- /.col -->
         <div class="col-sm-6 col-md-3">
           <div class="panel-stat3 bg-warning">
-            <h2 class="m-top-none" id="orderCount">2</h2>
+            <h2 class="m-top-none" id="orderCount">
+              <p:outputLabel id="creditos" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{barraProgresoGestorBean.calcularPagosPorAprobarPorGestor()}" />
+            </h2>
             <h5>Pagos por aprobar</h5>
             <div class="stat-icon">
               <i class="fa fa-usd fa-3x"></i>
@@ -49,7 +57,9 @@
         </div><!-- /.col -->
         <div class="col-sm-6 col-md-3">
           <div class="panel-stat3 bg-success">
-            <h2 class="m-top-none" id="visitorCount">- 6.84%</h2>
+            <h2 class="m-top-none" id="visitorCount">
+              <p:outputLabel id="creditos" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{barraProgresoGestorBean.calcularRecuperacionPorGestor()}" />
+            </h2>
             <h5>Recuperacion</h5>
             <div class="stat-icon">
               <i class="fa fa-bar-chart-o fa-3x"></i>
