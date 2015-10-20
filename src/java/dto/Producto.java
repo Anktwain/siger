@@ -12,7 +12,7 @@ public class Producto  implements java.io.Serializable {
 
 
      private Integer idProducto;
-     private Instituciones instituciones;
+     private Institucion instituciones;
      private String nombre;
      private String descripcion;
      private Set creditos = new HashSet(0);
@@ -22,11 +22,11 @@ public class Producto  implements java.io.Serializable {
     }
 
 	
-    public Producto(Instituciones instituciones, String nombre) {
+    public Producto(Institucion instituciones, String nombre) {
         this.instituciones = instituciones;
         this.nombre = nombre;
     }
-    public Producto(Instituciones instituciones, String nombre, String descripcion, Set creditos, Set subproductos) {
+    public Producto(Institucion instituciones, String nombre, String descripcion, Set creditos, Set subproductos) {
        this.instituciones = instituciones;
        this.nombre = nombre;
        this.descripcion = descripcion;
@@ -41,11 +41,11 @@ public class Producto  implements java.io.Serializable {
     public void setIdProducto(Integer idProducto) {
         this.idProducto = idProducto;
     }
-    public Instituciones getInstituciones() {
+    public Institucion getInstituciones() {
         return this.instituciones;
     }
     
-    public void setInstituciones(Instituciones instituciones) {
+    public void setInstituciones(Institucion instituciones) {
         this.instituciones = instituciones;
     }
     public String getNombre() {

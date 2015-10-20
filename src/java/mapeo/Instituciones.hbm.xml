@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 19/10/2015 12:46:46 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.Instituciones" optimistic-lock="version" table="instituciones">
+  <class catalog="sigerbd" name="dto.Institucion" optimistic-lock="version" table="instituciones">
     <id name="idInstitucion" type="java.lang.Integer">
       <column name="id_institucion"/>
       <generator class="identity"/>

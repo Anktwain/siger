@@ -16,7 +16,7 @@ public class Credito  implements java.io.Serializable {
      private Despacho despacho;
      private Deudor deudor;
      private Gestor gestor;
-     private Instituciones instituciones;
+     private Institucion instituciones;
      private Producto producto;
      private Subproducto subproducto;
      private String numeroCredito;
@@ -38,7 +38,7 @@ public class Credito  implements java.io.Serializable {
     }
 
 	
-    public Credito(Despacho despacho, Deudor deudor, Gestor gestor, Instituciones instituciones, Producto producto, String numeroCredito, int tipoCredito) {
+    public Credito(Despacho despacho, Deudor deudor, Gestor gestor, Institucion instituciones, Producto producto, String numeroCredito, int tipoCredito) {
         this.despacho = despacho;
         this.deudor = deudor;
         this.gestor = gestor;
@@ -47,7 +47,7 @@ public class Credito  implements java.io.Serializable {
         this.numeroCredito = numeroCredito;
         this.tipoCredito = tipoCredito;
     }
-    public Credito(Despacho despacho, Deudor deudor, Gestor gestor, Instituciones instituciones, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set lineas, Set creditoRemesas, Set gestions, Set autos) {
+    public Credito(Despacho despacho, Deudor deudor, Gestor gestor, Institucion instituciones, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set lineas, Set creditoRemesas, Set gestions, Set autos) {
        this.despacho = despacho;
        this.deudor = deudor;
        this.gestor = gestor;
@@ -98,11 +98,11 @@ public class Credito  implements java.io.Serializable {
     public void setGestor(Gestor gestor) {
         this.gestor = gestor;
     }
-    public Instituciones getInstituciones() {
+    public Institucion getInstituciones() {
         return this.instituciones;
     }
     
-    public void setInstituciones(Instituciones instituciones) {
+    public void setInstituciones(Institucion instituciones) {
         this.instituciones = instituciones;
     }
     public Producto getProducto() {

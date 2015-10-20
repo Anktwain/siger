@@ -16,7 +16,7 @@
     <many-to-one class="dto.Gestor" fetch="select" name="gestor">
       <column name="id_gestor" not-null="true"/>
     </many-to-one>
-    <many-to-one class="dto.Instituciones" fetch="select" name="instituciones">
+    <many-to-one class="dto.Institucion" fetch="select" name="instituciones">
       <column name="id_empresa" not-null="true"/>
     </many-to-one>
     <many-to-one class="dto.Producto" fetch="select" name="producto">

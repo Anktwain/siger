@@ -1,7 +1,7 @@
 package impl;
 
-import dao.EmpresaDAO;
-import dto.Empresa;
+import dao.InstitucionDAO;
+import dto.Institucion;
 import dto.Sujeto;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -11,14 +11,14 @@ import util.HibernateUtil;
 import util.constantes.Sujetos;
 
 /**
- * La clase {@code EmpresaIMPL} permite ...
+ * La clase {@code InstitucionIMPL} permite ...
  *
  * @author
  * @author
  * @author brionvega
  * @since SigerWeb2.0
  */
-public class EmpresaIMPL implements EmpresaDAO {
+public class InstitucionIMPL implements InstitucionDAO {
 
     /**
      *
@@ -26,13 +26,13 @@ public class EmpresaIMPL implements EmpresaDAO {
      * @return
      */
     @Override
-    public boolean insertar(Empresa empresa) {
+    public boolean insertar(Institucion institucion) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
 
         try {
-            sesion.save(empresa);
+            sesion.save(institucion);
             tx.commit();
             ok = true;
             //log.info("Se insertó un nuevo usuaario");
@@ -55,13 +55,13 @@ public class EmpresaIMPL implements EmpresaDAO {
      * @return
      */
     @Override
-    public boolean editar(Empresa empresa) {
+    public boolean editar(Institucion institucion) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
 
         try {
-            sesion.update(empresa);
+            sesion.update(institucion);
             tx.commit();
             ok = true;
         } catch (HibernateException he) {
@@ -83,14 +83,14 @@ public class EmpresaIMPL implements EmpresaDAO {
      * @return
      */
     @Override
-    public boolean eliminar(Empresa empresa) {
+    public boolean eliminar(Institucion institucion) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
 
         try {
             // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
-            sesion.update(empresa);
+            sesion.update(institucion);
             tx.commit();
             ok = true;
         } catch (HibernateException he) {
@@ -112,25 +112,25 @@ public class EmpresaIMPL implements EmpresaDAO {
      * @return
      */
     @Override
-    public Empresa buscar(int idEmpresa) {
+    public Institucion buscar(int idInstitucion) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public Empresa buscarEmpresaPorSujeto(int idEmpresa) {
+    public Institucion buscarInstitucionPorSujeto(int idInstitucion) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-        Empresa empresa;
+        Institucion institucion;
         
         try { 
-            empresa = (Empresa) sesion.createSQLQuery("select * from empresa where sujetos_id_sujeto = " + Integer.toString(idEmpresa) + ";").addEntity(Empresa.class).uniqueResult();
+            institucion = (Institucion) sesion.createSQLQuery("select * from institucion where id_sujeto = " + Integer.toString(idInstitucion) + ";").addEntity(Institucion.class).uniqueResult();
         } catch(HibernateException he) {
-            empresa = null;
+            institucion = null;
             he.printStackTrace();
         } finally {
             cerrar(sesion);
         }
-        return empresa;
+        return institucion;
     }
 
     /**
@@ -139,20 +139,20 @@ public class EmpresaIMPL implements EmpresaDAO {
      * @return
      */
     @Override
-    public List<Empresa> buscarTodo() {
+    public List<Institucion> buscarTodo() {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-        List<Empresa> listaEmpresa;
+        List<Institucion> listaInstitucion;
 
-        try { // Buscamos todas las empresas.
-            listaEmpresa = sesion.createSQLQuery("from Empresa").list();
+        try { // Buscamos todas las Institucions.
+            listaInstitucion = sesion.createSQLQuery("from Institucion").list();
         } catch (HibernateException he) {
-            listaEmpresa = null;
+            listaInstitucion = null;
             he.printStackTrace();
         } finally {
             cerrar(sesion);
         }
-        return listaEmpresa;
+        return listaInstitucion;
         /*
          throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
          */
@@ -164,14 +164,14 @@ public class EmpresaIMPL implements EmpresaDAO {
      */
     
     @Override
-    public List<Sujeto> buscarEmpresas() {
+    public List<Sujeto> buscarInstituciones() {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         List<Sujeto> listaSujeto;
 
-        try { // Buscamos todas las empresas.
+        try { // Buscamos todas las Instituciones.
             //"select e.name, a.city from Employee e INNER JOIN e.address a"
-            listaSujeto = sesion.createSQLQuery("select * from sujeto s join empresa e where s.eliminado = " + Sujetos.ACTIVO + " and s.id_sujeto = e.sujetos_id_sujeto;").addEntity(Sujeto.class).list();
+            listaSujeto = sesion.createSQLQuery("select * from sujeto s join institucion e where s.eliminado = " + Sujetos.ACTIVO + " and s.id_sujeto = e.id_sujeto;").addEntity(Sujeto.class).list();
         } catch(HibernateException he) {
             listaSujeto = null;
             he.printStackTrace();
@@ -182,7 +182,7 @@ public class EmpresaIMPL implements EmpresaDAO {
     }
     
     @Override
-    public Number calcularRecuperacionDeEmpresa() {
+    public Number calcularRecuperacionDeInstitucion() {
     return 0;
     }
     

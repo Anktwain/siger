@@ -7,7 +7,7 @@ package beans;
 // importacion de librerias
 // dao
 import dao.ColoniaDAO;
-import dao.EmpresaDAO;
+import dao.InstitucionDAO;
 import dao.EstadoRepublicaDAO;
 import dao.MunicipioDAO;
 import dao.ProductoDAO;
@@ -15,7 +15,7 @@ import dao.SubproductoDAO;
 import dao.SujetoDAO;
 
 // dto
-import dto.Empresa;
+import dto.Institucion;
 import dto.EstadoRepublica;
 import dto.Municipio;
 import dto.Colonia;
@@ -25,7 +25,7 @@ import dto.Sujeto;
 
 // implements
 import impl.ColoniaIMPL;
-import impl.EmpresaIMPL;
+import impl.InstitucionIMPL;
 import impl.EstadoRepublicaIMPL;
 import impl.MunicipioIMPL;
 import impl.ProductoIMPL;
@@ -52,23 +52,23 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
 /**
- * La clase {@code EmpresasBean} permite ... y es el bean correspondiente a la
- * vista {@code empresas.xhtml}
+ * La clase {@code InstitucionesBean} permite ... y es el bean correspondiente a la
+ * vista {@code instituciones.xhtml}
  *
  * @author
  * @author
  * @author Eduardo
  * @since SigerWeb2.0
  */
-@ManagedBean(name = "empresasBean")
+@ManagedBean(name = "institucionesBean")
 @SessionScoped
-public class EmpresasBean implements Serializable {
+public class InstitucionesBean implements Serializable {
 
   // declaracion de variables
   // variables dao
   private SujetoDAO sujetoDao;
   private ProductoDAO productoDao;
-  private EmpresaDAO empresaDao;
+  private InstitucionDAO institucionDao;
   private SubproductoDAO subproductoDao;
   private EstadoRepublicaDAO estadoDao;
   private MunicipioDAO municipioDao;
@@ -76,13 +76,13 @@ public class EmpresasBean implements Serializable {
   
   // variables Sujeto
   private Sujeto sujeto;
-  private Sujeto empresa;
+  private Sujeto institucion;
   private Sujeto nuevoSujeto;
   private Sujeto sujetoSeleccionado;
   
-  //variables Empresa
-  private Empresa empresaSeleccionada;
-  private Empresa nuevaEmpresa;
+  //variables Institucion
+  private Institucion institucionSeleccionada;
+  private Institucion nuevaInstitucion;
   
   //variables Producto
   private Producto producto;
@@ -105,7 +105,7 @@ public class EmpresasBean implements Serializable {
   private Colonia colonia;
   
   // listas
-  private List<Sujeto> listaEmpresas;
+  private List<Sujeto> listaInstituciones;
   private List<Producto> listaProductos;
   private List<Subproducto> listaSubproductos;
   private List<EstadoRepublica> conjuntoEstados;
@@ -146,10 +146,10 @@ public class EmpresasBean implements Serializable {
   private int idColonia;
   
   // Booleanos
-  private boolean okNuevaEmpresa;
-  private boolean okEditarEmpresa;
+  private boolean okNuevaInstitucion;
+  private boolean okEditarInstitucion;
   private boolean okEditarSujeto;
-  private boolean okBorrarEmpresa;
+  private boolean okBorrarInstitucion;
   private boolean okNuevoProducto;
   private boolean okEditarProducto;
   private boolean okNuevoSubproducto;
@@ -160,17 +160,17 @@ public class EmpresasBean implements Serializable {
    *
    *
    */
-  public EmpresasBean() {
+  public InstitucionesBean() {
     // constructores
     // sujeto
     sujetoDao = new SujetoIMPL();
     sujeto = new Sujeto();
     nuevoSujeto = new Sujeto();
     
-    // empresa
-    empresaDao = new EmpresaIMPL();
-    listaEmpresas = empresaDao.buscarEmpresas();
-    nuevaEmpresa = new Empresa();
+    // Institucion
+    institucionDao = new InstitucionIMPL();
+    listaInstituciones = institucionDao.buscarInstituciones();
+    nuevaInstitucion = new Institucion();
     
     // producto
     productoDao = new ProductoIMPL();
@@ -197,35 +197,35 @@ public class EmpresasBean implements Serializable {
   // ***********************************************************************************************************************************************************
   // ***********************************************************************************************************************************************************
   // ***********************************************************************************************************************************************************
-  // FUNCIONES DEL MODULO DE NUEVA EMPRESA
+  // FUNCIONES DEL MODULO DE NUEVA Institucion
   
-  // funcion para validar el rfc de una nueva empresa
+  // funcion para validar el rfc de una nueva Institucion
   public boolean validarRfc(String rfc) {
     Pattern patron = Pattern.compile(Patrones.PATRON_RFC_MORAL);
     Matcher matcher = patron.matcher(rfc);
     return matcher.matches();
   }
   
-  // funcion para crear a la empresa segun los datos primarios brindados
+  // funcion para crear a la Institucion segun los datos primarios brindados
   // falta incluir los datos obtenidos de las vistas de telefonos, correos, direcciones y contactos
-  public void crearEmpresa() {
+  public void crearInstitucion() {
     nuevoRfc = nuevoRfc.toUpperCase();
     boolean okRfc = validarRfc(nuevoRfc);
     nuevoSujeto.setNombreRazonSocial(nuevaRazonSocial);
     nuevoSujeto.setRfc(nuevoRfc);
     nuevoSujeto.setEliminado(Sujetos.ACTIVO);
     idNuevoSujeto = sujetoDao.insertar(nuevoSujeto).getIdSujeto();
-    nuevaEmpresa.setNombreCorto(nuevoCorto);
-    nuevaEmpresa.setSujeto(nuevoSujeto);
+    nuevaInstitucion.setNombreCorto(nuevoCorto);
+    nuevaInstitucion.setSujeto(nuevoSujeto);
     FacesContext actual = FacesContext.getCurrentInstance();
     if (okRfc) {
-      okNuevaEmpresa = empresaDao.insertar(nuevaEmpresa);
-      if (okNuevaEmpresa) {
-        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Insercion exitosa", "Se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
-        RequestContext.getCurrentInstance().update("formNuevaEmpresa");
-        RequestContext.getCurrentInstance().update("formEditarEmpresa");
+      okNuevaInstitucion = institucionDao.insertar(nuevaInstitucion);
+      if (okNuevaInstitucion) {
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Insercion exitosa", "Se registro a la institucion " + nuevaRazonSocial + " en el sistema"));
+        RequestContext.getCurrentInstance().update("formNuevaInstitucion");
+        RequestContext.getCurrentInstance().update("formEditarInstitucion");
       } else {
-        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se registro a la empresa " + nuevaRazonSocial + " en el sistema"));
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se registro a la institucion " + nuevaRazonSocial + " en el sistema"));
       }
     } else {
       actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "El RFC proporcionado no es valido, favor de verificarlo"));
@@ -256,18 +256,18 @@ public class EmpresasBean implements Serializable {
   // ***********************************************************************************************************************************************************
   // ***********************************************************************************************************************************************************
   // ***********************************************************************************************************************************************************
-  // FUNCIONES DEL MODULO DE EDITAR EMPRESA
+  // FUNCIONES DEL MODULO DE EDITAR Institucion
   
-  // funcion que guarda los datos de la empresa seleccionada para editar
-  public void guardarEmpresa() {
-    empresaSeleccionada = empresaDao.buscarEmpresaPorSujeto(empresa.getIdSujeto());
-    sujetoSeleccionado = sujetoDao.buscar(empresa.getIdSujeto());
+  // funcion que guarda los datos de la Institucion seleccionada para editar
+  public void guardarInstitucion() {
+    institucionSeleccionada = institucionDao.buscarInstitucionPorSujeto(institucion.getIdSujeto());
+    sujetoSeleccionado = sujetoDao.buscar(institucion.getIdSujeto());
     razonSocial = sujetoSeleccionado.getNombreRazonSocial();
-    corto = empresaSeleccionada.getNombreCorto();
+    corto = institucionSeleccionada.getNombreCorto();
     auxRfc = sujetoSeleccionado.getRfc();
-    id = empresaSeleccionada.getIdEmpresa();
-    listaProductos = productoDao.buscarProductosPorEmpresa(id);
-    listaSubproductos = subproductoDao.buscarSubproductosPorEmpresa(id);
+    id = institucionSeleccionada.getIdInstitucion();
+    listaProductos = productoDao.buscarProductosPorInstitucion(id);
+    listaSubproductos = subproductoDao.buscarSubproductosPorInstitucion(id);
   }
 
   // funcion que guarda los datos del producto a editar
@@ -286,38 +286,38 @@ public class EmpresasBean implements Serializable {
     subdesc = subproductoSeleccionado.getDescripcion();
   }
 
-  // funcion que actualiza los datos primarios de la empresa seleccionada
-  public void editarEmpresa() {
+  // funcion que actualiza los datos primarios de la Institucion seleccionada
+  public void editarInstitucion() {
     sujetoSeleccionado.setNombreRazonSocial(razonSocial);
     System.out.println(razonSocial);
     sujetoSeleccionado.setRfc(auxRfc);
     System.out.println(auxRfc);
     okEditarSujeto = sujetoDao.editar(sujetoSeleccionado);
-    empresaSeleccionada.setNombreCorto(corto);
+    institucionSeleccionada.setNombreCorto(corto);
     System.out.println(corto);
-    okEditarEmpresa = empresaDao.editar(empresaSeleccionada);
+    okEditarInstitucion = institucionDao.editar(institucionSeleccionada);
     FacesContext actual = FacesContext.getCurrentInstance();
-    if (okEditarEmpresa && okEditarSujeto) {
-      actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualizacion exitosa", "Se edito a la empresa " + corto));
+    if (okEditarInstitucion && okEditarSujeto) {
+      actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualizacion exitosa", "Se edito a la institucion " + corto));
     } else {
-      actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se guardaron los cambios de la empresa " + corto));
+      actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se guardaron los cambios de la institucion " + corto));
     }
   }
 
-  // funcion que elimina (con borrado logico) a la empresa seleccionada
-  public void eliminarEmpresa() {
-    empresa.setEliminado(Sujetos.ELIMINADO);
-    okBorrarEmpresa = sujetoDao.eliminar(empresa);
-    if (okBorrarEmpresa) {
+  // funcion que elimina (con borrado logico) a la institucion seleccionada
+  public void eliminarInstitucion() {
+    institucion.setEliminado(Sujetos.ELIMINADO);
+    okBorrarInstitucion = sujetoDao.eliminar(institucion);
+    if (okBorrarInstitucion) {
       System.out.println("************ CONSOLA SIGERWEB ****************");
-      System.out.println("Se elimino a la empresa " + corto);
-      RequestContext.getCurrentInstance().update("editarEmpresas");
+      System.out.println("Se elimino a la institucion " + corto);
+      RequestContext.getCurrentInstance().update("editarInstitucions");
     } else {
-      System.out.println("Error fatal. No se pudo borrar a la empresa " + empresa.getNombreRazonSocial());
+      System.out.println("Error fatal. No se pudo borrar a la institucion " + institucion.getNombreRazonSocial());
     }
   }
 
-  // funcion para crear un producto para la empresa seleccionada
+  // funcion para crear un producto para la Institucion seleccionada
   public void crearProducto() {
     nuevoProducto.setNombre(nuevoProd);
     nuevoProducto.setDescripcion(nuevaDesc);
@@ -326,8 +326,8 @@ public class EmpresasBean implements Serializable {
       System.out.println("************ CONSOLA SIGERWEB ****************");
       System.out.println("Se registro el producto " + nuevoProd + " exitosamente");
       /*
-       RequestContext.getCurrentInstance().update("formNuevaEmpresa");
-       RequestContext.getCurrentInstance().update("formEditarEmpresa");
+       RequestContext.getCurrentInstance().update("formNuevaInstitucion");
+       RequestContext.getCurrentInstance().update("formEditarInstitucion");
        */
     } else {
       System.out.println("Error fatal. No se registro el producto " + nuevoProd + " en el sistema");
@@ -341,7 +341,7 @@ public class EmpresasBean implements Serializable {
     RequestContext.getCurrentInstance().update("editarProductos");
   }
 
-  // funcion para crear un subproducto para la empresa seleccionada
+  // funcion para crear un subproducto para la Institucion seleccionada
   public void crearSubproducto() {
     nuevoSubproducto.setNombre(nuevoSubprod);
     nuevoSubproducto.setDescripcion(nuevaSubdesc);
@@ -351,8 +351,8 @@ public class EmpresasBean implements Serializable {
       System.out.println("************ CONSOLA SIGERWEB ****************");
       System.out.println("Se registro el subproducto " + nuevoSubprod + " exitosamente");
       /*
-       RequestContext.getCurrentInstance().update("formNuevaEmpresa");
-       RequestContext.getCurrentInstance().update("formEditarEmpresa");
+       RequestContext.getCurrentInstance().update("formNuevaInstitucion");
+       RequestContext.getCurrentInstance().update("formEditarInstitucion");
        */
     } else {
       System.out.println("Error fatal. No se registro el producto " + nuevoSubprod + " en el sistema");
@@ -448,17 +448,17 @@ public class EmpresasBean implements Serializable {
    *
    * @return
    */
-  public List<Sujeto> getListaEmpresas() {
-    return listaEmpresas;
+  public List<Sujeto> getListaInstituciones() {
+    return listaInstituciones;
   }
 
   /**
    *
    *
-   * @param listaEmpresas
+   * @param listaInstituciones
    */
-  public void setListaEmpresas(List<Sujeto> listaEmpresas) {
-    this.listaEmpresas = listaEmpresas;
+  public void setListaInstituciones(List<Sujeto> listaInstituciones) {
+    this.listaInstituciones = listaInstituciones;
   }
 
   /**
@@ -466,29 +466,29 @@ public class EmpresasBean implements Serializable {
    *
    * @return
    */
-  public Sujeto getEmpresa() {
-    return empresa;
+  public Sujeto getInstitucion() {
+    return institucion;
   }
 
   /**
    *
    *
-   * @param empresa
+   * @param institucion
    */
-  public void setEmpresa(Sujeto empresa) {
-    this.empresa = empresa;
+  public void setInstitucion(Sujeto institucion) {
+    this.institucion = institucion;
   }
 
-  public Empresa getEmpresaSeleccionada() {
-    return empresaSeleccionada;
+  public Institucion getInstitucionSeleccionada() {
+    return institucionSeleccionada;
   }
 
   /**
    *
-   * @param empresaSeleccionada
+   * @param institucionSeleccionada
    */
-  public void setEmpresaSeleccionada(Empresa empresaSeleccionada) {
-    this.empresaSeleccionada = empresaSeleccionada;
+  public void setInstitucionSeleccionada(Institucion institucionSeleccionada) {
+    this.institucionSeleccionada = institucionSeleccionada;
   }
 
   /**
@@ -511,16 +511,16 @@ public class EmpresasBean implements Serializable {
    *
    * @return
    */
-  public EmpresaDAO getEmpresaDao() {
-    return empresaDao;
+  public InstitucionDAO getInstitucionDao() {
+    return institucionDao;
   }
 
   /**
    *
-   * @param empresaDao
+   * @param institucionDao
    */
-  public void setEmpresaDao(EmpresaDAO empresaDao) {
-    this.empresaDao = empresaDao;
+  public void setInstitucionDao(InstitucionDAO institucionDao) {
+    this.institucionDao = institucionDao;
   }
 
   /**
@@ -651,12 +651,12 @@ public class EmpresasBean implements Serializable {
     this.nuevoSujeto = nuevoSujeto;
   }
 
-  public Empresa getNuevaEmpresa() {
-    return nuevaEmpresa;
+  public Institucion getNuevaInstitucion() {
+    return nuevaInstitucion;
   }
 
-  public void setNuevaEmpresa(Empresa nuevaEmpresa) {
-    this.nuevaEmpresa = nuevaEmpresa;
+  public void setNuevaInstitucion(Institucion nuevaInstitucion) {
+    this.nuevaInstitucion = nuevaInstitucion;
   }
 
   public int getIdNuevoSujeto() {
@@ -667,20 +667,20 @@ public class EmpresasBean implements Serializable {
     this.idNuevoSujeto = idNuevoSujeto;
   }
 
-  public boolean isOkNuevaEmpresa() {
-    return okNuevaEmpresa;
+  public boolean isOkNuevaInstitucion() {
+    return okNuevaInstitucion;
   }
 
-  public void setOkNuevaEmpresa(boolean okNuevaEmpresa) {
-    this.okNuevaEmpresa = okNuevaEmpresa;
+  public void setOkNuevaInstitucion(boolean okNuevaInstitucion) {
+    this.okNuevaInstitucion = okNuevaInstitucion;
   }
 
-  public boolean isOkEditarEmpresa() {
-    return okEditarEmpresa;
+  public boolean isOkEditarInstitucion() {
+    return okEditarInstitucion;
   }
 
-  public void setOkEditarEmpresa(boolean okEditarEmpresa) {
-    this.okEditarEmpresa = okEditarEmpresa;
+  public void setOkEditarInstitucion(boolean okEditarInstitucion) {
+    this.okEditarInstitucion = okEditarInstitucion;
   }
 
   public boolean isOkEditarSujeto() {
@@ -691,12 +691,12 @@ public class EmpresasBean implements Serializable {
     this.okEditarSujeto = okEditarSujeto;
   }
 
-  public boolean isOkBorrarEmpresa() {
-    return okBorrarEmpresa;
+  public boolean isOkBorrarInstitucion() {
+    return okBorrarInstitucion;
   }
 
-  public void setOkBorrarEmpresa(boolean okBorrarEmpresa) {
-    this.okBorrarEmpresa = okBorrarEmpresa;
+  public void setOkBorrarInstitucion(boolean okBorrarInstitucion) {
+    this.okBorrarInstitucion = okBorrarInstitucion;
   }
 
   public Producto getNuevoProducto() {

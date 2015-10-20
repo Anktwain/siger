@@ -27,7 +27,7 @@ import org.primefaces.context.RequestContext;
 // INTERACTUAN CON LA BASE DE DATOS
 @ManagedBean(name = "vistaEmpresas")
 @ViewScoped
-public class VistaEmpresas implements Serializable {
+public class VistaInstituciones implements Serializable {
 
   // objetos que se utilizaran unicamente en la vista
   private Empresa nuevaEmpresa;
@@ -61,7 +61,7 @@ public class VistaEmpresas implements Serializable {
 
   // llamada a otros beans
   @ManagedProperty(value = "#{empresaBean}")
-  private EmpresaBean empresaBean;
+  private InstitucionBean empresaBean;
   @ManagedProperty(value = "#{contactoBean}")
   private ContactoBean contactoBean;
   @ManagedProperty(value = "#{telefonoBean}")
@@ -80,7 +80,7 @@ public class VistaEmpresas implements Serializable {
   */
 
   // constructor
-  public VistaEmpresas() {
+  public VistaInstituciones() {
     empresaSeleccionada = new Empresa();
     nuevaEmpresa = new Empresa();
     sujetoSeleccionado = new Sujeto();
@@ -490,11 +490,11 @@ public class VistaEmpresas implements Serializable {
     this.listaSubproductos = listaSubproductos;
   }
 
-  public EmpresaBean getEmpresaBean() {
+  public InstitucionBean getEmpresaBean() {
     return empresaBean;
   }
 
-  public void setEmpresaBean(EmpresaBean empresaBean) {
+  public void setEmpresaBean(InstitucionBean empresaBean) {
     this.empresaBean = empresaBean;
   }
 

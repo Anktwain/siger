@@ -7,7 +7,7 @@
       <column name="id_producto"/>
       <generator class="identity"/>
     </id>
-    <many-to-one class="dto.Instituciones" fetch="select" name="instituciones">
+    <many-to-one class="dto.Institucion" fetch="select" name="instituciones">
       <column name="id_institucion" not-null="true"/>
     </many-to-one>
     <property name="nombre" type="string">

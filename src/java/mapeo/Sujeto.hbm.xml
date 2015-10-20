@@ -32,7 +32,7 @@
       <key>
         <column name="id_sujeto" not-null="true"/>
       </key>
-      <one-to-many class="dto.Instituciones"/>
+      <one-to-many class="dto.Institucion"/>
     </set>
     <set fetch="select" inverse="true" lazy="true" name="despachos" table="despacho">
       <key>

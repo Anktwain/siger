@@ -6,11 +6,11 @@
 package beans;
 
 import dao.CreditoDAO;
-import dao.EmpresaDAO;
+import dao.InstitucionDAO;
 import dao.SujetoDAO;
 import dao.GestionDAO;
 import impl.CreditoIMPL;
-import impl.EmpresaIMPL;
+import impl.InstitucionIMPL;
 import impl.GestionIMPL;
 import impl.SujetoIMPL;
 import java.io.Serializable;
@@ -30,13 +30,13 @@ public class BarraProgresoAdminBean implements Serializable {
   private CreditoDAO creditoDao;
   private GestionDAO gestionDao;
   private SujetoDAO sujetoDao;
-  private EmpresaDAO empresaDao;
+  private InstitucionDAO empresaDao;
 
   public BarraProgresoAdminBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     sujetoDao = new SujetoIMPL();
-    empresaDao = new EmpresaIMPL();
+    empresaDao = new InstitucionIMPL();
   }
 
   public String calcularCreditos() {
@@ -95,11 +95,11 @@ public class BarraProgresoAdminBean implements Serializable {
     this.sujetoDao = sujetoDao;
   }
 
-  public EmpresaDAO getEmpresaDao() {
+  public InstitucionDAO getEmpresaDao() {
     return empresaDao;
   }
 
-  public void setEmpresaDao(EmpresaDAO empresaDao) {
+  public void setEmpresaDao(InstitucionDAO empresaDao) {
     this.empresaDao = empresaDao;
   }
 

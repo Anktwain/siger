@@ -6,11 +6,11 @@
 package beans;
 
 import dao.CreditoDAO;
-import dao.EmpresaDAO;
+import dao.InstitucionDAO;
 import dao.GestionDAO;
 import dao.SujetoDAO;
 import impl.CreditoIMPL;
-import impl.EmpresaIMPL;
+import impl.InstitucionIMPL;
 import impl.GestionIMPL;
 import impl.SujetoIMPL;
 import javax.faces.bean.ManagedBean;
@@ -31,13 +31,13 @@ public class BarraProgresoGestorBean {
   private CreditoDAO creditoDao;
   private GestionDAO gestionDao;
   private SujetoDAO sujetoDao;
-  private EmpresaDAO empresaDao;
+  private InstitucionDAO empresaDao;
 
   public BarraProgresoGestorBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     sujetoDao = new SujetoIMPL();
-    empresaDao = new EmpresaIMPL();
+    empresaDao = new InstitucionIMPL();
   }
   
   // llamada a otros beans
@@ -100,11 +100,11 @@ public class BarraProgresoGestorBean {
     this.sujetoDao = sujetoDao;
   }
 
-  public EmpresaDAO getEmpresaDao() {
+  public InstitucionDAO getEmpresaDao() {
     return empresaDao;
   }
 
-  public void setEmpresaDao(EmpresaDAO empresaDao) {
+  public void setEmpresaDao(InstitucionDAO empresaDao) {
     this.empresaDao = empresaDao;
   }
 
