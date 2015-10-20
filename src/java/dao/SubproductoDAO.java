@@ -48,5 +48,5 @@ public interface SubproductoDAO {
      */
     public List<Subproducto> buscarTodo();
     
-    public List<Subproducto> buscarSubproductosPorEmpresa(int idEmpresa);
+    public List<Subproducto> buscarSubproductosPorInstitucion(int idInstitucion);
 }

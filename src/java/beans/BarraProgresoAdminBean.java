@@ -30,13 +30,13 @@ public class BarraProgresoAdminBean implements Serializable {
   private CreditoDAO creditoDao;
   private GestionDAO gestionDao;
   private SujetoDAO sujetoDao;
-  private InstitucionDAO empresaDao;
+  private InstitucionDAO institucionDao;
 
   public BarraProgresoAdminBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     sujetoDao = new SujetoIMPL();
-    empresaDao = new InstitucionIMPL();
+    institucionDao = new InstitucionIMPL();
   }
 
   public String calcularCreditos() {
@@ -64,7 +64,7 @@ public class BarraProgresoAdminBean implements Serializable {
   }
 
   public String calcularRecuperacion() {
-    Number total = empresaDao.calcularRecuperacionDeEmpresa();
+    Number total = institucionDao.calcularRecuperacionDeInstitucion();
     String recuperacion = total.toString();
     Logs.log.info("************ CONSOLA SIGERWEB ****************");
     Logs.log.info("Se ha recuperado un %" + total + " del saldo a recuperar");
@@ -95,12 +95,12 @@ public class BarraProgresoAdminBean implements Serializable {
     this.sujetoDao = sujetoDao;
   }
 
-  public InstitucionDAO getEmpresaDao() {
-    return empresaDao;
+  public InstitucionDAO getInstitucionDao() {
+    return institucionDao;
   }
 
-  public void setEmpresaDao(InstitucionDAO empresaDao) {
-    this.empresaDao = empresaDao;
+  public void setInstitucionDao(InstitucionDAO institucionDao) {
+    this.institucionDao = institucionDao;
   }
 
 }

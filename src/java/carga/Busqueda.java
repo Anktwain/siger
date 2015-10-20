@@ -3,7 +3,6 @@ package carga;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import util.FuncionLike;
 import util.Levenshtein;
 
 /**
@@ -55,7 +54,7 @@ public class Busqueda {
     if(colonias != null)
       return colonias;
     
-    colonias = FuncionLike.buscarLikeLevenshtein(coincidencias, colonia, 4);
+//    colonias = FuncionLike.buscarLikeLevenshtein(coincidencias, colonia, 4);
         if(colonias != null)
       return colonias;
     

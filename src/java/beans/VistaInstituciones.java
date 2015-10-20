@@ -3,7 +3,7 @@ package beans;
 import dto.Contacto;
 import dto.Direccion;
 import dto.Email;
-import dto.Empresa;
+import dto.Institucion;
 import dto.Producto;
 import dto.Subproducto;
 import dto.Sujeto;
@@ -23,15 +23,15 @@ import org.primefaces.context.RequestContext;
  *
  * @author Eduardo
  */
-// ESTE BEAN SERA LA COMUNICACION ENTRE LA VISTA DE EMPRESAS Y LOS BEANS QUE PERMITAN INTERACTUAR CON LOS DAOS QUE INTERACTUAN CON LOS IMPLEMENTS QUE
+// ESTE BEAN SERA LA COMUNICACION ENTRE LA VISTA DE InstitucioneS Y LOS BEANS QUE PERMITAN INTERACTUAR CON LOS DAOS QUE INTERACTUAN CON LOS IMPLEMENTS QUE
 // INTERACTUAN CON LA BASE DE DATOS
-@ManagedBean(name = "vistaEmpresas")
+@ManagedBean(name = "vistaInstituciones")
 @ViewScoped
 public class VistaInstituciones implements Serializable {
 
   // objetos que se utilizaran unicamente en la vista
-  private Empresa nuevaEmpresa;
-  private Empresa empresaSeleccionada;
+  private Institucion nuevaInstitucion;
+  private Institucion institucionSeleccionada;
   private Sujeto sujetoSeleccionado;
   private Sujeto nuevoSujeto;
   private Sujeto nuevoSujetoContacto;
@@ -55,13 +55,13 @@ public class VistaInstituciones implements Serializable {
   public String numint;
 
   // listas
-  private List<Sujeto> listaEmpresas;
+  private List<Sujeto> listaInstituciones;
   private List<Producto> listaProductos;
   private List<Subproducto> listaSubproductos;
 
   // llamada a otros beans
-  @ManagedProperty(value = "#{empresaBean}")
-  private InstitucionBean empresaBean;
+  @ManagedProperty(value = "#{institucionBean}")
+  private InstitucionBean institucionBean;
   @ManagedProperty(value = "#{contactoBean}")
   private ContactoBean contactoBean;
   @ManagedProperty(value = "#{telefonoBean}")
@@ -81,8 +81,8 @@ public class VistaInstituciones implements Serializable {
 
   // constructor
   public VistaInstituciones() {
-    empresaSeleccionada = new Empresa();
-    nuevaEmpresa = new Empresa();
+    institucionSeleccionada = new Institucion();
+    nuevaInstitucion = new Institucion();
     sujetoSeleccionado = new Sujeto();
     nuevoSujeto = new Sujeto();
     nuevoSujetoContacto = new Sujeto();
@@ -99,7 +99,7 @@ public class VistaInstituciones implements Serializable {
     deshabilitaListaSubproductos = true;
   }
 
-  // post constructor para cargar la lista de empresas en madriza
+  // post constructor para cargar la lista de Instituciones en madriza
   @PostConstruct
   public void cargaListas() {
     // volvemos a ocultar los input text
@@ -114,17 +114,17 @@ public class VistaInstituciones implements Serializable {
     if (direccionBean.getEstados() == null) {
       actual.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo obtener la lista de estados de la republica"));
     }
-    // cargamos la lista de empresas
-    listaEmpresas = empresaBean.buscarEmpresas();
+    // cargamos la lista de Instituciones
+    listaInstituciones = institucionBean.buscarInstituciones();
     // si la lista esta vacia
-    if (listaEmpresas == null) {
-      actual.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo obtener la lista de empresas registradas"));
+    if (listaInstituciones == null) {
+      actual.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo obtener la lista de Instituciones registradas"));
     }
   }
 
-  // es el metodo que se encarga de la gestion integral de las empresas
+  // es el metodo que se encarga de la gestion integral de las Institucions
   // verifica todos los campos de datos adicionales, los inserta si son validos
-  public void crearEmpresa() {
+  public void crearInstitucion() {
     // primero se crea el sujeto al cual podremos añadir datos adicionales
     insertarSujeto();
     // se llama a la funcion de verificar telefonos para saber si los campos no estan vacios
@@ -161,10 +161,10 @@ public class VistaInstituciones implements Serializable {
       nuevoSujeto = sujetoBean.insertar();
       // si se creo el sujeto
       if (nuevoSujeto != null) {
-        insertarEmpresa(nuevoSujeto);
+        insertarInstitucion(nuevoSujeto);
       } // no se creo el sujeto
       else {
-        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se registro al sujeto vinculado a la empresa en el sistema"));
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se registro al sujeto vinculado a la Institucion en el sistema"));
       }
     } // el rfc no es valido
     else {
@@ -172,56 +172,56 @@ public class VistaInstituciones implements Serializable {
     }
   }
 
-  // es el metodo para crear empresas, interactua con los beans de cliente y sujeto
-  public void insertarEmpresa(Sujeto nuevoSujeto) {
-    // invocamos al metodo de creacion de empresas y esperamos el resultado de la transaccion
-    int resultado = empresaBean.crearEmpresa(nuevoSujeto);
+  // es el metodo para crear Institucions, interactua con los beans de cliente y sujeto
+  public void insertarInstitucion(Sujeto nuevoSujeto) {
+    // invocamos al metodo de creacion de Instituciones y esperamos el resultado de la transaccion
+    int resultado = institucionBean.crearInstitucion(nuevoSujeto);
     // creamos una instancia de FacesContext para poder utilizar el growl
     FacesContext actual = FacesContext.getCurrentInstance();
     // switch para desplegar el mensaje correspondiente
     switch (resultado) {
       case 1:
-        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Insercion exitosa", "Se registro a la empresa en el sistema"));
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Insercion exitosa", "Se registro a la Institucion en el sistema"));
         verificaTelefono();
         break;
       case 0:
-        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se registro a la empresa en el sistema"));
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se registro a la Institucion en el sistema"));
         break;
     }
   }
 
-  // es el metodo que sirve para editar a las empresas
-  public void editarEmpresa() {
+  // es el metodo que sirve para editar a las Institucions
+  public void editarInstitucion() {
     // creamos una instancia de FacesContext para poder utilizar el growl
     FacesContext actual = FacesContext.getCurrentInstance();
-    // enviamos los datos de la empresa seleccionada para su modificacion
-    boolean alpha = empresaBean.editarEmpresa(sujetoSeleccionado);
-    // si se logro editar a la empresa
+    // enviamos los datos de la Institucion seleccionada para su modificacion
+    boolean alpha = institucionBean.editarInstitucion(sujetoSeleccionado);
+    // si se logro editar a la Institucion
     if(alpha){
       // se manda a editar al sujeto
       boolean beta = sujetoBean.editar(sujetoSeleccionado);
       // si se edito el sujeto
       if(beta){
-        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualizacion exitosa", "Se edito a la empresa en el sistema"));
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualizacion exitosa", "Se edito a la Institucion en el sistema"));
       }
       // si no se edito
       else{
-        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se guardaron los cambios al sujeto vinculado con la empresa"));
+        actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se guardaron los cambios al sujeto vinculado con la Institucion"));
       }
     }
-    // si no se logro editar la empresa
+    // si no se logro editar la Institucion
     else{
-      actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se editaron los datos primarios de la empresa"));
+      actual.addMessage("somekey", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "No se editaron los datos primarios de la Institucion"));
     }
     deshabilitaDatosPrimarios = false;
   }
 
-  // es el metodo que carga todos los datos de las empresas para que se visualicen en los input text
-  public void cargarEmpresa(){
+  // es el metodo que carga todos los datos de las Institucions para que se visualicen en los input text
+  public void cargarInstitucion(){
     // setteamos los datos
     sujetoBean.setNombreRazonSocial(sujetoSeleccionado.getNombreRazonSocial());
     sujetoBean.setRfc(sujetoSeleccionado.getRfc());
-    empresaBean.setNombreCorto(empresaBean.getEmpresaDao().buscarEmpresaPorSujeto(sujetoSeleccionado.getIdSujeto()).getNombreCorto());
+    institucionBean.setNombreCorto(institucionBean.getInstitucionDao().buscarInstitucionPorSujeto(sujetoSeleccionado.getIdSujeto()).getNombreCorto());
     // habilitamos la visibilidad del form que contiene los input text
     deshabilitaDatosPrimarios = true;
     // se actualiza la vista
@@ -370,20 +370,20 @@ public class VistaInstituciones implements Serializable {
   
   
   // setters y getters
-  public Empresa getEmpresaSeleccionada() {
-    return empresaSeleccionada;
+  public Institucion getInstitucionSeleccionada() {
+    return institucionSeleccionada;
   }
 
-  public void setEmpresaSeleccionada(Empresa empresaSeleccionada) {
-    this.empresaSeleccionada = empresaSeleccionada;
+  public void setInstitucionSeleccionada(Institucion institucionSeleccionada) {
+    this.institucionSeleccionada = institucionSeleccionada;
   }
 
-  public Empresa getNuevaEmpresa() {
-    return nuevaEmpresa;
+  public Institucion getNuevaInstitucion() {
+    return nuevaInstitucion;
   }
 
-  public void setNuevaEmpresa(Empresa nuevaEmpresa) {
-    this.nuevaEmpresa = nuevaEmpresa;
+  public void setNuevaInstitucion(Institucion nuevaInstitucion) {
+    this.nuevaInstitucion = nuevaInstitucion;
   }
 
   public Sujeto getSujetoSeleccionado() {
@@ -466,12 +466,12 @@ public class VistaInstituciones implements Serializable {
     this.nuevaDireccion = nuevaDireccion;
   }
 
-  public List<Sujeto> getListaEmpresas() {
-    return listaEmpresas;
+  public List<Sujeto> getListaInstituciones() {
+    return listaInstituciones;
   }
 
-  public void setListaEmpresas(List<Sujeto> listaEmpresas) {
-    this.listaEmpresas = listaEmpresas;
+  public void setListaInstituciones(List<Sujeto> listaInstituciones) {
+    this.listaInstituciones = listaInstituciones;
   }
 
   public List<Producto> getListaProductos() {
@@ -490,12 +490,12 @@ public class VistaInstituciones implements Serializable {
     this.listaSubproductos = listaSubproductos;
   }
 
-  public InstitucionBean getEmpresaBean() {
-    return empresaBean;
+  public InstitucionBean getInstitucionBean() {
+    return institucionBean;
   }
 
-  public void setEmpresaBean(InstitucionBean empresaBean) {
-    this.empresaBean = empresaBean;
+  public void setInstitucionBean(InstitucionBean institucionBean) {
+    this.institucionBean = institucionBean;
   }
 
   public ContactoBean getContactoBean() {

@@ -1,8 +1,7 @@
 package impl;
 
 import dao.SubproductoDAO;
-import dto.Empresa;
-import dto.Producto;
+import dto.Institucion;
 import dto.Subproducto;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -119,12 +118,12 @@ public class SubproductoIMPL implements SubproductoDAO {
     }
 
     @Override
-    public List<Subproducto> buscarSubproductosPorEmpresa(int idEmpresa) {
+    public List<Subproducto> buscarSubproductosPorInstitucion(int idInstitucion) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         List<Subproducto> subproductos;
         try {
-            subproductos = sesion.createSQLQuery("select distinct s.id_subproducto, s.nombre, s.descripcion, s.productos_id_producto from subproducto s join producto p where s.productos_id_producto in (select distinct x.id_producto from producto x join empresa y where x.empresas_id_empresa = " + idEmpresa + ");").addEntity(Subproducto.class).list();
+            subproductos = sesion.createSQLQuery("select distinct s.id_subproducto, s.nombre, s.descripcion, s.id_producto from subproducto s join producto p where s.id_producto in (select distinct x.id_producto from producto x join institucion y where x.id_institucion = " + idInstitucion + ");").addEntity(Subproducto.class).list();
         } catch (HibernateException he) {
             subproductos = null;
             he.printStackTrace();

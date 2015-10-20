@@ -40,9 +40,9 @@ public class ProductoBean implements Serializable{
   }
   
   // funciones de gestion
-  public boolean listarProductos(int idEmpresa){
+  public boolean listarProductos(int idInstitucion){
     boolean ok = false;
-    listaProductos = productoDao.buscarProductosPorEmpresa(idEmpresa);
+    listaProductos = productoDao.buscarProductosPorInstitucion(idInstitucion);
     if(listaProductos != null){
       ok = true;
     }
