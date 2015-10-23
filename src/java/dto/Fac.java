@@ -1,6 +1,5 @@
 package dto;
-// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
-
+// Generated 23/10/2015 10:50:41 AM by Hibernate Tools 4.3.1
 
 
 

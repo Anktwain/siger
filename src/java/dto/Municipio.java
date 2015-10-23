@@ -1,7 +1,6 @@
 package dto;
-// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
+// Generated 23/10/2015 10:50:41 AM by Hibernate Tools 4.3.1
 
-import dto.EstadoRepublica;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,8 +12,8 @@ public class Municipio implements java.io.Serializable {
   private Integer idMunicipio;
   private EstadoRepublica estadoRepublica;
   private String nombre;
-  private Set direccions = new HashSet(0);
   private Set colonias = new HashSet(0);
+  private Set direccions = new HashSet(0);
   private Set regions = new HashSet(0);
 
   public Municipio() {
@@ -25,17 +24,12 @@ public class Municipio implements java.io.Serializable {
     this.nombre = nombre;
   }
 
-  public Municipio(EstadoRepublica estadoRepublica, String nombre, Set direccions, Set colonias, Set regions) {
+  public Municipio(EstadoRepublica estadoRepublica, String nombre, Set colonias, Set direccions, Set regions) {
     this.estadoRepublica = estadoRepublica;
     this.nombre = nombre;
-    this.direccions = direccions;
     this.colonias = colonias;
+    this.direccions = direccions;
     this.regions = regions;
-  }
-
-  @Override
-  public String toString() {
-    return nombre;
   }
 
   public Integer getIdMunicipio() {
@@ -62,14 +56,6 @@ public class Municipio implements java.io.Serializable {
     this.nombre = nombre;
   }
 
-  public Set getDireccions() {
-    return this.direccions;
-  }
-
-  public void setDireccions(Set direccions) {
-    this.direccions = direccions;
-  }
-
   public Set getColonias() {
     return this.colonias;
   }
@@ -78,12 +64,25 @@ public class Municipio implements java.io.Serializable {
     this.colonias = colonias;
   }
 
+  public Set getDireccions() {
+    return this.direccions;
+  }
+
+  public void setDireccions(Set direccions) {
+    this.direccions = direccions;
+  }
+
   public Set getRegions() {
     return this.regions;
   }
 
   public void setRegions(Set regions) {
     this.regions = regions;
+  }
+
+  @Override
+  public String toString() {
+    return nombre;
   }
 
 }

@@ -1,5 +1,5 @@
 package dto;
-// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
+// Generated 23/10/2015 10:50:41 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -14,8 +14,8 @@ public class Gestor  implements java.io.Serializable {
      private Integer idGestor;
      private Usuario usuario;
      private String extension;
-     private Set creditos = new HashSet(0);
      private Set zonas = new HashSet(0);
+     private Set creditos = new HashSet(0);
 
     public Gestor() {
     }
@@ -24,11 +24,11 @@ public class Gestor  implements java.io.Serializable {
     public Gestor(Usuario usuario) {
         this.usuario = usuario;
     }
-    public Gestor(Usuario usuario, String extension, Set creditos, Set zonas) {
+    public Gestor(Usuario usuario, String extension, Set zonas, Set creditos) {
        this.usuario = usuario;
        this.extension = extension;
-       this.creditos = creditos;
        this.zonas = zonas;
+       this.creditos = creditos;
     }
    
     public Integer getIdGestor() {
@@ -52,19 +52,19 @@ public class Gestor  implements java.io.Serializable {
     public void setExtension(String extension) {
         this.extension = extension;
     }
-    public Set getCreditos() {
-        return this.creditos;
-    }
-    
-    public void setCreditos(Set creditos) {
-        this.creditos = creditos;
-    }
     public Set getZonas() {
         return this.zonas;
     }
     
     public void setZonas(Set zonas) {
         this.zonas = zonas;
+    }
+    public Set getCreditos() {
+        return this.creditos;
+    }
+    
+    public void setCreditos(Set creditos) {
+        this.creditos = creditos;
     }
 
 

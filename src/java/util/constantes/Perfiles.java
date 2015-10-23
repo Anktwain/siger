@@ -14,7 +14,17 @@ public interface Perfiles {
   /**
    *
    */
+  public static final int SUPER_ADMINISTRADOR = 9;
+  
+  /**
+   *
+   */
   public static final int ADMINISTRADOR = 1;
+  
+  /**
+   *
+   */
+  public static final int ADMINISTRADOR_NO_CONFIRMADO = -1;
 
   /**
    *
