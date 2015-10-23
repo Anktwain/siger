@@ -39,7 +39,7 @@ public class VistaDeudores implements Serializable {
   private Direccion direccionlActual;
 
   // Listas para desplegarse en las tablas
-  private List<Deudor> listaDeudors;
+  private List<Deudor> listaDeudores;
   private List<Telefono> listaTelefonos;
   private List<Email> listaEmails;
   private List<Direccion> listaDirecciones;
@@ -99,14 +99,18 @@ public class VistaDeudores implements Serializable {
   // Método que se llama inmediatamente después de crear el bean
   @PostConstruct
   public void listarDeudors() {
-    listaDeudors = deudorBean.listar();
+    listaDeudores = deudorBean.listar();
 
-    if (listaDeudors == null) {
+    if (listaDeudores == null) {
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
               "No se pudo obtener la lista de deudors",
               "Comunique esta situación a Soporte Técnico"));
     }
+  }
+  
+  public boolean listaDeudoresMayorQue5(){
+    return listaDeudores.size() > 5;
   }
 
   // EVENTOS DE LA VISTA
@@ -224,7 +228,7 @@ public class VistaDeudores implements Serializable {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
               "Se eliminó el Deudor: ",
               deudorActual.getSujeto().getNombreRazonSocial()));
-      listaDeudors.remove(deudorActual);
+      listaDeudores.remove(deudorActual);
         RequestContext.getCurrentInstance().execute("PF('dlgDetalleDeudor').hide();");
       } else {
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -474,12 +478,12 @@ public class VistaDeudores implements Serializable {
     this.direccionlActual = direccionlActual;
   }
 
-  public List<Deudor> getListaDeudors() {
-    return listaDeudors;
+  public List<Deudor> getListaDeudores() {
+    return listaDeudores;
   }
 
-  public void setListaDeudors(List<Deudor> listaDeudors) {
-    this.listaDeudors = listaDeudors;
+  public void setListaDeudores(List<Deudor> listaDeudores) {
+    this.listaDeudores = listaDeudores;
   }
 
   public List<Telefono> getListaTelefonos() {

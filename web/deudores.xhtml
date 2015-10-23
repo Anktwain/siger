@@ -53,7 +53,7 @@
               <h3 class="m-top-none">Nuevo deudor</h3>
               <p:commandButton value="Agregar" class="btn btn-success"
                                actionListener="#{vistaDeudores.direccionBean.listarEstados()}"
-                               onclick="PF('dlgAltaCliente').show();"/>
+                               onclick="PF('dlgAltaDeudor').show();"/>
 
               <div class="stat-icon">
                 <i class="fa fa-user-plus fa-2x" />
@@ -67,23 +67,23 @@
         <div class="col-lg-8">
           <div class="panel panel-default">
             <div class="panel panel-body">
-              <h:form id="frmListaClientes">
-                <p:dataTable id="tblClientes" var="cliente" value="#{vistaDeudores.listaClientes}"
-                             rowKey="#{cliente.idCliente}" selectionMode="single" paginator="true"
-                             rows="10" rowsPerPageTemplate="5,10,15" emptyMessage="No hay clientes"
+              <h:form id="frmListaDeudores">
+                <p:dataTable id="tblDeudores" var="deudor" value="#{vistaDeudores.listaDeudores}"
+                             rowKey="#{deudor.idDeudor}" selectionMode="single" paginator="#{vistaDeudores.listaDeudoresMayorQue5()}"
+                             rows="10" rowsPerPageTemplate="5,10,15" emptyMessage="No hay deudores"
                              class="table table-bordered table-condensed table-hover table-striped table-responsive">
-                  <p:ajax event="rowSelect" listener="#{vistaDeudores.onRowClienteSelect}" oncomplete="PF('dlgDetalleCliente').show()"
-                          update="frmDetalleCliente,frmDetalleTelefonosCliente,frmDetalleEmailsCliente,frmDetalleDireccionesCliente,frmDetalleContactosCliente,dlgDetalleCliente"/>
+                  <p:ajax event="rowSelect" listener="#{vistaDeudores.onRowDeudorSelect}" oncomplete="PF('dlgDetalleDeudor').show()"
+                          update="frmDetalleDeudor,frmDetalleTelefonosDeudor,frmDetalleEmailsDeudor,frmDetalleDireccionesDeudor,frmDetalleContactosDeudor,dlgDetalleDeudor"/>
                   <p:column headerText="Nombre o Raz&oacute;n Social" width="70%">
-                    <h:outputText id="nombreCliente" value="#{cliente.sujeto.nombreRazonSocial}"/>
-                    <p:tooltip for="nombreCliente" value="Haga clic para ver detalle del cliente"/>
+                    <h:outputText id="nombreDeudor" value="#{deudorBean.sujetoBean.nombreRazonSocial}"/>
+                    <p:tooltip for="nombreDeudor" value="Haga clic para ver detalle del deudor"/>
                   </p:column>
                   <p:column headerText="RFC">
-                    <h:outputText id="rfcCliente" value="#{cliente.sujeto.rfc}"/>
-                    <p:tooltip for="rfcCliente" value="Haga clic para ver detalle del cliente"/>
+                    <h:outputText id="rfcDeudor" value="#{deudorBean.sujetoBean.rfc}"/>
+                    <p:tooltip for="rfcDeudor" value="Haga clic para ver detalle del deudor"/>
                   </p:column>                
                 </p:dataTable>
-              </h:form><!-- frmListaClientes -->
+              </h:form><!-- frmListaDeudores -->
             </div><!-- panel panel-body -->
 
           </div><!-- panel panel-default -->
@@ -93,7 +93,7 @@
     </div> <!-- main container -->
     <ui:include src="barraInferior.xhtml"/>
 
-    <p:dialog widgetVar="dlgAltaCliente" width="40%" header="Agregar Nuevo Deudor"
+    <p:dialog widgetVar="dlgAltaDeudor" width="40%" header="Agregar Nuevo Deudor"
               modal="true" showEffect="size" hideEffect="size" resizable="false">
       <div class="panel panel-default">
         <div class="panel-tab">
@@ -122,28 +122,28 @@
           <div class="tab-content">
 
             <div class="tab-pane fade in active" id="personales">
-              <h:form id="frmAltaCliente">
+              <h:form id="frmAltaDeudor">
                 <div class="form-group">
                   <p:outputLabel value="Nombre o Raz&oacute;n Social: "/>
                   <p:inputText id="txtNombre" class="form-control input-sm" disabled="#{vistaDeudores.txtNombreDisabled}"
                                required="true" requiredMessage="Ingrese un nombre o raz&oacute;n social"
-                               validator="#{vistaDeudores.clienteBean.sujetoBean.nombreEsValido()}"
+                               validator="#{vistaDeudores.deudorBean.sujetoBean.nombreEsValido()}"
                                validatorMessage="El nombre o raz&oacute;n social no es v&aacute;lido"
-                               value="#{vistaDeudores.clienteBean.sujetoBean.nombreRazonSocial}"/>
+                               value="#{vistaDeudores.deudorBean.sujetoBean.nombreRazonSocial}"/>
                 </div>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <p:outputLabel value="RFC:" />
                       <p:inputText id="txtRfc" class="form-control input-sm" disabled="#{vistaDeudores.txtRfcDisabled}"
-                                   value="#{vistaDeudores.clienteBean.sujetoBean.rfc}"/>
+                                   value="#{vistaDeudores.deudorBean.sujetoBean.rfc}"/>
                     </div>
                   </div> <!-- /.col-->  
                   <div class="col-md-6">
                     <div class="form-group">
                       <p:outputLabel value="CURP:" />
                       <p:inputText id="txtCurp" class="form-control input-sm" disabled="#{vistaDeudores.txtCurpDisabled}"
-                                   value="#{vistaDeudores.clienteBean.curp}"/>
+                                   value="#{vistaDeudores.deudorBean.curp}"/>
                     </div>
                   </div><!-- /.col-->
                 </div> <!-- /.row-->  
@@ -152,27 +152,27 @@
                     <div class="form-group">
                       <p:outputLabel value="N&uacute;mero de Seguro Social:" />
                       <p:inputText id="txtNss" class="form-control input-sm" disabled="#{vistaDeudores.txtNssDisabled}"
-                                   value="#{vistaDeudores.clienteBean.numeroSeguroSocial}"/>
+                                   value="#{vistaDeudores.deudorBean.numeroSeguroSocial}"/>
                     </div>
                   </div> <!-- /.col-->  
                   <div class="col-md-6">
                     <div class="form-group">
-                      <p:outputLabel value="N&uacute;mero de cliente:" />
+                      <p:outputLabel value="No deudor:" />
                       <p:inputText id="txtNcte" class="form-control input-sm" disabled="#{vistaDeudores.txtNcteDisabled}"
-                                   value="#{vistaDeudores.clienteBean.numeroCliente}"/>
+                                   value="#{vistaDeudores.deudorBean.numeroDeudor}"/>
                     </div>
                   </div> <!-- /.col-->  
                 </div> <!-- /.row-->
-                <p:commandButton id="btnAltaCliente" class="btn btn-success btn-xs"
-                                 disabled="#{vistaDeudores.btnAltaClienteDisabled}"
-                                 value="Guardar" actionListener="#{vistaDeudores.agregarCliente()}"
-                                 update="growl,frmListaClientes,btnAltaCliente,txtNcte,txtNss,txtCurp,txtRfc,txtNombre,frmAltaDireccion:cboxEdo"/>
-                <p:commandButton id="btnResetCliente" class="btn btn-success btn-xs"
-                                 value="Otro" actionListener="#{vistaDeudores.inicializarCliente()}"
-                                 update="frmAltaCliente,btnAltaCliente,txtNcte,txtNss,txtCurp,txtRfc,txtNombre,frmAltaContacto,
+                <p:commandButton id="btnAltaDeudor" class="btn btn-success btn-xs"
+                                 disabled="#{vistaDeudores.btnAltaDeudorDisabled}"
+                                 value="Guardar" actionListener="#{vistaDeudores.agregarDeudor()}"
+                                 update="growl,frmListaDeudores,btnAltaDeudor,txtNcte,txtNss,txtCurp,txtRfc,txtNombre,frmAltaDireccion:cboxEdo"/>
+                <p:commandButton id="btnResetDeudor" class="btn btn-success btn-xs"
+                                 value="Otro" actionListener="#{vistaDeudores.inicializarDeudor()}"
+                                 update="frmAltaDeudor,btnAltaDeudor,txtNcte,txtNss,txtCurp,txtRfc,txtNombre,frmAltaContacto,
                                  frmAltaContacto:btnAltaContacto,frmAltaContacto:txtNombre,frmAltaContacto:txtRfc,
                                  frmAltaContacto:txtObservaciones"/>
-              </h:form><!-- frmAltaCliente -->
+              </h:form><!-- frmAltaDeudor -->
             </div><!-- personales -->
 
             <div class="tab-pane fade" id="contacto">
@@ -240,7 +240,7 @@
                                        value="#{vistaDeudores.telefonoBean.horario}"/>
                         </div> <!-- /form-group-->  
                         <p:commandButton id="btnAltaTelefono" class="btn btn-xs btn-success btn-sm"
-                                         value="Guardar Tel&eacute;fono" actionListener="#{vistaDeudores.agregarTelefonoCliente()}"
+                                         value="Guardar Tel&eacute;fono" actionListener="#{vistaDeudores.agregarTelefonoDeudor()}"
                                          update="growl,frmAltaTelefono"/>
                       </h:form><!-- frmAltaTelefono -->
                     </div><!-- tel -->
@@ -254,7 +254,7 @@
                                        value="#{vistaDeudores.emailBean.direccion}"/>
                         </div> <!-- /form-group-->
                         <p:commandButton id="btnAltaEmail" class="btn btn-xs btn-success btn-sm"
-                                         value="Guardar E-mail" actionListener="#{vistaDeudores.agregarEmailCliente()}"
+                                         value="Guardar E-mail" actionListener="#{vistaDeudores.agregarEmailDeudor()}"
                                          update="growl,frmAltaEmail"/>
                       </h:form><!-- frmAltaEmail -->
                     </div><!-- mail -->
@@ -322,7 +322,7 @@
                           </div> <!-- /.col-->  
                         </div> <!-- /.row-->
                         <p:commandButton id="btnAltaDireccion" class="btn btn-xs btn-success btn-sm"
-                                         value="Guardar Direcci&oacute;n" actionListener="#{vistaDeudores.agregarDireccionCliente()}" update="growl,frmAltaDireccion,frmAltaDireccionContacto"/>
+                                         value="Guardar Direcci&oacute;n" actionListener="#{vistaDeudores.agregarDireccionDeudor()}" update="growl,frmAltaDireccion,frmAltaDireccionContacto"/>
                       </h:form><!-- frmAltaDireccion -->
                     </div><!-- dir -->
                   </div>
@@ -533,19 +533,19 @@
 
           <div class="modal-footer">
             <p:commandButton class="btn btn-success btn-xs" value="Terminar" actionListener="#{vistaDeudores.terminarProceso()}"
-                             onclick="PF('dlgAltaCliente').hide();" update="frmAltaCliente,frmAltaContacto,frmAltaTelefono,
+                             onclick="PF('dlgAltaDeudor').hide();" update="frmAltaDeudor,frmAltaContacto,frmAltaTelefono,
                              frmAltaEmail,frmAltaDireccion,frmAltaTelefonoContacto,frmAltaEmailContacto,frmAltaDireccionContacto,
-                             frmAltaCliente:btnAltaCliente,frmAltaCliente:txtNcte,frmAltaCliente:txtNss,frmAltaCliente:txtCurp,
-                             frmAltaCliente:txtRfc,frmAltaCliente:txtNombre,frmAltaContacto:btnAltaContacto,frmAltaContacto:txtNombre,
+                             frmAltaDeudor:btnAltaDeudor,frmAltaDeudor:txtNcte,frmAltaDeudor:txtNss,frmAltaDeudor:txtCurp,
+                             frmAltaDeudor:txtRfc,frmAltaDeudor:txtNombre,frmAltaContacto:btnAltaContacto,frmAltaContacto:txtNombre,
                              frmAltaContacto:txtRfc,frmAltaContacto:txtObservaciones"/>
           </div>
 
         </div> <!-- panel-body -->
       </div><!-- panel panel-default -->
-    </p:dialog><!-- dlgAltaCliente -->
+    </p:dialog><!-- dlgAltaDeudor -->
 
-    <p:dialog widgetVar="dlgDetalleCliente" width="45%" height="65%" header="Detalle de Cliente: #{vistaDeudores.clienteActual.sujeto.nombreRazonSocial}"
-              showEffect="size" hideEffect="size" resizable="true" id="dlgDetalleCliente">
+    <p:dialog widgetVar="dlgDetalleDeudor" width="45%" height="65%" header="Detalle de Deudor: #{vistaDeudores.deudorActual.sujeto.nombreRazonSocial}"
+              showEffect="size" hideEffect="size" resizable="true" id="dlgDetalleDeudor">
 
       <div class="row">
         <div class="col-md-6">
@@ -555,8 +555,8 @@
               <div class="btn-group">
                 <p:commandButton icon="fa fa-pencil-square-o" class="btn btn-xs btn-success no-padding"  />
                 <p:commandButton icon="fa fa-floppy-o" class="btn btn-xs btn-success no-padding" />
-                <p:commandButton icon="fa fa-trash-o" class="btn btn-xs btn-danger no-padding" actionListener="#{vistaDeudores.eliminarCliente()}"
-                                 update="growl,frmListaClientes">
+                <p:commandButton icon="fa fa-trash-o" class="btn btn-xs btn-danger no-padding" actionListener="#{vistaDeudores.eliminarDeudor()}"
+                                 update="growl,frmListaDeudores">
                   <p:confirm header="Confirme que desea proseguir" message="&iquest;Est&aacute; seguro de que desea eliminar este registro?"
                              icon="fa fa-exclamation-triangle"/>
                 </p:commandButton>
@@ -567,18 +567,18 @@
               </div>
             </div>
             <div class="panel-body">
-              <h:form id="frmDetalleCliente">
+              <h:form id="frmDetalleDeudor">
                 <p:panelGrid columns="2">
                   <h:outputText value="Nombre: " />
-                  <p:inputText value="#{vistaDeudores.clienteActual.sujeto.nombreRazonSocial}" class="no-padding" />
+                  <p:inputText value="#{vistaDeudores.deudorActual.sujeto.nombreRazonSocial}" class="no-padding" />
                   <h:outputText value="RFC: " />
-                  <p:inputText value="#{vistaDeudores.clienteActual.sujeto.rfc}" class="no-padding"/>
+                  <p:inputText value="#{vistaDeudores.deudorActual.sujeto.rfc}" class="no-padding"/>
                   <h:outputText value="CURP: " />
-                  <p:inputText value="#{vistaDeudores.clienteActual.curp}" class="no-padding"/>
+                  <p:inputText value="#{vistaDeudores.deudorActual.curp}" class="no-padding"/>
                   <h:outputText value="NSS: " />
-                  <p:inputText value="#{vistaDeudores.clienteActual.numeroSeguroSocial}" class="no-padding"/>
-                  <h:outputText value="ID Cliente: " />
-                  <p:inputText value="#{vistaDeudores.clienteActual.numeroCliente}" class="no-padding"/>
+                  <p:inputText value="#{vistaDeudores.deudorActual.numeroSeguroSocial}" class="no-padding"/>
+                  <h:outputText value="ID Deudor: " />
+                  <p:inputText value="#{vistaDeudores.deudorActual.numeroDeudor}" class="no-padding"/>
                 </p:panelGrid>
               </h:form>
             </div>
@@ -591,7 +591,7 @@
               CONTACTOS
             </div>
             <div class="panel-body">
-              <h:form id="frmDetalleContactosCliente">
+              <h:form id="frmDetalleContactosDeudor">
                 <p:dataTable id="tblContactos" var="contacto" value="#{vistaDeudores.listaContactos}"
                              rowKey="#{contacto.idContacto}" selectionMode="single"
                              rows="10" emptyMessage="No hay contactos"
@@ -618,7 +618,7 @@
                   TEL&Eacute;FONOS
                 </div>
                 <div class="panel-body">
-                  <h:form id="frmDetalleTelefonosCliente">
+                  <h:form id="frmDetalleTelefonosDeudor">
                     <p:dataTable id="tblTelefonos" var="telefono" value="#{vistaDeudores.listaTelefonos}"
                                  rowKey="#{telefono.idTelefono}" selectionMode="single"
                                  rows="10" emptyMessage="No hay tel&eacute;fonos"
@@ -676,7 +676,7 @@
                   E-MAILS
                 </div>
                 <div class="panel-body">
-                  <h:form id="frmDetalleEmailsCliente">
+                  <h:form id="frmDetalleEmailsDeudor">
                     <p:dataTable id="tblEmails" var="email" value="#{vistaDeudores.listaEmails}"
                                  rowKey="#{email.idEmail}" selectionMode="single"
                                  rows="10" emptyMessage="No hay e-mails"
@@ -724,7 +724,7 @@
               DIRECCIONES
             </div>
             <div class="panel-body">
-              <h:form id="frmDetalleDireccionesCliente">
+              <h:form id="frmDetalleDireccionesDeudor">
                 <p:dataTable id="tblDirecciones" var="direccion" value="#{vistaDeudores.listaDirecciones}"
                              rowKey="#{direccion.idDireccion}" selectionMode="single"
                              rows="10" emptyMessage="No hay direcciones"

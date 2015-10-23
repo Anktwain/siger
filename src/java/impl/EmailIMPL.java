@@ -128,7 +128,7 @@ public class EmailIMPL implements EmailDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Email> listaEmails;
-    String consulta = "select e.* from email e join sujeto s on s.id_sujeto=e.sujetos_id_sujeto where s.id_sujeto=" + idSujeto + ";";
+    String consulta = "select e.* from email e join sujeto s on s.id_sujeto=e.id_sujeto where s.id_sujeto=" + idSujeto + ";";
 
     try {
       listaEmails = sesion.createSQLQuery(consulta).addEntity(Email.class).list();

@@ -41,7 +41,7 @@ public class CreditoIMPL implements CreditoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Number creditos;
-    String consulta = "SELECT COUNT(creditos_id_credito) FROM credito_remesa WHERE remesas_id_remesa = (SELECT MAX(id_remesa) FROM remesa) AND creditos_id_credito IN (select id_credito FROM credito WHERE gestores_id_gestor = " + idGestor + ");";
+    String consulta = "SELECT COUNT(id_credito) FROM credito_remesa WHERE id_remesa = (SELECT MAX(id_remesa) FROM remesa) AND id_credito IN (select id_credito FROM credito WHERE id_gestor = " + idGestor + ");";
     try {
       creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
       Logs.log.info("Se ejecutó query: " + consulta);

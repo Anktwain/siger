@@ -136,8 +136,8 @@ public class ContactoIMPL implements ContactoDAO {
     Transaction tx = sesion.beginTransaction();
     List<Contacto> listaContactos;
 
-    String consulta = "select c.* from sujeto s join contacto c on s.id_sujeto = c.sujetos_id_sujeto "
-            + "join cliente l on l.id_cliente = c.clientes_id_cliente join sujeto s2 on s2.id_sujeto = l.sujetos_id_sujeto "
+    String consulta = "select c.* from sujeto s join contacto c on s.id_sujeto = c.id_sujeto "
+            + "join deudor l on l.id_deudor = c.id_deudor join sujeto s2 on s2.id_sujeto = l.id_sujeto "
             + "where s2.id_sujeto=" + idSujeto + " and s.eliminado = " + Sujetos.ACTIVO + ";";
 
     try {

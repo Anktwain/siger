@@ -130,7 +130,7 @@ public class DeudorIMPL implements DeudorDAO {
 
         try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
             listaDeudors = sesion.createSQLQuery("select c.* from sujeto s join deudor c"
-                    + " on s.id_sujeto = c.sujetos_id_sujeto"
+                    + " on s.id_sujeto = c.id_sujeto"
                     + " where s.eliminado != " + Sujetos.ELIMINADO).addEntity(Deudor.class).list();
         } catch (HibernateException he) {
             listaDeudors = null;

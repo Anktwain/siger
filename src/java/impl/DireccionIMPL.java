@@ -128,7 +128,7 @@ public class DireccionIMPL implements DireccionDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Direccion> listaDirecciones;
-    String consulta = "select d.* from direccion d join sujeto s on s.id_sujeto=d.sujetos_id_sujeto where s.id_sujeto=" + idSujeto + ";";
+    String consulta = "select d.* from direccion d join sujeto s on s.id_sujeto=d.id_sujeto where s.id_sujeto=" + idSujeto + ";";
 
     try {
       listaDirecciones = sesion.createSQLQuery(consulta).addEntity(Direccion.class).list();
