@@ -93,7 +93,7 @@ public class Colonia implements java.io.Serializable {
 
   @Override
   public String toString() {
-    return tipo + " " + nombre;
+    return nombre;
   }
 
 }
