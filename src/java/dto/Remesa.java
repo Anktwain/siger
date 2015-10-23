@@ -1,5 +1,5 @@
 package dto;
-// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
+// Generated 23/10/2015 10:50:41 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -17,19 +17,19 @@ public class Remesa  implements java.io.Serializable {
      private Float saldoVencido;
      private String estatus;
      private Date fechaUltimoPago;
-     private Set facs = new HashSet(0);
      private Set creditoRemesas = new HashSet(0);
+     private Set facs = new HashSet(0);
 
     public Remesa() {
     }
 
-    public Remesa(Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Set facs, Set creditoRemesas) {
+    public Remesa(Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Set creditoRemesas, Set facs) {
        this.mesesVencidos = mesesVencidos;
        this.saldoVencido = saldoVencido;
        this.estatus = estatus;
        this.fechaUltimoPago = fechaUltimoPago;
-       this.facs = facs;
        this.creditoRemesas = creditoRemesas;
+       this.facs = facs;
     }
    
     public Integer getIdRemesa() {
@@ -67,19 +67,19 @@ public class Remesa  implements java.io.Serializable {
     public void setFechaUltimoPago(Date fechaUltimoPago) {
         this.fechaUltimoPago = fechaUltimoPago;
     }
-    public Set getFacs() {
-        return this.facs;
-    }
-    
-    public void setFacs(Set facs) {
-        this.facs = facs;
-    }
     public Set getCreditoRemesas() {
         return this.creditoRemesas;
     }
     
     public void setCreditoRemesas(Set creditoRemesas) {
         this.creditoRemesas = creditoRemesas;
+    }
+    public Set getFacs() {
+        return this.facs;
+    }
+    
+    public void setFacs(Set facs) {
+        this.facs = facs;
     }
 
 

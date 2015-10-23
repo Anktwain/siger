@@ -1,20 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 19/10/2015 12:46:46 PM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 23/10/2015 10:50:42 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.Contacto" optimistic-lock="version" table="contacto">
-    <id name="idContacto" type="java.lang.Integer">
-      <column name="id_contacto"/>
-      <generator class="identity"/>
-    </id>
-    <many-to-one class="dto.Deudor" fetch="select" name="deudor">
-      <column name="id_deudor" not-null="true"/>
-    </many-to-one>
-    <many-to-one class="dto.Sujeto" fetch="select" name="sujeto">
-      <column name="id_sujeto" not-null="true"/>
-    </many-to-one>
-    <property name="observaciones" type="string">
-      <column length="300" name="observaciones"/>
-    </property>
-  </class>
+    <class name="dto.Contacto" table="contacto" catalog="sigerbd" optimistic-lock="version">
+        <id name="idContacto" type="java.lang.Integer">
+            <column name="id_contacto" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="deudor" class="dto.Deudor" fetch="select">
+            <column name="id_deudor" not-null="true" />
+        </many-to-one>
+        <many-to-one name="sujeto" class="dto.Sujeto" fetch="select">
+            <column name="id_sujeto" not-null="true" />
+        </many-to-one>
+        <property name="observaciones" type="string">
+            <column name="observaciones" length="300" />
+        </property>
+    </class>
 </hibernate-mapping>

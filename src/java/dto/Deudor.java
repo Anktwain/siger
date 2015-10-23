@@ -1,5 +1,5 @@
 package dto;
-// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
+// Generated 23/10/2015 10:50:41 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,8 +16,8 @@ public class Deudor  implements java.io.Serializable {
      private String numeroDeudor;
      private String curp;
      private String numeroSeguroSocial;
-     private Set creditos = new HashSet(0);
      private Set contactos = new HashSet(0);
+     private Set creditos = new HashSet(0);
 
     public Deudor() {
     }
@@ -26,13 +26,13 @@ public class Deudor  implements java.io.Serializable {
     public Deudor(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public Deudor(Sujeto sujeto, String numeroDeudor, String curp, String numeroSeguroSocial, Set creditos, Set contactos) {
+    public Deudor(Sujeto sujeto, String numeroDeudor, String curp, String numeroSeguroSocial, Set contactos, Set creditos) {
        this.sujeto = sujeto;
        this.numeroDeudor = numeroDeudor;
        this.curp = curp;
        this.numeroSeguroSocial = numeroSeguroSocial;
-       this.creditos = creditos;
        this.contactos = contactos;
+       this.creditos = creditos;
     }
    
     public Integer getIdDeudor() {
@@ -70,19 +70,19 @@ public class Deudor  implements java.io.Serializable {
     public void setNumeroSeguroSocial(String numeroSeguroSocial) {
         this.numeroSeguroSocial = numeroSeguroSocial;
     }
-    public Set getCreditos() {
-        return this.creditos;
-    }
-    
-    public void setCreditos(Set creditos) {
-        this.creditos = creditos;
-    }
     public Set getContactos() {
         return this.contactos;
     }
     
     public void setContactos(Set contactos) {
         this.contactos = contactos;
+    }
+    public Set getCreditos() {
+        return this.creditos;
+    }
+    
+    public void setCreditos(Set creditos) {
+        this.creditos = creditos;
     }
 
 

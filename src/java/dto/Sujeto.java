@@ -1,5 +1,5 @@
 package dto;
-// Generated 19/10/2015 12:46:44 PM by Hibernate Tools 4.3.1
+// Generated 23/10/2015 10:50:41 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -15,13 +15,13 @@ public class Sujeto  implements java.io.Serializable {
      private String nombreRazonSocial;
      private String rfc;
      private int eliminado;
+     private Set telefonos = new HashSet(0);
      private Set direccions = new HashSet(0);
-     private Set emails = new HashSet(0);
-     private Set institucioneses = new HashSet(0);
+     private Set contactos = new HashSet(0);
+     private Set institucions = new HashSet(0);
      private Set despachos = new HashSet(0);
      private Set deudors = new HashSet(0);
-     private Set telefonos = new HashSet(0);
-     private Set contactos = new HashSet(0);
+     private Set emails = new HashSet(0);
 
     public Sujeto() {
     }
@@ -31,17 +31,17 @@ public class Sujeto  implements java.io.Serializable {
         this.nombreRazonSocial = nombreRazonSocial;
         this.eliminado = eliminado;
     }
-    public Sujeto(String nombreRazonSocial, String rfc, int eliminado, Set direccions, Set emails, Set institucioneses, Set despachos, Set deudors, Set telefonos, Set contactos) {
+    public Sujeto(String nombreRazonSocial, String rfc, int eliminado, Set telefonos, Set direccions, Set contactos, Set institucions, Set despachos, Set deudors, Set emails) {
        this.nombreRazonSocial = nombreRazonSocial;
        this.rfc = rfc;
        this.eliminado = eliminado;
+       this.telefonos = telefonos;
        this.direccions = direccions;
-       this.emails = emails;
-       this.institucioneses = institucioneses;
+       this.contactos = contactos;
+       this.institucions = institucions;
        this.despachos = despachos;
        this.deudors = deudors;
-       this.telefonos = telefonos;
-       this.contactos = contactos;
+       this.emails = emails;
     }
    
     public Integer getIdSujeto() {
@@ -72,6 +72,13 @@ public class Sujeto  implements java.io.Serializable {
     public void setEliminado(int eliminado) {
         this.eliminado = eliminado;
     }
+    public Set getTelefonos() {
+        return this.telefonos;
+    }
+    
+    public void setTelefonos(Set telefonos) {
+        this.telefonos = telefonos;
+    }
     public Set getDireccions() {
         return this.direccions;
     }
@@ -79,19 +86,19 @@ public class Sujeto  implements java.io.Serializable {
     public void setDireccions(Set direccions) {
         this.direccions = direccions;
     }
-    public Set getEmails() {
-        return this.emails;
+    public Set getContactos() {
+        return this.contactos;
     }
     
-    public void setEmails(Set emails) {
-        this.emails = emails;
+    public void setContactos(Set contactos) {
+        this.contactos = contactos;
     }
-    public Set getInstitucioneses() {
-        return this.institucioneses;
+    public Set getInstitucions() {
+        return this.institucions;
     }
     
-    public void setInstitucioneses(Set institucioneses) {
-        this.institucioneses = institucioneses;
+    public void setInstitucions(Set institucions) {
+        this.institucions = institucions;
     }
     public Set getDespachos() {
         return this.despachos;
@@ -107,19 +114,12 @@ public class Sujeto  implements java.io.Serializable {
     public void setDeudors(Set deudors) {
         this.deudors = deudors;
     }
-    public Set getTelefonos() {
-        return this.telefonos;
+    public Set getEmails() {
+        return this.emails;
     }
     
-    public void setTelefonos(Set telefonos) {
-        this.telefonos = telefonos;
-    }
-    public Set getContactos() {
-        return this.contactos;
-    }
-    
-    public void setContactos(Set contactos) {
-        this.contactos = contactos;
+    public void setEmails(Set emails) {
+        this.emails = emails;
     }
 
 
