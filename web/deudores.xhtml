@@ -8,7 +8,7 @@
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
-    <title>SigerWeb - Clientes</title>
+    <title>SigerWeb - Deudores</title>
   </h:head>
   <h:body>
     <p:growl id="growl" showDetail="true" />
@@ -33,15 +33,15 @@
             <a href="panelAdministrativo.xhtml">Inicio</a>
           </li>
           <li class="active">
-            Clientes
+            Deudores
           </li>
         </ul>
       </div>
 
       <div class="main-header clearfix">
         <div class="page-title">
-          <h3 class="no-margin">Clientes</h3>
-          <span>Consulte informaci&oacute;n de clientes, agregue nuevos clientes,
+          <h3 class="no-margin">Deudores</h3>
+          <span>Consulte informaci&oacute;n de deudores, agregue nuevos deudores,
             elimine o modifique sus datos</span>
         </div>
       </div>
@@ -50,7 +50,7 @@
         <div class="padding-md">
           <div class="col-sm-6 col-md-3">
             <div class="panel-stat3 bg-success">
-              <h3 class="m-top-none">Nuevo cliente</h3>
+              <h3 class="m-top-none">Nuevo deudor</h3>
               <p:commandButton value="Agregar" class="btn btn-success"
                                actionListener="#{vistaDeudores.direccionBean.listarEstados()}"
                                onclick="PF('dlgAltaCliente').show();"/>
