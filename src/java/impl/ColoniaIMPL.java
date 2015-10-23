@@ -25,7 +25,7 @@ public class ColoniaIMPL implements ColoniaDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Colonia> colonias;
-    String consulta = "select * from colonia where id_municipio_municipios = " + idMunicipio + " order by nombre asc;";
+    String consulta = "select * from colonia where id_municipio = " + idMunicipio + " order by nombre asc;";
     try {
       colonias = sesion.createSQLQuery(consulta).addEntity(Colonia.class).list();
       Logs.log.info("Se ejecutó query: " + consulta);

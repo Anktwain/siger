@@ -30,6 +30,12 @@ public class EstadoRepublica  implements java.io.Serializable {
        this.direccions = direccions;
        this.municipios = municipios;
     }
+
+  @Override
+  public String toString() {
+    return nombre;
+  }
+    
    
     public Integer getIdEstado() {
         return this.idEstado;

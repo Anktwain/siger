@@ -133,7 +133,7 @@ public class TelefonoIMPL implements TelefonoDAO {
       Session sesion = HibernateUtil.getSessionFactory().openSession();
       Transaction tx = sesion.beginTransaction();
       List<Telefono> listaTelefonos;
-      String consulta = "select t.* from telefono t join sujeto s on s.id_sujeto=t.sujetos_id_sujeto where s.id_sujeto=" + idSujeto + ";";
+      String consulta = "select t.* from telefono t join sujeto s on s.id_sujeto=t.id_sujeto where s.id_sujeto=" + idSujeto + ";";
       
       try {
         listaTelefonos = sesion.createSQLQuery(consulta).addEntity(Telefono.class).list();

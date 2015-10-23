@@ -25,7 +25,7 @@ public class MunicipioIMPL implements MunicipioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Municipio> municipios;
-    String consulta = "select * from municipio where id_estado_estados = " + idEstado + " order by nombre asc;";
+    String consulta = "select * from municipio where id_estado = " + idEstado + " order by nombre asc;";
     System.out.println(consulta);
     try {
       municipios = sesion.createSQLQuery(consulta).addEntity(Municipio.class).list();
