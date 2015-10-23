@@ -142,6 +142,7 @@ public class IndexBean implements Serializable {
                     sesionActiva = false;
                     break;
                 case Perfiles.ADMINISTRADOR:
+                case Perfiles.SUPER_ADMINISTRADOR:
 //                    FacesContext mensaje = FacesContext.getCurrentInstance();
 //                    mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.", usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
 //                    FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.", usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
