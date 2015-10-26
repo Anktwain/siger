@@ -31,7 +31,7 @@
       <div class="main-header clearfix">
         <div class="page-title">
           <h3 class="no-margin">Instituciones</h3>
-          <span>Consulte informaci&oacute;n de las institucioness, registre a una nueva, modifique o elimine las instituciones registradas</span>
+          <span>Consulte informaci&oacute;n de las instituciones, registre a una nueva, modifique o elimine las instituciones registradas</span>
         </div>
       </div>
       <div class="panel panel-default">
@@ -41,6 +41,7 @@
               <h3 class="m-top-none">Nueva empresa</h3>
               <div id="botonazo">
                 <p:commandButton value="Agregar" class="btn btn-default" onclick="PF('dlgNuevaEmpresa').show();" />
+
               </div>
               <div class="stat-icon">
                 <i class="fa fa-plus fa-2x" />
@@ -49,7 +50,8 @@
             <div class="panel-stat3 bg-info">
               <h3 class="m-top-none">Editar empresa</h3>
               <div id="botonazo">
-                <p:commandButton value="Editar" class="btn btn-default" onclick="PF('dlgEditarEmpresa').show();" />
+                <!-- LINEA ORIGINAL  <p:commandButton value="Editar" class="btn btn-default" onclick="PF('dlgEditarEmpresa').show();" />-->
+                <p:commandButton value="Agregar Zona" class="btn btn-default" onclick="PF('dlgNuevaZona').show();" /> 
               </div>
               <div class="stat-icon">
                 <i class="fa fa-pencil fa-2x" />
@@ -278,5 +280,18 @@
       <div class="modal-footer">
       </div>
     </p:dialog>
+
+
+
+
+
+
+    
+
+
+
+
+
+
   </h:body>
 </html>
