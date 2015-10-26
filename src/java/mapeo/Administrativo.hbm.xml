@@ -1,15 +1,14 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 23/10/2015 10:50:42 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/10/2015 11:55:10 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Administrativo" table="administrativo" catalog="sigerbd" optimistic-lock="version">
-        <id name="idAdministrativo" type="java.lang.Integer">
-            <column name="id_administrativo" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="usuario" class="dto.Usuario" fetch="select">
-            <column name="id_usuario" not-null="true" />
-        </many-to-one>
-    </class>
+  <class catalog="sigerbd" name="dto.Administrativo" optimistic-lock="version" table="administrativo">
+    <id name="idAdministrativo" type="java.lang.Integer">
+      <column name="id_administrativo"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Usuario" fetch="select" name="usuario">
+      <column name="id_usuario" not-null="true"/>
+    </many-to-one>
+  </class>
 </hibernate-mapping>
