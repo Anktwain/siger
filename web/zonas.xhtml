@@ -1,31 +1,204 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
-      xmlns:h="http://xmlns.jcp.org/jsf/html" 
-      xmlns:p="http://primefaces.org/ui" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
-    <title>SigerWeb - Visitas</title>
-  </h:head> 
-  <body>
-    <p:growl id="growl" showDetail="true" sticky="true" />
+    <title>SigerWeb - Zonas</title>
+    <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
+    <script
+      src="http://maps.googleapis.com/maps/api/js">
+    </script>
+    <script>
+      function initialize() {
+        var mapProp = {
+          center: new google.maps.LatLng(19.432545, -99.133271),
+          zoom: 5,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
 
-    <!-- Overlay Div -->
-    <div id="overlay" class="transparent" style="display: none"></div>
-    <ui:include src="barraSuperior.xhtml" />
+  </h:head>
+  <h:body>
+    <p:growl id="growl" showDetail="true" />
+
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+              closable="false" resizable="false" showHeader="false" >
+      <p:graphicImage library="img" name="loadingBarra.gif" />
+    </p:dialog>
+
+    <div id="overlay" class="transparent" style="display: none;"></div>
     <ui:include src="barraLateral.xhtml" />
+    <ui:include src="barraSuperior.xhtml" />
+
     <div id="main-container">
-      <h1>
-        M&oacute;dulo de zonas
-      </h1>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
-    </div><!-- /main-container -->
-    <!-- Footer ================================================== -->
-    <ui:include src="barraInferior.xhtml" />
-  </body>
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="panelAdministrativo.xhtml">Inicio</a>
+          </li>
+          <li class="active">
+            Zonas
+          </li>
+        </ul>
+      </div>
+
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Zonas</h3>
+          <span>Crear, visualizar, editar las zonas de cobranza.</span>
+        </div>
+      </div>
+
+      <h:form>
+        <!--          <p:ajax event="toggle" />-->
+        <div class="row">
+          <div class="col-sm-6" id="googleMap" style="width:500px;height:380px;"></div>
+          <div class="col-sm-5">
+            <div class="col-sm-12">
+              <div class="panel-stat3 bg-info">
+                <h3 class="m-top-none">Crear nueva zona</h3>
+
+                <div id="botonazo">
+                  <p:commandButton value="Nueva Zona" class="btn-default" 
+                                   onclick="PF('dlgNuevaZona').show();" />
+                </div>
+
+                <div class="stat-icon">
+                  <i class="fa fa-pencil fa-3x"/>
+                </div>
+              </div>
+            </div>
+            <p:fieldset style="" legend="Zonas en el mapa" toggleable="true" toggleSpeed="500">
+              <p:dataTable emptyMessage="Todav&iacute;a no hay zonas registradas"
+                           paginator="true" rows="10" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                           rowKey="" selection=""  id="zonas" widgetVar="zonaDataTable" var="zona">
+
+                <f:facet name="header">
+                  <p:outputPanel>
+                    <h:outputText value="Buscar en todas las zonas:  " />
+                    <!--<p:inputText id="globalFilter" onkeyup="PF('zonaDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>-->
+                  </p:outputPanel>
+                </f:facet>
+
+                <p:column headerText="Nombre" filterBy="" filterMatchMode="contains"> 
+                  <h:outputText value=""/>
+                </p:column>
+                <p:column headerText="Estados incluidos" filterBy="" filterMatchMode="contains">
+                  <h:outputText value=""/>
+                </p:column>
+                <p:column headerText="Gestor asignado" filterBy="" filterMatchMode="contains">
+                  <h:outputText value=""/>                         
+                </p:column>
+
+              </p:dataTable>
+              <!--  Estos son los datos que le faltaron             
+             <p:dataTable selectionMode="single"  filteredValue="" value="">                     
+              </p:dataTable>
+              -->
+            </p:fieldset>
+          </div>
+        </div> <!-- row -->
+      </h:form>
+
+      <div class="panel-body">
+        <div class="tab-content">
+          <div class="tab-pane fade" id="nueva">
+            <h:form id="formNuevaZona">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4>Cree una nueza zona de cobranza</h4>
+                  <ul class="tab-bar">
+                    <li><a href="#nueva" data-toggle="tab" title="Click aqui si desea dar de alta una zona">
+                        <h2><i class="fa fa-plus"></i>Nueva Zona</h2></a></li>
+                  </ul>
+                </div>
+                <div class="modal-body">
+                  <!-- FORMULARIO PARA REGISTRAR UNA NUEVA ZONA -->
+                  <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel value="Nombre:" for="acSimple" />
+                    <p:autoComplete id="acSimple" value="" />
+
+                    <p:outputLabel value="Estado:" for="dropDEstado" />
+                    <p:autoComplete id="dropDEstado" dropdown="true" value="#{zonasVistaBean}" completeMethod="#{zonasVistaBean}" />
+
+                    <p:outputLabel for="advanced" value="Municipio:" />
+                    <p:selectManyMenu id="advanced" value="#{zonasVistaBean}"
+                                      var="t" filter="true" filterMatchMode="contains" showCheckbox="true">
+                      <f:selectItems value="#{zonasVistaBean}" var="theme" itemLabel="" itemValue="" />
+
+                      <p:column>
+                        <h:outputText styleClass="ui-theme ui-theme-#{t.name}" />
+                      </p:column>
+
+                      <p:column>
+                        <h:outputText value="" />
+                      </p:column>
+                    </p:selectManyMenu>
+
+                    <p:outputLabel value="Colonia:" for="themes" />
+                    <p:autoComplete id="themes" multiple="true" value="#{zonasVistaBean}" completeMethod="#{zonasVistaBean}"
+                                    var="theme" itemLabel="#{zonasVistaBean}" itemValue="" forceSelection="true">
+                      <p:column style="width:10%">
+                        <h:outputText styleClass="ui-theme ui-theme-#{theme.name}" />
+                      </p:column>
+
+                      <p:column>
+                        <h:outputText value="#{zonasVistaBean}" />
+                      </p:column>
+                    </p:autoComplete>                    
+
+                  </h:panelGrid>
+                </div><!-- /.modal-body-->
+                <div class="modal-footer">
+                </div><!-- /.modal-footer-->
+              </div><!-- /.modal-content -->
+            </h:form>
+          </div>
+          <div class="tab-pane fade" id="editar">
+            <h:form id="formEditarEmpresa">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4>Seleccione la empresa y de click en "Editar"</h4>
+                </div>
+                <div class="modal-body">
+                  <p:dataTable id="editarEmpresa" var="sujeto" value="#{empresasBean.listaEmpresas}" rowKey="#{sujeto.rfc}" selection="#{empresasBean.empresa}" selectionMode="single" paginator="true" rows="10" style="width: 700px; margin-left: auto; margin-right: auto;">
+                    <f:facet name="header">
+                      Empresas registradas en el sistema
+                    </f:facet>
+                    <p:column headerText="Nombre de la empresa">
+                      <p:outputLabel value="#{sujeto.nombreRazonSocial}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                    </p:column>
+                    <p:column headerText="RFC"> 
+                      <h:outputText value="#{sujeto.rfc}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
+                    </p:column>
+                    <f:facet name="footer">
+                      <p:commandButton process="editarEmpresa" icon="ui-icon-pencil" value="Editar" actionListener="#{empresasBean.guardarEmpresa}" update="todo:modalEmpresaId" oncomplete="PF('modalEmpresa').show();" />
+                    </f:facet>
+                  </p:dataTable>
+                </div>
+                <div class="modal-footer">
+                </div>
+              </div><!-- /.modal-content -->
+            </h:form>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- main container -->
+    <ui:include src="barraInferior.xhtml"/>
+  </h:body>
 </html>
