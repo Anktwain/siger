@@ -10,21 +10,49 @@
     <title>SigerWeb - Bandeja de devoluci&oacute;n</title>
   </h:head> 
   <body>
-    <!-- Overlay Div -->
-    <div id="overlay" class="transparent" style="display: none"></div>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
-    <div id="overlay" class="transparent" ></div>
+    <div id="overlay" class="transparent" style="display: none"></div>
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-      <h1>
-        M&oacute;dulo de bandeja de devoluci&oacute;n
-      </h1>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="panelAdministrativo.xhtml">Inicio</a>
+          </li>
+          <li class="active">
+            Devolucion
+          </li>
+        </ul>
+      </div>
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Devoluciones</h3>
+          <span>Consulte informaci&oacute;n de los creditos devueltos, apruebe o rechaze creditos enviados a devolucion por el banco o los gestores</span>
+          <span>Solicite a el banco conservar creditos que le han sido retirados a su despacho</span>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-tab clearfix">
+          <ul class="tab-bar">
+            <li><a href="#retirados" data-toggle="tab" title="Click aqui si desea ver los creditos retirados por el banco"><h2><i class="fa fa-minus"></i> Creditos retirados por el banco</h2></a></li>
+            <li><a href="#bandeja" data-toggle="tab" title="Click aqui si desea ver los creditos que ya estan devueltos"><h2><i class="fa fa-ban"></i> Bandeja de devolucion</h2></a></li>
+          </ul>
+        </div>
+        <div class="panel-body">
+          <div class="tab-content">
+            <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS RETIRADOS POR EL BANCO -->
+            <div class="tab-pane fade" id="retirados">
+            </div>
+            <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS DEVUELTOS DEL SISTEMA -->
+            <div class="tab-pane fade" id="bandeja">
+            </div>
+          </div>
+        </div>
+      </div>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
