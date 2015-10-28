@@ -5,6 +5,9 @@
  */
 package dao;
 
+import dto.Credito;
+import java.util.List;
+
 /**
  *
  * @author Eduardo
