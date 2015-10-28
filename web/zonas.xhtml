@@ -107,50 +107,65 @@
       </h:form>
 
       <!-- FORMULARIO PARA REGISTRAR UNA NUEVA ZONA -->
-      <p:dialog widgetVar="dlgNuevaZona" width="40%" header="Agregar nueva zona" modal="true" resizable="false">
-        <h:form id="formNuevaZona">          
-          <h:panelGrid columns="2" cellpadding="5" columnClasses="label, value">
-            <p:outputLabel value="Nombre:" for="acSimple" />
-            <p:autoComplete id="acSimple" value="" />
+      <p:dialog widgetVar="dlgNuevaZona" width="auto" header="Agregar nueva zona" modal="true" resizable="false" >
+        <h:form id="formNuevaZona" >   
 
-            <p:outputLabel value="Estado:" for="dropDEstado" />
-            <p:autoComplete id="dropDEstado" dropdown="true" value="#{zonasVistaBean.estadosDePrueba}" completeMethod="#{zonasVistaBean.autocompletarEstados}" />
+          <p:outputLabel value="Nombre: " for="nombreZona" />
+          <p:inputText id="nombreZona" value="#{zonasVistaBean.nombre}" placeholder="Teclea un nuevo nombre" size="25" />
 
-            <p:outputLabel for="municipio" value="Municipio:" />
-            <p:selectManyMenu id="municipio" value="#{zonasVistaBean.mpiosSeleccionados}"
-                              var="m" filter="true" filterMatchMode="contains" showCheckbox="true">
-              <f:selectItems value="#{zonasVistaBean.mpiosDePrueba}" var="mpio" itemLabel="" itemValue="" />
+          <p:panelGrid columns="3" cellpadding="10">
 
-              <p:column>
-                <h:outputText value="#{m}" />
-              </p:column>
-            </p:selectManyMenu>
+            <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
+              <f:facet name="header">Estados</f:facet>
 
+              <p:outputLabel for="estado" value="Estados: " />
 
-<!--            <p:outputLabel for="advanced" value="Advanced:" />
-            <p:selectManyMenu id="advanced" value="#{selectManyView.selectedThemes}" converter="themeConverter"
-                              var="t" filter="true" filterMatchMode="contains" showCheckbox="true">
-              <f:selectItems value="#{selectManyView.themes}" var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme}" />
-
-              <p:column>
-                <h:outputText value="#{t.displayName}" />
-              </p:column>
-            </p:selectManyMenu>-->
+              <p:selectOneMenu id="estado" value="#{zonasVistaBean.estadoSeleccionado}" filter="true" filterMatchMode="contains">
+                <p:ajax listener="#{zonasVistaBean.onEstadosChange}" update="" />
+                <f:selectItem itemLabel="Selecciona estado" itemValue="null" noSelectionOption="true" />
+                <f:selectItems value="#{zonasVistaBean.estadosSeleccionados}" />
+              </p:selectOneMenu>
+            </h:panelGrid>
 
 
-            <!--            <p:outputLabel value="Colonia:" for="themes" />
-                        <p:autoComplete id="themes" multiple="true" value="#{zonasVistaBean}" completeMethod="#{zonasVistaBean}"
-                                        var="theme" itemLabel="#{zonasVistaBean}" itemValue="" forceSelection="true">
-                          <p:column style="width:10%">
-                            <h:outputText styleClass="ui-theme ui-theme-#{theme.name}" />
-                          </p:column>
-            
-                          <p:column>
-                            <h:outputText value="#{zonasVistaBean}" />
-                          </p:column>
-                        </p:autoComplete>                    -->
+            <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
+              <f:facet name="header">Municipios</f:facet>
+              <p:outputLabel for="municipio" value="Municipios: " />
+              <p:selectManyMenu id="municipio" value="#{zonasVistaBean.mpiosSeleccionados}"
+                                var="m" filter="true" filterMatchMode="contains" showCheckbox="true">
+                <f:selectItem itemLabel="Todos" itemValue="todos" />
+                <p:separator></p:separator>
+                <f:selectItems value="#{zonasVistaBean.mpiosDePrueba}" var="mpio" itemLabel="itemLabel MpiosDePrueba" />
 
-          </h:panelGrid>
+                <p:column>
+                  <h:outputText value="#{m}" />
+                </p:column>
+              </p:selectManyMenu>
+            </h:panelGrid>
+
+            <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
+              <f:facet name="header">Colonias</f:facet>
+
+              <p:outputLabel for="colonia" value="Colonia:" />
+              <p:selectManyMenu id="colonia" value="#{zonasVistaBean.coloniasSeleccionados}"
+                                var="c" filter="true" filterMatchMode="contains" showCheckbox="true">
+                <f:selectItem itemLabel="Todos" itemValue="todos" />
+                <p:separator></p:separator>
+                <f:selectItems value="#{zonasVistaBean.coloniasDePrueba}" var="col" />
+
+                <p:column>
+                  <h:outputText value="#{c}" />
+                </p:column>
+              </p:selectManyMenu>
+
+
+            </h:panelGrid>
+            <f:facet name="footer" >
+              <p:commandButton value="Aceptar" icon="ui-icon-check"/>
+              <p:commandButton value="Cancelar" icon="ui-icon-close"/>
+            </f:facet>
+          </p:panelGrid>
+
         </h:form>
       </p:dialog>
 

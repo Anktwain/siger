@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import util.log.Logs;
 
 /**
  *
@@ -14,26 +15,36 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public class ZonasVistaBean implements Serializable {
 
+  private String nombre;
+  
+  private String estadoSeleccionado;
+  
   private List<String> estadosDePrueba;
   private List<String> mpiosDePrueba;
+  private List<String> coloniasDePrueba;
 
   private List<String> estadosAutoCompletados;
   private List<String> mpiosAutoCompletados;
+  private List<String> coloniasAutoCompletadas;
 
   private List<String> estadosSeleccionados;
   private List<String> mpiosSeleccionados;
+  private List<String> coloniasSeleccionados;
 
   public ZonasVistaBean() {
 
     estadosDePrueba = new ArrayList<>();
     mpiosDePrueba = new ArrayList<>();
-    
+    coloniasDePrueba = new ArrayList<>();
+
     estadosAutoCompletados = new ArrayList<>();
     mpiosAutoCompletados = new ArrayList<>();
-    
+    coloniasAutoCompletadas = new ArrayList<>();
+
     estadosSeleccionados = new ArrayList<>();
     mpiosSeleccionados = new ArrayList<>();
-    
+    coloniasSeleccionados = new ArrayList<>();
+
     estadosDePrueba.add("Aguascalientes");
     estadosDePrueba.add("Chiapas");
     estadosDePrueba.add("Distrito Federal");
@@ -45,25 +56,40 @@ public class ZonasVistaBean implements Serializable {
     mpiosDePrueba.add("Cuauhtémoc");
     mpiosDePrueba.add("Milpa Alta");
     mpiosDePrueba.add("Venustiano Carranza");
+    
+    coloniasDePrueba.add("Obrera");
+    coloniasDePrueba.add("Doctores");
+    coloniasDePrueba.add("Tránsito");
+    coloniasDePrueba.add("Pro hogar");
+    coloniasDePrueba.add("Anáhuac");
+   
   }
 
-  public List<String> getEstadosDePrueba() {
-    return estadosDePrueba;
+  public String getEstadosDePrueba() {
+    StringBuilder edp = new StringBuilder(estadosDePrueba.get(0));
+
+    for (int i = 1; i < estadosDePrueba.size(); i++) {
+      edp.append("\n");
+      edp.append(estadosDePrueba.get(i));
+    }
+    return edp.toString();
   }
 
-  public void setEstadosDePrueba(ArrayList<String> estadosDePrueba) {
+  public void setEstadosDePrueba(List<String> estadosDePrueba) {
     this.estadosDePrueba = estadosDePrueba;
   }
-
+  
   public List<String> getMpiosDePrueba() {
     return mpiosDePrueba;
   }
 
-  public void setMpiosDePrueba(ArrayList<String> mpiosDePrueba) {
+  public void setMpiosDePrueba(List<String> mpiosDePrueba) {
     this.mpiosDePrueba = mpiosDePrueba;
   }
 
   public List<String> autocompletarEstados() {
+    estadosAutoCompletados.add(estadosDePrueba.get(0));
+    estadosAutoCompletados.add(estadosDePrueba.get(estadosDePrueba.size()-1));
     return estadosAutoCompletados;
   }
 
@@ -71,15 +97,16 @@ public class ZonasVistaBean implements Serializable {
     return estadosAutoCompletados;
   }
 
-  public void setEstadosAutoCompletados(ArrayList<String> estadosAutoCompletados) {
+  public void setEstadosAutoCompletados(List<String> estadosAutoCompletados) {
     this.estadosAutoCompletados = estadosAutoCompletados;
   }
 
   public List<String> getEstadosSeleccionados() {
+    estadosSeleccionados = estadosDePrueba;
     return estadosSeleccionados;
   }
 
-  public void setEstadosSeleccionados(ArrayList<String> estadosSeleccionados) {
+  public void setEstadosSeleccionados(List<String> estadosSeleccionados) {
     this.estadosSeleccionados = estadosSeleccionados;
   }
 
@@ -87,7 +114,7 @@ public class ZonasVistaBean implements Serializable {
     return mpiosSeleccionados;
   }
 
-  public void setMpiosSeleccionados(ArrayList<String> mpiosSeleccionados) {
+  public void setMpiosSeleccionados(List<String> mpiosSeleccionados) {
     this.mpiosSeleccionados = mpiosSeleccionados;
   }
 
@@ -99,6 +126,50 @@ public class ZonasVistaBean implements Serializable {
     this.mpiosAutoCompletados = mpiosAutoCompletados;
   }
 
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public void onEstadosChange() {
+  }
+
+  public String getEstadoSeleccionado() {
+    return estadoSeleccionado;
+  }
+
+  public void setEstadoSeleccionado(String estadoSeleccionado) {
+    this.estadoSeleccionado = estadoSeleccionado;
+  }
+
+  public List<String> getColoniasDePrueba() {
+    return coloniasDePrueba;
+  }
+
+  public void setColoniasDePrueba(List<String> coloniasDePrueba) {
+    this.coloniasDePrueba = coloniasDePrueba;
+  }
+
+  public List<String> getColoniasAutoCompletadas() {
+    return coloniasAutoCompletadas;
+  }
+
+  public void setColoniasAutoCompletadas(List<String> coloniasAutoCompletadas) {
+    this.coloniasAutoCompletadas = coloniasAutoCompletadas;
+  }
+
+  public List<String> getColoniasSeleccionados() {
+    return coloniasSeleccionados;
+  }
+
+  public void setColoniasSeleccionados(List<String> coloniasSeleccionados) {
+    this.coloniasSeleccionados = coloniasSeleccionados;
+  }
   
   
+  
+
 }
