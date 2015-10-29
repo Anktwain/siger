@@ -1,31 +1,188 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
-      xmlns:h="http://xmlns.jcp.org/jsf/html" 
-      xmlns:p="http://primefaces.org/ui" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
-    <title>SigerWeb - Visitas</title>
-  </h:head> 
-  <body>
-    <p:growl id="growl" showDetail="true" sticky="true" />
+    <title>SigerWeb - Zonas</title>
+    <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
+    <script
+      src="http://maps.googleapis.com/maps/api/js">
+    </script>
+    <script>
+      function initialize() {
+        var mapProp = {
+          center: new google.maps.LatLng(19.432545, -99.133271),
+          zoom: 5,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
 
-    <!-- Overlay Div -->
-    <div id="overlay" class="transparent" style="display: none"></div>
-    <ui:include src="barraSuperior.xhtml" />
+  </h:head>
+  <h:body>
+    <p:growl id="growl" showDetail="true" />
+
+    <div id="overlay" class="transparent" style="display: none;"></div>
     <ui:include src="barraLateral.xhtml" />
+    <ui:include src="barraSuperior.xhtml" />
+
     <div id="main-container">
-      <h1>
-        M&oacute;dulo de zonas
-      </h1>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
-    </div><!-- /main-container -->
-    <!-- Footer ================================================== -->
-    <ui:include src="barraInferior.xhtml" />
-  </body>
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home"></i>
+            <a href="panelAdministrativo.xhtml">Inicio</a>
+          </li>
+          <li class="active">Zonas</li>
+        </ul>
+      </div>
+
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Zonas</h3>
+          <span>Crear, visualizar, editar las zonas de cobranza.</span>
+        </div>
+      </div>
+
+      <h:form>
+        <!--          <p:ajax event="toggle" />-->
+        <div class="row">
+          <div class="col-sm-6" id="googleMap" style="width:450px;height:380px; margin-left: 50px"></div>
+          <div class="col-sm-6">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="panel-stat3 bg-info">
+                  <h3 class="m-top-none">Crear nueva zona</h3>
+                  <div id="botonazo">
+                    <p:commandButton value="Nueva Zona" class="btn-default" 
+                                     onclick="PF('dlgNuevaZona').show();" />
+                  </div>
+
+                  <div class="stat-icon">
+                    <i class="fa fa-pencil fa-3x"/>
+                  </div>
+                </div>
+              </div>                                          
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <p:fieldset  style="" legend="Zonas en el mapa" toggleable="true" toggleSpeed="500">
+                  <p:dataTable emptyMessage="Todav&iacute;a no hay zonas registradas"
+                               paginator="true" rows="10" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+                               rowKey="" selection=""  id="zonas" widgetVar="zonaDataTable" var="zona">
+
+                    <f:facet name="header">
+                      <p:outputPanel>
+                        <h:outputText value="Buscar en todas las zonas:  " />
+                        <!--<p:inputText id="globalFilter" onkeyup="PF('zonaDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>-->
+                      </p:outputPanel>
+                    </f:facet>
+
+                    <p:column headerText="Nombre" filterBy="" filterMatchMode="contains"> 
+                      <h:outputText value=""/>
+                    </p:column>
+                    <p:column headerText="Estados incluidos" filterBy="" filterMatchMode="contains">
+                      <h:outputText value=""/>
+                    </p:column>
+                    <p:column headerText="Gestor asignado" filterBy="" filterMatchMode="contains">
+                      <h:outputText value=""/>                         
+                    </p:column>
+
+                  </p:dataTable>
+                  <!--  Estos son los datos que le faltaron al dataTable 
+                 <p:dataTable selectionMode="single"  filteredValue="" value=""> </p:dataTable>
+                  -->
+                </p:fieldset>
+              </div>
+            </div>
+          </div>
+        </div> <!-- row -->
+      </h:form>
+
+      <!-- FORMULARIO PARA REGISTRAR UNA NUEVA ZONA -->
+      <p:dialog widgetVar="dlgNuevaZona" width="auto" header="Agregar nueva zona" modal="true" resizable="false" >
+        <h:form id="formNuevaZona" >   
+
+          <p:outputLabel value="Nombre: " for="nombreZona" />
+          <p:inputText id="nombreZona" value="#{zonasVistaBean.nombre}" placeholder="Teclea un nuevo nombre" size="25" />
+
+          <p:panelGrid columns="3" cellpadding="10">
+
+            <!--                     GRID ESTADOS                            -->
+
+            <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
+              <f:facet name="header">Estados
+                <p:separator/>
+              </f:facet>
+
+              <p:outputLabel for="estado" value="Estados: " />
+
+              <p:selectOneMenu id="estado" value="#{zonasVistaBean.edoRepVisible}" filter="true" filterMatchMode="contains">
+                <p:ajax listener="#{zonasVistaBean.onEstadosChange}" update="municipio" />
+                <f:selectItem itemLabel="Selecciona estado" itemValue="null" noSelectionOption="true" />
+                <f:selectItems value="#{zonasVistaBean.estadosRep}" />
+              </p:selectOneMenu>
+            </h:panelGrid>
+
+            <!--                     GRID MUNICIPIOS                            -->
+
+            <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
+              <f:facet name="header">Municipios
+                <p:separator/>
+              </f:facet>
+
+              <p:outputLabel for="municipio" value="Municipios: " />
+              <p:selectManyMenu id="municipio" value="#{zonasVistaBean.mpiosSeleccionados}"
+                                var="m" filter="true" filterMatchMode="contains" showCheckbox="true">
+                <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="colonia" />
+
+                <f:selectItem itemLabel="Todos" itemValue="todos" />
+
+                <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" var="mpio" itemLabel="itemLabel MpiosDePrueba" />
+
+                <p:column>
+                  <h:outputText value="#{m}" />
+                </p:column>
+              </p:selectManyMenu>
+            </h:panelGrid>
+            
+            <!--                     GRID COLONIAS                            -->
+
+            <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
+              <f:facet name="header">Colonias
+                <p:separator/>
+              </f:facet>
+              <p:outputLabel for="colonia" value="Colonia:" />
+              <p:selectManyMenu id="colonia" value="#{zonasVistaBean.coloniasSeleccionadas}"
+                                var="c" filter="true" filterMatchMode="contains" showCheckbox="true">
+
+                <f:selectItem itemLabel="Todos" itemValue="todos" />
+
+                <f:selectItems value="#{zonasVistaBean.coloniasDelEstadoRepSelec}" var="col" />
+
+                <p:column>
+                  <h:outputText value="#{c}" />
+                </p:column>
+              </p:selectManyMenu>
+
+            </h:panelGrid>
+            <f:facet name="footer" >
+              <p:commandButton value="Aceptar" icon="ui-icon-check"/>
+              <p:commandButton value="Cancelar" icon="ui-icon-close"/>
+            </f:facet>
+          </p:panelGrid>
+
+        </h:form>
+      </p:dialog>
+
+    </div> <!-- main container -->
+    <ui:include src="barraInferior.xhtml"/>
+  </h:body>
 </html>

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Bandeja de devoluci&oacute;n</title>
+  </h:head> 
+  <body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="panelAdministrativo.xhtml">Inicio</a>
+          </li>
+          <li class="active">
+            Devolucion
+          </li>
+        </ul>
+      </div>
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Devoluciones</h3>
+          <span>Consulte informaci&oacute;n de los creditos devueltos, apruebe o rechaze creditos enviados a devolucion por el banco o los gestores</span>
+          <span>Solicite a el banco conservar creditos que le han sido retirados a su despacho</span>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-tab clearfix">
+          <ul class="tab-bar">
+            <li><a href="#retirados" data-toggle="tab" title="Click aqui si desea ver los creditos retirados por el banco"><h2><i class="fa fa-minus"></i> Creditos retirados por el banco</h2></a></li>
+            <li><a href="#bandeja" data-toggle="tab" title="Click aqui si desea ver los creditos pendientes de devolucion"><h2><i class="fa fa-reply"></i> Bandeja de devolucion</h2></a></li>
+            <li><a href="#devueltos" data-toggle="tab" title="Click aqui si desea ver los creditos que ya estan devueltos"><h2><i class="fa fa-ban"></i> Creditos devueltos</h2></a></li>
+          </ul>
+        </div>
+        <div class="panel-body">
+          <div class="tab-content">
+            <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS RETIRADOS POR EL BANCO -->
+            <div class="tab-pane fade" id="retirados">
+              <h:form id="formRetirados">
+                <p:contextMenu for="retirados">
+                  <p:menuitem value="Aprobar devolucion" icon="ui-icon-search" actionListener="#{devolucionBean.aprobar}" />
+                  <p:menuitem value="Solicitar conservacion" icon="ui-icon-close" actionListener="#{devolucionBean.conservar}" />
+                </p:contextMenu>
+                <p:dataTable id="retirados" var="dev" value="#{devolucionBean.listaDevoluciones}" emptyMessage="No existen creditos retirados por el banco." >
+                </p:dataTable>
+              </h:form>
+            </div>
+            <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS EN BANDEJA DE DEVOLUCION -->
+            <div class="tab-pane fade" id="bandeja">
+            </div>
+            <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS DEVUELTOS EN EL SISTEMA -->
+            <div class="tab-pane fade" id="devueltos">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </body>
+</html>

@@ -1,63 +1,62 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 23/10/2015 10:50:42 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/10/2015 11:55:10 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Sujeto" table="sujeto" catalog="sigerbd" optimistic-lock="version">
-        <id name="idSujeto" type="java.lang.Integer">
-            <column name="id_sujeto" />
-            <generator class="identity" />
-        </id>
-        <property name="nombreRazonSocial" type="string">
-            <column name="nombre_razon_social" length="100" not-null="true" />
-        </property>
-        <property name="rfc" type="string">
-            <column name="rfc" length="15" />
-        </property>
-        <property name="eliminado" type="int">
-            <column name="eliminado" not-null="true" />
-        </property>
-        <set name="telefonos" table="telefono" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_sujeto" not-null="true" />
-            </key>
-            <one-to-many class="dto.Telefono" />
-        </set>
-        <set name="direccions" table="direccion" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_sujeto" not-null="true" />
-            </key>
-            <one-to-many class="dto.Direccion" />
-        </set>
-        <set name="contactos" table="contacto" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_sujeto" not-null="true" />
-            </key>
-            <one-to-many class="dto.Contacto" />
-        </set>
-        <set name="institucions" table="institucion" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_sujeto" not-null="true" />
-            </key>
-            <one-to-many class="dto.Institucion" />
-        </set>
-        <set name="despachos" table="despacho" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_sujeto" not-null="true" />
-            </key>
-            <one-to-many class="dto.Despacho" />
-        </set>
-        <set name="deudors" table="deudor" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_sujeto" not-null="true" />
-            </key>
-            <one-to-many class="dto.Deudor" />
-        </set>
-        <set name="emails" table="email" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_sujeto" not-null="true" />
-            </key>
-            <one-to-many class="dto.Email" />
-        </set>
-    </class>
+  <class catalog="sigerbd" name="dto.Sujeto" optimistic-lock="version" table="sujeto">
+    <id name="idSujeto" type="java.lang.Integer">
+      <column name="id_sujeto"/>
+      <generator class="identity"/>
+    </id>
+    <property name="nombreRazonSocial" type="string">
+      <column length="100" name="nombre_razon_social" not-null="true"/>
+    </property>
+    <property name="rfc" type="string">
+      <column length="15" name="rfc"/>
+    </property>
+    <property name="eliminado" type="int">
+      <column name="eliminado" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="telefonos" table="telefono">
+      <key>
+        <column name="id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Telefono"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="direccions" table="direccion">
+      <key>
+        <column name="id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Direccion"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="contactos" table="contacto">
+      <key>
+        <column name="id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Contacto"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="institucions" table="institucion">
+      <key>
+        <column name="id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Institucion"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="despachos" table="despacho">
+      <key>
+        <column name="id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Despacho"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="deudors" table="deudor">
+      <key>
+        <column name="id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Deudor"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="emails" table="email">
+      <key>
+        <column name="id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Email"/>
+    </set>
+  </class>
 </hibernate-mapping>

@@ -75,11 +75,11 @@
                   <p:ajax event="rowSelect" listener="#{vistaDeudores.onRowDeudorSelect}" oncomplete="PF('dlgDetalleDeudor').show()"
                           update="frmDetalleDeudor,frmDetalleTelefonosDeudor,frmDetalleEmailsDeudor,frmDetalleDireccionesDeudor,frmDetalleContactosDeudor,dlgDetalleDeudor"/>
                   <p:column headerText="Nombre o Raz&oacute;n Social" width="70%">
-                    <h:outputText id="nombreDeudor" value="#{deudor.sujeto.nombreRazonSocial}"/>
+                    <h:outputText id="nombreDeudor" value="#{deudorBean.sujetoBean.nombreRazonSocial}"/>
                     <p:tooltip for="nombreDeudor" value="Haga clic para ver detalle del deudor"/>
                   </p:column>
                   <p:column headerText="RFC">
-                    <h:outputText id="rfcDeudor" value="#{deudor.sujeto.rfc}"/>
+                    <h:outputText id="rfcDeudor" value="#{deudorBean.sujetoBean.rfc}"/>
                     <p:tooltip for="rfcDeudor" value="Haga clic para ver detalle del deudor"/>
                   </p:column>                
                 </p:dataTable>

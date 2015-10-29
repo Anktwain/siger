@@ -1,18 +1,17 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 23/10/2015 10:50:42 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 26/10/2015 11:55:10 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Linea" table="linea" catalog="sigerbd" optimistic-lock="version">
-        <id name="idLinea" type="int">
-            <column name="id_linea" />
-            <generator class="assigned" />
-        </id>
-        <many-to-one name="credito" class="dto.Credito" fetch="select">
-            <column name="id_credito" not-null="true" />
-        </many-to-one>
-        <property name="telefono" type="string">
-            <column name="telefono" length="30" not-null="true" />
-        </property>
-    </class>
+  <class catalog="sigerbd" name="dto.Linea" optimistic-lock="version" table="linea">
+    <id name="idLinea" type="int">
+      <column name="id_linea"/>
+      <generator class="assigned"/>
+    </id>
+    <many-to-one class="dto.Credito" fetch="select" name="credito">
+      <column name="id_credito" not-null="true"/>
+    </many-to-one>
+    <property name="telefono" type="string">
+      <column length="30" name="telefono" not-null="true"/>
+    </property>
+  </class>
 </hibernate-mapping>
