@@ -7,6 +7,8 @@
     <property name="hibernate.connection.url">jdbc:mysql://10.0.0.26:3306/sigerbd?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">cofradia</property>
     <property name="hibernate.connection.password">cofradiaDB</property>
+    <property name="hibernate.current_session_context_class">thread</property>
+    <property name="hibernate.enable_lazy_load_no_trans">true</property>
     <mapping resource="mapeo/EstadoRepublica.hbm.xml"/>
     <mapping resource="mapeo/Telefono.hbm.xml"/>
     <mapping resource="mapeo/Remesa.hbm.xml"/>
