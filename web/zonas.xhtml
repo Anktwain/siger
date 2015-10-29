@@ -115,49 +115,62 @@
 
           <p:panelGrid columns="3" cellpadding="10">
 
+            <!--                     GRID ESTADOS                            -->
+
             <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
-              <f:facet name="header">Estados</f:facet>
+              <f:facet name="header">Estados
+                <p:separator/>
+              </f:facet>
 
               <p:outputLabel for="estado" value="Estados: " />
 
-              <p:selectOneMenu id="estado" value="#{zonasVistaBean.estadoSeleccionado}" filter="true" filterMatchMode="contains">
-                <p:ajax listener="#{zonasVistaBean.onEstadosChange}" update="" />
+              <p:selectOneMenu id="estado" value="#{zonasVistaBean.edoRepVisible}" filter="true" filterMatchMode="contains">
+                <p:ajax listener="#{zonasVistaBean.onEstadosChange}" update="municipio" />
                 <f:selectItem itemLabel="Selecciona estado" itemValue="null" noSelectionOption="true" />
-                <f:selectItems value="#{zonasVistaBean.estadosSeleccionados}" />
+                <f:selectItems value="#{zonasVistaBean.estadosRep}" />
               </p:selectOneMenu>
             </h:panelGrid>
 
+            <!--                     GRID MUNICIPIOS                            -->
 
             <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
-              <f:facet name="header">Municipios</f:facet>
+              <f:facet name="header">Municipios
+                <p:separator/>
+              </f:facet>
+
               <p:outputLabel for="municipio" value="Municipios: " />
               <p:selectManyMenu id="municipio" value="#{zonasVistaBean.mpiosSeleccionados}"
                                 var="m" filter="true" filterMatchMode="contains" showCheckbox="true">
+                <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="colonia" />
+
                 <f:selectItem itemLabel="Todos" itemValue="todos" />
-                <p:separator></p:separator>
-                <f:selectItems value="#{zonasVistaBean.mpiosDePrueba}" var="mpio" itemLabel="itemLabel MpiosDePrueba" />
+
+                <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" var="mpio" itemLabel="itemLabel MpiosDePrueba" />
 
                 <p:column>
                   <h:outputText value="#{m}" />
                 </p:column>
               </p:selectManyMenu>
             </h:panelGrid>
+            
+            <!--                     GRID COLONIAS                            -->
 
             <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
-              <f:facet name="header">Colonias</f:facet>
-
+              <f:facet name="header">Colonias
+                <p:separator/>
+              </f:facet>
               <p:outputLabel for="colonia" value="Colonia:" />
-              <p:selectManyMenu id="colonia" value="#{zonasVistaBean.coloniasSeleccionados}"
+              <p:selectManyMenu id="colonia" value="#{zonasVistaBean.coloniasSeleccionadas}"
                                 var="c" filter="true" filterMatchMode="contains" showCheckbox="true">
+
                 <f:selectItem itemLabel="Todos" itemValue="todos" />
-                <p:separator></p:separator>
-                <f:selectItems value="#{zonasVistaBean.coloniasDePrueba}" var="col" />
+
+                <f:selectItems value="#{zonasVistaBean.coloniasDelEstadoRepSelec}" var="col" />
 
                 <p:column>
                   <h:outputText value="#{c}" />
                 </p:column>
               </p:selectManyMenu>
-
 
             </h:panelGrid>
             <f:facet name="footer" >
