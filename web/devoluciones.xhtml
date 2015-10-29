@@ -39,16 +39,28 @@
         <div class="panel-tab clearfix">
           <ul class="tab-bar">
             <li><a href="#retirados" data-toggle="tab" title="Click aqui si desea ver los creditos retirados por el banco"><h2><i class="fa fa-minus"></i> Creditos retirados por el banco</h2></a></li>
-            <li><a href="#bandeja" data-toggle="tab" title="Click aqui si desea ver los creditos que ya estan devueltos"><h2><i class="fa fa-ban"></i> Bandeja de devolucion</h2></a></li>
+            <li><a href="#bandeja" data-toggle="tab" title="Click aqui si desea ver los creditos pendientes de devolucion"><h2><i class="fa fa-reply"></i> Bandeja de devolucion</h2></a></li>
+            <li><a href="#devueltos" data-toggle="tab" title="Click aqui si desea ver los creditos que ya estan devueltos"><h2><i class="fa fa-ban"></i> Creditos devueltos</h2></a></li>
           </ul>
         </div>
         <div class="panel-body">
           <div class="tab-content">
             <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS RETIRADOS POR EL BANCO -->
             <div class="tab-pane fade" id="retirados">
+              <h:form id="formRetirados">
+                <p:contextMenu for="retirados">
+                  <p:menuitem value="Aprobar devolucion" icon="ui-icon-search" actionListener="#{devolucionBean.aprobar}" />
+                  <p:menuitem value="Solicitar conservacion" icon="ui-icon-close" actionListener="#{devolucionBean.conservar}" />
+                </p:contextMenu>
+                <p:dataTable id="retirados" var="dev" value="#{devolucionBean.listaDevoluciones}" emptyMessage="No existen creditos retirados por el banco." >
+                </p:dataTable>
+              </h:form>
             </div>
-            <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS DEVUELTOS DEL SISTEMA -->
+            <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS EN BANDEJA DE DEVOLUCION -->
             <div class="tab-pane fade" id="bandeja">
+            </div>
+            <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS DEVUELTOS EN EL SISTEMA -->
+            <div class="tab-pane fade" id="devueltos">
             </div>
           </div>
         </div>

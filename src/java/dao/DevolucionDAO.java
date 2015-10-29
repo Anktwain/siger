@@ -5,6 +5,10 @@
  */
 package dao;
 
+import beans.DevolucionBean.Dev;
+import dto.Devolucion;
+import java.util.List;
+
 /**
  *
  * @author Eduardo
@@ -14,5 +18,7 @@ public interface DevolucionDAO {
   public boolean aprobarDevolucion();
   
   public boolean rechazarDevolucion();
+  
+  public List<Dev> retiradosBancoPorDespacho(int idDespacho);
   
 }
