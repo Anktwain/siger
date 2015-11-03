@@ -4,6 +4,7 @@ import dao.EstadoRepublicaDAO;
 import dao.MunicipioDAO;
 import dto.Colonia;
 import dto.EstadoRepublica;
+import dto.Gestor;
 import dto.Municipio;
 import impl.EstadoRepublicaIMPL;
 import impl.MunicipioIMPL;
@@ -45,7 +46,6 @@ public class ZonasVistaBean implements Serializable {
 //  private List<String> mpiosSeleccionados;
 //  private List<String> coloniasSeleccionadas;
   /* **** Código de prueba *****/
-  
   /**
    * Todos los estadosRep que se listarán en la vista.
    */
@@ -106,6 +106,12 @@ public class ZonasVistaBean implements Serializable {
   private List<Municipio> mpiosDelEstadoRepSelec;
   private List<Colonia> coloniasDelEstadoRepSelec;
 
+  private boolean mpiosEnDespliegue;
+  private boolean coloniasEnDespliegue;
+  
+  private Gestor gestorAsignado;
+  
+
   public ZonasVistaBean() {
 
     /* **** Código de prueba *****/
@@ -139,7 +145,6 @@ public class ZonasVistaBean implements Serializable {
 //    coloniasDePrueba.add("Pro hogar");
 //    coloniasDePrueba.add("Anáhuac");
     /* **** Código de prueba *****/
-    
     EstadoRepublicaDAO estadoRepDao = new EstadoRepublicaIMPL();
     mpioDao = new MunicipioIMPL();
 
@@ -149,10 +154,18 @@ public class ZonasVistaBean implements Serializable {
     coloniasVisibles = new ArrayList<>();
 
     mpiosDelEstadoRepSelec = new ArrayList<>();
+    //Lineas de prueba
+//    mpiosDelEstadoRepSelec = this.mpioDao.buscarMunicipiosPorEstado(9);
+    //fin Lineas de prueba
     mpiosVisibles = new ArrayList<>();
-    
+
     mpiosSeleccionados = new ArrayList<>();
     coloniasSeleccionadas = new ArrayList<>();
+
+    edoRepVisible = new EstadoRepublica();
+
+    mpiosEnDespliegue = true;
+    coloniasEnDespliegue = false;
 
   }
 
@@ -248,7 +261,6 @@ public class ZonasVistaBean implements Serializable {
 //  public void setColoniasSeleccionadas(List<String> coloniasSeleccionadas) {
 //    this.coloniasSeleccionadas = coloniasSeleccionadas;
 //  }
-  
   public String getNombre() {
     return nombre;
   }
@@ -258,6 +270,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onEstadosChange() {
+    this.mpiosDelEstadoRepSelec = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
   }
 
   public List<EstadoRepublica> getEstadosRep() {
@@ -318,6 +331,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onMpiosChange() {
+
   }
 
   public List<Colonia> getColoniasDelEstadoRepSelec() {
@@ -342,6 +356,43 @@ public class ZonasVistaBean implements Serializable {
 
   public void setColoniasSeleccionadas(List<Colonia> coloniasSeleccionadas) {
     this.coloniasSeleccionadas = coloniasSeleccionadas;
+  }
+
+  public void onMostrarMpiosChange() {
+    mpiosEnDespliegue = !mpiosEnDespliegue;
+    System.out.println("CAMBIO. - municipios en despliegue: " + mpiosEnDespliegue);
+  }
+
+  public void onMostrarColoniasChange() {
+    coloniasEnDespliegue = !coloniasEnDespliegue;
+    Logs.log.debug("CAMBIO. - colonias en despliegue: " + coloniasEnDespliegue);
+  }
+
+  public boolean isMpiosEnDespliegue() {
+    return mpiosEnDespliegue;
+  }
+
+  public void setMpiosEnDespliegue(boolean mpiosEnDespliegue) {
+    this.mpiosEnDespliegue = mpiosEnDespliegue;
+  }
+
+  public boolean isColoniasEnDespliegue() {
+    return coloniasEnDespliegue;
+  }
+
+  public void setColoniasEnDespliegue(boolean coloniasEnDespliegue) {
+    this.coloniasEnDespliegue = coloniasEnDespliegue;
+  }
+
+  public void onGestorAsignadoChange(){
+  }
+
+  public Gestor getGestorAsignado() {
+    return gestorAsignado;
+  }
+
+  public void setGestorAsignado(Gestor gestorAsignado) {
+    this.gestorAsignado = gestorAsignado;
   }
 
   
