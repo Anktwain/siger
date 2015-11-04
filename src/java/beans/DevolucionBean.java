@@ -9,6 +9,7 @@ import dao.DevolucionDAO;
 import dto.Devolucion;
 import impl.DevolucionIMPL;
 import java.io.Serializable;
+import java.text.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -25,72 +26,27 @@ import javax.faces.context.FacesContext;
 @ViewScoped
 public class DevolucionBean implements Serializable {
 
-  // CLASE DEV PARA PODER LLENAR LAS TABLAS DE LA VISTA
-  public static class Dev{
-
-    private Date fecha;
-    private int estatus;
-    private String numeroCredito;
-    private String nombreRazonSocial;
-    private String concepto;
-    
-    public Dev(){}
-    
-    public Date getFecha() {
-      return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-      this.fecha = fecha;
-    }
-
-    public int getEstatus() {
-      return estatus;
-    }
-
-    public void setEstatus(int estatus) {
-      this.estatus = estatus;
-    }
-
-    public String getNumeroCredito() {
-      return numeroCredito;
-    }
-
-    public void setNumeroCredito(String numeroCredito) {
-      this.numeroCredito = numeroCredito;
-    }
-
-    public String getNombreRazonSocial() {
-      return nombreRazonSocial;
-    }
-
-    public void setNombreRazonSocial(String nombreRazonSocial) {
-      this.nombreRazonSocial = nombreRazonSocial;
-    }
-
-    public String getConcepto() {
-      return concepto;
-    }
-
-    public void setConcepto(String concepto) {
-      this.concepto = concepto;
-    }
-    
-  }
-  
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
   // VARIABLES DE CLASE
   private DevolucionDAO devolucionDao;
-  private List<Dev> listaDevoluciones;
+  private Devolucion devolucionSeleccionada;
+  private List<Devolucion> listaRetirados;
+  private List<Devolucion> listaDevoluciones;
+  private List<Devolucion> listaDevueltos;
 
   // CONSTRUCTOR
   public DevolucionBean() {
     devolucionDao = new DevolucionIMPL();
+    devolucionSeleccionada = new Devolucion();
+    listaRetirados = new ArrayList<>();
     listaDevoluciones = new ArrayList<>();
+    listaDevueltos = new ArrayList<>();
     obtenerDevoluciones();
+    obtenerDevueltos();
+    obtenerRetirados();
   }
 
   // METODO PARA APROBAR UNA DEVOLUCION
@@ -109,27 +65,32 @@ public class DevolucionBean implements Serializable {
   }
 
   // METODO PARA OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
-  public void obtenerDevoluciones() {
-    listaDevoluciones = devolucionDao.retiradosBancoPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
-    for (int i = 0; i < listaDevoluciones.size(); i++) {
-      System.out.println(listaDevoluciones.get(i).getFecha());
-      System.out.println(listaDevoluciones.get(i).getEstatus());
-      System.out.println(listaDevoluciones.get(i).getNumeroCredito());
-      System.out.println(listaDevoluciones.get(i).getNombreRazonSocial());
-      System.out.println(listaDevoluciones.get(i).getConcepto());
-    }
+  public final void obtenerDevoluciones() {
+    System.out.println("ENTRO A OBTENER DEVOLUCIONES");
+    listaDevoluciones = devolucionDao.bandejaDevolucionPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
+  }
+
+  // METODO PARA OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
+  public final void obtenerDevueltos() {
+    System.out.println("ENTRO A OBTENER DEVUELTOS");
+    listaDevueltos = devolucionDao.devueltosPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
+  }
+
+  // METODO PARA OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
+  public final void obtenerRetirados() {
+    System.out.println("ENTRO A OBTENER RETIRADOS");
+    listaRetirados = devolucionDao.retiradosBancoPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
   }
 
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-  
-  public List<Dev> getListaDevoluciones() {
+  public List<Devolucion> getListaDevoluciones() {
     return listaDevoluciones;
   }
 
-  public void setListaDevoluciones(List<Dev> listaDevoluciones) {
+  public void setListaDevoluciones(List<Devolucion> listaDevoluciones) {
     this.listaDevoluciones = listaDevoluciones;
   }
 
@@ -148,13 +109,37 @@ public class DevolucionBean implements Serializable {
   public void setIndexBean(IndexBean indexBean) {
     this.indexBean = indexBean;
   }
-  
+
   public ELContext getElContext() {
     return elContext;
   }
 
   public void setElContext(ELContext elContext) {
     this.elContext = elContext;
+  }
+
+  public List<Devolucion> getListaRetirados() {
+    return listaRetirados;
+  }
+
+  public void setListaRetirados(List<Devolucion> listaRetirados) {
+    this.listaRetirados = listaRetirados;
+  }
+
+  public List<Devolucion> getListaDevueltos() {
+    return listaDevueltos;
+  }
+
+  public void setListaDevueltos(List<Devolucion> listaDevueltos) {
+    this.listaDevueltos = listaDevueltos;
+  }
+
+  public Devolucion getDevolucionSeleccionada() {
+    return devolucionSeleccionada;
+  }
+
+  public void setDevolucionSeleccionada(Devolucion devolucionSeleccionada) {
+    this.devolucionSeleccionada = devolucionSeleccionada;
   }
 
 }
