@@ -1,5 +1,5 @@
 package dto;
-// Generated 26/10/2015 11:55:09 AM by Hibernate Tools 4.3.1
+// Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -23,12 +23,11 @@ public class Devolucion  implements java.io.Serializable {
     }
 
 	
-    public Devolucion(Date fecha, int idCredito, int idConceptoDevolucion, String solicitante, String revisor, int estatus) {
+    public Devolucion(Date fecha, int idCredito, int idConceptoDevolucion, String solicitante, int estatus) {
         this.fecha = fecha;
         this.idCredito = idCredito;
         this.idConceptoDevolucion = idConceptoDevolucion;
         this.solicitante = solicitante;
-        this.revisor = revisor;
         this.estatus = estatus;
     }
     public Devolucion(Date fecha, int idCredito, int idConceptoDevolucion, String observaciones, String solicitante, String revisor, int estatus) {

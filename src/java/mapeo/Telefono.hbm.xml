@@ -1,33 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 26/10/2015 11:55:10 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.Telefono" optimistic-lock="version" table="telefono">
-    <id name="idTelefono" type="java.lang.Integer">
-      <column name="id_telefono"/>
-      <generator class="identity"/>
-    </id>
-    <many-to-one class="dto.Sujeto" fetch="select" name="sujeto">
-      <column name="id_sujeto" not-null="true"/>
-    </many-to-one>
-    <property name="numero" type="string">
-      <column length="45" name="numero" not-null="true"/>
-    </property>
-    <property name="tipo" type="string">
-      <column length="15" name="tipo">
-        <comment>tipo</comment>
-      </column>
-    </property>
-    <property name="extension" type="string">
-      <column length="30" name="extension">
-        <comment>extension</comment>
-      </column>
-    </property>
-    <property name="lada" type="string">
-      <column length="5" name="lada"/>
-    </property>
-    <property name="horario" type="string">
-      <column length="100" name="horario"/>
-    </property>
-  </class>
+    <class name="dto.Telefono" table="telefono" catalog="sigerbd" optimistic-lock="version">
+        <id name="idTelefono" type="java.lang.Integer">
+            <column name="id_telefono" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="sujeto" class="dto.Sujeto" fetch="select">
+            <column name="id_sujeto" not-null="true" />
+        </many-to-one>
+        <property name="numero" type="string">
+            <column name="numero" length="45" not-null="true" />
+        </property>
+        <property name="tipo" type="string">
+            <column name="tipo" length="15">
+                <comment>tipo</comment>
+            </column>
+        </property>
+        <property name="extension" type="string">
+            <column name="extension" length="30">
+                <comment>extension</comment>
+            </column>
+        </property>
+        <property name="lada" type="string">
+            <column name="lada" length="5" />
+        </property>
+        <property name="horario" type="string">
+            <column name="horario" length="100" />
+        </property>
+    </class>
 </hibernate-mapping>

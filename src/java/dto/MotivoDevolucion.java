@@ -1,5 +1,5 @@
 package dto;
-// Generated 26/10/2015 11:55:09 AM by Hibernate Tools 4.3.1
+// Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1
 
 
 
@@ -12,13 +12,15 @@ public class MotivoDevolucion  implements java.io.Serializable {
      private Integer idMotivoDevolucion;
      private String motivo;
      private String descripcion;
+     private int idConceptoDevolucion;
 
     public MotivoDevolucion() {
     }
 
-    public MotivoDevolucion(String motivo, String descripcion) {
+    public MotivoDevolucion(String motivo, String descripcion, int idConceptoDevolucion) {
        this.motivo = motivo;
        this.descripcion = descripcion;
+       this.idConceptoDevolucion = idConceptoDevolucion;
     }
    
     public Integer getIdMotivoDevolucion() {
@@ -41,6 +43,13 @@ public class MotivoDevolucion  implements java.io.Serializable {
     
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+    public int getIdConceptoDevolucion() {
+        return this.idConceptoDevolucion;
+    }
+    
+    public void setIdConceptoDevolucion(int idConceptoDevolucion) {
+        this.idConceptoDevolucion = idConceptoDevolucion;
     }
 
 
