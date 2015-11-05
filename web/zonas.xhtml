@@ -122,7 +122,7 @@
               <p:selectOneMenu id="cmbGestor" value="#{zonasVistaBean.gestorAsignado}" filter="true" filterMatchMode="contains" >
                 <p:ajax listener="#{zonasVistaBean.onGestorAsignadoChange}" update="growl" />
                 <f:selectItem itemLabel="Ninguno" itemValue="null" noSelectionOption="true" />
-                <f:selectItems value="#{zonasVistaBean.gestorAsignado}" />
+                <f:selectItems value="#{zonasVistaBean.gestores}" />
               </p:selectOneMenu>
             </h:panelGrid>  
 
