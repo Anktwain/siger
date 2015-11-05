@@ -49,18 +49,80 @@
             <div class="tab-pane fade" id="retirados">
               <h:form id="formRetirados">
                 <p:contextMenu for="retirados">
-                  <p:menuitem value="Aprobar devolucion" icon="ui-icon-search" actionListener="#{devolucionBean.aprobar}" />
-                  <p:menuitem value="Solicitar conservacion" icon="ui-icon-close" actionListener="#{devolucionBean.conservar}" />
+                  <p:menuitem value="Aprobar devolucion" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar()}" />
+                  <p:menuitem value="Solicitar conservacion" icon="ui-icon-undo" actionListener="#{devolucionBean.conservar()}" />
                 </p:contextMenu>
-                <p:dataTable id="retirados" var="dev" value="#{devolucionBean.listaDevoluciones}" emptyMessage="No existen creditos retirados por el banco." >
+                <p:dataTable id="retirados" var="ret" value="#{devolucionBean.listaRetirados}" rowKey="#{ret.idDevolucion}" selection="#{devolucionBean.devolucionSeleccionada}" emptyMessage="No existen creditos retirados por el banco." >
+                  <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                  <p:column headerText="Fecha devolucion"> 
+                    <h:outputText value="#{ret.fecha}"/>
+                  </p:column>
+                  <p:column headerText="Estatus"> 
+                    <h:outputText value="#{ret.estatus}"/>
+                  </p:column>
+                  <p:column headerText="Credito"> 
+                    <h:outputText value="#{ret.numeroCredito}"/>
+                  </p:column>
+                  <p:column headerText="Deudor"> 
+                    <h:outputText value="#{ret.nombreRazonSocial}"/>
+                  </p:column>
+                  <p:column headerText="Motivo"> 
+                    <h:outputText value="#{ret.motivo}"/>
+                  </p:column>                    
                 </p:dataTable>
               </h:form>
             </div>
             <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS EN BANDEJA DE DEVOLUCION -->
             <div class="tab-pane fade" id="bandeja">
+              <h:form id="formBandeja">
+                <p:contextMenu for="bandeja">
+                  <p:menuitem value="Aprobar devolucion" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar()}" />
+                  <p:menuitem value="Rechazar devolucion" icon="ui-icon-times" actionListener="#{devolucionBean.rechazar()}" />
+                </p:contextMenu>
+                <p:dataTable id="bandeja" var="devo" value="#{devolucionBean.listaDevoluciones}" rowKey="#{devo.idDevolucion}" selection="#{devolucionBean.devolucionSeleccionada}" emptyMessage="No existen creditos en bandeja de devolucion." >
+                  <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                  <p:column headerText="Fecha devolucion"> 
+                    <h:outputText value="#{devo.fecha}"/>
+                  </p:column>
+                  <p:column headerText="Estatus"> 
+                    <h:outputText value="#{devo.estatus}"/>
+                  </p:column>
+                  <p:column headerText="Credito"> 
+                    <h:outputText value="#{devo.numeroCredito}"/>
+                  </p:column>
+                  <p:column headerText="Deudor"> 
+                    <h:outputText value="#{devo.nombreRazonSocial}"/>
+                  </p:column>
+                  <p:column headerText="Motivo"> 
+                    <h:outputText value="#{devo.motivo}"/>
+                  </p:column>                    
+                </p:dataTable>
+              </h:form>
             </div>
             <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS DEVUELTOS EN EL SISTEMA -->
             <div class="tab-pane fade" id="devueltos">
+              <h:form id="formDevueltos">
+                <p:contextMenu for="devueltos">
+                  <p:menuitem value="Reactivar" icon="ui-icon-external-link-square" actionListener="#{devolucionBean.reactivar()}" />
+                </p:contextMenu>
+                <p:dataTable id="devueltos" var="dev" value="#{devolucionBean.listaDevueltos}" emptyMessage="No existen creditos devueltos." >
+                  <p:column headerText="Fecha devolucion"> 
+                    <h:outputText value="#{dev.fecha}"/>
+                  </p:column>
+                  <p:column headerText="Estatus"> 
+                    <h:outputText value="#{dev.estatus}"/>
+                  </p:column>
+                  <p:column headerText="Credito"> 
+                    <h:outputText value="#{dev.numeroCredito}"/>
+                  </p:column>
+                  <p:column headerText="Deudor"> 
+                    <h:outputText value="#{dev.nombreRazonSocial}"/>
+                  </p:column>
+                  <p:column headerText="Motivo"> 
+                    <h:outputText value="#{dev.motivo}"/>
+                  </p:column>                    
+                </p:dataTable>
+              </h:form>
             </div>
           </div>
         </div>

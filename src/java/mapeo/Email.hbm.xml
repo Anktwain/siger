@@ -1,20 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 26/10/2015 11:55:10 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.Email" optimistic-lock="version" table="email">
-    <id name="idEmail" type="java.lang.Integer">
-      <column name="id_email"/>
-      <generator class="identity"/>
-    </id>
-    <many-to-one class="dto.Sujeto" fetch="select" name="sujeto">
-      <column name="id_sujeto" not-null="true"/>
-    </many-to-one>
-    <property name="direccion" type="string">
-      <column length="45" name="direccion" not-null="true"/>
-    </property>
-    <property name="tipo" type="string">
-      <column length="15" name="tipo"/>
-    </property>
-  </class>
+    <class name="dto.Email" table="email" catalog="sigerbd" optimistic-lock="version">
+        <id name="idEmail" type="java.lang.Integer">
+            <column name="id_email" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="sujeto" class="dto.Sujeto" fetch="select">
+            <column name="id_sujeto" not-null="true" />
+        </many-to-one>
+        <property name="direccion" type="string">
+            <column name="direccion" length="45" not-null="true" />
+        </property>
+        <property name="tipo" type="string">
+            <column name="tipo" length="15" />
+        </property>
+    </class>
 </hibernate-mapping>
