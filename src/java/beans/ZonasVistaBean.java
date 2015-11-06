@@ -31,7 +31,7 @@ public class ZonasVistaBean implements Serializable {
    * </strong>, pero dos despachos cualesquiera podrían tener zonas con los
    * mismos nombres.
    */
-  private String nombre;  
+  private String nombre;
   /**
    * Todos los estadosRep que se listarán en la vista.
    */
@@ -94,11 +94,10 @@ public class ZonasVistaBean implements Serializable {
 
   private boolean mpiosEnDespliegue;
   private boolean coloniasEnDespliegue;
-  
+
   private Gestor gestorAsignado;
   private List<Gestor> gestores;
   private final GestorDAO gestorDao;
-  
 
   public ZonasVistaBean() {
 
@@ -119,8 +118,8 @@ public class ZonasVistaBean implements Serializable {
     edoRepVisible = new EstadoRepublica();
 
     mpiosEnDespliegue = true;
-    coloniasEnDespliegue = false;
-    
+    coloniasEnDespliegue = true;
+
     gestorDao = new GestorIMPL();
     gestores = gestorDao.buscarTodo();
     gestorAsignado = null;
@@ -223,14 +222,12 @@ public class ZonasVistaBean implements Serializable {
     this.coloniasSeleccionadas = coloniasSeleccionadas;
   }
 
-  public void onMostrarMpiosChange() {
-    mpiosEnDespliegue = !mpiosEnDespliegue;
+  public void onMostrarMpiosChange() {    
     System.out.println("CAMBIO. - municipios en despliegue: " + mpiosEnDespliegue);
   }
 
   public void onMostrarColoniasChange() {
-    coloniasEnDespliegue = !coloniasEnDespliegue;
-    Logs.log.debug("CAMBIO. - colonias en despliegue: " + coloniasEnDespliegue);
+    System.out.println("CAMBIO. - colonias en despliegue: " + coloniasEnDespliegue);
   }
 
   public boolean isMpiosEnDespliegue() {
@@ -249,7 +246,7 @@ public class ZonasVistaBean implements Serializable {
     this.coloniasEnDespliegue = coloniasEnDespliegue;
   }
 
-  public void onGestorAsignadoChange(){
+  public void onGestorAsignadoChange() {
   }
 
   public Gestor getGestorAsignado() {
@@ -266,6 +263,6 @@ public class ZonasVistaBean implements Serializable {
 
   public void setGestores(List<Gestor> gestores) {
     this.gestores = gestores;
-  }  
-  
+  }
+
 }
