@@ -14,6 +14,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import util.log.Logs;
 
@@ -22,7 +24,7 @@ import util.log.Logs;
  * @author Pablo
  */
 @ManagedBean(name = "zonasVistaBean")
-@ViewScoped
+@SessionScoped
 public class ZonasVistaBean implements Serializable {
 
   /**
@@ -99,6 +101,8 @@ public class ZonasVistaBean implements Serializable {
   private List<Gestor> gestores;
   private final GestorDAO gestorDao;
 
+  private boolean tablaEnDespliegue;
+
   public ZonasVistaBean() {
 
     EstadoRepublicaDAO estadoRepDao = new EstadoRepublicaIMPL();
@@ -118,11 +122,13 @@ public class ZonasVistaBean implements Serializable {
     edoRepVisible = new EstadoRepublica();
 
     mpiosEnDespliegue = true;
-    coloniasEnDespliegue = true;
+    coloniasEnDespliegue = false;
 
     gestorDao = new GestorIMPL();
     gestores = gestorDao.buscarTodo();
     gestorAsignado = null;
+    
+    tablaEnDespliegue = true;
   }
 
   public String getNombre() {
@@ -222,7 +228,7 @@ public class ZonasVistaBean implements Serializable {
     this.coloniasSeleccionadas = coloniasSeleccionadas;
   }
 
-  public void onMostrarMpiosChange() {    
+  public void onMostrarMpiosChange() {
     System.out.println("CAMBIO. - municipios en despliegue: " + mpiosEnDespliegue);
   }
 
@@ -263,6 +269,18 @@ public class ZonasVistaBean implements Serializable {
 
   public void setGestores(List<Gestor> gestores) {
     this.gestores = gestores;
+  }
+
+  public void onMostrarTablaChange() {
+    System.out.println("CAMBIO. - tabla en despliegue: " + tablaEnDespliegue);
+  }
+
+  public boolean isTablaEnDespliegue() {
+    return tablaEnDespliegue;
+  }
+
+  public void setTablaEnDespliegue(boolean tablaEnDespliegue) {
+    this.tablaEnDespliegue = tablaEnDespliegue;
   }
 
 }
