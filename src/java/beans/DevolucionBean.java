@@ -5,15 +5,18 @@
  */
 package beans;
 
+
 import dao.DevolucionDAO;
+import dao.HistorialDAO;
+import dto.Dev;
 import dto.Devolucion;
 import impl.DevolucionIMPL;
+import impl.HistorialIMPL;
 import java.io.Serializable;
-import java.text.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 import javax.el.ELContext;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -32,74 +35,147 @@ public class DevolucionBean implements Serializable {
 
   // VARIABLES DE CLASE
   private DevolucionDAO devolucionDao;
-  private Devolucion devolucionSeleccionada;
-  private List<Devolucion> listaRetirados;
-  private List<Devolucion> listaDevoluciones;
-  private List<Devolucion> listaDevueltos;
+  private final HistorialDAO historialDao;
+  private List<Dev> devolucionesSeleccionadas;
+  private List<Dev> retiradosSeleccionados;
+  private List<Dev> bandejaSeleccionados;
+  private List<Dev> listaRetirados;
+  private List<Dev> listaDevoluciones;
+  private List<Dev> listaDevueltos;
+  private final int idDespacho;
+  private final String admin;
 
   // CONSTRUCTOR
   public DevolucionBean() {
     devolucionDao = new DevolucionIMPL();
-    devolucionSeleccionada = new Devolucion();
+    historialDao = new HistorialIMPL();
+    devolucionesSeleccionadas = new ArrayList<>();
+    retiradosSeleccionados = new ArrayList<>();
+    bandejaSeleccionados = new ArrayList<>();
     listaRetirados = new ArrayList<>();
     listaDevoluciones = new ArrayList<>();
     listaDevueltos = new ArrayList<>();
-    obtenerDevoluciones();
-    obtenerDevueltos();
-    obtenerRetirados();
+    idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
+    admin = indexBean.getUsuario().getNombreLogin();
+    obtenerListas();
   }
 
   // METODO PARA APROBAR UNA DEVOLUCION
-  public void aprobar() {
-
+  public void aprobar(List<Dev> lista) {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    int tam = 0;
+    tam = lista.size();
+    if ((!lista.isEmpty()) && (tam >= 1)) {
+      boolean ok = true;
+      for (int i = 0; i < tam; i++) {
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
+        devolucion.setEstatus(0);
+        String quien = indexBean.getUsuario().getNombreLogin();
+        devolucion.setRevisor(quien);
+        String evento = "El administrador: " + admin + ", aprobo la devolucion del credito";
+        ok = devolucionDao.editar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
+      }
+      if (ok) {
+        obtenerListas();
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se aprobaron las devoluciones seleccionadas"));
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron aprobar las devoluciones. Contacte con el administrador de base de datos"));
+      }
+    } else {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ninguna devolucion"));
+    }
   }
 
   // METODO PARA RECHAZAR UNA DEVOLUCION
-  public void rechazar() {
-
+  public void rechazar(List<Dev> lista) {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    int tam = 0;
+    tam = lista.size();
+    if ((!lista.isEmpty()) && (tam >= 1)) {
+      boolean ok = true;
+      for (int i = 0; i < tam; i++) {
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
+        String evento = "El administrador: " + admin + ", rechazo la devolucion del credito";
+        ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
+      }
+      if (ok) {
+        obtenerListas();
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se rechazaron las devoluciones seleccionadas"));
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron rechazar las devoluciones. Contacte con el administrador de base de datos"));
+      }
+    } else {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ninguna devolucion"));
+    }
   }
 
   // METODO PARA PEDIR AL BANCO UNA CONSERVACION
-  public void conservar() {
-
+  public void conservar(List<Dev> lista) {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    int tam = 0;
+    tam = lista.size();
+    if ((!lista.isEmpty()) && (tam >= 1)) {
+      boolean ok = true;
+      for (int i = 0; i < tam; i++) {
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
+        devolucion.setEstatus(3);
+        devolucion.setSolicitante(indexBean.getUsuario().getNombreLogin());
+        String evento = "El administrador: " + admin + ", solicito la conservacion del credito";
+        ok = devolucionDao.editar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
+      }
+      if (ok) {
+        obtenerListas();
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se han conservado los creditos seleccionados"));
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron aprobar las devoluciones. Contacte con el administrador de base de datos"));
+      }
+    } else {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ninguna devolucion"));
+    }
   }
 
-  // METODO PARA OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
-  public final void obtenerDevoluciones() {
-    System.out.println("ENTRO A OBTENER DEVOLUCIONES");
-    listaDevoluciones = devolucionDao.bandejaDevolucionPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
+  // METODO PARA REACTIVAR UN CREDITO QUE ESTUVO DEVUELTO PREVIAMENTE
+  public void reactivar(List<Dev> lista) {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    int tam = 0;
+    tam = lista.size();
+    if ((!lista.isEmpty()) && (tam >= 1)) {
+      boolean ok = true;
+      for (int i = 0; i < tam; i++) {
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
+        String evento = "El administrador: " + admin + ", reactivo el credito";
+        ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
+      }
+      if (ok) {
+        obtenerListas();
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reactivaron los creditos seleccionados"));
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron reactivar los creditos. Contacte con el administrador de base de datos"));
+      }
+    } else {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
+    }
   }
 
-  // METODO PARA OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
-  public final void obtenerDevueltos() {
-    System.out.println("ENTRO A OBTENER DEVUELTOS");
-    listaDevueltos = devolucionDao.devueltosPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
-  }
-
-  // METODO PARA OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
-  public final void obtenerRetirados() {
-    System.out.println("ENTRO A OBTENER RETIRADOS");
-    listaRetirados = devolucionDao.retiradosBancoPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
+  public final void obtenerListas() {
+    // OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
+    listaDevoluciones = devolucionDao.bandejaDevolucionPorDespacho(idDespacho);
+    // OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
+    listaDevueltos = devolucionDao.devueltosPorDespacho(idDespacho);
+    // OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
+    listaRetirados = devolucionDao.retiradosBancoPorDespacho(idDespacho);
   }
 
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-  public List<Devolucion> getListaDevoluciones() {
-    return listaDevoluciones;
+  public ELContext getElContext() {
+    return elContext;
   }
 
-  public void setListaDevoluciones(List<Devolucion> listaDevoluciones) {
-    this.listaDevoluciones = listaDevoluciones;
-  }
-
-  public DevolucionDAO getDevolucionDao() {
-    return devolucionDao;
-  }
-
-  public void setDevolucionDao(DevolucionDAO devolucionDao) {
-    this.devolucionDao = devolucionDao;
+  public void setElContext(ELContext elContext) {
+    this.elContext = elContext;
   }
 
   public IndexBean getIndexBean() {
@@ -110,36 +186,60 @@ public class DevolucionBean implements Serializable {
     this.indexBean = indexBean;
   }
 
-  public ELContext getElContext() {
-    return elContext;
+  public DevolucionDAO getDevolucionDao() {
+    return devolucionDao;
   }
 
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
+  public void setDevolucionDao(DevolucionDAO devolucionDao) {
+    this.devolucionDao = devolucionDao;
   }
 
-  public List<Devolucion> getListaRetirados() {
+  public List<Dev> getDevolucionesSeleccionadas() {
+    return devolucionesSeleccionadas;
+  }
+
+  public void setDevolucionesSeleccionadas(List<Dev> devolucionesSeleccionadas) {
+    this.devolucionesSeleccionadas = devolucionesSeleccionadas;
+  }
+
+  public List<Dev> getRetiradosSeleccionados() {
+    return retiradosSeleccionados;
+  }
+
+  public void setRetiradosSeleccionados(List<Dev> retiradosSeleccionados) {
+    this.retiradosSeleccionados = retiradosSeleccionados;
+  }
+
+  public List<Dev> getBandejaSeleccionados() {
+    return bandejaSeleccionados;
+  }
+
+  public void setBandejaSeleccionados(List<Dev> bandejaSeleccionados) {
+    this.bandejaSeleccionados = bandejaSeleccionados;
+  }
+
+  public List<Dev> getListaRetirados() {
     return listaRetirados;
   }
 
-  public void setListaRetirados(List<Devolucion> listaRetirados) {
+  public void setListaRetirados(List<Dev> listaRetirados) {
     this.listaRetirados = listaRetirados;
   }
 
-  public List<Devolucion> getListaDevueltos() {
+  public List<Dev> getListaDevoluciones() {
+    return listaDevoluciones;
+  }
+
+  public void setListaDevoluciones(List<Dev> listaDevoluciones) {
+    this.listaDevoluciones = listaDevoluciones;
+  }
+
+  public List<Dev> getListaDevueltos() {
     return listaDevueltos;
   }
 
-  public void setListaDevueltos(List<Devolucion> listaDevueltos) {
+  public void setListaDevueltos(List<Dev> listaDevueltos) {
     this.listaDevueltos = listaDevueltos;
-  }
-
-  public Devolucion getDevolucionSeleccionada() {
-    return devolucionSeleccionada;
-  }
-
-  public void setDevolucionSeleccionada(Devolucion devolucionSeleccionada) {
-    this.devolucionSeleccionada = devolucionSeleccionada;
   }
 
 }

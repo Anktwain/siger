@@ -19,9 +19,9 @@ import util.log.Logs;
  * @author Eduardo
  */
 public class CreditoIMPL implements CreditoDAO {
-  
+
   @Override
-  public Number contarCreditosActivos(){
+  public Number contarCreditosActivos() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Number creditos;
@@ -37,9 +37,9 @@ public class CreditoIMPL implements CreditoDAO {
     }
     return creditos;
   }
-  
+
   @Override
-  public Number contarCreditosActivosPorGestor(int idGestor){
+  public Number contarCreditosActivosPorGestor(int idGestor) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Number creditos;
@@ -55,11 +55,28 @@ public class CreditoIMPL implements CreditoDAO {
     }
     return creditos;
   }
-  
+
+  @Override
+  public Credito buscarCreditoPorId(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Credito c;
+    String consulta = "SELECT * FROM credito WHERE id_credito = " + idCredito + ";";
+    try {
+      c = (Credito) sesion.createSQLQuery(consulta).addEntity(Credito.class).uniqueResult();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      c = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return c;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();
     }
   }
-  
+
 }

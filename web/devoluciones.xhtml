@@ -9,7 +9,7 @@
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Bandeja de devoluci&oacute;n</title>
   </h:head> 
-  <body>
+  <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
     <div id="overlay" class="transparent" style="display: none"></div>
@@ -48,79 +48,97 @@
             <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS RETIRADOS POR EL BANCO -->
             <div class="tab-pane fade" id="retirados">
               <h:form id="formRetirados">
-                <p:contextMenu for="retirados">
-                  <p:menuitem value="Aprobar devolucion" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar()}" />
-                  <p:menuitem value="Solicitar conservacion" icon="ui-icon-undo" actionListener="#{devolucionBean.conservar()}" />
+                <p:contextMenu for="retirados" style="width:200px;">
+                  <p:menuitem value="Aprobar devolucion" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar(devolucionBean.retiradosSeleccionados)}" update="growl, retirados, formBandeja:bandeja" />
+                  <p:menuitem value="Solicitar conservacion" icon="ui-icon-mail-closed" actionListener="#{devolucionBean.conservar(devolucionBean.retiradosSeleccionados)}" update="growl, retirados, formBandeja:bandeja" />
                 </p:contextMenu>
-                <p:dataTable id="retirados" var="ret" value="#{devolucionBean.listaRetirados}" rowKey="#{ret.idDevolucion}" selection="#{devolucionBean.devolucionSeleccionada}" emptyMessage="No existen creditos retirados por el banco." >
-                  <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
-                  <p:column headerText="Fecha devolucion"> 
+                <p:dataTable id="retirados" var="ret" value="#{devolucionBean.listaRetirados}" rowKey="#{ret.numeroCredito}" selection="#{devolucionBean.retiradosSeleccionados}" emptyMessage="No existen creditos retirados por el banco." >
+                  <p:column selectionMode="multiple" style="width:35px;text-align:center" />
+                  <p:column headerText="Fecha devolucion" style="width:250px;" > 
                     <h:outputText value="#{ret.fecha}"/>
                   </p:column>
-                  <p:column headerText="Estatus"> 
+                  <p:column headerText="Estatus" style="width:150px;" > 
                     <h:outputText value="#{ret.estatus}"/>
                   </p:column>
-                  <p:column headerText="Credito"> 
+                  <p:column headerText="Credito" style="width:150px;" > 
                     <h:outputText value="#{ret.numeroCredito}"/>
                   </p:column>
                   <p:column headerText="Deudor"> 
                     <h:outputText value="#{ret.nombreRazonSocial}"/>
                   </p:column>
-                  <p:column headerText="Motivo"> 
-                    <h:outputText value="#{ret.motivo}"/>
-                  </p:column>                    
+                  <f:facet name="footer">
+                    <p:commandButton value="Aprobar devolucion seleccionados" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar(devolucionBean.retiradosSeleccionados)}" update="growl, retirados, formBandeja:bandeja" />
+                    <p:commandButton value="Solicitar conservacion seleccionados" icon="ui-icon-mail-closed" actionListener="#{devolucionBean.conservar(devolucionBean.retiradosSeleccionados)}" update="growl, retirados, formBandeja:bandeja" />
+                  </f:facet>
                 </p:dataTable>
               </h:form>
             </div>
             <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS EN BANDEJA DE DEVOLUCION -->
             <div class="tab-pane fade" id="bandeja">
               <h:form id="formBandeja">
-                <p:contextMenu for="bandeja">
-                  <p:menuitem value="Aprobar devolucion" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar()}" />
-                  <p:menuitem value="Rechazar devolucion" icon="ui-icon-times" actionListener="#{devolucionBean.rechazar()}" />
+                <p:contextMenu for="bandeja" style="width:200px;">
+                  <p:menuitem value="Aprobar devolucion" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar(devolucionBean.bandejaSeleccionados)}" update="growl, bandeja, formDevueltos:devueltos" />
+                  <p:menuitem value="Rechazar devolucion" icon="ui-icon-alert" actionListener="#{devolucionBean.rechazar(devolucionBean.bandejaSeleccionados)}" update="growl, bandeja" />
                 </p:contextMenu>
-                <p:dataTable id="bandeja" var="devo" value="#{devolucionBean.listaDevoluciones}" rowKey="#{devo.idDevolucion}" selection="#{devolucionBean.devolucionSeleccionada}" emptyMessage="No existen creditos en bandeja de devolucion." >
-                  <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
-                  <p:column headerText="Fecha devolucion"> 
+                <p:dataTable id="bandeja" var="devo" value="#{devolucionBean.listaDevoluciones}" rowKey="#{devo.numeroCredito}" selection="#{devolucionBean.bandejaSeleccionados}" emptyMessage="No existen creditos en bandeja de devolucion." >
+                  <p:column selectionMode="multiple" style="width:35px;text-align:center"/>
+                  <p:column headerText="Fecha devolucion" style="width:250px;" > 
                     <h:outputText value="#{devo.fecha}"/>
                   </p:column>
-                  <p:column headerText="Estatus"> 
+                  <p:column headerText="Estatus" style="width:200px;" > 
                     <h:outputText value="#{devo.estatus}"/>
                   </p:column>
-                  <p:column headerText="Credito"> 
+                  <p:column headerText="Credito" style="width:150px;" > 
                     <h:outputText value="#{devo.numeroCredito}"/>
                   </p:column>
                   <p:column headerText="Deudor"> 
                     <h:outputText value="#{devo.nombreRazonSocial}"/>
                   </p:column>
-                  <p:column headerText="Motivo"> 
-                    <h:outputText value="#{devo.motivo}"/>
-                  </p:column>                    
+                  <p:column headerText="Motivo" style="width:250px;" > 
+                    <h:outputText value="#{devo.concepto}"/>
+                  </p:column>
+                  <p:column headerText="Solicitante" style="width:100px;" > 
+                    <h:outputText value="#{devo.solicitante}"/>
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton value="Aprobar devolucion seleccionados" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar(devolucionBean.bandejaSeleccionados)}" update="growl, bandeja, formDevueltos:devueltos" />
+                    <p:commandButton value="Rechazar devolucion seleccionados" icon="ui-icon-alert" actionListener="#{devolucionBean.rechazar(devolucionBean.bandejaSeleccionados)}" update="growl, bandeja" />
+                  </f:facet>
                 </p:dataTable>
               </h:form>
             </div>
             <!-- AQUI VA LA TABLA QUE MUESTRE LOS CREDITOS DEVUELTOS EN EL SISTEMA -->
             <div class="tab-pane fade" id="devueltos">
               <h:form id="formDevueltos">
-                <p:contextMenu for="devueltos">
-                  <p:menuitem value="Reactivar" icon="ui-icon-external-link-square" actionListener="#{devolucionBean.reactivar()}" />
+                <p:contextMenu for="devueltos" style="width:200px;">
+                  <p:menuitem value="Reactivar" icon="ui-icon-refresh" actionListener="#{devolucionBean.reactivar(devolucionesSeleccionadas)}" update="devueltos" />
                 </p:contextMenu>
-                <p:dataTable id="devueltos" var="dev" value="#{devolucionBean.listaDevueltos}" emptyMessage="No existen creditos devueltos." >
-                  <p:column headerText="Fecha devolucion"> 
+                <p:dataTable id="devueltos" var="dev" value="#{devolucionBean.listaDevueltos}" rowKey="#{dev.numeroCredito}" selection="#{devolucionBean.devolucionesSeleccionadas}" emptyMessage="No existen creditos devueltos." >
+                  <p:column selectionMode="multiple" style="width:35px;text-align:center"/>
+                  <p:column headerText="Fecha devolucion" style="width:250px;" > 
                     <h:outputText value="#{dev.fecha}"/>
                   </p:column>
-                  <p:column headerText="Estatus"> 
+                  <p:column headerText="Estatus" style="width:100px;" > 
                     <h:outputText value="#{dev.estatus}"/>
                   </p:column>
-                  <p:column headerText="Credito"> 
+                  <p:column headerText="Credito" style="width:150px;" > 
                     <h:outputText value="#{dev.numeroCredito}"/>
                   </p:column>
                   <p:column headerText="Deudor"> 
                     <h:outputText value="#{dev.nombreRazonSocial}"/>
                   </p:column>
-                  <p:column headerText="Motivo"> 
-                    <h:outputText value="#{dev.motivo}"/>
-                  </p:column>                    
+                  <p:column headerText="Motivo" style="width:250px;" > 
+                    <h:outputText value="#{dev.concepto}"/>
+                  </p:column>
+                  <p:column headerText="Solicitante" style="width:100px;" > 
+                    <h:outputText value="#{dev.solicitante}"/>
+                  </p:column>
+                  <p:column headerText="Revisor" style="width:100px;" > 
+                    <h:outputText value="#{dev.revisor}"/>
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton value="Reactivar seleccionados" icon="ui-icon-refresh" actionListener="#{devolucionBean.reactivar(devolucionesSeleccionadas)}" update="growl, devueltos" />
+                  </f:facet>
                 </p:dataTable>
               </h:form>
             </div>
@@ -130,5 +148,5 @@
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
-  </body>
+  </h:body>
 </html>

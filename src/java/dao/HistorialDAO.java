@@ -13,6 +13,6 @@ import dto.Credito;
  */
 public interface HistorialDAO {
   
-  public boolean insertarHistorial(Credito credito, String evento);
-  
+  public boolean insertarHistorial(int idCredito, String evento);
+    
 }
