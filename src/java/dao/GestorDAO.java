@@ -1,6 +1,8 @@
 package dao;
 
+import dto.Deudor;
 import dto.Gestor;
+import java.util.List;
 
 /**
  * La interfaz {@code GestorDAO} contiene los prototipos de las 
@@ -19,4 +21,6 @@ public interface GestorDAO {
      * @return
      */
     public boolean insertar(Gestor gestor);
+    
+    public List<Gestor> buscarTodo();
 }
