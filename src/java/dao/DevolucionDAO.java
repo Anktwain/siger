@@ -5,6 +5,7 @@
  */
 package dao;
 
+import dto.Dev;
 import dto.Devolucion;
 import java.util.List;
 
@@ -14,14 +15,16 @@ import java.util.List;
  */
 public interface DevolucionDAO {
   
-  public List<Devolucion> retiradosBancoPorDespacho(int idDespacho);
+  public List<Dev> retiradosBancoPorDespacho(int idDespacho);
   
-  public List<Devolucion> bandejaDevolucionPorDespacho(int idDespacho);
+  public List<Dev> bandejaDevolucionPorDespacho(int idDespacho);
   
-  public List<Devolucion> devueltosPorDespacho(int idDespacho);
+  public List<Dev> devueltosPorDespacho(int idDespacho);
   
   public boolean editar(Devolucion devolucion);
   
   public boolean eliminar(Devolucion devolucion);
+  
+  public Devolucion buscarDevolucionPorNumeroCredito(String numeroCredito);
   
 }

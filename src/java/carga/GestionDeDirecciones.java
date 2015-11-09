@@ -65,8 +65,7 @@ public class GestionDeDirecciones {
         query = "SELECT id_colonia FROM colonia WHERE codigo_postal = '" + cp + "' AND nombre LIKE '%" + col + "%';";
         r = consulta.executeQuery(query);
         // SI NO COINCIDIO
-        if(!r.isBeforeFirst()){;
-        }
+        if(!r.isBeforeFirst()){        }
         // SI COINCIDIO
         else{
           while(r.next()) {
