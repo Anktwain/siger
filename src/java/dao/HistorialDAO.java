@@ -5,8 +5,6 @@
  */
 package dao;
 
-import dto.Credito;
-
 /**
  *
  * @author Eduardo
