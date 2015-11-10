@@ -5,7 +5,6 @@
  */
 package beans;
 
-
 import dao.DevolucionDAO;
 import dao.HistorialDAO;
 import dto.Dev;
@@ -20,6 +19,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import util.constantes.Devoluciones;
 
 /**
  *
@@ -36,12 +36,12 @@ public class DevolucionBean implements Serializable {
   // VARIABLES DE CLASE
   private DevolucionDAO devolucionDao;
   private final HistorialDAO historialDao;
-  private List<Dev> devolucionesSeleccionadas;
-  private List<Dev> retiradosSeleccionados;
-  private List<Dev> bandejaSeleccionados;
-  private List<Dev> listaRetirados;
-  private List<Dev> listaDevoluciones;
-  private List<Dev> listaDevueltos;
+  public List<Dev> retiradosSeleccionados;
+  public List<Dev> bandejaSeleccionados;
+  public List<Dev> devolucionesSeleccionadas;
+  public List<Dev> listaRetirados;
+  public List<Dev> listaDevoluciones;
+  public List<Dev> listaDevueltos;
   private final int idDespacho;
   private final String admin;
 
@@ -49,9 +49,9 @@ public class DevolucionBean implements Serializable {
   public DevolucionBean() {
     devolucionDao = new DevolucionIMPL();
     historialDao = new HistorialIMPL();
-    devolucionesSeleccionadas = new ArrayList<>();
     retiradosSeleccionados = new ArrayList<>();
     bandejaSeleccionados = new ArrayList<>();
+    devolucionesSeleccionadas = new ArrayList<>();
     listaRetirados = new ArrayList<>();
     listaDevoluciones = new ArrayList<>();
     listaDevueltos = new ArrayList<>();
@@ -69,7 +69,7 @@ public class DevolucionBean implements Serializable {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
         Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
-        devolucion.setEstatus(0);
+        devolucion.setEstatus(Devoluciones.DEVUELTO);
         String quien = indexBean.getUsuario().getNombreLogin();
         devolucion.setRevisor(quien);
         String evento = "El administrador: " + admin + ", aprobo la devolucion del credito";
@@ -118,7 +118,7 @@ public class DevolucionBean implements Serializable {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
         Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
-        devolucion.setEstatus(3);
+        devolucion.setEstatus(Devoluciones.ESPERA_CONSERVACION);
         devolucion.setSolicitante(indexBean.getUsuario().getNombreLogin());
         String evento = "El administrador: " + admin + ", solicito la conservacion del credito";
         ok = devolucionDao.editar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
@@ -135,14 +135,14 @@ public class DevolucionBean implements Serializable {
   }
 
   // METODO PARA REACTIVAR UN CREDITO QUE ESTUVO DEVUELTO PREVIAMENTE
-  public void reactivar(List<Dev> lista) {
+  public void reactivar() {
     FacesContext contexto = FacesContext.getCurrentInstance();
     int tam = 0;
-    tam = lista.size();
-    if ((!lista.isEmpty()) && (tam >= 1)) {
+    tam = devolucionesSeleccionadas.size();
+    if ((!devolucionesSeleccionadas.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
-        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(devolucionesSeleccionadas.get(i).getNumeroCredito());
         String evento = "El administrador: " + admin + ", reactivo el credito";
         ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
       }
@@ -194,14 +194,6 @@ public class DevolucionBean implements Serializable {
     this.devolucionDao = devolucionDao;
   }
 
-  public List<Dev> getDevolucionesSeleccionadas() {
-    return devolucionesSeleccionadas;
-  }
-
-  public void setDevolucionesSeleccionadas(List<Dev> devolucionesSeleccionadas) {
-    this.devolucionesSeleccionadas = devolucionesSeleccionadas;
-  }
-
   public List<Dev> getRetiradosSeleccionados() {
     return retiradosSeleccionados;
   }
@@ -240,6 +232,14 @@ public class DevolucionBean implements Serializable {
 
   public void setListaDevueltos(List<Dev> listaDevueltos) {
     this.listaDevueltos = listaDevueltos;
+  }
+
+  public List<Dev> getDevolucionesSeleccionadas() {
+    return devolucionesSeleccionadas;
+  }
+
+  public void setDevolucionesSeleccionadas(List<Dev> devolucionesSeleccionadas) {
+    this.devolucionesSeleccionadas = devolucionesSeleccionadas;
   }
 
 }

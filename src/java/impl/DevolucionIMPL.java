@@ -17,6 +17,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.Devoluciones;
 import util.log.Logs;
 
 /**
@@ -30,7 +31,7 @@ public class DevolucionIMPL implements DevolucionDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Dev> retirados = new ArrayList<>();
     List<Object[]> r;
-    String consulta = "SELECT CAST(d.fecha AS DATE) AS fecha, d.estatus, c.numero_credito, s.nombre_razon_social, cd.concepto FROM deudor de JOIN sujeto s JOIN credito c JOIN devolucion d JOIN concepto_devolucion cd WHERE de.id_deudor = c.id_deudor AND d.estatus = 2 AND cd.id_concepto_devolucion = 11 AND c.id_credito = d.id_credito AND cd.id_concepto_devolucion = d.id_concepto_devolucion AND de.id_sujeto = s.id_sujeto AND c.id_despacho = " + idDespacho + ";";
+    String consulta = "SELECT CAST(d.fecha AS DATE) AS fecha, d.estatus, c.numero_credito, s.nombre_razon_social, cd.concepto FROM deudor de JOIN sujeto s JOIN credito c JOIN devolucion d JOIN concepto_devolucion cd WHERE de.id_deudor = c.id_deudor AND d.estatus = " + Devoluciones.PENDIENTE +" AND cd.id_concepto_devolucion = 11 AND c.id_credito = d.id_credito AND cd.id_concepto_devolucion = d.id_concepto_devolucion AND de.id_sujeto = s.id_sujeto AND c.id_despacho = " + idDespacho + ";";
     try {
       r = sesion.createSQLQuery(consulta).list();
       for (Object[] row : r) {
@@ -62,7 +63,7 @@ public class DevolucionIMPL implements DevolucionDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Dev> bandeja = new ArrayList<>();
     List<Object[]> b;
-    String consulta = "SELECT CAST(d.fecha AS DATE) AS fecha, d.estatus, c.numero_credito, s.nombre_razon_social, cd.concepto, d.solicitante FROM deudor de JOIN sujeto s JOIN credito c JOIN devolucion d JOIN concepto_devolucion cd WHERE de.id_deudor = c.id_deudor AND (d.estatus = 3 OR d.estatus = 2 AND d.id_concepto_devolucion != 11) AND c.id_credito = d.id_credito AND cd.id_concepto_devolucion = d.id_concepto_devolucion AND de.id_sujeto = s.id_sujeto AND c.id_despacho = " + idDespacho +";";
+    String consulta = "SELECT CAST(d.fecha AS DATE) AS fecha, d.estatus, c.numero_credito, s.nombre_razon_social, cd.concepto, d.solicitante FROM deudor de JOIN sujeto s JOIN credito c JOIN devolucion d JOIN concepto_devolucion cd WHERE de.id_deudor = c.id_deudor AND ((d.estatus = " + Devoluciones.ESPERA_CONSERVACION + ") OR (d.estatus = " + Devoluciones.PENDIENTE + " AND d.id_concepto_devolucion != 11)) AND c.id_credito = d.id_credito AND cd.id_concepto_devolucion = d.id_concepto_devolucion AND de.id_sujeto = s.id_sujeto AND c.id_despacho = " + idDespacho +";";
     try {
       b = sesion.createSQLQuery(consulta).list();
       for (Object[] row : b) {
@@ -103,7 +104,7 @@ public class DevolucionIMPL implements DevolucionDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Dev> devueltos = new ArrayList<>();
     List<Object[]> de;
-    String consulta = "SELECT CAST(d.fecha AS DATE) AS fecha, d.estatus, c.numero_credito, s.nombre_razon_social, cd.concepto, d.solicitante, d.revisor FROM deudor de JOIN sujeto s JOIN credito c JOIN devolucion d JOIN concepto_devolucion cd WHERE de.id_deudor = c.id_deudor AND d.estatus = 0 AND c.id_credito = d.id_credito AND cd.id_concepto_devolucion = d.id_concepto_devolucion AND de.id_sujeto = s.id_sujeto AND c.id_despacho = " + idDespacho + ";";
+    String consulta = "SELECT CAST(d.fecha AS DATE) AS fecha, d.estatus, c.numero_credito, s.nombre_razon_social, cd.concepto, d.solicitante, d.revisor FROM deudor de JOIN sujeto s JOIN credito c JOIN devolucion d JOIN concepto_devolucion cd WHERE de.id_deudor = c.id_deudor AND d.estatus = " + Devoluciones.DEVUELTO + " AND c.id_credito = d.id_credito AND cd.id_concepto_devolucion = d.id_concepto_devolucion AND de.id_sujeto = s.id_sujeto AND c.id_despacho = " + idDespacho + ";";
     try {
       de = sesion.createSQLQuery(consulta).list();
       for (Object[] row : de) {
