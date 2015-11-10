@@ -21,11 +21,11 @@ import util.log.Logs;
 public class CreditoIMPL implements CreditoDAO {
 
   @Override
-  public Number contarCreditosActivos() {
+  public Number contarCreditosActivos(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Number creditos;
-    String consulta = "SELECT COUNT(*) FROM credito_remesa WHERE id_remesa IN (SELECT MAX(id_remesa) FROM remesa);";
+    String consulta = "SELECT COUNT(*) FROM credito_remesa WHERE id_remesa IN (SELECT MAX(id_remesa) FROM remesa) AND id_credito IN (SELECT id_credito FROM credito where id_despacho = " + idDespacho + ");";
     try {
       creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
       Logs.log.info("Se ejecutó query: " + consulta);
@@ -39,11 +39,11 @@ public class CreditoIMPL implements CreditoDAO {
   }
 
   @Override
-  public Number contarCreditosActivosPorGestor(int idGestor) {
+  public Number contarCreditosActivosPorGestor(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Number creditos;
-    String consulta = "SELECT COUNT(id_credito) FROM credito_remesa WHERE id_remesa = (SELECT MAX(id_remesa) FROM remesa) AND id_credito IN (select id_credito FROM credito WHERE id_gestor = " + idGestor + ");";
+    String consulta = "SELECT COUNT(*) FROM credito_remesa WHERE id_remesa = (SELECT MAX(id_remesa) FROM remesa) AND id_credito IN (select id_credito FROM credito WHERE id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + "));";
     try {
       creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
       Logs.log.info("Se ejecutó query: " + consulta);

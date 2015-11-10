@@ -63,8 +63,7 @@ public class DevolucionBean implements Serializable {
   // METODO PARA APROBAR UNA DEVOLUCION
   public void aprobar(List<Dev> lista) {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    int tam = 0;
-    tam = lista.size();
+    int tam = lista.size();
     if ((!lista.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
@@ -89,8 +88,7 @@ public class DevolucionBean implements Serializable {
   // METODO PARA RECHAZAR UNA DEVOLUCION
   public void rechazar(List<Dev> lista) {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    int tam = 0;
-    tam = lista.size();
+    int tam = lista.size();
     if ((!lista.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
@@ -112,8 +110,7 @@ public class DevolucionBean implements Serializable {
   // METODO PARA PEDIR AL BANCO UNA CONSERVACION
   public void conservar(List<Dev> lista) {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    int tam = 0;
-    tam = lista.size();
+    int tam = lista.size();
     if ((!lista.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
@@ -137,8 +134,7 @@ public class DevolucionBean implements Serializable {
   // METODO PARA REACTIVAR UN CREDITO QUE ESTUVO DEVUELTO PREVIAMENTE
   public void reactivar() {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    int tam = 0;
-    tam = devolucionesSeleccionadas.size();
+    int tam = devolucionesSeleccionadas.size();
     if ((!devolucionesSeleccionadas.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {

@@ -13,7 +13,7 @@ import java.util.List;
  * @author Eduardo
  */
 public interface CreditoDAO {
-  public Number contarCreditosActivos();
+  public Number contarCreditosActivos(int idDespacho);
   public Number contarCreditosActivosPorGestor(int idUsuario);
   public Credito buscarCreditoPorId(int idCredito);
 }
