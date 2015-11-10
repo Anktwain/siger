@@ -62,9 +62,8 @@
                   <h3 class="m-top-none">Crear nueva zona</h3>
                   <div id="botonazo">
                     <p:commandButton value="Nueva Zona" class="btn-default" 
-                                     onclick="PF('dlgNuevaZona').show();" />
+                                     onclick="PF('dlgNuevaZona').show();" update="growl"/>
                   </div>
-
                   <div class="stat-icon">
                     <i class="fa fa-pencil fa-3x"/>
                   </div>
@@ -73,7 +72,7 @@
             </div>
             <div class="row">
               <div class="col-sm-12">
-                <p:fieldset  style="" legend="Zonas en el mapa" toggleable="true" toggleSpeed="500">
+                <p:fieldset id="fsTabla" legend="Zonas en el mapa" toggleable="true" toggleSpeed="500" rendered="#{zonasVistaBean.tablaEnDespliegue}">
                   <p:dataTable emptyMessage="Todav&iacute;a no hay zonas registradas"
                                paginator="true" rows="10" paginatorAlwaysVisible="false" paginatorPosition="bottom"
                                rowKey="" selection=""  id="zonas" widgetVar="zonaDataTable" var="zona">
@@ -136,9 +135,10 @@
               </f:facet>
               <p:outputLabel for="listaEstado" value="Estados: " />
               <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.edoRepVisible.idEstado}" filter="true" filterMatchMode="contains">
-                <p:ajax listener="#{zonasVistaBean.onEstadosChange}" update="listaMunicipio, growl, switchBtnMunicipio, switchBtnColonia" />
-                <f:selectItem itemLabel="Selecciona estado" itemValue="null" noSelectionOption="true" />
-                <f:selectItems value="#{zonasVistaBean.estadosRep}" var="edoSelect"  itemValue="#{edoSelect.idEstado}"/>
+                <p:ajax listener="#{zonasVistaBean.onEstadosChange}" 
+                        update="growl, switchBtnMunicipio, listaMunicipio, switchBtnColonia" />
+                <f:selectItem itemLabel="Selecciona estado" itemValue="0" noSelectionOption="true" />
+                <f:selectItems value="#{zonasVistaBean.estadosRep}" var="edoSelect" itemValue="#{edoSelect.idEstado}"/>
               </p:selectOneMenu>
             </h:panelGrid>
 
@@ -147,15 +147,15 @@
                 <h:outputText value="Municipios " />
                 <p:inputSwitch id="switchBtnMunicipio" value="#{zonasVistaBean.mpiosEnDespliegue}" 
                                onLabel="Sí" offLabel="No">
-                  <p:ajax update="lblMpio,listaMunicipio,growl" listener="#{zonasVistaBean.onMostrarMpiosChange}"/>
+                  <p:ajax update="lblMpio,listaMunicipio,growl" listener="#{zonasVistaBean.onMostrarMpiosChange()}"/>
                 </p:inputSwitch >
                 <p:separator/>
               </f:facet>
 
               <p:outputLabel id="lblMpio" for="listaMunicipio" value="Municipios: " rendered="#{zonasVistaBean.mpiosEnDespliegue}"/>
               <p:selectManyMenu id="listaMunicipio" value="#{zonasVistaBean.mpiosSeleccionados}" filterMatchMode="contains"
-                                var="m" filter="true"  showCheckbox="true" rendered="#{zonasVistaBean.mpiosEnDespliegue}">
-                <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="listaColonia, growl" />
+                                var="m" filter="true"  showCheckbox="true" rendered="#{zonasVistaBean.mpiosEnDespliegue}" >
+                <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="growl, formNuevaZona " />
                 <f:selectItem itemLabel="Todos" itemValue="todos" noSelectionOption="true"/>
                 <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" var="mpio" itemLabel="itemLabel MpiosDePrueba" />
                 <p:column>
@@ -164,24 +164,25 @@
               </p:selectManyMenu>
             </h:panelGrid>
 
-            <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
+            <h:panelGrid columns="1" cellpadding="10" columnClasses="value">
               <f:facet name="header">
                 <h:outputText class="text-center" value="Colonias "/>
                 <p:inputSwitch id="switchBtnColonia" value="#{zonasVistaBean.coloniasEnDespliegue}"  onLabel="Sí" offLabel="No" >
-                  <p:ajax listener="#{zonasVistaBean.onMostrarColoniasChange}" update="lblCol,listaColonia,growl" />
+                  <p:ajax listener="#{zonasVistaBean.onMostrarColoniasChange}" 
+                          update="growl, apColonias" />
                 </p:inputSwitch >
                 <p:separator />
               </f:facet>              
 
-              <p:outputLabel id="lblCol" for="listaColonia" value="Colonia:" rendered="#{zonasVistaBean.coloniasEnDespliegue}"/>
-              <p:selectManyMenu id="listaColonia" value="#{zonasVistaBean.coloniasSeleccionadas}"
-                                var="c" filter="true" filterMatchMode="contains" showCheckbox="true" rendered="#{zonasVistaBean.coloniasEnDespliegue}">
-                <f:selectItem itemLabel="Todos" itemValue="todos" />
-                <f:selectItems value="#{zonasVistaBean.coloniasDelEstadoRepSelec}" var="col" />
-                <p:column>
-                  <h:outputText value="#{c}" />
-                </p:column>
-              </p:selectManyMenu>
+              <p:accordionPanel id="apColonias" dynamic="true" cache="true" activeIndex="0">
+                <p:tab title="Godfather Part I" disabled="#{zonasVistaBean.coloniasEnDespliegue}">
+                  <h:panelGrid columns="2" cellpadding="10">
+                    <h:outputText
+                      value="The story begins as Don Vito Corleone..." />
+                  </h:panelGrid>
+                </p:tab>
+              </p:accordionPanel>
+
             </h:panelGrid>
 
             <f:facet name="footer" >
