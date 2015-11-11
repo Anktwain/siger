@@ -152,7 +152,7 @@ public class DevolucionBean implements Serializable {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
     }
   }
-
+  
   public final void obtenerListas() {
     // OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
     listaDevoluciones = devolucionDao.bandejaDevolucionPorDespacho(idDespacho);

@@ -136,6 +136,27 @@ public class DevolucionIMPL implements DevolucionDAO {
   }
 
   @Override
+  public boolean insertar(Devolucion devolucion) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
+    try {
+      sesion.save(devolucion);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
+  }
+  
+  @Override
   public boolean editar(Devolucion devolucion) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
@@ -198,4 +219,5 @@ public class DevolucionIMPL implements DevolucionDAO {
       sesion.close();
     }
   }
+
 }

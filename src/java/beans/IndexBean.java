@@ -124,6 +124,7 @@ public class IndexBean implements Serializable {
    */
   public void ingresar() throws IOException {
     Logs.log.info("########################### Estamos en la la funcion ingresar ###########################\n");
+    nombreUsuario = nombreUsuario.toLowerCase();
     usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
     Calendar cal = Calendar.getInstance();
     FacesContext instanciaActual = FacesContext.getCurrentInstance();
