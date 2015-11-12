@@ -108,11 +108,9 @@ public class CreditoIMPL implements CreditoDAO {
   public int obtenerIdDelCredito(String numeroCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     int id;
-    Object[] o;
     String consulta = "SELECT id_credito FROM credito WHERE numero_credito = '" + numeroCredito + "';";
     try {
-      o = (Object[]) sesion.createSQLQuery(consulta).uniqueResult();
-      id = Integer.parseInt(o[0].toString());
+      id = (int) sesion.createSQLQuery(consulta).uniqueResult();
       Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       id = -1;
