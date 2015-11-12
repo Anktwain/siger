@@ -28,6 +28,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import org.primefaces.context.RequestContext;
 import util.constantes.Devoluciones;
 
 /**
@@ -117,7 +118,9 @@ public class CuentasVistaBean {
         String evento = "El administrador: " + admin + ", devolvio el credito";
         ok = devolucionDao.insertar(d) && historialDao.insertarHistorial(idCredito, evento);
         if (ok) {
+          RequestContext con = RequestContext.getCurrentInstance();
           obtenerListas();
+          con.execute("PF('confirmacionDialog').hide();");
           contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se devolvio el credito seleccionado"));
         } else {
           contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
