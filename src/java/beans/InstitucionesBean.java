@@ -237,8 +237,7 @@ public class InstitucionesBean implements Serializable {
     estado.setIdEstado(idEstado);
     estado = estadoDao.buscar(estado.getIdEstado());
     conjuntoMunicipios = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
-    int i = 0;
-    for (i = 0; i < (conjuntoMunicipios.size()); i++) {
+    for (int i = 0; i < (conjuntoMunicipios.size()); i++) {
       System.out.println(conjuntoMunicipios.get(i).getNombre());
     }
     
@@ -248,8 +247,7 @@ public class InstitucionesBean implements Serializable {
     municipio.setIdMunicipio(idMunicipio);
     municipio = municipioDao.buscar(municipio.getIdMunicipio());
     conjuntoColonias = coloniaDao.buscarColoniasPorMunicipio(idMunicipio);
-    int i = 0;
-    for (i = 0; i < (conjuntoColonias.size()); i++) {
+    for (int i = 0; i < (conjuntoColonias.size()); i++) {
       System.out.println(conjuntoColonias.get(i).getNombre());
     }
   }

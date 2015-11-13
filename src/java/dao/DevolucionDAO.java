@@ -21,6 +21,8 @@ public interface DevolucionDAO {
   
   public List<Dev> devueltosPorDespacho(int idDespacho);
   
+  public boolean insertar(Devolucion devolucion);
+  
   public boolean editar(Devolucion devolucion);
   
   public boolean eliminar(Devolucion devolucion);

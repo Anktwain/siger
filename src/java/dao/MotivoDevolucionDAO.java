@@ -5,12 +5,15 @@
  */
 package dao;
 
+import dto.ConceptoDevolucion;
+import dto.MotivoDevolucion;
+import java.util.List;
+
 /**
  *
  * @author Eduardo
  */
-public interface HistorialDAO {
+public interface MotivoDevolucionDAO {
   
-  public boolean insertarHistorial(int idCredito, String evento);
-    
+  public List<MotivoDevolucion> obtenerMotivosPorConcepto(ConceptoDevolucion concepto);
 }

@@ -22,7 +22,6 @@ import util.log.Logs;
  *
  * @author Eduardo
  */
-
 @ManagedBean(name = "barraProgresoGestorBean")
 @SessionScoped
 
@@ -39,43 +38,40 @@ public class BarraProgresoGestorBean {
     sujetoDao = new SujetoIMPL();
     empresaDao = new InstitucionIMPL();
   }
-  
+
   // llamada a otros beans
   @ManagedProperty(value = "#{indexBean}")
   private IndexBean indexBean;
-  
-  public String calcularCuentasActivas(){
+
+  public String calcularCuentasActivas() {
     Number total = creditoDao.contarCreditosActivosPorGestor(indexBean.getUsuario().getIdUsuario());
     String creditos = total.toString();
-    Logs.log.info("************ CONSOLA SIGERWEB ****************");
     Logs.log.info("Existen " + total + " creditos activos en el sistema para el gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno());
     return creditos;
   }
-  
+
   public String calcularVisitasPorGestor() {
     Number total = gestionDao.calcularVisitasDomiciliariasPorGestor(indexBean.getUsuario().getIdUsuario());
     String visitas = total.toString();
-    Logs.log.info("************ CONSOLA SIGERWEB ****************");
     Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " ha realizado " + total + " visitas este mes");
     return visitas;
+
   }
-  
+
   public String calcularPagosPorAprobarPorGestor() {
     Number total = sujetoDao.calcularPagosPorAprobarPorGestor(indexBean.getUsuario().getIdUsuario());
     String pagos = total.toString();
-    Logs.log.info("************ CONSOLA SIGERWEB ****************");
     Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " tiene " + total + " pagos por aprobar");
     return pagos;
   }
-  
+
   public String calcularRecuperacionPorGestor() {
     Number total = empresaDao.calcularRecuperacionPorGestor(indexBean.getUsuario().getIdUsuario());
     String pagos = total.toString();
-    Logs.log.info("************ CONSOLA SIGERWEB ****************");
     Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " ha recuperado $" + total + " este mes");
     return pagos;
   }
-  
+
   public CreditoDAO getCreditoDao() {
     return creditoDao;
   }
@@ -115,5 +111,5 @@ public class BarraProgresoGestorBean {
   public void setIndexBean(IndexBean indexBean) {
     this.indexBean = indexBean;
   }
-  
+
 }
