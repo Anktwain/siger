@@ -14,10 +14,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import util.log.Logs;
 
 /**
  *
@@ -94,14 +91,18 @@ public class ZonasVistaBean implements Serializable {
   private List<Municipio> mpiosDelEstadoRepSelec;
   private List<Colonia> coloniasDelEstadoRepSelec;
 
-  private boolean mpiosEnDespliegue;
-  private boolean coloniasEnDespliegue;
+  private boolean mpiosDeshabilitados;
+  private boolean coloniasDeshabilitadas;
 
   private Gestor gestorAsignado;
   private List<Gestor> gestores;
   private final GestorDAO gestorDao;
 
-  private boolean tablaEnDespliegue;
+  private boolean switchMpios;
+  private boolean switchColonias;
+  private boolean switchColoniasDisabled;
+  private int acPanColoniasActiveIndex; 
+  private int acPanMpiosActiveIndex;
 
   public ZonasVistaBean() {
 
@@ -121,14 +122,19 @@ public class ZonasVistaBean implements Serializable {
 
     edoRepVisible = new EstadoRepublica();
 
-    mpiosEnDespliegue = true;
-    coloniasEnDespliegue = false;
+    mpiosDeshabilitados = true;
+    coloniasDeshabilitadas = true;
 
     gestorDao = new GestorIMPL();
     gestores = gestorDao.buscarTodo();
-    gestorAsignado = null;
-    
-    tablaEnDespliegue = true;
+
+    switchMpios = false;
+    switchColonias = switchMpios;
+    switchColoniasDisabled = true;
+
+    acPanColoniasActiveIndex = -1;
+    acPanMpiosActiveIndex = -1;
+
   }
 
   public String getNombre() {
@@ -229,27 +235,42 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onMostrarMpiosChange() {
-    System.out.println("CAMBIO. - municipios en despliegue: " + mpiosEnDespliegue);
+    if (this.switchMpios == false) {
+      this.switchColonias = false;
+      this.switchColoniasDisabled = true;
+      this.acPanMpiosActiveIndex = -1;
+    } else {
+      this.switchColoniasDisabled = false;
+    }
+    this.mpiosDeshabilitados = !this.switchMpios;
+
+    System.out.println("onMostrarMpiosChange(). - municipios " + (mpiosDeshabilitados == true? "DEShabilitados" : "Habilitados.") );
   }
 
   public void onMostrarColoniasChange() {
-    System.out.println("CAMBIO. - colonias en despliegue: " + coloniasEnDespliegue);
+    if (this.switchColonias == false) {
+      this.coloniasDeshabilitadas = true;
+      this.acPanColoniasActiveIndex = -1;
+    }else{
+       this.coloniasDeshabilitadas = false;
+    }
+    System.out.println("onMostrarColoniasChange(). - colonias " + (coloniasDeshabilitadas == true? "DEShabilitados" : "Habilitadas."));
   }
 
-  public boolean isMpiosEnDespliegue() {
-    return mpiosEnDespliegue;
+  public boolean isMpiosDeshabilitados() {
+    return mpiosDeshabilitados;
   }
 
-  public void setMpiosEnDespliegue(boolean mpiosEnDespliegue) {
-    this.mpiosEnDespliegue = mpiosEnDespliegue;
+  public void setMpiosDeshabilitados(boolean mpiosDeshabilitados) {
+    this.mpiosDeshabilitados = mpiosDeshabilitados;
   }
 
-  public boolean isColoniasEnDespliegue() {
-    return coloniasEnDespliegue;
+  public boolean isColoniasDeshabilitadas() {
+    return coloniasDeshabilitadas;
   }
 
-  public void setColoniasEnDespliegue(boolean coloniasEnDespliegue) {
-    this.coloniasEnDespliegue = coloniasEnDespliegue;
+  public void setColoniasDeshabilitadas(boolean coloniasDeshabilitadas) {
+    this.coloniasDeshabilitadas = coloniasDeshabilitadas;
   }
 
   public void onGestorAsignadoChange() {
@@ -271,16 +292,46 @@ public class ZonasVistaBean implements Serializable {
     this.gestores = gestores;
   }
 
-  public void onMostrarTablaChange() {
-    System.out.println("CAMBIO. - tabla en despliegue: " + tablaEnDespliegue);
+  public boolean isSwitchMpios() {
+    return switchMpios;
   }
 
-  public boolean isTablaEnDespliegue() {
-    return tablaEnDespliegue;
+  public void setSwitchMpios(boolean switchMpios) {
+    this.switchMpios = switchMpios;
   }
 
-  public void setTablaEnDespliegue(boolean tablaEnDespliegue) {
-    this.tablaEnDespliegue = tablaEnDespliegue;
+  public boolean isSwitchColonias() {
+    return switchColonias;
   }
 
+  public void setSwitchColonias(boolean switchColonias) {
+    this.switchColonias = switchColonias;
+  }
+
+  public boolean isSwitchColoniasDisabled() {
+    return switchColoniasDisabled;
+  }
+
+  public void setSwitchColoniasDisabled(boolean switchColoniasDisabled) {
+    this.switchColoniasDisabled = switchColoniasDisabled;
+  }
+
+  public int getAcPanColoniasActiveIndex() {
+    return acPanColoniasActiveIndex;
+  }
+
+  public void setAcPanColoniasActiveIndex(int acPanColoniasActiveIndex) {
+    this.acPanColoniasActiveIndex = acPanColoniasActiveIndex;
+  }
+
+  public int getAcPanMpiosActiveIndex() {
+    return acPanMpiosActiveIndex;
+  }
+
+  public void setAcPanMpiosActiveIndex(int acPanMpiosActiveIndex) {
+    this.acPanMpiosActiveIndex = acPanMpiosActiveIndex;
+  }
+
+  
+  
 }
