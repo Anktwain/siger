@@ -6,7 +6,7 @@
 package impl;
 
 import dao.CreditoDAO;
-import dto.Cred;
+import dto.tablas.Cred;
 import dto.Credito;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +121,44 @@ public class CreditoIMPL implements CreditoDAO {
     return id;
   }
 
+  @Override
+  public List<Credito> buscarCreditosPorCliente(String numeroDeudor) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List creditos;
+    String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE numero_deudor ='" + numeroDeudor + "');";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      creditos = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+
+  @Override
+  public List<Credito> buscarCreditosRelacionados(Credito creditoActual) {
+    // ESTE METODO BUSCA TODOS LOS CREDITOS RELACIONADOS AL CLIENTE DE UN CREDITO ESPECIFICADO.
+    // REGRESARA LA LISTA CON LOS CREDITOS DE ESTE NUMERO DE CLIENTE EXCEPTO EL CREDITO ENVIADO EN EL ID
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    int cred = creditoActual.getIdCredito();
+    int deudor = creditoActual.getDeudor().getIdDeudor();
+    List creditos;
+    String consulta = "SELECT * FROM credito WHERE id_credito != " + cred + " AND id_deudor = " + deudor + ";";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      creditos = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+  
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+    <h:head>
+        <meta charset="utf-8"></meta>
+        <title>SigerWeb - Panel Administativo</title>
+        <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+        <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
+        <h:outputStylesheet library="css" name="pace.css" />
+        <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
+        <h:outputStylesheet library="css" name="morris.css" />
+        <h:outputStylesheet library="css" name="endless.min.css" />
+        <h:outputStylesheet library="css" name="endless-skin.css" />
+
+
+        <h:outputScript library="js" name="jquery-1.10.2.min.js" />
+        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
+        <h:outputScript library="js" name="jquery.flot.min.js" />
+        <h:outputScript library="js" name="rapheal.min.js" />
+        <h:outputScript library="js" name="morris.min.js" />
+        <h:outputScript library="js" name="jquery.colorbox.min.js" />
+        <h:outputScript library="js" name="jquery.sparkline.min.js" />
+        <h:outputScript library="js" name="/uncompressed/pace.js" />
+        <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
+        <h:outputScript library="js" name="jquery.slimscroll.min.js" />
+        <h:outputScript library="js" name="modernizr.min.js" />
+        <h:outputScript library="js" name="jquery.cookie.min.js" />
+        <h:outputScript library="js" name="/endless/endless_dashboard.js" />
+        <h:outputScript library="js" name="/endless/endless.js" />
+    </h:head>
+    <h:body>
+        <aside class="fixed skin-6">
+            <div class="sidebar-inner scrollable-sidebar">
+                <div class="user-block clearfix">
+                    <h:graphicImage library="img" name="#{panelGestorBean.imagenDePerfil}" />                            
+                </div><!-- /user-block -->
+                <div class="search-block">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-sm" placeholder="Numero de credito..." />
+                        <span class="input-group-btn">
+                            <button class="btn btn-default btn-sm" type="button"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div><!-- /input-group -->
+                </div><!-- /search-block -->
+                <div class="main-menu">
+                    <ul>
+                        <li class="active">
+                            <a href="#">
+                                <span class="menu-icon">
+                                    <i class="fa fa-desktop fa-lg"></i> 
+                                </span>
+                                <span class="text">Panel de control</span>
+                                <span class="menu-hover"></span>
+                            </a>
+                        </li>
+
+                        <li class="openable">
+                            <a href="cuentas.xhtml">
+                                <span class="menu-icon">
+                                    <i class="fa fa-list"></i>
+                                </span>
+                                <span class="text">Cuentas</span>
+                                <span class="menu-hover"></span>
+                            </a>
+                        </li>
+                        <li class="openable">
+                            <a href="empresas.xhtml">
+                                <span class="menu-icon">
+                                    <i class="fa fa-envelope fa-lg"></i> 
+                                </span>
+                                <span class="text">Empresas</span>
+                                <span class="menu-hover"></span>
+                            </a>
+                        </li>
+                        <li class="openable">
+                            <a href="visitas.xhtml">
+                                <span class="menu-icon">
+                                    <i class="fa fa-tag fa-lg"></i> 
+                                </span>
+                                <span class="text">Visitas</span>
+                                <span class="menu-hover"></span>
+                            </a>
+                        </li>
+                        <li class="openable">
+                            <a href="correos.xhtml">
+                                <span class="menu-icon">
+                                    <i class="fa fa-book fa-lg"></i> 
+                                </span>
+                                <span class="text">Correos</span>
+                                <span class="menu-hover"></span>
+                            </a>
+                        </li>
+                        <li class="openable">
+                            <a href="busqueda.xhtml">
+                                <span class="menu-icon">
+                                    <i class="fa fa-search-plus fa-lg"></i> 
+                                </span>
+                                <span class="text">Busqueda Avanzada</span>
+                                <span class="menu-hover"></span>
+                            </a>
+                        </li>
+                        <li class="openable">
+                            <a href="estatusInformativo.xhtml">
+                                <span class="menu-icon">
+                                    <i class="fa fa-info-circle fa-lg"></i> 
+                                </span>
+                                <span class="text">Estatus Informativo</span>
+                                <span class="menu-hover"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div><!-- /main-menu -->
+            </div><!-- /sidebar-inner -->
+        </aside>
+        <div id="main-container">
+            <div class="main-header clearfix">
+                <div class="page-title">
+                    <h3 class="no-margin">Panel de control Gestores</h3>
+                    <span>Bienvenid@</span>
+                </div><!-- /page-title -->
+                <ul class="page-stats">
+                    <li>
+                        <div class="value">
+                            <span>Gestiones hoy:</span>
+                            <h4 id="currentVisitor">3</h4>
+                        </div>
+                        <span id="visits" class="sparkline"></span>
+                    </li>
+                    <li>
+                        <div class="value">
+                            <span>Saldo aprobado hoy:</span>
+                            <h4>$<strong id="currentBalance">0</strong></h4>
+                        </div>
+                        <span id="balances" class="sparkline"></span>
+                    </li>
+                </ul><!-- /page-stats -->
+            </div><!-- /main-header -->
+            <div class="grey-container shortcut-wrapper">
+
+
+            </div><!-- /grey-container -->
+        </div><!-- /main-container -->
+    </h:body>
+</html>

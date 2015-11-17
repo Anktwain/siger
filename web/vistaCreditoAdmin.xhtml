@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Detalle de credito</title>
+  </h:head> 
+  <h:body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Detalle credito <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" />
+          </li>
+        </ul>
+      </div>
+      <div class="padding-md">
+        <div class="clearfix">
+          <div class="pull-left">
+            <div class="pull-left m-left-sm">
+              <h3 class="m-bottom-xs m-top-xs">
+                <p:outputLabel value="#{vistaCreditoBean.nombreDeudor}" />
+              </h3>
+            </div>
+          </div>
+          <div class="pull-right">
+            <h5>
+              <strong>
+                Numero de credito: <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" />
+              </strong>
+            </h5>
+          </div>
+        </div>
+        <hr />
+        <div class="clearfix">
+          <div class="pull-left"> 
+            <h4>Informacion del deudor</h4>
+            <strong>
+              Direccion:
+            </strong>
+            <br />
+            <p:outputLabel value="#{vistaCreditoBean.calleNumero}" />
+            <br />
+            <p:outputLabel value="#{vistaCreditoBean.coloniaMunicipio}" />
+            <br />
+            <p:outputLabel value="#{vistaCreditoBean.estadoCP}" />
+            <br />
+            <strong>
+              Telefono asociado al credito:
+            </strong>
+            <br />
+            <p:outputLabel value="#{vistaCreditoBean.telefono}" />
+            <br />
+            <strong>
+              Correo electronico:
+            </strong>
+            <br />
+            <p:outputLabel value="#{vistaCreditoBean.correo}" />
+            <br />
+            <br />
+            <p:commandButton value="Editar datos del deudor" />
+          </div>
+          <div class="pull-right text-right">
+            <h4>Informacion del credito</h4>
+            Numero de creditos: <p:outputLabel value="#{vistaCreditoBean.numeroCreditos}" />
+            <br />
+            Fecha de inicio: <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" />
+            <br />
+            Fecha Ultimo Pago: <p:outputLabel value="#{vistaCreditoBean.fup}" />
+            <br />
+            Fecha Ultimo Vencimiento Pagado: <p:outputLabel value="#{vistaCreditoBean.fvp}" />
+            <br />
+            Fecha Fin del credito: <p:outputLabel value="#{vistaCreditoBean.fechaFin}" />
+            <br />
+            Mensualidad: $<p:outputLabel value="#{vistaCreditoBean.mensualidad}" />
+            <br />
+            Saldo vencido: $<p:outputLabel value="#{vistaCreditoBean.saldoVencido}" />
+            <br />
+          </div>
+        </div>
+        <hr />
+        <div class="clearfix">
+          <h:form id="acordeonDetalleCredito">
+            <p:accordionPanel multiple="true" activeIndex="-1">
+              <p:tab title="Direcciones">
+                <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" rows="15" paginatorPosition="bottom">
+                  <p:column headerText="Calle y numero" style="width:500px;" > 
+                    <h:outputText value="#{d.calleNumero}"/>
+                  </p:column>
+                  <p:column headerText="Colonia" style="width:250px;" > 
+                    <h:outputText value="#{d.colonia}"/>
+                  </p:column>
+                  <p:column headerText="Municipio" style="width:200px;" > 
+                    <h:outputText value="#{d.municipio}"/>
+                  </p:column>
+                  <p:column headerText="Estado"> 
+                    <h:outputText value="#{d.estado}"/>
+                  </p:column>
+                  <p:column headerText="Codigo postal" style="width:150px;" > 
+                    <h:outputText value="#{d.cp}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:tab>
+              <p:tab title="Otros creditos del cliente">
+                <p:dataTable id="tablaCreditosRelacionados" var="c" value="#{vistaCreditoBean.credsRelacionados}" emptyMessage="No existen creditos relacionados." paginator="true" rows="15" paginatorPosition="bottom">
+                  <p:column headerText="Credito" style="width:100px;" > 
+                    <h:outputText value="#{c.numeroCredito}"/>
+                  </p:column>
+                  <p:column headerText="Tipo de credito"> 
+                    <h:outputText value="#{c.tipoCredito}"/>
+                  </p:column>
+                  <p:column headerText="Producto"> 
+                    <h:outputText value="#{c.nombreProducto}"/>
+                  </p:column>
+                  <p:column headerText="Saldo vencido" style="width:150px;" > 
+                    <h:outputText value="#{c.saldoVencido}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:tab>
+              <p:tab title="Actualizaciones de este adeudo">
+                <h:panelGrid columns="2" cellpadding="10">
+                  <h:outputText value="After a break of more than 15 years..." />
+                </h:panelGrid>
+              </p:tab>
+            </p:accordionPanel>
+          </h:form>
+        </div>
+        <hr />
+        <ui:include src="nuevaGestion.xhtml" />
+      </div><!-- /.padding20 -->
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </h:body>
+</html>

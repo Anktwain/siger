@@ -7,7 +7,7 @@ package beans;
 
 import dao.DevolucionDAO;
 import dao.HistorialDAO;
-import dto.Dev;
+import dto.tablas.Dev;
 import dto.Devolucion;
 import impl.DevolucionIMPL;
 import impl.HistorialIMPL;

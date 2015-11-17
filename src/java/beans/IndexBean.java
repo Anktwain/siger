@@ -14,6 +14,7 @@ import util.MD5;
 import java.util.Calendar;
 import java.util.Date;
 import javax.faces.bean.ViewScoped;
+import org.primefaces.context.RequestContext;
 import util.constantes.Perfiles;
 import util.log.Logs;
 
@@ -186,6 +187,13 @@ public class IndexBean implements Serializable {
       Logs.log.info("#################### NOT OK. USUARIO NO CONFIRMADO O NOMBRE DE USUARIO O CONTRASEÑA INCORRECTOS!");
       sesionActiva = false;
     }
+  }
+
+  public void cerrarSesion() {
+    sesionActiva = false;
+    usuarioActivo = null;
+    vista = "";
+    RequestContext.getCurrentInstance().update("index.xhtml");
   }
 
   /**

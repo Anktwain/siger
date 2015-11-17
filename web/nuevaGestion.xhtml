@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+  <h:head>
+    <meta charset="utf-8"></meta>
+  </h:head> 
+  <body>
+    <div class="clearfix">
+      <div class="pull-left"> 
+        <h:form id="formNuevaGestion">
+          <h4>Gestionar credito</h4>
+          <br />
+          <strong>
+            Tipo de gestion:
+          </strong>
+          <p:selectOneMenu id="tipoGestion" value="#{gestionBean.tipoSeleccionado}" style="width:200px">
+            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItems value="#{gestionBean.listaTipos}" />
+            <p:ajax update="dondeGestion" listener="#{gestionBean.preparaDonde()}" />
+          </p:selectOneMenu>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <strong>
+            Donde:
+          </strong>
+          <p:selectOneMenu id="dondeGestion" value="#{gestionBean.lugarSeleccionado}" style="width:250px">
+            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItems value="#{gestionBean.listaDonde}" />
+            <p:ajax update="asuntoGestion" listener="#{gestionBean.preparaAsunto()}" />
+          </p:selectOneMenu>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <strong>
+            Asunto:
+          </strong>
+          <p:selectOneMenu id="asuntoGestion" value="#{gestionBean.asuntoSeleccionado}" style="width:250px">
+            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItems value="#{gestionBean.listaAsuntos}" />
+          </p:selectOneMenu>
+        </h:form>
+      </div>
+    </div>
+  </body>
+</html>

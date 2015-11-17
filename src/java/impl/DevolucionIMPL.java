@@ -7,7 +7,7 @@ package impl;
 
 import dao.DevolucionDAO;
 import dto.Devolucion;
-import dto.Dev;
+import dto.tablas.Dev;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

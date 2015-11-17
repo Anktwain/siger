@@ -11,7 +11,7 @@ import dao.DevolucionDAO;
 import dao.HistorialDAO;
 import dao.MotivoDevolucionDAO;
 import dto.ConceptoDevolucion;
-import dto.Cred;
+import dto.tablas.Cred;
 import dto.Devolucion;
 import dto.MotivoDevolucion;
 import impl.ConceptoDevolucionIMPL;
@@ -19,25 +19,29 @@ import impl.CreditoIMPL;
 import impl.DevolucionIMPL;
 import impl.HistorialIMPL;
 import impl.MotivoDevolucionIMPL;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import org.primefaces.context.RequestContext;
 import util.constantes.Devoluciones;
+import util.constantes.Perfiles;
 
 /**
  *
  * @author Eduardo
  */
 @ManagedBean(name = "cuentasVistaBean")
-@ViewScoped
-public class CuentasVistaBean {
+@SessionScoped
+public class CuentasVistaBean implements Serializable{
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -126,6 +130,17 @@ public class CuentasVistaBean {
           contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
         }
       }
+    }
+  }
+  
+  public void selectorDeVista() throws IOException{
+    if(!creditoSeleccionado.isEmpty()){
+    System.out.println("Se selecciono el credito: " + creditoSeleccionado.get(0).getNumeroCredito() + " . Se abre detalle credito");
+    FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
+    }
+    else{
+      FacesContext contexto = FacesContext.getCurrentInstance();
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
     }
   }
 

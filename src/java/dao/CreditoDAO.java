@@ -5,7 +5,7 @@
  */
 package dao;
 
-import dto.Cred;
+import dto.tablas.Cred;
 import dto.Credito;
 import java.util.List;
 
@@ -19,4 +19,6 @@ public interface CreditoDAO {
   public Credito buscarCreditoPorId(int idCredito);
   public int obtenerIdDelCredito(String numeroCredito);
   public List<Cred> creditosEnGestionPorDespacho(int idDespacho);
+  public List<Credito> buscarCreditosPorCliente(String numeroDeudor);
+  public List<Credito> buscarCreditosRelacionados(Credito creditoActual);
 }
