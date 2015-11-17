@@ -39,7 +39,7 @@
           <div class="col-lg-12">
             <h:form id="formCuentas">
               <p:contextMenu for="cuentas" style="width:200px;">
-                <p:menuitem value="Ver Detalle" icon="ui-icon-check" />
+                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{cuentasVistaBean.selectorDeVista()}" />
                 <p:menuitem value="Devolver" icon="ui-icon-alert" oncomplete="PF('confirmacionDialog').show();">
                 </p:menuitem>
               </p:contextMenu>

@@ -52,7 +52,7 @@
                   <p:menuitem value="Aprobar devolucion" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar(devolucionBean.retiradosSeleccionados)}" update="growl, retirados, formBandeja:bandeja" />
                   <p:menuitem value="Solicitar conservacion" icon="ui-icon-mail-closed" actionListener="#{devolucionBean.conservar(devolucionBean.retiradosSeleccionados)}" update="growl, retirados, formBandeja:bandeja" />
                 </p:contextMenu>
-                <p:dataTable id="retirados" var="ret" value="#{devolucionBean.listaRetirados}" rowKey="#{ret.numeroCredito}" selection="#{devolucionBean.retiradosSeleccionados}" emptyMessage="No existen creditos retirados por el banco." >
+                <p:dataTable id="retirados" var="ret" value="#{devolucionBean.listaRetirados}" rowKey="#{ret.numeroCredito}" selection="#{devolucionBean.retiradosSeleccionados}" emptyMessage="No existen creditos retirados por el banco."  paginator="true" rows="15" paginatorPosition="bottom">
                   <p:column selectionMode="multiple" style="width:35px;text-align:center" />
                   <p:column headerText="Fecha devolucion" style="width:250px;" > 
                     <h:outputText value="#{ret.fecha}"/>
@@ -80,7 +80,7 @@
                   <p:menuitem value="Aprobar devolucion" icon="ui-icon-check" actionListener="#{devolucionBean.aprobar(devolucionBean.bandejaSeleccionados)}" update="growl, bandeja, formDevueltos:devueltos" />
                   <p:menuitem value="Rechazar devolucion" icon="ui-icon-alert" actionListener="#{devolucionBean.rechazar(devolucionBean.bandejaSeleccionados)}" update="growl, bandeja" />
                 </p:contextMenu>
-                <p:dataTable id="bandeja" var="devo" value="#{devolucionBean.listaDevoluciones}" rowKey="#{devo.numeroCredito}" selection="#{devolucionBean.bandejaSeleccionados}" emptyMessage="No existen creditos en bandeja de devolucion." >
+                <p:dataTable id="bandeja" var="devo" value="#{devolucionBean.listaDevoluciones}" rowKey="#{devo.numeroCredito}" selection="#{devolucionBean.bandejaSeleccionados}" emptyMessage="No existen creditos en bandeja de devolucion."  paginator="true" rows="15" paginatorPosition="bottom">
                   <p:column selectionMode="multiple" style="width:35px;text-align:center"/>
                   <p:column headerText="Fecha devolucion" style="width:250px;" > 
                     <h:outputText value="#{devo.fecha}"/>
@@ -113,7 +113,7 @@
                 <p:contextMenu for="devueltos" style="width:200px;">
                   <p:menuitem value="Reactivar" icon="ui-icon-refresh" actionListener="#{devolucionBean.reactivar()}" update="growl, devueltos" />
                 </p:contextMenu>
-                <p:dataTable id="devueltos" var="dev" value="#{devolucionBean.listaDevueltos}" rowKey="#{dev.numeroCredito}" selection="#{devolucionBean.devolucionesSeleccionadas}" emptyMessage="No existen creditos devueltos." >
+                <p:dataTable id="devueltos" var="dev" value="#{devolucionBean.listaDevueltos}" rowKey="#{dev.numeroCredito}" selection="#{devolucionBean.devolucionesSeleccionadas}" emptyMessage="No existen creditos devueltos."  paginator="true" rows="15" paginatorPosition="bottom">
                   <p:column selectionMode="multiple" style="width:35px;text-align:center"/>
                   <p:column headerText="Fecha devolucion" style="width:250px;" > 
                     <h:outputText value="#{dev.fecha}"/>

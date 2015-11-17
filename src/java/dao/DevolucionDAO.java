@@ -5,7 +5,7 @@
  */
 package dao;
 
-import dto.Dev;
+import dto.tablas.Dev;
 import dto.Devolucion;
 import java.util.List;
 
