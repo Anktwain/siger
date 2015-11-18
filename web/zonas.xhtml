@@ -9,6 +9,7 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Zonas</title>
+    <h:outputStylesheet library="css" name="propias.css" />
     <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
     <script
       src="http://maps.googleapis.com/maps/api/js">
@@ -24,8 +25,8 @@
       }
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
-
   </h:head>
+  
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
 
@@ -114,7 +115,7 @@
           <p:panelGrid columns="2">
             <h:panelGrid columns="2" columnClasses="label, value">
               <p:outputLabel value="Nombre: " for="nombreZona" />
-              <p:inputText id="nombreZona" value="#{zonasVistaBean.nombre}" 
+              <p:inputText id="nombreZona" value="#{zonasVistaBean.zona.nombre}" 
                            placeholder="Teclea un nuevo nombre" size="25" />  
             </h:panelGrid>  
 
@@ -130,18 +131,16 @@
           </p:panelGrid>
 
           <p:panelGrid columns="3">
-
-            <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
+            <h:panelGrid columns="1" >
               <f:facet name="header" >
                 <h:outputText value="Estados"/>
                 <p:separator/>
               </f:facet>
-              <p:outputLabel for="listaEstado" value="Estados: " />
               <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.edoRepVisible.idEstado}" 
                                filter="true" filterMatchMode="contains">
                 <p:ajax listener="#{zonasVistaBean.onEstadosChange}" 
                         update="growl,switchBtnMunicipio,apMunicipios,switchBtnColonia" />
-                <f:selectItem itemLabel="Selecciona estado" itemValue="0" noSelectionOption="true" />
+                <f:selectItem itemLabel="Selecciona el estado" itemValue="0" noSelectionOption="true" />
                 <f:selectItems value="#{zonasVistaBean.estadosRep}" var="edoSelect" itemValue="#{edoSelect.idEstado}"/>
               </p:selectOneMenu>
             </h:panelGrid>
@@ -159,12 +158,12 @@
 
               <p:accordionPanel id="apMunicipios" dynamic="true" cache="false" activeIndex="#{zonasVistaBean.acPanMpiosActiveIndex}">
                 <p:tab id="apMunicipiosTab0" title="Seleccione los municipios" disabled="#{zonasVistaBean.mpiosDeshabilitados}">
-                  <p:selectManyMenu id="listaMunicipio" value="#{zonasVistaBean.mpiosSeleccionados}" 
-                                    filterMatchMode="contains" var="m" filter="true" showCheckbox="true">
+                    <p:selectManyMenu id="listaMunicipio" value="#{zonasVistaBean.zona.mpiosSeleccionados}" 
+                                    filterMatchMode="contains" var="m" filter="true" showCheckbox="true" class="dropDMpios">
                     <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="growl,formNuevaZona" />
                     <f:selectItem itemLabel="Todos" itemValue="todos" />
                     <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" var="mpio"/>
-                    <p:column >
+                    <p:column width="450px">
                       <h:outputText value="#{m}"/>
                     </p:column>
                   </p:selectManyMenu>
@@ -178,14 +177,14 @@
                 <p:inputSwitch id="switchBtnColonia" value="#{zonasVistaBean.switchColonias}" onchange="#{zonasVistaBean.onMostrarColoniasChange()}"
                                onLabel="S&iacute;" offLabel="No" disabled="#{zonasVistaBean.switchColoniasDisabled}" >
                   <p:ajax listener="#{zonasVistaBean.onMostrarColoniasChange}" 
-                          update="growl,apColonias,formNuevaZona:apColonias:apColoniasTab0" />
+                          update="growl,apColonias" />
                 </p:inputSwitch >
                 <p:separator />
               </f:facet>              
 
               <p:accordionPanel id="apColonias" dynamic="true" cache="false" activeIndex="#{zonasVistaBean.acPanColoniasActiveIndex}" >
                 <p:tab id="apColoniasTab0" title="Seleccione las colonias" disabled="#{zonasVistaBean.coloniasDeshabilitadas}" >
-                  <p:selectManyMenu id="listaColonia" value="#{zonasVistaBean.coloniasSeleccionadas}"
+                  <p:selectManyMenu id="listaColonia" value="#{zonasVistaBean.zona.coloniasSeleccionadas}"
                                     var="c" filter="true" filterMatchMode="contains" showCheckbox="true" >
                     <f:selectItem itemLabel="Todos" itemValue="todos"  />
                     <f:selectItems value="#{zonasVistaBean.coloniasDelEstadoRepSelec}" var="col" />

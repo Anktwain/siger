@@ -13,24 +13,25 @@ import impl.MunicipioIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
  * @author Pablo
  */
-@ManagedBean(name = "zonasVistaBean")
+@ManagedBean
 @SessionScoped
 public class ZonasVistaBean implements Serializable {
 
+  ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   /**
-   * El nombre de la zona con el que se le identificará en su respectivo
-   * despacho de creación. El nombre de zona es <strong> único por despacho
-   * </strong>, pero dos despachos cualesquiera podrían tener zonas con los
-   * mismos nombres.
+   * Inclusion del bean de Zona
    */
-  private String nombre;
+  ZonaBean zona = (ZonaBean) elContext.getELResolver().getValue(elContext, null, "zona");
+
   /**
    * Todos los estadosRep que se listarán en la vista.
    */
@@ -58,26 +59,11 @@ public class ZonasVistaBean implements Serializable {
   private List<Colonia> coloniasAutoCompletadas;
 
   /**
-   * Lista en la que se almacenan todos los municipios seleccionados de todos
-   * los estadosRep.
-   */
-  private List<Municipio> mpiosSeleccionados;
-  /**
-   * Lista en la que se almacenan todas las colonias seleccionadas de todos los
-   * municipios.
-   */
-  private List<Colonia> coloniasSeleccionadas;
-
-  /**
    * Objeto DAO para realizar las operaciones en la base de datos que
    * corresponden con la tabla Municipio.
    */
   private final MunicipioDAO mpioDao;
-  /**
-   * Lista donde se almacenan todos los estadosRep de la república seleccionados
-   * en la vista.
-   */
-  private List<EstadoRepublica> edosRepSeleccionados;
+
   /**
    * Estado que actualmente se despliega en la vista.
    */
@@ -96,36 +82,31 @@ public class ZonasVistaBean implements Serializable {
 
   private Gestor gestorAsignado;
   private List<Gestor> gestores;
-  private final GestorDAO gestorDao;
 
   private boolean switchMpios;
   private boolean switchColonias;
   private boolean switchColoniasDisabled;
-  private int acPanColoniasActiveIndex; 
+  private int acPanColoniasActiveIndex;
   private int acPanMpiosActiveIndex;
 
   public ZonasVistaBean() {
-
+    zona = new ZonaBean();
     EstadoRepublicaDAO estadoRepDao = new EstadoRepublicaIMPL();
     mpioDao = new MunicipioIMPL();
 
     estadosRep = estadoRepDao.buscarTodo();
-    edosRepSeleccionados = new ArrayList<>();
 
     coloniasVisibles = new ArrayList<>();
 
     mpiosDelEstadoRepSelec = new ArrayList<>();
     mpiosVisibles = new ArrayList<>();
 
-    mpiosSeleccionados = new ArrayList<>();
-    coloniasSeleccionadas = new ArrayList<>();
-
     edoRepVisible = new EstadoRepublica();
 
     mpiosDeshabilitados = true;
     coloniasDeshabilitadas = true;
 
-    gestorDao = new GestorIMPL();
+    GestorDAO gestorDao = new GestorIMPL();
     gestores = gestorDao.buscarTodo();
 
     switchMpios = false;
@@ -134,15 +115,6 @@ public class ZonasVistaBean implements Serializable {
 
     acPanColoniasActiveIndex = -1;
     acPanMpiosActiveIndex = -1;
-
-  }
-
-  public String getNombre() {
-    return nombre;
-  }
-
-  public void setNombre(String nombre) {
-    this.nombre = nombre;
   }
 
   public void onEstadosChange() {
@@ -158,7 +130,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public List<Municipio> getMpiosVisibles() {
-    mpiosVisibles = mpioDao.buscarMunicipiosPorEstado(edosRepSeleccionados.get(idEdoVisible).getIdEstado());
+    mpiosVisibles = mpioDao.buscarMunicipiosPorEstado(zona.getEdosRepSeleccionados().get(idEdoVisible).getIdEstado());
     return mpiosVisibles;
   }
 
@@ -172,14 +144,6 @@ public class ZonasVistaBean implements Serializable {
 
   public void setColoniasVisibles(List<Colonia> coloniasVisibles) {
     this.coloniasVisibles = coloniasVisibles;
-  }
-
-  public List<EstadoRepublica> getEdosRepSeleccionados() {
-    return edosRepSeleccionados;
-  }
-
-  public void setEdosRepSeleccionados(List<EstadoRepublica> edosRepSelec) {
-    this.edosRepSeleccionados = edosRepSelec;
   }
 
   public int getIdEdoVisible() {
@@ -218,22 +182,6 @@ public class ZonasVistaBean implements Serializable {
     this.coloniasDelEstadoRepSelec = coloniasDelEstadoRepSelec;
   }
 
-  public List<Municipio> getMpiosSeleccionados() {
-    return mpiosSeleccionados;
-  }
-
-  public void setMpiosSeleccionados(List<Municipio> mpiosSeleccionados) {
-    this.mpiosSeleccionados = mpiosSeleccionados;
-  }
-
-  public List<Colonia> getColoniasSeleccionadas() {
-    return coloniasSeleccionadas;
-  }
-
-  public void setColoniasSeleccionadas(List<Colonia> coloniasSeleccionadas) {
-    this.coloniasSeleccionadas = coloniasSeleccionadas;
-  }
-
   public void onMostrarMpiosChange() {
     if (this.switchMpios == false) {
       this.switchColonias = false;
@@ -244,17 +192,17 @@ public class ZonasVistaBean implements Serializable {
     }
     this.mpiosDeshabilitados = !this.switchMpios;
 
-    System.out.println("onMostrarMpiosChange(). - municipios " + (mpiosDeshabilitados == true? "DEShabilitados" : "Habilitados.") );
+    System.out.println("onMostrarMpiosChange(). - municipios " + (mpiosDeshabilitados == true ? "DEShabilitados" : "Habilitados."));
   }
 
   public void onMostrarColoniasChange() {
     if (this.switchColonias == false) {
       this.coloniasDeshabilitadas = true;
       this.acPanColoniasActiveIndex = -1;
-    }else{
-       this.coloniasDeshabilitadas = false;
+    } else {
+      this.coloniasDeshabilitadas = false;
     }
-    System.out.println("onMostrarColoniasChange(). - colonias " + (coloniasDeshabilitadas == true? "DEShabilitados" : "Habilitadas."));
+    System.out.println("onMostrarColoniasChange(). - colonias " + (coloniasDeshabilitadas == true ? "DEShabilitados" : "Habilitadas."));
   }
 
   public boolean isMpiosDeshabilitados() {
@@ -332,6 +280,12 @@ public class ZonasVistaBean implements Serializable {
     this.acPanMpiosActiveIndex = acPanMpiosActiveIndex;
   }
 
-  
-  
+  public ZonaBean getZona() {
+    return zona;
+  }
+
+  public void setZona(ZonaBean zona) {
+    this.zona = zona;
+  }
+
 }
