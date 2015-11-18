@@ -38,7 +38,45 @@
           <p:selectOneMenu id="asuntoGestion" value="#{gestionBean.asuntoSeleccionado}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaAsuntos}" />
+            <p:ajax update="tipoSujetoGestion" listener="#{gestionBean.preparaTipoSujeto()}" />
           </p:selectOneMenu>
+          <br />
+          <br />
+          <strong>
+            Se realiza la cobranza de la cuenta con:
+          </strong>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:selectOneMenu id="tipoSujetoGestion" value="#{gestionBean.tipoSujetoSeleccionado}" style="width:250px">
+            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItems value="#{gestionBean.listaTipoSujetos}" />
+            <p:ajax update="sujetoGestion" listener="#{gestionBean.preparaSujetos()}" />
+          </p:selectOneMenu>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:selectOneMenu id="sujetoGestion" value="#{gestionBean.sujetoSeleccionado}" style="width:250px">
+            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItems value="#{gestionBean.listaSujetos}" />
+            <p:ajax update="estatusInformativoGestion" listener="#{gestionBean.preparaEstatus()}" />
+          </p:selectOneMenu>
+          <br />
+          <br />
+          <strong>
+            Informacion para el banco:
+          </strong>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:selectOneMenu id="estatusInformativoGestion" value="#{gestionBean.estatusSeleccionado}" style="width:250px">
+            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItems value="#{gestionBean.listaEstatus}" />
+          </p:selectOneMenu>
+          <br />
+          <br />
+          <strong>
+            Gestion:
+          </strong>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:inputTextarea rows="3" cols="100" />
+          <br />
+          <br />
+          <p:commandButton value="Enviar gestion" />
         </h:form>
       </div>
     </div>
