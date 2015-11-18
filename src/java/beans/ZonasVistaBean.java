@@ -28,7 +28,7 @@ public class ZonasVistaBean implements Serializable {
 
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   /**
-   * Inclusion del bean de Zona
+   * Inclusion del bean de Zona.
    */
   ZonaBean zona = (ZonaBean) elContext.getELResolver().getValue(elContext, null, "zona");
 
@@ -118,6 +118,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onEstadosChange() {
+    System.out.println("onEstadosChange().");
     this.mpiosDelEstadoRepSelec = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
   }
 
@@ -171,7 +172,11 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onMpiosChange() {
-
+    System.out.println("onMpiosChange().");
+//    System.out.println("#################### Municipios seleccionados en total:");
+//    for (int i = 0; i < this.zona.getMpiosSeleccionados().size(); i++) {
+//      System.out.println(this.zona.getMpiosSeleccionados().get(i));
+//    }
   }
 
   public List<Colonia> getColoniasDelEstadoRepSelec() {
@@ -193,6 +198,18 @@ public class ZonasVistaBean implements Serializable {
     this.mpiosDeshabilitados = !this.switchMpios;
 
     System.out.println("onMostrarMpiosChange(). - municipios " + (mpiosDeshabilitados == true ? "DEShabilitados" : "Habilitados."));
+
+    System.out.println("\n|#################### Municipios seleccionados del estadoRep actual:");
+    for (Municipio mpio : this.mpiosDelEstadoRepSelec) {
+      System.out.println(mpio);
+    }
+    System.out.println("|_#################### #################### ####################_|");
+
+    System.out.println("\n|#################### Municipios seleccionados en total:");
+    for (int i = 0; i < this.zona.getMpiosSeleccionados().size(); i++) {
+      System.out.println(this.zona.getMpiosSeleccionados().get(i));
+    }
+    System.out.println("|_#################### #################### ####################_| ");
   }
 
   public void onMostrarColoniasChange() {
@@ -222,6 +239,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onGestorAsignadoChange() {
+    System.out.println("onGestorAsignadoChange().");
   }
 
   public Gestor getGestorAsignado() {

@@ -162,7 +162,7 @@
                                     filterMatchMode="contains" var="m" filter="true" showCheckbox="true" class="dropDMpios">
                     <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="growl,formNuevaZona" />
                     <f:selectItem itemLabel="Todos" itemValue="todos" />
-                    <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" var="mpio"/>
+                    <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" var="mpio" />
                     <p:column width="450px">
                       <h:outputText value="#{m}"/>
                     </p:column>
