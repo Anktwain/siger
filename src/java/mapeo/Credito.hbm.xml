@@ -1,90 +1,89 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19/11/2015 10:18:32 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Credito" table="credito" catalog="sigerbd" optimistic-lock="version">
-        <id name="idCredito" type="java.lang.Integer">
-            <column name="id_credito" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="despacho" class="dto.Despacho" fetch="select">
-            <column name="id_despacho" not-null="true" />
-        </many-to-one>
-        <many-to-one name="deudor" class="dto.Deudor" fetch="select">
-            <column name="id_deudor" not-null="true" />
-        </many-to-one>
-        <many-to-one name="gestor" class="dto.Gestor" fetch="select">
-            <column name="id_gestor" not-null="true" />
-        </many-to-one>
-        <many-to-one name="producto" class="dto.Producto" fetch="select">
-            <column name="id_producto" not-null="true" />
-        </many-to-one>
-        <many-to-one name="subproducto" class="dto.Subproducto" fetch="select">
-            <column name="id_subproducto" />
-        </many-to-one>
-        <property name="numeroCredito" type="string">
-            <column name="numero_credito" length="30" not-null="true" />
-        </property>
-        <property name="fechaInicio" type="date">
-            <column name="fecha_inicio" length="10" />
-        </property>
-        <property name="fechaFin" type="date">
-            <column name="fecha_fin" length="10" />
-        </property>
-        <property name="fechaQuebranto" type="date">
-            <column name="fecha_quebranto" length="10" />
-        </property>
-        <property name="monto" type="java.lang.Float">
-            <column name="monto" precision="12" scale="0" />
-        </property>
-        <property name="mensualidad" type="java.lang.Float">
-            <column name="mensualidad" precision="12" scale="0" />
-        </property>
-        <property name="tasaInteres" type="java.lang.Float">
-            <column name="tasa_interes" precision="12" scale="0" />
-        </property>
-        <property name="diasMora" type="java.lang.Integer">
-            <column name="dias_mora" />
-        </property>
-        <property name="numeroCuenta" type="string">
-            <column name="numero_cuenta" length="30" />
-        </property>
-        <property name="tipoCredito" type="int">
-            <column name="tipo_credito" not-null="true" />
-        </property>
-        <property name="idInstitucion" type="int">
-            <column name="id_institucion" not-null="true" />
-        </property>
-        <set name="gestions" table="gestion" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_credito" not-null="true" />
-            </key>
-            <one-to-many class="dto.Gestion" />
-        </set>
-        <set name="autos" table="auto" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_credito" not-null="true" />
-            </key>
-            <one-to-many class="dto.Auto" />
-        </set>
-        <set name="creditoRemesas" table="credito_remesa" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_credito" not-null="true" />
-            </key>
-            <one-to-many class="dto.CreditoRemesa" />
-        </set>
-        <set name="historials" table="historial" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_credito" not-null="true" />
-            </key>
-            <one-to-many class="dto.Historial" />
-        </set>
-        <set name="lineas" table="linea" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_credito" not-null="true" />
-            </key>
-            <one-to-many class="dto.Linea" />
-        </set>
-    </class>
+  <class catalog="sigerbd" name="dto.Credito" optimistic-lock="version" table="credito">
+    <id name="idCredito" type="java.lang.Integer">
+      <column name="id_credito"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Despacho" fetch="select" name="despacho">
+      <column name="id_despacho" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Deudor" fetch="select" name="deudor">
+      <column name="id_deudor" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Gestor" fetch="select" name="gestor">
+      <column name="id_gestor" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Producto" fetch="select" name="producto">
+      <column name="id_producto" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Subproducto" fetch="select" name="subproducto">
+      <column name="id_subproducto"/>
+    </many-to-one>
+    <property name="numeroCredito" type="string">
+      <column length="30" name="numero_credito" not-null="true"/>
+    </property>
+    <property name="fechaInicio" type="date">
+      <column length="10" name="fecha_inicio"/>
+    </property>
+    <property name="fechaFin" type="date">
+      <column length="10" name="fecha_fin"/>
+    </property>
+    <property name="fechaQuebranto" type="date">
+      <column length="10" name="fecha_quebranto"/>
+    </property>
+    <property name="monto" type="java.lang.Float">
+      <column name="monto" precision="12" scale="0"/>
+    </property>
+    <property name="mensualidad" type="java.lang.Float">
+      <column name="mensualidad" precision="12" scale="0"/>
+    </property>
+    <property name="tasaInteres" type="java.lang.Float">
+      <column name="tasa_interes" precision="12" scale="0"/>
+    </property>
+    <property name="diasMora" type="java.lang.Integer">
+      <column name="dias_mora"/>
+    </property>
+    <property name="numeroCuenta" type="string">
+      <column length="30" name="numero_cuenta"/>
+    </property>
+    <property name="tipoCredito" type="int">
+      <column name="tipo_credito" not-null="true"/>
+    </property>
+    <property name="idInstitucion" type="int">
+      <column name="id_institucion" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="gestions" table="gestion">
+      <key>
+        <column name="id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Gestion"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="autos" table="auto">
+      <key>
+        <column name="id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Auto"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="creditoRemesas" table="credito_remesa">
+      <key>
+        <column name="id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.CreditoRemesa"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="historials" table="historial">
+      <key>
+        <column name="id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Historial"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="lineas" table="linea">
+      <key>
+        <column name="id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Linea"/>
+    </set>
+  </class>
 </hibernate-mapping>

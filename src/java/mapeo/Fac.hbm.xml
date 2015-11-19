@@ -1,27 +1,26 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19/11/2015 10:18:32 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Fac" table="fac" catalog="sigerbd" optimistic-lock="version">
-        <id name="idFac" type="java.lang.Integer">
-            <column name="id_fac" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="remesa" class="dto.Remesa" fetch="select">
-            <column name="id_remesa" not-null="true" />
-        </many-to-one>
-        <property name="mes" type="java.lang.Integer">
-            <column name="mes" />
-        </property>
-        <property name="anio" type="java.lang.Integer">
-            <column name="anio" />
-        </property>
-        <property name="facPor" type="java.lang.Float">
-            <column name="fac_por" precision="12" scale="0" />
-        </property>
-        <property name="facMes" type="string">
-            <column name="fac_mes" length="100" />
-        </property>
-    </class>
+  <class catalog="sigerbd" name="dto.Fac" optimistic-lock="version" table="fac">
+    <id name="idFac" type="java.lang.Integer">
+      <column name="id_fac"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Remesa" fetch="select" name="remesa">
+      <column name="id_remesa" not-null="true"/>
+    </many-to-one>
+    <property name="mes" type="java.lang.Integer">
+      <column name="mes"/>
+    </property>
+    <property name="anio" type="java.lang.Integer">
+      <column name="anio"/>
+    </property>
+    <property name="facPor" type="java.lang.Float">
+      <column name="fac_por" precision="12" scale="0"/>
+    </property>
+    <property name="facMes" type="string">
+      <column length="100" name="fac_mes"/>
+    </property>
+  </class>
 </hibernate-mapping>

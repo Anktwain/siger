@@ -1,5 +1,5 @@
 package dto;
-// Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1
+// Generated 19/11/2015 10:18:31 AM by Hibernate Tools 4.3.1
 
 
 
@@ -58,5 +58,3 @@ public class MotivoDevolucion  implements java.io.Serializable {
   }
 
 }
-
-

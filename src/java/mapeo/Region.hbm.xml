@@ -1,24 +1,23 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19/11/2015 10:18:32 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Region" table="region" catalog="sigerbd" optimistic-lock="version">
-        <id name="idRegion" type="java.lang.Integer">
-            <column name="id_region" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="colonia" class="dto.Colonia" fetch="select">
-            <column name="id_colonia" />
-        </many-to-one>
-        <many-to-one name="estadoRepublica" class="dto.EstadoRepublica" fetch="select">
-            <column name="id_estado" />
-        </many-to-one>
-        <many-to-one name="municipio" class="dto.Municipio" fetch="select">
-            <column name="id_municipio" />
-        </many-to-one>
-        <many-to-one name="zona" class="dto.Zona" fetch="select">
-            <column name="id_zona" not-null="true" />
-        </many-to-one>
-    </class>
+  <class catalog="sigerbd" name="dto.Region" optimistic-lock="version" table="region">
+    <id name="idRegion" type="java.lang.Integer">
+      <column name="id_region"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Colonia" fetch="select" name="colonia">
+      <column name="id_colonia"/>
+    </many-to-one>
+    <many-to-one class="dto.EstadoRepublica" fetch="select" name="estadoRepublica">
+      <column name="id_estado"/>
+    </many-to-one>
+    <many-to-one class="dto.Municipio" fetch="select" name="municipio">
+      <column name="id_municipio"/>
+    </many-to-one>
+    <many-to-one class="dto.Zona" fetch="select" name="zona">
+      <column name="id_zona" not-null="true"/>
+    </many-to-one>
+  </class>
 </hibernate-mapping>

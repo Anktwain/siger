@@ -1,15 +1,14 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 19/11/2015 10:18:32 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.ConceptoDevolucion" table="concepto_devolucion" catalog="sigerbd" optimistic-lock="version">
-        <id name="idConceptoDevolucion" type="java.lang.Integer">
-            <column name="id_concepto_devolucion" />
-            <generator class="identity" />
-        </id>
-        <property name="concepto" type="string">
-            <column name="concepto" length="50" not-null="true" />
-        </property>
-    </class>
+  <class catalog="sigerbd" name="dto.ConceptoDevolucion" optimistic-lock="version" table="concepto_devolucion">
+    <id name="idConceptoDevolucion" type="java.lang.Integer">
+      <column name="id_concepto_devolucion"/>
+      <generator class="identity"/>
+    </id>
+    <property name="concepto" type="string">
+      <column length="50" name="concepto" not-null="true"/>
+    </property>
+  </class>
 </hibernate-mapping>
