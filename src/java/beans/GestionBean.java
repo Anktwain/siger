@@ -50,10 +50,13 @@ public class GestionBean implements Serializable {
     switch(tipoSeleccionado){
       case "VISITA DOMICILIARIA":
         listaDonde = Gestiones.DONDE_VISITA;
+        break;
       case "TELEFONIA":
         listaDonde = Gestiones.DONDE_TELEFONIA;
+        break;
       case "CORPORATIVO":
         listaDonde = Gestiones.DONDE_CORPORATIVO;
+        break;
     }
   }
 
@@ -68,19 +71,25 @@ public class GestionBean implements Serializable {
   public void preparaSujetos() {
     switch (tipoSujetoSeleccionado) {
       case "TITULAR":
-        ;
+        break;
       case "DIRECTOS":
         listaSujetos = Gestiones.SUJETOS_DIRECTOS;
+        break;
       case "LATERALES":
         listaSujetos = Gestiones.SUJETOS_LATERALES;
+        break;
       case "LEGALES":
         listaSujetos = Gestiones.SUJETOS_LEGALES;
+        break;
       case "AMISTADES":
         listaSujetos = Gestiones.SUJETOS_AMISTADES;
+        break;
       case "LABORALES":
         listaSujetos = Gestiones.SUJETOS_LABORALES;
+        break;
       case "REFERENCIAS":
         listaSujetos = Gestiones.SUJETOS_REFERENCIAS;
+        break;
     }
   }
   
