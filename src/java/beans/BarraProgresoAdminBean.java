@@ -33,6 +33,7 @@ public class BarraProgresoAdminBean implements Serializable {
   private GestionDAO gestionDao;
   private SujetoDAO sujetoDao;
   private InstitucionDAO institucionDao;
+  private int idDespacho;
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -43,17 +44,18 @@ public class BarraProgresoAdminBean implements Serializable {
     gestionDao = new GestionIMPL();
     sujetoDao = new SujetoIMPL();
     institucionDao = new InstitucionIMPL();
+    idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
   }
 
   public String calcularCreditos() {
-    Number total = creditoDao.contarCreditosActivos(indexBean.getUsuario().getDespacho().getIdDespacho());
+    Number total = creditoDao.contarCreditosActivos(idDespacho);
     String creditos = total.toString();
     Logs.log.info("Existen " + total + " creditos activos en el sistema");
     return creditos;
   }
 
   public String calcularVisitas() {
-    Number total = gestionDao.calcularVisitasDomiciliarias();
+    Number total = gestionDao.calcularVisitasDomiciliariasPorDespacho(idDespacho);
     String visitas = total.toString();
     Logs.log.info("Se han hecho " + total + " visitas domiciliarias");
     return visitas;

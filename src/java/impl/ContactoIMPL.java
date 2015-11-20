@@ -2,7 +2,8 @@ package impl;
 
 import dao.ContactoDAO;
 import dto.Contacto;
-import dto.Sujeto;
+import dto.tablas.Cont;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -150,6 +151,30 @@ public class ContactoIMPL implements ContactoDAO {
     }
 
     return listaContactos;
+  }
+
+  @Override
+  public List<Cont> buscarContactoPorSujeto(int idSujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Cont> contactos = new ArrayList<>();
+    List<Object[]> c;
+    String consulta = "SELECT s.nombre_razon_social, c.observaciones FROM contacto c join sujeto s WHERE c.id_sujeto = s.id_sujeto AND s.id_sujeto = " + idSujeto +";";
+    try {
+      c = sesion.createSQLQuery(consulta).list();
+      for (Object[] row : c) {
+        Cont contacto = new Cont();
+        contacto.setNombreContacto(row[0].toString());
+        contacto.setDescripcion(row[1].toString());
+        contactos.add(contacto);
+      }
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      contactos = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return contactos;
   }
 
   /**

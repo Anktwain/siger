@@ -124,6 +124,7 @@ public class IndexBean implements Serializable {
    * @throws java.io.IOException
    */
   public void ingresar() throws IOException {
+    cerrarSesion();
     Logs.log.info("########################### Estamos en la la funcion ingresar ###########################\n");
     nombreUsuario = nombreUsuario.toLowerCase();
     usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));

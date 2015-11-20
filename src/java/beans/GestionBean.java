@@ -5,11 +5,21 @@
  */
 package beans;
 
+import dao.GestionDAO;
+import dto.Gestion;
+import impl.GestionIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.el.ELContext;
+import javax.faces.application.FacesMessage;
+import javax.faces.application.ViewHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 import util.constantes.Gestiones;
 
 /**
@@ -21,6 +31,10 @@ import util.constantes.Gestiones;
 
 public class GestionBean implements Serializable {
 
+  // LLAMADA A OTROS BEANS
+  ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+  VistaCreditoBean vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
+
   // VARIABLES DE CLASE
   private List<String> listaTipos;
   private List<String> listaDonde;
@@ -28,12 +42,15 @@ public class GestionBean implements Serializable {
   private List<String> listaTipoSujetos;
   private List<String> listaSujetos;
   private List<String> listaEstatus;
+  private final List<String> listaVacia;
   private String tipoSeleccionado;
   private String lugarSeleccionado;
   private String asuntoSeleccionado;
   private String tipoSujetoSeleccionado;
   private String sujetoSeleccionado;
   private String estatusSeleccionado;
+  private String gestion;
+  private GestionDAO gestionDAO;
 
   // CONSTRUCTOR
   public GestionBean() {
@@ -43,11 +60,14 @@ public class GestionBean implements Serializable {
     listaTipoSujetos = new ArrayList();
     listaSujetos = new ArrayList();
     listaEstatus = new ArrayList();
+    listaVacia = new ArrayList();
+    gestionDAO = new GestionIMPL();
     listaTipos = Gestiones.TIPO_GESTION;
+    listaEstatus = Gestiones.ESTATUS_INFORMATIVO;
   }
 
   public void preparaDonde() {
-    switch(tipoSeleccionado){
+    switch (tipoSeleccionado) {
       case "VISITA DOMICILIARIA":
         listaDonde = Gestiones.DONDE_VISITA;
         break;
@@ -61,7 +81,11 @@ public class GestionBean implements Serializable {
   }
 
   public void preparaAsunto() {
-    listaAsuntos = Gestiones.ASUNTO;
+    if (tipoSeleccionado.equals("CORPORATIVO")) {
+      listaAsuntos = Gestiones.ASUNTO_CORPORATIVO;
+    } else {
+      listaAsuntos = Gestiones.ASUNTO;
+    }
   }
 
   public void preparaTipoSujeto() {
@@ -71,6 +95,8 @@ public class GestionBean implements Serializable {
   public void preparaSujetos() {
     switch (tipoSujetoSeleccionado) {
       case "TITULAR":
+        // TODO: SI EL TITULAR ES SELECCIONADO, LOS DEMAS COMBOS SE APENDEJAN
+        listaSujetos = listaVacia;
         break;
       case "DIRECTOS":
         listaSujetos = Gestiones.SUJETOS_DIRECTOS;
@@ -92,9 +118,41 @@ public class GestionBean implements Serializable {
         break;
     }
   }
-  
-  public void preparaEstatus(){
-    listaEstatus = Gestiones.ESTATUS_INFORMATIVO;
+
+  public void crearNuevaGestion() {
+    Gestion nueva = new Gestion();
+    nueva.setTipoGestion(tipoSeleccionado);
+    nueva.setLugarGestion(lugarSeleccionado);
+    nueva.setAsuntoGestion(asuntoSeleccionado);
+    nueva.setDescripcionGestion("SE REALIZA COBRANZA DE LA CUENTA CON");
+    nueva.setTipoSujetoGestion(tipoSujetoSeleccionado);
+    nueva.setSujetoGestion(sujetoSeleccionado);
+    nueva.setInformacionInstitucion(estatusSeleccionado);
+    nueva.setGestion(gestion);
+    nueva.setCredito(vistaCreditoBean.getCreditoActual());
+    Date fecha = new Date();
+    nueva.setFecha(fecha);
+    nueva.setIdGestor(vistaCreditoBean.cuentasVistaBean.getIndexBean().getUsuario().getIdUsuario());
+    boolean ok = gestionDAO.insertarGestion(nueva);
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    if (ok) {
+      limpiarCampos();
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se guardo la gestion."));
+    } else {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se guardo la gestion. Contacte al equipo de sistemas."));
+    }
+  }
+
+  protected void limpiarCampos() {
+    listaTipos = null;
+    listaDonde = null;
+    listaAsuntos = null;
+    listaTipoSujetos = null;
+    listaSujetos = null;
+    listaEstatus = null;
+    gestion = null;
+    listaTipos = Gestiones.TIPO_GESTION;
+    RequestContext.getCurrentInstance().update("formNuevaGestion");
   }
 
   // ***********************************************************************************************************************
@@ -195,6 +253,30 @@ public class GestionBean implements Serializable {
 
   public void setEstatusSeleccionado(String estatusSeleccionado) {
     this.estatusSeleccionado = estatusSeleccionado;
+  }
+
+  public ELContext getElContext() {
+    return elContext;
+  }
+
+  public void setElContext(ELContext elContext) {
+    this.elContext = elContext;
+  }
+
+  public VistaCreditoBean getVistaCreditoBean() {
+    return vistaCreditoBean;
+  }
+
+  public void setVistaCreditoBean(VistaCreditoBean vistaCreditoBean) {
+    this.vistaCreditoBean = vistaCreditoBean;
+  }
+
+  public String getGestion() {
+    return gestion;
+  }
+
+  public void setGestion(String gestion) {
+    this.gestion = gestion;
   }
 
 }
