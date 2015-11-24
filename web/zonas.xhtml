@@ -26,9 +26,9 @@
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </h:head>
-  
+
   <h:body>
-    <p:growl id="growl" showDetail="true" sticky="true" />
+    <p:growl id="growl" showDetail="true" life="8000"/>
 
     <div id="overlay" class="transparent" style="display: none;"></div>
     <ui:include src="barraLateral.xhtml" />
@@ -39,7 +39,7 @@
         <ul class="breadcrumb">
           <li>
             <i class="fa fa-home"></i>
-            <a href="panelAdministrativo.xhtml">Inicio</a>
+            <a href="#{indexBean.vista}">Inicio</a>
           </li>
           <li class="active">Zonas</li>
         </ul>
@@ -55,7 +55,8 @@
       <h:form>
         <!--          <p:ajax event="toggle" />-->
         <div class="row">
-          <div class="col-sm-6" id="googleMap" style="width:450px;height:380px; margin-left: 50px"></div>
+          <div class="col-sm-6" id="googleMap" style="width:450px;height:380px; margin-left: 50px">
+          </div>
           <div class="col-sm-6">
             <div class="row">
               <div class="col-sm-12">
@@ -76,8 +77,9 @@
                 <p:fieldset id="fsTabla" legend="Zonas en el mapa" toggleable="true" 
                             toggleSpeed="500" >
                   <p:dataTable emptyMessage="Todav&iacute;a no hay zonas registradas"
-                               paginator="true" rows="10" paginatorAlwaysVisible="false" paginatorPosition="bottom"
-                               rowKey="" selection=""  id="zonas" widgetVar="zonaDataTable" var="zona">
+                               paginator="true" rows="10" paginatorAlwaysVisible="false" 
+                               paginatorPosition="bottom" rowKey="" selection=""  
+                               id="zonas" widgetVar="zonaDataTable" var="zona">
 
                     <f:facet name="header">
                       <p:outputPanel>
@@ -122,7 +124,7 @@
             <h:panelGrid columns="2" columnClasses="label, value">
               <p:outputLabel value="Gestor asignado: " for="cmbGestor" />
               <p:selectOneMenu id="cmbGestor" value="#{zonasVistaBean.gestorAsignado}" 
-                               filter="true" filterMatchMode="contains" maxlength="30" var="g">
+                               filter="true" filterMatchMode="contains" maxlength="30" >
                 <p:ajax listener="#{zonasVistaBean.onGestorAsignadoChange}" update="growl" />
                 <f:selectItem itemLabel="Ninguno" itemValue="null" noSelectionOption="true" />
                 <f:selectItems value="#{zonasVistaBean.gestores}" />
@@ -136,12 +138,16 @@
                 <h:outputText value="Estados"/>
                 <p:separator/>
               </f:facet>
-              <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.edoRepVisible.idEstado}" 
-                               filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.edoRepVisible}" 
+                               var="edo" filter="true" filterMatchMode="contains" 
+                               converter="edoRepConverter">
                 <p:ajax listener="#{zonasVistaBean.onEstadosChange}" 
                         update="growl,switchBtnMunicipio,apMunicipios,switchBtnColonia" />
-                <f:selectItem itemLabel="Selecciona el estado" itemValue="0" noSelectionOption="true" />
-                <f:selectItems value="#{zonasVistaBean.estadosRep}" var="edoSelect" itemValue="#{edoSelect.idEstado}"/>
+                <f:selectItem itemLabel="Selecciona el estado" noSelectionOption="true" />
+                <f:selectItems value="#{zonasVistaBean.estadosRep}" var="edoRep" itemValue="#{edoRep}"/>
+                <p:column>
+                  <h:outputText value="#{edo.nombre}" />
+                </p:column>
               </p:selectOneMenu>
             </h:panelGrid>
 
@@ -156,16 +162,17 @@
                 <p:separator/>
               </f:facet>
 
-              <p:accordionPanel id="apMunicipios" dynamic="true" cache="false" activeIndex="#{zonasVistaBean.acPanMpiosActiveIndex}">
-                <p:tab id="apMunicipiosTab0" title="Seleccione los municipios" disabled="#{zonasVistaBean.mpiosDeshabilitados}">
-                    <p:selectManyMenu id="listaMunicipio" value="#{zonasVistaBean.zona.mpiosSeleccionados}" 
-                                    filterMatchMode="contains" var="m" filter="true" showCheckbox="true" class="dropDMpios">
-                    <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="growl,formNuevaZona" />
+              <p:accordionPanel id="apMunicipios" dynamic="true" cache="false" 
+                                activeIndex="#{zonasVistaBean.acPanMpiosActiveIndex}">
+                <p:tab id="apMunicipiosTab0" title="Seleccione los municipios" 
+                       disabled="#{zonasVistaBean.mpiosDeshabilitados}">
+                  <p:selectManyMenu id="listaMunicipio" class="dropDMpios"
+                                    filterMatchMode="contains" filter="true" showCheckbox="true" 
+                                    >
+                    <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="growl,listaMunicipio" />
                     <f:selectItem itemLabel="Todos" itemValue="todos" />
-                    <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" var="mpio" />
-                    <p:column width="450px">
-                      <h:outputText value="#{m}"/>
-                    </p:column>
+                    <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" 
+                                   var="mpio" itemLabel="#{mpio.nombre}"/>
                   </p:selectManyMenu>
                 </p:tab>
               </p:accordionPanel>
@@ -174,7 +181,8 @@
             <h:panelGrid columns="1" cellpadding="10">
               <f:facet name="header">
                 <h:outputText class="text-center" value="Colonias "/>
-                <p:inputSwitch id="switchBtnColonia" value="#{zonasVistaBean.switchColonias}" onchange="#{zonasVistaBean.onMostrarColoniasChange()}"
+                <p:inputSwitch id="switchBtnColonia" value="#{zonasVistaBean.switchColonias}" 
+                               onchange="#{zonasVistaBean.onMostrarColoniasChange()}"
                                onLabel="S&iacute;" offLabel="No" disabled="#{zonasVistaBean.switchColoniasDisabled}" >
                   <p:ajax listener="#{zonasVistaBean.onMostrarColoniasChange}" 
                           update="growl,apColonias" />
@@ -182,25 +190,32 @@
                 <p:separator />
               </f:facet>              
 
-              <p:accordionPanel id="apColonias" dynamic="true" cache="false" activeIndex="#{zonasVistaBean.acPanColoniasActiveIndex}" >
-                <p:tab id="apColoniasTab0" title="Seleccione las colonias" disabled="#{zonasVistaBean.coloniasDeshabilitadas}" >
-                  <p:selectManyMenu id="listaColonia" value="#{zonasVistaBean.zona.coloniasSeleccionadas}"
-                                    var="c" filter="true" filterMatchMode="contains" showCheckbox="true" >
-                    <f:selectItem itemLabel="Todos" itemValue="todos"  />
-                    <f:selectItems value="#{zonasVistaBean.coloniasDelEstadoRepSelec}" var="col" />
-                    <p:column>
-                      <h:outputText value="#{c}" />
-                    </p:column>
+              <p:accordionPanel id="apColonias" dynamic="true" cache="false" 
+                                activeIndex="#{zonasVistaBean.acPanColoniasActiveIndex}" >
+                <p:tab id="apColoniasTab0" title="Seleccione las colonias" 
+                       disabled="#{zonasVistaBean.coloniasDeshabilitadas}" >
+                  <p:selectManyMenu id="listaColonia" filter="true"
+                                    value="#{zonasVistaBean.zona.coloniasSeleccionadas}"
+                                    filterMatchMode="contains" showCheckbox="true" >
+                    <f:selectItem itemLabel="Todos" itemValue="todos" />
+                    <f:selectItems value="#{zonasVistaBean.coloniasDelEstadoRepSelec}" 
+                                   var="col" itemLabel="#{col.nombre}" />
                   </p:selectManyMenu>
                 </p:tab>
               </p:accordionPanel>
             </h:panelGrid>
 
+
             <f:facet name="footer" >
-              <p:commandButton value="Aceptar" icon="ui-icon-check"/>
-              <p:commandButton value="Cancelar" icon="ui-icon-close"/>
+              <p:commandButton value="Aceptar" id="btnAceptar" update="growl"
+                               actionListener="#{zonasVistaBean.onAceptar}" icon="ui-icon-check" 
+                               styleClass="ui-priority-primary" />
+              <p:commandButton value="Cancelar" id="btnCancelar" update="growl" 
+                               icon="ui-icon-close" />
             </f:facet>
           </p:panelGrid>
+
+
 
         </h:form>
       </p:dialog>
