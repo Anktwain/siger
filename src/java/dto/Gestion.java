@@ -1,5 +1,5 @@
 package dto;
-// Generated 4/11/2015 10:38:46 AM by Hibernate Tools 4.3.1
+// Generated 19/11/2015 10:18:31 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -13,17 +13,43 @@ public class Gestion  implements java.io.Serializable {
      private Integer idGestion;
      private Credito credito;
      private Date fecha;
+     private int idGestor;
+     private String tipoGestion;
+     private String lugarGestion;
+     private String asuntoGestion;
+     private String descripcionGestion;
+     private String tipoSujetoGestion;
+     private String sujetoGestion;
+     private String informacionInstitucion;
+     private String gestion;
 
     public Gestion() {
     }
 
 	
-    public Gestion(Credito credito) {
+    public Gestion(Credito credito, int idGestor, String tipoGestion, String lugarGestion, String asuntoGestion, String descripcionGestion, String tipoSujetoGestion, String sujetoGestion, String informacionInstitucion) {
         this.credito = credito;
+        this.idGestor = idGestor;
+        this.tipoGestion = tipoGestion;
+        this.lugarGestion = lugarGestion;
+        this.asuntoGestion = asuntoGestion;
+        this.descripcionGestion = descripcionGestion;
+        this.tipoSujetoGestion = tipoSujetoGestion;
+        this.sujetoGestion = sujetoGestion;
+        this.informacionInstitucion = informacionInstitucion;
     }
-    public Gestion(Credito credito, Date fecha) {
+    public Gestion(Credito credito, Date fecha, int idGestor, String tipoGestion, String lugarGestion, String asuntoGestion, String descripcionGestion, String tipoSujetoGestion, String sujetoGestion, String informacionInstitucion, String gestion) {
        this.credito = credito;
        this.fecha = fecha;
+       this.idGestor = idGestor;
+       this.tipoGestion = tipoGestion;
+       this.lugarGestion = lugarGestion;
+       this.asuntoGestion = asuntoGestion;
+       this.descripcionGestion = descripcionGestion;
+       this.tipoSujetoGestion = tipoSujetoGestion;
+       this.sujetoGestion = sujetoGestion;
+       this.informacionInstitucion = informacionInstitucion;
+       this.gestion = gestion;
     }
    
     public Integer getIdGestion() {
@@ -46,6 +72,69 @@ public class Gestion  implements java.io.Serializable {
     
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+    public int getIdGestor() {
+        return this.idGestor;
+    }
+    
+    public void setIdGestor(int idGestor) {
+        this.idGestor = idGestor;
+    }
+    public String getTipoGestion() {
+        return this.tipoGestion;
+    }
+    
+    public void setTipoGestion(String tipoGestion) {
+        this.tipoGestion = tipoGestion;
+    }
+    public String getLugarGestion() {
+        return this.lugarGestion;
+    }
+    
+    public void setLugarGestion(String lugarGestion) {
+        this.lugarGestion = lugarGestion;
+    }
+    public String getAsuntoGestion() {
+        return this.asuntoGestion;
+    }
+    
+    public void setAsuntoGestion(String asuntoGestion) {
+        this.asuntoGestion = asuntoGestion;
+    }
+    public String getDescripcionGestion() {
+        return this.descripcionGestion;
+    }
+    
+    public void setDescripcionGestion(String descripcionGestion) {
+        this.descripcionGestion = descripcionGestion;
+    }
+    public String getTipoSujetoGestion() {
+        return this.tipoSujetoGestion;
+    }
+    
+    public void setTipoSujetoGestion(String tipoSujetoGestion) {
+        this.tipoSujetoGestion = tipoSujetoGestion;
+    }
+    public String getSujetoGestion() {
+        return this.sujetoGestion;
+    }
+    
+    public void setSujetoGestion(String sujetoGestion) {
+        this.sujetoGestion = sujetoGestion;
+    }
+    public String getInformacionInstitucion() {
+        return this.informacionInstitucion;
+    }
+    
+    public void setInformacionInstitucion(String informacionInstitucion) {
+        this.informacionInstitucion = informacionInstitucion;
+    }
+    public String getGestion() {
+        return this.gestion;
+    }
+    
+    public void setGestion(String gestion) {
+        this.gestion = gestion;
     }
 
 

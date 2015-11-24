@@ -25,27 +25,76 @@ public class GestionBean implements Serializable {
   private List<String> listaTipos;
   private List<String> listaDonde;
   private List<String> listaAsuntos;
+  private List<String> listaTipoSujetos;
+  private List<String> listaSujetos;
+  private List<String> listaEstatus;
   private String tipoSeleccionado;
   private String lugarSeleccionado;
   private String asuntoSeleccionado;
+  private String tipoSujetoSeleccionado;
+  private String sujetoSeleccionado;
+  private String estatusSeleccionado;
 
   // CONSTRUCTOR
   public GestionBean() {
     listaTipos = new ArrayList();
     listaDonde = new ArrayList();
     listaAsuntos = new ArrayList();
+    listaTipoSujetos = new ArrayList();
+    listaSujetos = new ArrayList();
+    listaEstatus = new ArrayList();
     listaTipos = Gestiones.TIPO_GESTION;
   }
 
   public void preparaDonde() {
-    listaDonde = Gestiones.DONDE_VISITA;
-    if (tipoSeleccionado.equals("TELEFONIA")) {
-      listaDonde = Gestiones.DONDE_TELEFONIA;
+    switch(tipoSeleccionado){
+      case "VISITA DOMICILIARIA":
+        listaDonde = Gestiones.DONDE_VISITA;
+        break;
+      case "TELEFONIA":
+        listaDonde = Gestiones.DONDE_TELEFONIA;
+        break;
+      case "CORPORATIVO":
+        listaDonde = Gestiones.DONDE_CORPORATIVO;
+        break;
+    }
+  }
+
+  public void preparaAsunto() {
+    listaAsuntos = Gestiones.ASUNTO;
+  }
+
+  public void preparaTipoSujeto() {
+    listaTipoSujetos = Gestiones.TIPO_SUJETOS;
+  }
+
+  public void preparaSujetos() {
+    switch (tipoSujetoSeleccionado) {
+      case "TITULAR":
+        break;
+      case "DIRECTOS":
+        listaSujetos = Gestiones.SUJETOS_DIRECTOS;
+        break;
+      case "LATERALES":
+        listaSujetos = Gestiones.SUJETOS_LATERALES;
+        break;
+      case "LEGALES":
+        listaSujetos = Gestiones.SUJETOS_LEGALES;
+        break;
+      case "AMISTADES":
+        listaSujetos = Gestiones.SUJETOS_AMISTADES;
+        break;
+      case "LABORALES":
+        listaSujetos = Gestiones.SUJETOS_LABORALES;
+        break;
+      case "REFERENCIAS":
+        listaSujetos = Gestiones.SUJETOS_REFERENCIAS;
+        break;
     }
   }
   
-  public void preparaAsunto(){
-    listaAsuntos = Gestiones.ASUNTO;
+  public void preparaEstatus(){
+    listaEstatus = Gestiones.ESTATUS_INFORMATIVO;
   }
 
   // ***********************************************************************************************************************
@@ -98,6 +147,54 @@ public class GestionBean implements Serializable {
 
   public void setAsuntoSeleccionado(String asuntoSeleccionado) {
     this.asuntoSeleccionado = asuntoSeleccionado;
+  }
+
+  public List<String> getListaTipoSujetos() {
+    return listaTipoSujetos;
+  }
+
+  public void setListaTipoSujetos(List<String> listaTipoSujetos) {
+    this.listaTipoSujetos = listaTipoSujetos;
+  }
+
+  public List<String> getListaSujetos() {
+    return listaSujetos;
+  }
+
+  public void setListaSujetos(List<String> listaSujetos) {
+    this.listaSujetos = listaSujetos;
+  }
+
+  public String getTipoSujetoSeleccionado() {
+    return tipoSujetoSeleccionado;
+  }
+
+  public void setTipoSujetoSeleccionado(String tipoSujetoSeleccionado) {
+    this.tipoSujetoSeleccionado = tipoSujetoSeleccionado;
+  }
+
+  public String getSujetoSeleccionado() {
+    return sujetoSeleccionado;
+  }
+
+  public void setSujetoSeleccionado(String sujetoSeleccionado) {
+    this.sujetoSeleccionado = sujetoSeleccionado;
+  }
+
+  public List<String> getListaEstatus() {
+    return listaEstatus;
+  }
+
+  public void setListaEstatus(List<String> listaEstatus) {
+    this.listaEstatus = listaEstatus;
+  }
+
+  public String getEstatusSeleccionado() {
+    return estatusSeleccionado;
+  }
+
+  public void setEstatusSeleccionado(String estatusSeleccionado) {
+    this.estatusSeleccionado = estatusSeleccionado;
   }
 
 }
