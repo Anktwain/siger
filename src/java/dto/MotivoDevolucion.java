@@ -52,9 +52,9 @@ public class MotivoDevolucion  implements java.io.Serializable {
         this.idConceptoDevolucion = idConceptoDevolucion;
     }
 
-
-
+  @Override
+  public String toString() {
+    return motivo;
+  }
 
 }
-
-

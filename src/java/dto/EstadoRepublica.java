@@ -67,9 +67,9 @@ public class EstadoRepublica  implements java.io.Serializable {
         this.direccions = direccions;
     }
 
-
-
+  @Override
+  public String toString() {
+    return nombre;
+  }
 
 }
-
-
