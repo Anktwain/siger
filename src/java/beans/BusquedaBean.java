@@ -8,6 +8,7 @@ package beans;
 import dao.CreditoDAO;
 import impl.CreditoIMPL;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
@@ -22,7 +23,7 @@ import util.constantes.Perfiles;
  */
 @ManagedBean(name = "busquedaBean")
 @ViewScoped
-public class BusquedaBean {
+public class BusquedaBean implements Serializable{
   
   // VARIABLES DE CLASE
   private String creditoBuscado;

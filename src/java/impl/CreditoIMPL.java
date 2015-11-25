@@ -6,7 +6,7 @@
 package impl;
 
 import dao.CreditoDAO;
-import dto.tablas.Cred;
+import dto.tablas.Creditos;
 import dto.Credito;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,15 +76,15 @@ public class CreditoIMPL implements CreditoDAO {
   }
 
   @Override
-  public List<Cred> creditosEnGestionPorDespacho(int idDespacho) {
+  public List<Creditos> creditosEnGestionPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Cred> creditos = new ArrayList<>();
+    List<Creditos> creditos = new ArrayList<>();
     List<Object[]> c;
     String consulta = "SELECT c.numero_credito, s.nombre_razon_social, i.nombre_corto, c.tipo_credito, p.nombre, c.monto, u.nombre_login  FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN institucion i JOIN producto p JOIN gestor g JOIN usuario u WHERE d.id_sujeto = s.id_sujeto AND u.id_usuario = g.id_usuario AND g.id_gestor = c.id_gestor AND p.id_producto = c.id_producto AND d.id_deudor = c.id_deudor AND i.id_institucion = c.id_institucion AND id_credito NOT IN (SELECT id_credito FROM devolucion) AND des.id_despacho = " + idDespacho + ";";
     try {
       c = sesion.createSQLQuery(consulta).list();
       for (Object[] row : c) {
-        Cred cr = new Cred();
+        Creditos cr = new Creditos();
         cr.setNumeroCredito(row[0].toString());
         cr.setNombreRazonSocial(row[1].toString());
         cr.setNombreCortoInstitucion(row[2].toString());

@@ -11,7 +11,7 @@ import dao.DevolucionDAO;
 import dao.HistorialDAO;
 import dao.MotivoDevolucionDAO;
 import dto.ConceptoDevolucion;
-import dto.tablas.Cred;
+import dto.tablas.Creditos;
 import dto.Devolucion;
 import dto.MotivoDevolucion;
 import impl.ConceptoDevolucionIMPL;
@@ -54,8 +54,8 @@ public class CuentasVistaBean implements Serializable{
   private HistorialDAO historialDao;
   private ConceptoDevolucionDAO conceptoDevolucionDao;
   private MotivoDevolucionDAO motivoDevolucionDao;
-  private List<Cred> creditosGestionables;
-  private List<Cred> creditoSeleccionado;
+  private List<Creditos> creditosGestionables;
+  private List<Creditos> creditoSeleccionado;
   private List<ConceptoDevolucion> listaConceptos;
   private List<SelectItem> listaConceptosVista;
   private List<MotivoDevolucion> listaMotivos;
@@ -172,19 +172,19 @@ public class CuentasVistaBean implements Serializable{
     this.creditoDao = creditoDao;
   }
 
-  public List<Cred> getCreditosGestionables() {
+  public List<Creditos> getCreditosGestionables() {
     return creditosGestionables;
   }
 
-  public void setCreditosGestionables(List<Cred> creditosGestionables) {
+  public void setCreditosGestionables(List<Creditos> creditosGestionables) {
     this.creditosGestionables = creditosGestionables;
   }
 
-  public List<Cred> getCreditoSeleccionado() {
+  public List<Creditos> getCreditoSeleccionado() {
     return creditoSeleccionado;
   }
 
-  public void setCreditoSeleccionado(List<Cred> creditoSeleccionado) {
+  public void setCreditoSeleccionado(List<Creditos> creditoSeleccionado) {
     this.creditoSeleccionado = creditoSeleccionado;
   }
 

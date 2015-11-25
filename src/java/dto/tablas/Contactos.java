@@ -9,11 +9,11 @@ package dto.tablas;
  *
  * @author Eduardo
  */
-public class Cont {
+public class Contactos {
   private String nombreContacto;
   private String descripcion;
 
-  public Cont() {
+  public Contactos() {
   }
 
   public String getNombreContacto() {

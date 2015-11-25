@@ -2,7 +2,7 @@ package impl;
 
 import dao.ContactoDAO;
 import dto.Contacto;
-import dto.tablas.Cont;
+import dto.tablas.Contactos;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -154,15 +154,15 @@ public class ContactoIMPL implements ContactoDAO {
   }
 
   @Override
-  public List<Cont> buscarContactoPorSujeto(int idSujeto) {
+  public List<Contactos> buscarContactoPorSujeto(int idSujeto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Cont> contactos = new ArrayList<>();
+    List<Contactos> contactos = new ArrayList<>();
     List<Object[]> c;
     String consulta = "SELECT s.nombre_razon_social, c.observaciones FROM contacto c JOIN sujeto s WHERE s.id_sujeto = c.id_sujeto AND c.id_deudor = (SELECT id_deudor FROM deudor WHERE id_sujeto = " + idSujeto + ");";
     try {
       c = sesion.createSQLQuery(consulta).list();
       for (Object[] row : c) {
-        Cont contacto = new Cont();
+        Contactos contacto = new Contactos();
         contacto.setNombreContacto(row[0].toString());
         contacto.setDescripcion(row[1].toString());
         contactos.add(contacto);
