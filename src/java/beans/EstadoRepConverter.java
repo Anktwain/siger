@@ -1,6 +1,7 @@
 package beans;
 
-import dto.EstadoRepublica;
+import dao.EstadoRepublicaDAO;
+import impl.EstadoRepublicaIMPL;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -19,27 +20,26 @@ public class EstadoRepConverter implements Converter {
 
     if (string != null && string.trim().length() > 0) {
       System.out.println("_________________________________________edoRepConverter.getAsObject { string = " + string + "}."
-              + " Se intentará enviar el objeto completo que coincida con ese nombre de estado.");
-      
+              + " Se intentará enviar el objeto completo que coincida con ese nombre de estado."); // Línea de prueba
+
       return zonaVista.getEdoRepPorNombre(string);
     } else {
-      System.out.println("_________________________________________edoRepConverter.getAsObject { string = null }");
+      System.out.println("_________________________________________edoRepConverter.getAsObject { string = null }"); // Línea de prueba
       return null;
     }
   }
 
   @Override
   public String getAsString(FacesContext fc, UIComponent uic, Object o) {
-
     if (o != null) {
       if (o.toString() != null) {
         System.out.println("_________________________________________edoRepConverter.getAsString { o = " + o
-                + ", o.getClass() = " + o.getClass() + "}");
+                + ", o.getClass() = " + o.getClass() + "}");      // Línea de prueba
       }
-      return o.toString(); // linea temporal. SOLO PARA CUMPLIR CON EL VALOR DE RETORNO !!!!!!!!!!
+      return o.toString();
     } else {
-      System.out.println("_________________________________________edoRepConverter.getAsString { o = null }");
-      return null; // linea temporal. SOLO PARA CUMPLIR CON EL VALOR DE RETORNO !!!!!!!!!!
+      System.out.println("_________________________________________edoRepConverter.getAsString { o = null }");    // Línea de prueba
+      return null;
     }
   }
 }

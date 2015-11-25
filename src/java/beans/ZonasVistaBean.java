@@ -83,7 +83,6 @@ public class ZonasVistaBean implements Serializable {
    */
   private int idEdoVisible;
 
-  private List<Municipio> mpiosDelEstadoRepSelec;
   private List<Colonia> coloniasDelEstadoRepSelec;
 
   private boolean mpiosDeshabilitados;
@@ -107,7 +106,6 @@ public class ZonasVistaBean implements Serializable {
 
     coloniasVisibles = new ArrayList<>();
 
-    mpiosDelEstadoRepSelec = new ArrayList<>();
     mpiosVisibles = new ArrayList<>();
 
     edoRepVisible = new EstadoRepublica();
@@ -134,7 +132,7 @@ public class ZonasVistaBean implements Serializable {
     System.out.println("this.edoRepVisible.getIdEstado() = " + this.edoRepVisible.getIdEstado());
     System.out.println("L_____________________________________________________________________");
 
-    this.mpiosDelEstadoRepSelec = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
+    this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
   }
 
   public List<EstadoRepublica> getEstadosRep() {
@@ -146,8 +144,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public List<Municipio> getMpiosVisibles() {
-    mpiosVisibles = mpioDao.buscarMunicipiosPorEstado(zona.getEdosRepSeleccionados().get(idEdoVisible).getIdEstado());
-    return mpiosVisibles;
+    return this.mpiosVisibles;
   }
 
   public void setMpiosVisibles(List<Municipio> mpiosVisibles) {
@@ -179,11 +176,11 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public List<Municipio> getMpiosDelEstadoRepSelec() {
-    return mpiosDelEstadoRepSelec;
+    return mpiosVisibles;
   }
 
   public void setMpiosDelEstadoRepSelec(List<Municipio> mpiosDelEstadoRepSelec) {
-    this.mpiosDelEstadoRepSelec = mpiosDelEstadoRepSelec;
+    this.mpiosVisibles = mpiosDelEstadoRepSelec;
   }
 
   public void onMpiosChange() {
@@ -212,11 +209,11 @@ public class ZonasVistaBean implements Serializable {
     }
     this.mpiosDeshabilitados = !this.switchMpios;
 
-    System.out.println("\nonMostrarMpiosChange(). - municipios " 
+    System.out.println("\nonMostrarMpiosChange(). - municipios "
             + (mpiosDeshabilitados == true ? "DEShabilitados" : "Habilitados."));
 
     System.out.println("|#################### Municipios seleccionados del estadoRep actual:");
-    for (Municipio mpio : this.mpiosDelEstadoRepSelec) {
+    for (Municipio mpio : this.mpiosVisibles) {
       System.out.println(mpio);
     }
     System.out.println("|_#################### #################### ####################_|");
@@ -334,6 +331,15 @@ public class ZonasVistaBean implements Serializable {
     for (EstadoRepublica edoRepIterador : this.estadosRep) {
       if (edoRepIterador.getNombre().equals(nombre)) {
         return edoRepIterador;
+      }
+    }
+    return null;
+  }
+
+  Municipio getMpioPorNombre(String nombre) {
+    for(Municipio mpioIterador: this.mpiosVisibles){
+      if(mpioIterador.getNombre().equals(nombre)){
+        return mpioIterador;
       }
     }
     return null;
