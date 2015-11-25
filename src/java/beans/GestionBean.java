@@ -132,7 +132,7 @@ public class GestionBean implements Serializable {
     nueva.setCredito(vistaCreditoBean.getCreditoActual());
     Date fecha = new Date();
     nueva.setFecha(fecha);
-    nueva.setIdGestor(vistaCreditoBean.cuentasVistaBean.getIndexBean().getUsuario().getIdUsuario());
+    nueva.setUsuario(vistaCreditoBean.cuentasVistaBean.getIndexBean().getUsuario());
     boolean ok = gestionDAO.insertarGestion(nueva);
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {

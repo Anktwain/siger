@@ -1,50 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 19/11/2015 10:18:32 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 25/11/2015 11:44:50 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.Usuario" optimistic-lock="version" table="usuario">
-    <id name="idUsuario" type="java.lang.Integer">
-      <column name="id_usuario"/>
-      <generator class="identity"/>
-    </id>
-    <many-to-one class="dto.Despacho" fetch="select" name="despacho">
-      <column name="id_despacho" not-null="true"/>
-    </many-to-one>
-    <property name="nombre" type="string">
-      <column length="45" name="nombre" not-null="true"/>
-    </property>
-    <property name="paterno" type="string">
-      <column length="45" name="paterno" not-null="true"/>
-    </property>
-    <property name="materno" type="string">
-      <column length="45" name="materno"/>
-    </property>
-    <property name="nombreLogin" type="string">
-      <column length="20" name="nombre_login" not-null="true"/>
-    </property>
-    <property name="password" type="string">
-      <column length="45" name="password" not-null="true"/>
-    </property>
-    <property name="perfil" type="int">
-      <column name="perfil" not-null="true"/>
-    </property>
-    <property name="correo" type="string">
-      <column length="50" name="correo" not-null="true"/>
-    </property>
-    <property name="imagenPerfil" type="string">
-      <column length="30" name="imagen_perfil"/>
-    </property>
-    <set fetch="select" inverse="true" lazy="true" name="administrativos" table="administrativo">
-      <key>
-        <column name="id_usuario" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Administrativo"/>
-    </set>
-    <set fetch="select" inverse="true" lazy="true" name="gestors" table="gestor">
-      <key>
-        <column name="id_usuario" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Gestor"/>
-    </set>
-  </class>
+    <class name="dto.Usuario" table="usuario" catalog="sigerbd" optimistic-lock="version">
+        <id name="idUsuario" type="java.lang.Integer">
+            <column name="id_usuario" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="despacho" class="dto.Despacho" fetch="select">
+            <column name="id_despacho" not-null="true" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="nombre" length="45" not-null="true" />
+        </property>
+        <property name="paterno" type="string">
+            <column name="paterno" length="45" not-null="true" />
+        </property>
+        <property name="materno" type="string">
+            <column name="materno" length="45" />
+        </property>
+        <property name="nombreLogin" type="string">
+            <column name="nombre_login" length="20" not-null="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="password" length="45" not-null="true" />
+        </property>
+        <property name="perfil" type="int">
+            <column name="perfil" not-null="true" />
+        </property>
+        <property name="correo" type="string">
+            <column name="correo" length="50" not-null="true" />
+        </property>
+        <property name="imagenPerfil" type="string">
+            <column name="imagen_perfil" length="30" />
+        </property>
+        <set name="administrativos" table="administrativo" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" not-null="true" />
+            </key>
+            <one-to-many class="dto.Administrativo" />
+        </set>
+        <set name="gestors" table="gestor" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" not-null="true" />
+            </key>
+            <one-to-many class="dto.Gestor" />
+        </set>
+        <set name="gestions" table="gestion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" not-null="true" />
+            </key>
+            <one-to-many class="dto.Gestion" />
+        </set>
+    </class>
 </hibernate-mapping>

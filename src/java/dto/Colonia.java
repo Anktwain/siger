@@ -1,5 +1,5 @@
 package dto;
-// Generated 19/11/2015 10:18:31 AM by Hibernate Tools 4.3.1
+// Generated 25/11/2015 11:44:49 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -87,9 +87,9 @@ public class Colonia  implements java.io.Serializable {
         this.direccions = direccions;
     }
 
-  @Override
-  public String toString() {
-    return nombre;
-  }
+
+
 
 }
+
+

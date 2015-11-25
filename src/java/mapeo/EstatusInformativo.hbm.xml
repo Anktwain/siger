@@ -3,13 +3,13 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 25/11/2015 11:44:50 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.ConceptoDevolucion" table="concepto_devolucion" catalog="sigerbd" optimistic-lock="version">
-        <id name="idConceptoDevolucion" type="java.lang.Integer">
-            <column name="id_concepto_devolucion" />
+    <class name="dto.EstatusInformativo" table="estatus_informativo" catalog="sigerbd" optimistic-lock="version">
+        <id name="idEstatusInformativo" type="java.lang.Integer">
+            <column name="id_estatus_informativo" />
             <generator class="identity" />
         </id>
-        <property name="concepto" type="string">
-            <column name="concepto" length="50" not-null="true" />
+        <property name="estatus" type="string">
+            <column name="estatus" length="100" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>
