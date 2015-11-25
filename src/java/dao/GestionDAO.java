@@ -14,6 +14,6 @@ import dto.Gestion;
 public interface GestionDAO {
   
   public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho);
-  public Number calcularVisitasDomiciliariasPorGestor(int idGestor);
+  public Number calcularVisitasDomiciliariasPorGestor(int idusuario);
   public boolean insertarGestion(Gestion gestion);
 }

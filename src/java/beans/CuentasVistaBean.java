@@ -136,7 +136,7 @@ public class CuentasVistaBean implements Serializable{
   public void selectorDeVista() throws IOException{
     if(!creditoSeleccionado.isEmpty()){
     System.out.println("Se selecciono el credito: " + creditoSeleccionado.get(0).getNumeroCredito() + " . Se abre detalle credito");
-    FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
+    FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCredito.xhtml");
     }
     else{
       FacesContext contexto = FacesContext.getCurrentInstance();

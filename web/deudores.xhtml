@@ -19,18 +19,16 @@
               closable="false" resizable="false" showHeader="false" >
       <p:graphicImage library="img" name="loadingBarra.gif" />
     </p:dialog>
-
     <div id="overlay" class="transparent" style="display: none;"></div>
     <ui:include src="barraLateral.xhtml" />
     <ui:include src="barraSuperior.xhtml" />
-
     <div id="main-container">
       <div id="breadcrumb">
         <ul class="breadcrumb">
           <li>
             <i class="fa fa-home">
             </i>
-            <a href="panelAdministrativo.xhtml">Inicio</a>
+            <a href="#{indexBean.vista}">Inicio</a>
           </li>
           <li class="active">
             Deudores

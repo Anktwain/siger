@@ -158,7 +158,7 @@ public class ContactoIMPL implements ContactoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Cont> contactos = new ArrayList<>();
     List<Object[]> c;
-    String consulta = "SELECT s.nombre_razon_social, c.observaciones FROM contacto c join sujeto s WHERE c.id_sujeto = s.id_sujeto AND s.id_sujeto = " + idSujeto +";";
+    String consulta = "SELECT s.nombre_razon_social, c.observaciones FROM contacto c JOIN sujeto s WHERE s.id_sujeto = c.id_sujeto AND c.id_deudor = (SELECT id_deudor FROM deudor WHERE id_sujeto = " + idSujeto + ");";
     try {
       c = sesion.createSQLQuery(consulta).list();
       for (Object[] row : c) {

@@ -7,7 +7,6 @@ package impl;
 
 import dao.GestionDAO;
 import dto.Gestion;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import org.hibernate.HibernateException;
@@ -48,12 +47,12 @@ public class GestionIMPL implements GestionDAO {
   }
 
   @Override
-  public Number calcularVisitasDomiciliariasPorGestor(int idGestor) {
+  public Number calcularVisitasDomiciliariasPorGestor(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Number visitas;
     calcularFechas();
-    String consulta = "SELECT COUNT(*) FROM gestion WHERE tipo_gestion = 'VISITA DOMICILIARIA' AND fecha BETWEEN '2015-11-01' AND '2015-11-31' AND id_gestor = " + idGestor + " AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    String consulta = "SELECT COUNT(*) FROM gestion WHERE tipo_gestion = 'VISITA DOMICILIARIA' AND fecha BETWEEN '2015-11-01' AND '2015-11-31' AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
     try {
       visitas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
       Logs.log.info("Se ejecutó query: " + consulta);
@@ -89,13 +88,10 @@ public class GestionIMPL implements GestionDAO {
 
   private void calcularFechas() {
     Date date = new Date();
-    System.out.println("FECHA: " + date);
     Calendar cal = Calendar.getInstance();
     cal.setTime(date);
     int mes = cal.get(Calendar.MONTH) + 1;
-    System.out.println("MES: " + mes);
     int año = cal.get(Calendar.YEAR);
-    System.out.println("AÑO: " + año);
     switch (mes) {
       case 1:
         fechaInicio = año + "-0" + mes + "-01";
