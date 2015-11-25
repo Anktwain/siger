@@ -158,6 +158,52 @@ public class CreditoIMPL implements CreditoDAO {
     }
     return creditos;
   }
+
+  @Override
+  public List<String> barraBusquedaAdmin(String valor, int idDespacho) {
+    System.out.println("BARRA BUSQUEDA ADMIN");
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<String> resultados = new ArrayList();
+    List<Object[]> c;
+    String consulta = "SELECT c.numero_credito, s.nombre_razon_social FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN gestor g WHERE d.id_sujeto = s.id_sujeto AND g.id_gestor = c.id_gestor AND d.id_deudor = c.id_deudor AND des.id_despacho = " + idDespacho + " AND (c.numero_credito LIKE '%" + valor + "%' OR s.nombre_razon_social LIKE '%" + valor + "%');";
+    try {
+      c = sesion.createSQLQuery(consulta).list();
+      for (Object[] row : c) {
+        String cadena = row[1].toString() + " - " + row[0].toString();
+        resultados.add(cadena);
+      }
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      resultados = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return resultados;
+  }
+  
+  @Override
+  public List<String> barraBusquedaGestor(String valor, int idUsuario) {
+    System.out.println("BARRA BUSQUEDA GESTOR");
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<String> resultados = new ArrayList();
+    List<Object[]> c;
+    String consulta = "SELECT c.numero_credito, s.nombre_razon_social FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN gestor g WHERE d.id_sujeto = s.id_sujeto AND g.id_gestor = c.id_gestor AND g.id_gestor = (SELECT gx.id_gestor FROM gestor gx WHERE id_usuario = " + idUsuario + ") AND d.id_deudor = c.id_deudor AND c.id_gestor = 2 AND (c.numero_credito LIKE '%" + valor +"%' OR s.nombre_razon_social LIKE '%" + valor +"%');";
+    try {
+      c = sesion.createSQLQuery(consulta).list();
+      for (Object[] row : c) {
+        String cadena = row[1].toString() + " - " + row[0].toString();
+        resultados.add(cadena);
+      }
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      resultados = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return resultados;
+  }
   
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {

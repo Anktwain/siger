@@ -5,12 +5,15 @@
  */
 package dao;
 
+import dto.Gestion;
+
 /**
  *
  * @author Eduardo
  */
 public interface GestionDAO {
   
-  public Number calcularVisitasDomiciliarias();
-  public Number calcularVisitasDomiciliariasPorGestor(int idGestor);
+  public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho);
+  public Number calcularVisitasDomiciliariasPorGestor(int idusuario);
+  public boolean insertarGestion(Gestion gestion);
 }

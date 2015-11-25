@@ -23,6 +23,8 @@ public interface Gestiones {
   
   public static final List<String> ASUNTO = Arrays.asList("RECADO DE COBRO", "FALLECIDO", "ILOCALIZABLE", "PRISION", "CONVENIO CON INSTITUCION", "ACLARACIONES", "CONVENIOS", "POSITIVOS", "NEGATIVOS", "RECORDATORIO DE PAGOS", "COMPROBANTES");
   
+  public static final List<String> ASUNTO_CORPORATIVO = Arrays.asList("COMPROBANTES", "DIVERSOS IBR", "ESTATUS", "CORREO ELECTRONICO", "MENSAJE SMS", "LOCALIZACION");
+  
   public static final List<String> TIPO_SUJETOS = Arrays.asList("TITULAR", "DIRECTOS", "LATERALES", "LEGALES", "AMISTADES", "LABORALES", "REFERENCIAS");
   
   public static final List<String> SUJETOS_DIRECTOS = Arrays.asList("PADRE", "MADRE", "HIJO(A)", "ESPOSO(A)", "HERMANO(A)", "ABUELO(A)");

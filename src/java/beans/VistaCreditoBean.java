@@ -5,6 +5,7 @@
  */
 package beans;
 
+import dao.ContactoDAO;
 import dao.CreditoDAO;
 import dao.DireccionDAO;
 import dao.EmailDAO;
@@ -14,7 +15,9 @@ import dto.Credito;
 import dto.Direccion;
 import dto.Email;
 import dto.Telefono;
+import dto.tablas.Cont;
 import dto.tablas.Dir;
+import impl.ContactoIMPL;
 import impl.CreditoIMPL;
 import impl.DireccionIMPL;
 import impl.EmailIMPL;
@@ -62,9 +65,13 @@ public class VistaCreditoBean implements Serializable {
   private DireccionDAO direccionDAO;
   private TelefonoDAO telefonoDAO;
   private EmailDAO emailDAO;
+  private ContactoDAO contactoDAO;
   private List<Credito> creditosRelacionados;
   private List<Cred> credsRelacionados;
   private List<Dir> listaDirecciones;
+  private List<Telefono> listaTelefonos;
+  private List<Email> listaCorreos;
+  private List<Cont> listaContactos;
 
   public VistaCreditoBean() {
     creditoActualCred = new Cred();
@@ -73,6 +80,7 @@ public class VistaCreditoBean implements Serializable {
     direccionDAO = new DireccionIMPL();
     telefonoDAO = new TelefonoIMPL();
     emailDAO = new EmailIMPL();
+    contactoDAO = new ContactoIMPL();
     creditosRelacionados = new ArrayList();
     credsRelacionados = new ArrayList();
     listaDirecciones = new ArrayList();
@@ -153,6 +161,12 @@ public class VistaCreditoBean implements Serializable {
         credsRelacionados.add(c);
       }
     }
+    // OBTENEMOS LA LISTA DE TELEFONOS DEL DEUDOR
+    listaTelefonos = telefonoDAO.buscarPorSujeto(idSujeto);
+    // OBTENEMOS LA LISTA DE CORREOS ELECTRONICOS DEL DEUDOR
+    listaCorreos = emailDAO.buscarPorSujeto(idSujeto);
+    // OBTENEMOS LA LISTA DE CONTACTOS DEL DEUDOR
+    listaContactos = contactoDAO.buscarContactoPorSujeto(idSujeto);
   }
 
   // ***********************************************************************************************************************
@@ -357,6 +371,38 @@ public class VistaCreditoBean implements Serializable {
 
   public void setCredsRelacionados(List<Cred> credsRelacionados) {
     this.credsRelacionados = credsRelacionados;
+  }
+
+  public ContactoDAO getContactoDAO() {
+    return contactoDAO;
+  }
+
+  public void setContactoDAO(ContactoDAO contactoDAO) {
+    this.contactoDAO = contactoDAO;
+  }
+
+  public List<Telefono> getListaTelefonos() {
+    return listaTelefonos;
+  }
+
+  public void setListaTelefonos(List<Telefono> listaTelefonos) {
+    this.listaTelefonos = listaTelefonos;
+  }
+
+  public List<Email> getListaCorreos() {
+    return listaCorreos;
+  }
+
+  public void setListaCorreos(List<Email> listaCorreos) {
+    this.listaCorreos = listaCorreos;
+  }
+
+  public List<Cont> getListaContactos() {
+    return listaContactos;
+  }
+
+  public void setListaContactos(List<Cont> listaContactos) {
+    this.listaContactos = listaContactos;
   }
 
 }

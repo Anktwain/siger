@@ -69,7 +69,6 @@
             <br />
             <p:outputLabel value="#{vistaCreditoBean.correo}" />
             <br />
-            <br />
             <h:form>
               <p:commandButton value="Editar datos del deudor" />
             </h:form>
@@ -97,7 +96,7 @@
           <ui:include src="nuevaGestion.xhtml" />
           <hr />
           <h:form id="acordeonDetalleCredito">
-            <p:accordionPanel multiple="true" activeIndex="-1">
+            <p:accordionPanel multiple="true" activeIndex="-  1">
               <p:tab title="Datos de contacto">
                 <p:accordionPanel multiple="true" activeIndex="-1">
                   <p:tab title="Direcciones">
@@ -157,7 +156,7 @@
                   </p:tab>
                 </p:accordionPanel>
               </p:tab>
-              <p:tab title="Otros creditos del cliente">
+              <p:tab title="Otros creditos con adeudos">
                 <p:dataTable id="tablaCreditosRelacionados" var="c" value="#{vistaCreditoBean.credsRelacionados}" emptyMessage="No existen creditos relacionados." paginator="true" rows="15" paginatorPosition="bottom">
                   <p:column headerText="Credito" style="width:100px;" > 
                     <h:outputText value="#{c.numeroCredito}"/>
@@ -174,9 +173,7 @@
                 </p:dataTable>
               </p:tab>
               <p:tab title="Actualizaciones de este adeudo">
-                <h:panelGrid columns="2" cellpadding="10">
-                  <h:outputText value="After a break of more than 15 years..." />
-                </h:panelGrid>
+                  
               </p:tab>
             </p:accordionPanel>
           </h:form>

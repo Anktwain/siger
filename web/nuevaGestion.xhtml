@@ -10,7 +10,7 @@
   </h:head> 
   <body>
     <div class="clearfix">
-      <div class="pull-left"> 
+      <div class="pull-left">
         <h:form id="formNuevaGestion">
           <h4>Gestionar credito</h4>
           <br />
@@ -20,7 +20,7 @@
           <p:selectOneMenu id="tipoGestion" value="#{gestionBean.tipoSeleccionado}" style="width:200px">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaTipos}" />
-            <p:ajax update="dondeGestion" listener="#{gestionBean.preparaDonde()}" />
+            <p:ajax update="tipoGestion, dondeGestion, asuntoGestion, tipoSujetoGestion, sujetoGestion" listener="#{gestionBean.preparaDonde()}" />
           </p:selectOneMenu>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <strong>
@@ -55,7 +55,7 @@
           <p:selectOneMenu id="sujetoGestion" value="#{gestionBean.sujetoSeleccionado}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaSujetos}" />
-            <p:ajax update="estatusInformativoGestion" listener="#{gestionBean.preparaEstatus()}" />
+            <p:ajax update="estatusInformativoGestion" />
           </p:selectOneMenu>
           <br />
           <br />
@@ -73,10 +73,12 @@
             Gestion:
           </strong>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:inputTextarea rows="3" cols="100" />
+          <p:inputTextarea rows="3" cols="100" id="gestion" value="#{gestionBean.gestion}" >
+            <p:ajax event="keyup"/>
+          </p:inputTextarea>
           <br />
           <br />
-          <p:commandButton value="Enviar gestion" />
+          <p:commandButton value="Enviar gestion" actionListener="#{gestionBean.crearNuevaGestion()}" update="growl" />
         </h:form>
       </div>
     </div>

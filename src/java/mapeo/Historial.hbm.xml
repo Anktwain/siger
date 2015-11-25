@@ -1,20 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 19/11/2015 10:18:32 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 25/11/2015 11:44:50 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.Historial" optimistic-lock="version" table="historial">
-    <id name="idHistorial" type="java.lang.Integer">
-      <column name="id_historial"/>
-      <generator class="identity"/>
-    </id>
-    <many-to-one class="dto.Credito" fetch="select" name="credito">
-      <column name="id_credito" not-null="true"/>
-    </many-to-one>
-    <property name="fecha" type="date">
-      <column length="10" name="fecha" not-null="true"/>
-    </property>
-    <property name="evento" type="string">
-      <column length="200" name="evento" not-null="true"/>
-    </property>
-  </class>
+    <class name="dto.Historial" table="historial" catalog="sigerbd" optimistic-lock="version">
+        <id name="idHistorial" type="java.lang.Integer">
+            <column name="id_historial" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="credito" class="dto.Credito" fetch="select">
+            <column name="id_credito" not-null="true" />
+        </many-to-one>
+        <property name="fecha" type="date">
+            <column name="fecha" length="10" not-null="true" />
+        </property>
+        <property name="evento" type="string">
+            <column name="evento" length="200" not-null="true" />
+        </property>
+    </class>
 </hibernate-mapping>
