@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author Eduardo
  */
-public class Dev {
+public class Devolucions {
 
   private Date fecha;
   private String estatus;
@@ -21,7 +21,7 @@ public class Dev {
   private String solicitante;
   private String revisor;
 
-  public Dev() {
+  public Devolucions() {
   }
 
   public Date getFecha() {

@@ -10,13 +10,13 @@ import dao.CreditoDAO;
 import dao.DireccionDAO;
 import dao.EmailDAO;
 import dao.TelefonoDAO;
-import dto.tablas.Cred;
+import dto.tablas.Creditos;
 import dto.Credito;
 import dto.Direccion;
 import dto.Email;
 import dto.Telefono;
-import dto.tablas.Cont;
-import dto.tablas.Dir;
+import dto.tablas.Contactos;
+import dto.tablas.Direcciones;
 import impl.ContactoIMPL;
 import impl.CreditoIMPL;
 import impl.DireccionIMPL;
@@ -59,7 +59,7 @@ public class VistaCreditoBean implements Serializable {
   private String fvp;
   private String mensualidad;
   private String saldoVencido;
-  private Cred creditoActualCred;
+  private Creditos creditoActualCred;
   private Credito creditoActual;
   private CreditoDAO creditoDao;
   private DireccionDAO direccionDAO;
@@ -67,14 +67,14 @@ public class VistaCreditoBean implements Serializable {
   private EmailDAO emailDAO;
   private ContactoDAO contactoDAO;
   private List<Credito> creditosRelacionados;
-  private List<Cred> credsRelacionados;
-  private List<Dir> listaDirecciones;
+  private List<Creditos> credsRelacionados;
+  private List<Direcciones> listaDirecciones;
   private List<Telefono> listaTelefonos;
   private List<Email> listaCorreos;
-  private List<Cont> listaContactos;
+  private List<Contactos> listaContactos;
 
   public VistaCreditoBean() {
-    creditoActualCred = new Cred();
+    creditoActualCred = new Creditos();
     creditoActual = new Credito();
     creditoDao = new CreditoIMPL();
     direccionDAO = new DireccionIMPL();
@@ -133,7 +133,7 @@ public class VistaCreditoBean implements Serializable {
     System.out.println("TAMAÑO DE LA LISTA DE DIRECCIONES: " + tam);
     if (tam > 0) {
       for (int i = 0; i < tam; i++) {
-        Dir oneDirection = new Dir();
+        Direcciones oneDirection = new Direcciones();
         Direccion vieja = new Direccion();
         vieja = listaDireccionesSinNormalizar.get(i);
         oneDirection.setCalleNumero(vieja.getCalle());
@@ -150,7 +150,7 @@ public class VistaCreditoBean implements Serializable {
     System.out.println("TAMAÑO DE LA LISTA DE CREDITOS RELACIONADOS: " + tam);
     if (tam > 0) {
       for (int i = 0; i < tam; i++) {
-        Cred c = new Cred();
+        Creditos c = new Creditos();
         Credito viejo = new Credito();
         viejo = creditosRelacionados.get(i);
         c.setNumeroCredito(viejo.getNumeroCredito());
@@ -205,11 +205,11 @@ public class VistaCreditoBean implements Serializable {
     this.numeroCredito = numeroCredito;
   }
 
-  public Cred getCreditoActualCred() {
+  public Creditos getCreditoActualCred() {
     return creditoActualCred;
   }
 
-  public void setCreditoActualCred(Cred creditoActualCred) {
+  public void setCreditoActualCred(Creditos creditoActualCred) {
     this.creditoActualCred = creditoActualCred;
   }
 
@@ -357,19 +357,19 @@ public class VistaCreditoBean implements Serializable {
     this.creditosRelacionados = creditosRelacionados;
   }
 
-  public List<Dir> getListaDirecciones() {
+  public List<Direcciones> getListaDirecciones() {
     return listaDirecciones;
   }
 
-  public void setListaDirecciones(List<Dir> listaDirecciones) {
+  public void setListaDirecciones(List<Direcciones> listaDirecciones) {
     this.listaDirecciones = listaDirecciones;
   }
 
-  public List<Cred> getCredsRelacionados() {
+  public List<Creditos> getCredsRelacionados() {
     return credsRelacionados;
   }
 
-  public void setCredsRelacionados(List<Cred> credsRelacionados) {
+  public void setCredsRelacionados(List<Creditos> credsRelacionados) {
     this.credsRelacionados = credsRelacionados;
   }
 
@@ -397,11 +397,11 @@ public class VistaCreditoBean implements Serializable {
     this.listaCorreos = listaCorreos;
   }
 
-  public List<Cont> getListaContactos() {
+  public List<Contactos> getListaContactos() {
     return listaContactos;
   }
 
-  public void setListaContactos(List<Cont> listaContactos) {
+  public void setListaContactos(List<Contactos> listaContactos) {
     this.listaContactos = listaContactos;
   }
 

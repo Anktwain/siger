@@ -65,7 +65,7 @@
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:selectOneMenu id="estatusInformativoGestion" value="#{gestionBean.estatusSeleccionado}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
-            <f:selectItems value="#{gestionBean.listaEstatus}" />
+            <f:selectItems value="#{gestionBean.listaEstatus}"  var="e" itemLabel="#{e.estatus}" itemValue="#{e.estatus}"  />
           </p:selectOneMenu>
           <br />
           <br />
@@ -79,6 +79,8 @@
           <br />
           <br />
           <p:commandButton value="Enviar gestion" actionListener="#{gestionBean.crearNuevaGestion()}" update="growl" />
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:commandButton value="Limpiar campos" actionListener="#{gestionBean.limpiarCampos()}" />
         </h:form>
       </div>
     </div>

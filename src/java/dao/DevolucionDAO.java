@@ -5,7 +5,7 @@
  */
 package dao;
 
-import dto.tablas.Dev;
+import dto.tablas.Devolucions;
 import dto.Devolucion;
 import java.util.List;
 
@@ -15,11 +15,11 @@ import java.util.List;
  */
 public interface DevolucionDAO {
   
-  public List<Dev> retiradosBancoPorDespacho(int idDespacho);
+  public List<Devolucions> retiradosBancoPorDespacho(int idDespacho);
   
-  public List<Dev> bandejaDevolucionPorDespacho(int idDespacho);
+  public List<Devolucions> bandejaDevolucionPorDespacho(int idDespacho);
   
-  public List<Dev> devueltosPorDespacho(int idDespacho);
+  public List<Devolucions> devueltosPorDespacho(int idDespacho);
   
   public boolean insertar(Devolucion devolucion);
   

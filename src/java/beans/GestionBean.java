@@ -5,8 +5,11 @@
  */
 package beans;
 
+import dao.EstatusInformativoDAO;
 import dao.GestionDAO;
+import dto.EstatusInformativo;
 import dto.Gestion;
+import impl.EstatusInformativoIMPL;
 import impl.GestionIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,10 +17,8 @@ import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
-import javax.faces.application.ViewHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Gestiones;
@@ -41,7 +42,7 @@ public class GestionBean implements Serializable {
   private List<String> listaAsuntos;
   private List<String> listaTipoSujetos;
   private List<String> listaSujetos;
-  private List<String> listaEstatus;
+  private List<EstatusInformativo> listaEstatus;
   private final List<String> listaVacia;
   private String tipoSeleccionado;
   private String lugarSeleccionado;
@@ -51,6 +52,7 @@ public class GestionBean implements Serializable {
   private String estatusSeleccionado;
   private String gestion;
   private GestionDAO gestionDAO;
+  private EstatusInformativoDAO estatusInformativoDAO;
 
   // CONSTRUCTOR
   public GestionBean() {
@@ -62,8 +64,9 @@ public class GestionBean implements Serializable {
     listaEstatus = new ArrayList();
     listaVacia = new ArrayList();
     gestionDAO = new GestionIMPL();
+    estatusInformativoDAO = new EstatusInformativoIMPL();
     listaTipos = Gestiones.TIPO_GESTION;
-    listaEstatus = Gestiones.ESTATUS_INFORMATIVO;
+    listaEstatus = estatusInformativoDAO.buscarTodos();
   }
 
   public void preparaDonde() {
@@ -95,7 +98,6 @@ public class GestionBean implements Serializable {
   public void preparaSujetos() {
     switch (tipoSujetoSeleccionado) {
       case "TITULAR":
-        // TODO: SI EL TITULAR ES SELECCIONADO, LOS DEMAS COMBOS SE APENDEJAN
         listaSujetos = listaVacia;
         break;
       case "DIRECTOS":
@@ -143,7 +145,7 @@ public class GestionBean implements Serializable {
     }
   }
 
-  protected void limpiarCampos() {
+  public void limpiarCampos() {
     listaTipos = null;
     listaDonde = null;
     listaAsuntos = null;
@@ -239,11 +241,11 @@ public class GestionBean implements Serializable {
     this.sujetoSeleccionado = sujetoSeleccionado;
   }
 
-  public List<String> getListaEstatus() {
+  public List<EstatusInformativo> getListaEstatus() {
     return listaEstatus;
   }
 
-  public void setListaEstatus(List<String> listaEstatus) {
+  public void setListaEstatus(List<EstatusInformativo> listaEstatus) {
     this.listaEstatus = listaEstatus;
   }
 

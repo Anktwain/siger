@@ -9,7 +9,7 @@ package dto.tablas;
  *
  * @author Eduardo
  */
-public class Cred {
+public class Creditos {
   
   private String numeroCredito;
   private String nombreRazonSocial;
@@ -19,7 +19,7 @@ public class Cred {
   private float saldoVencido;
   private String gestorAsignado;
 
-  public Cred() {
+  public Creditos() {
   }
 
   public String getNumeroCredito() {

@@ -15,13 +15,43 @@
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-      <h1>
-        M&oacute;dulo de gestiones
-      </h1>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Gestiones
+          </li>
+        </ul>
+      </div>
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Gestiones</h3>
+          <span>Visualice rapidamente las gestiones que se han realizado en el despacho, filtre utilizando los diversos parametros para obtener un conjunto especifico de gestiones.</span>
+          <span>Obtenga reportes sobre las gestiones elaboradas.</span>
+        </div>
+      </div>
+      <hr />
+      <div class="clearfix">
+        <h:form id="formGestionesAdmin">
+          Gestor:
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:selectOneMenu id="listaGestoresGestiones" value="#{gestionesBean.gestorSeleccionado}" style="width:200px">
+            <f:selectItem itemLabel="Todos" itemValue="" />
+            <f:selectItems value="#{gestionesBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
+            <p:ajax update="tipoGestionGestiones" />
+          </p:selectOneMenu>
+          Tipo de gestion:
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:selectOneMenu id="tipoGestionGestiones" value="#{gestionesBean.tipoSeleccionado}" style="width:200px">
+            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItems value="#{gestionesBean.listaTipos}" />
+          </p:selectOneMenu>
+        </h:form>
+      </div>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />

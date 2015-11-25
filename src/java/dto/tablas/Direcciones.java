@@ -9,7 +9,7 @@ package dto.tablas;
  *
  * @author Eduardo
  */
-public class Dir {
+public class Direcciones {
   
   private String calleNumero;
   private String colonia;
@@ -17,7 +17,7 @@ public class Dir {
   private String municipio;
   private String estado;
 
-  public Dir() {
+  public Direcciones() {
   }
 
   public String getCalleNumero() {

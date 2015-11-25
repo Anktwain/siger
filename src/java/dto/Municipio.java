@@ -77,9 +77,9 @@ public class Municipio  implements java.io.Serializable {
         this.regions = regions;
     }
 
-
-
+  @Override
+  public String toString() {
+    return nombre;
+  }
 
 }
-
-
