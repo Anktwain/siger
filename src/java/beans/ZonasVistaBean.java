@@ -21,6 +21,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 /**
+ * Este bean maneja las variables que controlan los componentes asociados
+ * directamente con la vista. Los datos relacionados directamente con la zona se
+ * encuentran en la clase ZonaBean.
+ *
+ * Si se asigna al atributo eager el valor true y el bean tiene alcance
+ * ApplicationScoped, se instanciará el objeto <strong> al iniciar la aplicación
+ * </strong>, reemplazando la carga "lazy" que por defecto ocurre.
  *
  * @author Pablo
  */
@@ -120,11 +127,11 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onEstadosChange() {
-    System.out.println("|---------------------------------------------------------------------¬");
+    System.out.println("\n|---------------------------------------------------------------------¬");
     System.out.println("onEstadosChange().");
     System.out.println("Por seleccionar datos del estado:");
-    System.out.println("this.edoRepVisible.getNombre()" + this.edoRepVisible.getNombre());
-    System.out.println("this.edoRepVisible.getIdEstado()" + this.edoRepVisible.getIdEstado());
+    System.out.println("this.edoRepVisible.getNombre() = " + this.edoRepVisible.getNombre());
+    System.out.println("this.edoRepVisible.getIdEstado() = " + this.edoRepVisible.getIdEstado());
     System.out.println("L_____________________________________________________________________");
 
     this.mpiosDelEstadoRepSelec = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
@@ -180,8 +187,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onMpiosChange() {
-    System.out.println("onMpiosChange().");
-    System.out.println("\n|#################### Municipios seleccionados en total:");
+    System.out.println("\n|############# onMpiosChange(). Municipios seleccionados en total:");
     for (Municipio mpio : this.zona.getMpiosSeleccionados()) {
       System.out.println(mpio);
     }
@@ -206,16 +212,15 @@ public class ZonasVistaBean implements Serializable {
     }
     this.mpiosDeshabilitados = !this.switchMpios;
 
-    System.out.println("onMostrarMpiosChange(). - municipios " + (mpiosDeshabilitados == true ? "DEShabilitados" : "Habilitados."));
+    System.out.println("\nonMostrarMpiosChange(). - municipios " 
+            + (mpiosDeshabilitados == true ? "DEShabilitados" : "Habilitados."));
 
-    System.out.println("\n|#################### Municipios seleccionados del estadoRep actual:");
+    System.out.println("|#################### Municipios seleccionados del estadoRep actual:");
     for (Municipio mpio : this.mpiosDelEstadoRepSelec) {
       System.out.println(mpio);
     }
     System.out.println("|_#################### #################### ####################_|");
-    
-    System.out.println("(edoRepVisible.nombre, edoRepVisible.idEdo) = " + 
-            "(" + this.edoRepVisible.getNombre() + ", " + this.edoRepVisible.getIdEstado() + ")"); // linea de prueba
+
   }
 
   public void onMostrarColoniasChange() {
@@ -315,19 +320,19 @@ public class ZonasVistaBean implements Serializable {
 
   public void onAceptar() {
   }
-  
-  public EstadoRepublica getEdoRepPorId(int id){
-    for(EstadoRepublica edoRepIterador: this.estadosRep){
-      if(edoRepIterador.getIdEstado() == id){
+
+  public EstadoRepublica getEdoRepPorId(int id) {
+    for (EstadoRepublica edoRepIterador : this.estadosRep) {
+      if (edoRepIterador.getIdEstado() == id) {
         return edoRepIterador;
       }
     }
     return null;
   }
-  
-  public EstadoRepublica getEdoRepPorNombre(String nombre){
-    for(EstadoRepublica edoRepIterador: this.estadosRep){
-      if(edoRepIterador.getNombre().equals(nombre)){
+
+  public EstadoRepublica getEdoRepPorNombre(String nombre) {
+    for (EstadoRepublica edoRepIterador : this.estadosRep) {
+      if (edoRepIterador.getNombre().equals(nombre)) {
         return edoRepIterador;
       }
     }

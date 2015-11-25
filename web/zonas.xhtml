@@ -143,7 +143,6 @@
                                converter="edoRepConverter">
                 <p:ajax listener="#{zonasVistaBean.onEstadosChange}" 
                         update="growl,switchBtnMunicipio,apMunicipios,switchBtnColonia" />
-                <f:selectItem itemLabel="Selecciona el estado" noSelectionOption="true" />
                 <f:selectItems value="#{zonasVistaBean.estadosRep}" var="edoRep" itemValue="#{edoRep}"/>
                 <p:column>
                   <h:outputText value="#{edo.nombre}" />
@@ -166,13 +165,13 @@
                                 activeIndex="#{zonasVistaBean.acPanMpiosActiveIndex}">
                 <p:tab id="apMunicipiosTab0" title="Seleccione los municipios" 
                        disabled="#{zonasVistaBean.mpiosDeshabilitados}">
-                  <p:selectManyMenu id="listaMunicipio" class="dropDMpios"
-                                    filterMatchMode="contains" filter="true" showCheckbox="true" 
-                                    >
+                  <p:selectManyMenu id="listaMunicipio" class="dropDMpios" filter="true" 
+                                    filterMatchMode="contains" showCheckbox="true" >
                     <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="growl,listaMunicipio" />
-                    <f:selectItem itemLabel="Todos" itemValue="todos" />
+                    <f:selectItem itemLabel="Todos (${zonasVistaBean.mpiosDelEstadoRepSelec.size()})" 
+                                  itemValue="todos" noSelectionOption="true"/>
                     <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" 
-                                   var="mpio" itemLabel="#{mpio.nombre}"/>
+                                   var="mpio" itemLabel="${mpio.nombre}"/>
                   </p:selectManyMenu>
                 </p:tab>
               </p:accordionPanel>
