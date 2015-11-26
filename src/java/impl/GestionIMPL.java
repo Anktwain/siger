@@ -7,8 +7,12 @@ package impl;
 
 import dao.GestionDAO;
 import dto.Gestion;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -52,7 +56,7 @@ public class GestionIMPL implements GestionDAO {
     Transaction tx = sesion.beginTransaction();
     Number visitas;
     calcularFechas();
-    String consulta = "SELECT COUNT(*) FROM gestion WHERE tipo_gestion = 'VISITA DOMICILIARIA' AND fecha BETWEEN '2015-11-01' AND '2015-11-31' AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    String consulta = "SELECT COUNT(*) FROM gestion WHERE tipo_gestion = 'VISITA DOMICILIARIA' AND fecha BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' AND id_usuario = " + idUsuario + " AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
     try {
       visitas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
       Logs.log.info("Se ejecutó query: " + consulta);
@@ -84,6 +88,48 @@ public class GestionIMPL implements GestionDAO {
       cerrar(sesion);
     }
     return ok;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorGestor(int idGestor, Date fechaIni, Date fechaF, String tipoGestion) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaIni);
+    String f2 = df.format(fechaF);
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%';";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarTodosGestoresPorDespacho(Date fechaIni, Date fechaF, String tipoGestion) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaIni);
+    String f2 = df.format(fechaF);
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_usuario IN (SELECT id_usuario FROM gestor) AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%';";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
   }
 
   private void calcularFechas() {

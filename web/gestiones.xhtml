@@ -35,21 +35,39 @@
         </div>
       </div>
       <hr />
-      <div class="clearfix">
+      <div class="clearfix padding-md">
         <h:form id="formGestionesAdmin">
+          <h4 class="no-margin">Busqueda por gestor:</h4>
+          <br />
           Gestor:
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:selectOneMenu id="listaGestoresGestiones" value="#{gestionesBean.gestorSeleccionado}" style="width:200px">
-            <f:selectItem itemLabel="Todos" itemValue="" />
+            <f:selectItem itemLabel="Todos" itemValue="0" />
             <f:selectItems value="#{gestionesBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
-            <p:ajax update="tipoGestionGestiones" />
           </p:selectOneMenu>
+          &nbsp;&nbsp;&nbsp;&nbsp;
           Tipo de gestion:
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:selectOneMenu id="tipoGestionGestiones" value="#{gestionesBean.tipoSeleccionado}" style="width:200px">
-            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItem itemLabel="Todas" itemValue="" />
             <f:selectItems value="#{gestionesBean.listaTipos}" />
           </p:selectOneMenu>
+          <br />
+          <br />
+          <h4 class="no-margin">Busqueda por rango de fechas:</h4>
+          <br />
+          Fecha inicio:
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:calendar id="startDate" value="#{gestionesBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial." update="growl">
+            <p:ajax event="dateSelect" update="endDate" />
+          </p:calendar>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Fecha fin:
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:calendar id="endDate" value="#{gestionesBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." update="growl" />
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{gestionesBean.buscar()}" />
         </h:form>
       </div>
     </div><!-- /main-container -->
