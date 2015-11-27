@@ -12,11 +12,16 @@ import dto.Gestor;
 import impl.GestionIMPL;
 import impl.GestorIMPL;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 import util.constantes.Gestiones;
 
 /**
@@ -27,7 +32,9 @@ import util.constantes.Gestiones;
 @ViewScoped
 public class GestionesBean implements Serializable {
 
+  // VARIABLES DE CLASE
   private String tipoSeleccionado;
+  private String nombreArchivo;
   private Gestor gestorSeleccionado;
   private Date fechaInicio;
   private Date fechaFin;
@@ -38,6 +45,7 @@ public class GestionesBean implements Serializable {
   private GestionDAO gestionDAO;
 
   public GestionesBean() {
+    gestorSeleccionado = new Gestor();
     listaTipos = new ArrayList();
     listaGestores = new ArrayList();
     gestorDao = new GestorIMPL();
@@ -48,32 +56,48 @@ public class GestionesBean implements Serializable {
 
   // METODO QUE BUSCA TODAS LAS GESTIONES SEGUN PARAMETROS INGRESADOS
   public void buscar() {
-    System.out.println("ENTRO A LA FUNCION BUSCAR!!!");
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaInicio);
+    String f2 = df.format(fechaFin);
+    String tipo;
+    String gestor;
     if (tipoSeleccionado == null) {
-      System.out.println("TODAS LAS GESTIONES");
       tipoSeleccionado = "";
+      tipo = "Todas las gestiones";
     } else {
-      if (gestorSeleccionado.getIdGestor() == 0) {
-        System.out.println("TODOS LOS GESTORES");
-        listaGestiones = gestionDAO.buscarTodosGestoresPorDespacho(fechaInicio, fechaFin, tipoSeleccionado);
-        for (int i = 0; i < listaGestiones.size(); i++) {
-          System.out.println("GESTION " + (i+1) + ": " + listaGestiones.get(i).getGestion());
-        }
-        
-      } else {
-        System.out.println("GESTOR: " + gestorSeleccionado.getUsuario().getNombreLogin());
+      tipo = tipoSeleccionado;
+    }
+    if (gestorSeleccionado.getIdGestor() == 0) {
+      listaGestiones = gestionDAO.buscarTodosGestoresPorDespacho(fechaInicio, fechaFin, tipoSeleccionado);
+      nombreArchivo = "Gestiones-Todos los gestores-" + tipo + "-" + f1 + "-" + f2;
+    } else {
+
+      if (gestorSeleccionado != null) {
         listaGestiones = gestionDAO.buscarGestionesPorGestor(gestorSeleccionado.getIdGestor(), fechaInicio, fechaFin, tipoSeleccionado);
-        for (int i = 0; i < listaGestiones.size(); i++) {
-          System.out.println("GESTION " + (i+1) + ": " + listaGestiones.get(i).getGestion());
-        }
+        nombreArchivo = "Gestiones-" + gestorSeleccionado.getUsuario().getNombreLogin() + "-" + tipo + "-" + f1 + "-" + f2;
+      } else {
+        nombreArchivo = "Gestiones-Todos los gestores-" + tipo + "-" + f1 + "-" + f2;
       }
     }
   }
 
-  // ***********************************************************************************************************************
-  // ***********************************************************************************************************************
-  // ***********************************************************************************************************************
-  // GETTERS & SETTERS
+  // METODO QUE MANDA EL NOMBRE DEL ARCHIVO YA PRECARGADO. ADVIERTE SI NO HAY DATOS EN EL ARCHIVO
+  public String nombrarArchivo() {
+    if (listaGestiones == null) {
+      FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Alerta.", "Se ha exportado un archivo sin gestiones");
+      FacesContext.getCurrentInstance().addMessage(null, msg);
+      return "Sin gestiones";
+    } else {
+      FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se exportaron las gestiones correctamente.");
+      FacesContext.getCurrentInstance().addMessage(null, msg);
+      return nombreArchivo;
+    }
+  }
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
+// GETTERS & SETTERS
+
   public List<String> getListaTipos() {
     return listaTipos;
   }
@@ -144,6 +168,14 @@ public class GestionesBean implements Serializable {
 
   public void setGestionDAO(GestionDAO gestionDAO) {
     this.gestionDAO = gestionDAO;
+  }
+
+  public String getNombreArchivo() {
+    return nombreArchivo;
+  }
+
+  public void setNombreArchivo(String nombreArchivo) {
+    this.nombreArchivo = nombreArchivo;
   }
 
 }

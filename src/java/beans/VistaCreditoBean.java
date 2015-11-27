@@ -87,7 +87,7 @@ public class VistaCreditoBean implements Serializable {
     creditoActualCred = cuentasVistaBean.getCreditoSeleccionado().get(0);
     obtenerDatos();
   }
-
+  
   // METODO QUE OBTENDRA TODOS LOS DATOS PRIMARIOS SEGUN EL CREDITO SELECCIONADO EN LA VISTA cuentas.xhtml
   private void obtenerDatos() {
     // OBTIENE LA CADENA CON EL NUMERO DE CREDITO
@@ -100,10 +100,13 @@ public class VistaCreditoBean implements Serializable {
     nombreDeudor = creditoActualCred.getNombreRazonSocial();
     // OBTENER LA PRIMER DIRECCION DEL DEUDOR
     Direccion d = new Direccion();
+    try{
     d = direccionDAO.buscarPorSujeto(idSujeto).get(0);
     calleNumero = d.getCalle();
     coloniaMunicipio = d.getColonia().getNombre() + ", " + d.getMunicipio().getNombre();
     estadoCP = d.getEstadoRepublica().getNombre() + ", " + d.getColonia().getCodigoPostal();
+    } catch (Exception e) {
+    }
     // OBTENEMOS EL NUMERO DE CREDITOS PARA ESTE CLIENTE
     numeroCreditos = Integer.toString(creditoDao.buscarCreditosRelacionados(creditoActual).size() + 1);
     // OBTENEMOS LAS DIFERENTES FECHAS QUE SE REQUIEREN
@@ -122,7 +125,6 @@ public class VistaCreditoBean implements Serializable {
       fup = "";
       fvp = "";
     } catch (Exception e) {
-      System.out.println("No hay fechas relacionadas con este credito");
     }
     mensualidad = creditoActual.getMensualidad().toString();
     saldoVencido = "";
@@ -130,7 +132,6 @@ public class VistaCreditoBean implements Serializable {
     List<Direccion> listaDireccionesSinNormalizar = new ArrayList();
     listaDireccionesSinNormalizar = direccionDAO.buscarPorSujeto(idSujeto);
     int tam = listaDireccionesSinNormalizar.size();
-    System.out.println("TAMAÑO DE LA LISTA DE DIRECCIONES: " + tam);
     if (tam > 0) {
       for (int i = 0; i < tam; i++) {
         Direcciones oneDirection = new Direcciones();
@@ -147,7 +148,6 @@ public class VistaCreditoBean implements Serializable {
     // OBTENEMOS LA LISTA DE CREDITOS RELACIONADOS
     creditosRelacionados = creditoDao.buscarCreditosRelacionados(creditoActual);
     tam = creditosRelacionados.size();
-    System.out.println("TAMAÑO DE LA LISTA DE CREDITOS RELACIONADOS: " + tam);
     if (tam > 0) {
       for (int i = 0; i < tam; i++) {
         Creditos c = new Creditos();

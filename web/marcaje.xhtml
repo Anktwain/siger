@@ -10,16 +10,30 @@
     <title>SigerWeb - Marcaje</title>
   </h:head> 
   <body>
-    <!-- Overlay Div -->
-    <div id="overlay" class="transparent" style="display: none"></div>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
-    <div id="overlay" class="transparent"></div>
+    <div id="overlay" class="transparent" style="display: none"></div>
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-      <h1>        M&oacute;dulo de marcaje      </h1>
-      <h3>        En construcci&oacute;n      </h3>
+        <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Marcaje
+          </li>
+        </ul>
+      </div>
+      <h1>
+        M&oacute;dulo de marcaje
+      </h1>
+      <h3>
+        En construcci&oacute;n
+      </h3>
       <h:graphicImage library="img" name="construccion.png" />
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->

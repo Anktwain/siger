@@ -28,12 +28,10 @@ import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import org.primefaces.context.RequestContext;
 import util.constantes.Devoluciones;
-import util.constantes.Perfiles;
 
 /**
  *
@@ -41,7 +39,7 @@ import util.constantes.Perfiles;
  */
 @ManagedBean(name = "cuentasVistaBean")
 @SessionScoped
-public class CuentasVistaBean implements Serializable{
+public class CuentasVistaBean implements Serializable {
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -132,14 +130,12 @@ public class CuentasVistaBean implements Serializable{
       }
     }
   }
-  
-  public void selectorDeVista() throws IOException{
-    if(!creditoSeleccionado.isEmpty()){
-    System.out.println("Se selecciono el credito: " + creditoSeleccionado.get(0).getNumeroCredito() + " . Se abre detalle credito");
-    FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCredito.xhtml");
-    }
-    else{
-      FacesContext contexto = FacesContext.getCurrentInstance();
+
+  public void selectorDeVista() throws IOException {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    if (!creditoSeleccionado.isEmpty()) {
+      FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCredito.xhtml");
+    } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
     }
   }
@@ -270,9 +266,9 @@ public class CuentasVistaBean implements Serializable{
 
   public List<SelectItem> getListaConceptosVista() {
     listaConceptosVista = new ArrayList<>();
-      for (ConceptoDevolucion c : listaConceptos) {
-        listaConceptosVista.add(new SelectItem(c, c.getConcepto()));
-      }
+    for (ConceptoDevolucion c : listaConceptos) {
+      listaConceptosVista.add(new SelectItem(c, c.getConcepto()));
+    }
     return listaConceptosVista;
   }
 

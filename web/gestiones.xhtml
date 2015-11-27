@@ -10,6 +10,7 @@
     <title>SigerWeb - Gestiones</title>
   </h:head> 
   <body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
     <div id="overlay" class="transparent" style="display: none"></div>
     <ui:include src="barraSuperior.xhtml" />
@@ -37,37 +38,84 @@
       <hr />
       <div class="clearfix padding-md">
         <h:form id="formGestionesAdmin">
-          <h4 class="no-margin">Busqueda por gestor:</h4>
-          <br />
-          Gestor:
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:selectOneMenu id="listaGestoresGestiones" value="#{gestionesBean.gestorSeleccionado}" style="width:200px">
-            <f:selectItem itemLabel="Todos" itemValue="0" />
-            <f:selectItems value="#{gestionesBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
-          </p:selectOneMenu>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          Tipo de gestion:
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:selectOneMenu id="tipoGestionGestiones" value="#{gestionesBean.tipoSeleccionado}" style="width:200px">
-            <f:selectItem itemLabel="Todas" itemValue="" />
-            <f:selectItems value="#{gestionesBean.listaTipos}" />
-          </p:selectOneMenu>
-          <br />
-          <br />
-          <h4 class="no-margin">Busqueda por rango de fechas:</h4>
-          <br />
-          Fecha inicio:
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:calendar id="startDate" value="#{gestionesBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial." update="growl">
-            <p:ajax event="dateSelect" update="endDate" />
-          </p:calendar>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          Fecha fin:
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:calendar id="endDate" value="#{gestionesBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." update="growl" />
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{gestionesBean.buscar()}" />
+          <table>
+            <tr>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Gestor:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:selectOneMenu id="listaGestoresGestiones" value="#{gestionesBean.gestorSeleccionado.idGestor}" style="width:200px">
+                  <f:selectItem itemLabel="Todos" itemValue="0" />
+                  <f:selectItems value="#{gestionesBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
+                </p:selectOneMenu>
+              </td>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Tipo de gestion:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:selectOneMenu id="tipoGestionGestiones" value="#{gestionesBean.tipoSeleccionado}" style="width:200px">
+                  <f:selectItem itemLabel="Todas" itemValue="" />
+                  <f:selectItems value="#{gestionesBean.listaTipos}" />
+                </p:selectOneMenu>
+              </td>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Fecha inicio:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar id="startDate" value="#{gestionesBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial." update="growl">
+                  <p:ajax event="dateSelect" update="endDate" />
+                </p:calendar>
+              </td>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Fecha fin:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar id="endDate" value="#{gestionesBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." update="growl" />
+              </td>
+              <td>
+                <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{gestionesBean.buscar()}" update="growl, tablaGestiones" />
+              </td>
+            </tr>
+          </table>
+          <hr />
+          <p:dataTable id="tablaGestiones" var="g" value="#{gestionesBean.listaGestiones}" emptyMessage="No existen gestiones." paginator="true" rows="15" paginatorPosition="bottom">
+            <p:column>
+              <f:facet name="header">
+                <h:outputText value="Fecha" />
+              </f:facet>
+              <h:outputText value="#{g.fecha}"/>
+            </p:column>
+            <p:column>
+              <f:facet name="header">
+                <h:outputText value="Tipo Gestion" />
+              </f:facet>
+              <h:outputText value="#{g.tipoGestion}"/>
+            </p:column>
+            <p:column>
+              <f:facet name="header">
+                <h:outputText value="Asunto" />
+              </f:facet>
+              <h:outputText value="#{g.asuntoGestion}"/>
+            </p:column>
+            <p:column>
+              <f:facet name="header">
+                <h:outputText value="Gestion" />
+              </f:facet>
+              <h:outputText value="#{g.gestion}"/>
+            </p:column>
+            <f:facet name="footer">
+              Exportar a Excel
+              &nbsp;
+              <h:commandLink>
+                <p:graphicImage name="/img/iconos/excel.png" width="40"/>
+                <p:dataExporter type="xls" target="tablaGestiones" fileName="#{gestionesBean.nombrarArchivo()}" />
+              </h:commandLink>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              Exportar a PDF
+              &nbsp;
+              <h:commandLink>
+                <p:graphicImage name="/img/iconos/pdf.png" width="40"/>
+                <p:dataExporter type="pdf" target="tablaGestiones" fileName="#{gestionesBean.nombrarArchivo()}"/>
+              </h:commandLink>
+            </f:facet>
+          </p:dataTable>
         </h:form>
       </div>
     </div><!-- /main-container -->
