@@ -9,19 +9,16 @@ import dao.GestionDAO;
 import dao.GestorDAO;
 import dao.InstitucionDAO;
 import dao.ProductoDAO;
-import dao.SujetoDAO;
 import dao.UsuarioDAO;
 import dto.Gestion;
 import dto.Gestor;
 import dto.Institucion;
 import dto.Producto;
-import dto.Sujeto;
 import dto.Usuario;
 import impl.GestionIMPL;
 import impl.GestorIMPL;
 import impl.InstitucionIMPL;
 import impl.ProductoIMPL;
-import impl.SujetoIMPL;
 import impl.UsuarioIMPL;
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -49,7 +46,7 @@ public class GestionesBean implements Serializable {
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
   // VARIABLES DE CLASE
-  private int idDespacho;
+  private final int idDespacho;
   private boolean permitirExport;
   private boolean permitirBoton;
   private String tipoSeleccionado;
@@ -102,6 +99,8 @@ public class GestionesBean implements Serializable {
   // METODO QUE BUSCA TODAS LAS GESTIONES SEGUN PARAMETROS INGRESADOS
   public void buscar() {
     int idGestor = gestorSeleccionado.getIdGestor();
+    int idInstitucion = institucionSeleccionada.getIdInstitucion();
+    int idProducto = productoSeleccionado.getIdProducto();
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String f1 = df.format(fechaInicio);
     String f2 = df.format(fechaFin);
@@ -114,15 +113,18 @@ public class GestionesBean implements Serializable {
     } else {
       tipo = tipoSeleccionado;
     }
-    if (productoSeleccionado.getNombre() == null) {
-      producto = "";
+    if (idInstitucion == 0) {
+      institucion = "NULL";
     } else {
-      producto = productoSeleccionado.getNombre();
+      Institucion ins = institucionDao.buscar(idInstitucion);
+      institucion = ins.getNombreCorto();
     }
-    if (institucionSeleccionada.getNombreCorto() == null) {
-      institucion = "";
-    } else {
-      institucion = institucionSeleccionada.getNombreCorto();
+    if(idProducto == 0){
+      producto = "NULL";
+    }
+    else{
+      Producto prod = productoDao.buscar(idProducto);
+      producto = prod.getNombre();
     }
     if (idGestor == 0) {
       listaGestiones = gestionDao.buscarGestionesPorDespacho(idDespacho, fechaInicio, fechaFin, tipoSeleccionado, institucion, producto);
