@@ -98,19 +98,19 @@
           </div>
           <hr />
           <p:dataTable id="tablaGestiones" var="g" value="#{gestionesBean.listaGestiones}" emptyMessage="No existen gestiones." paginator="true" rows="10" paginatorPosition="bottom">
-            <p:column>
+            <p:column style="width: 200px;">
               <f:facet name="header">
                 <h:outputText value="Fecha" />
               </f:facet>
               <h:outputText value="#{g.fecha}"/>
             </p:column>
-            <p:column>
+            <p:column style="width: 300px;">
               <f:facet name="header">
                 <h:outputText value="Tipo Gestion" />
               </f:facet>
               <h:outputText value="#{g.tipoGestion}"/>
             </p:column>
-            <p:column>
+            <p:column  style="width: 300px;">
               <f:facet name="header">
                 <h:outputText value="Asunto" />
               </f:facet>
@@ -126,12 +126,12 @@
               <div align="right">
                 <h:commandLink>
                   <p:graphicImage name="/img/iconos/excel.png" width="40" rendered="#{gestionesBean.permitirExport}" />
-                  <p:dataExporter type="xls" target="tablaGestiones" fileName="#{gestionesBean.nombrarArchivo()}" />
+                  <p:dataExporter type="xls" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}" />
                 </h:commandLink>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <h:commandLink>
                   <p:graphicImage name="/img/iconos/pdf.png" width="40" rendered="#{gestionesBean.permitirExport}" />
-                  <p:dataExporter type="pdf" target="tablaGestiones" fileName="#{gestionesBean.nombrarArchivo()}"/>
+                  <p:dataExporter type="pdf" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}"/>
                 </h:commandLink>
               </div>
             </f:facet>

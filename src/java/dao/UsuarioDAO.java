@@ -83,4 +83,6 @@ public interface UsuarioDAO {
      * @return
      */
     public Usuario buscarCorreo(String correo);
+    
+    public Usuario buscarUsuarioPorIdGestor(int idGestor);
 }

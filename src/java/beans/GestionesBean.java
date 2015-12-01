@@ -9,14 +9,20 @@ import dao.GestionDAO;
 import dao.GestorDAO;
 import dao.InstitucionDAO;
 import dao.ProductoDAO;
+import dao.SujetoDAO;
+import dao.UsuarioDAO;
 import dto.Gestion;
 import dto.Gestor;
 import dto.Institucion;
 import dto.Producto;
+import dto.Sujeto;
+import dto.Usuario;
 import impl.GestionIMPL;
 import impl.GestorIMPL;
 import impl.InstitucionIMPL;
 import impl.ProductoIMPL;
+import impl.SujetoIMPL;
+import impl.UsuarioIMPL;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -54,6 +59,7 @@ public class GestionesBean implements Serializable {
   private Date fechaFin;
   private Producto productoSeleccionado;
   private Institucion institucionSeleccionada;
+  private Usuario usuario;
   private List<String> listaTipos;
   private List<Gestor> listaGestores;
   private List<Gestion> listaGestiones;
@@ -63,6 +69,7 @@ public class GestionesBean implements Serializable {
   private GestionDAO gestionDao;
   private ProductoDAO productoDao;
   private InstitucionDAO institucionDao;
+  private UsuarioDAO usuarioDao;
 
   public GestionesBean() {
     permitirExport = false;
@@ -71,6 +78,7 @@ public class GestionesBean implements Serializable {
     gestorSeleccionado = new Gestor();
     productoSeleccionado = new Producto();
     institucionSeleccionada = new Institucion();
+    usuario = new Usuario();
     listaGestiones = new ArrayList();
     listaTipos = new ArrayList();
     listaGestores = new ArrayList();
@@ -80,6 +88,7 @@ public class GestionesBean implements Serializable {
     gestionDao = new GestionIMPL();
     productoDao = new ProductoIMPL();
     institucionDao = new InstitucionIMPL();
+    usuarioDao = new UsuarioIMPL();
     listaGestores = gestorDao.buscarPorDespacho(idDespacho);
     listaTipos = Gestiones.TIPO_GESTION;
     listaInstituciones = institucionDao.buscarInstitucionesPorDespacho(idDespacho);
@@ -119,27 +128,16 @@ public class GestionesBean implements Serializable {
       listaGestiones = gestionDao.buscarGestionesPorDespacho(idDespacho, fechaInicio, fechaFin, tipoSeleccionado, institucion, producto);
       nombreArchivo = "Gestiones-Todos los gestores-" + tipo + "-" + producto + "-" + f1 + "-" + f2;
     } else {
+      usuario = usuarioDao.buscarUsuarioPorIdGestor(idGestor);
+      String nombreGestor = usuario.getNombre() + " " + usuario.getPaterno();
       listaGestiones = gestionDao.buscarGestionesPorGestor(idGestor, fechaInicio, fechaFin, tipoSeleccionado, institucion, producto);
-      nombreArchivo = "Gestiones-" + listaGestores.get(idGestor).toString() + "-" + tipo + "-" + producto + "-" + f1 + "-" + f2;
+      nombreArchivo = "Gestiones-" + nombreGestor + "-" + tipo + "-" + producto + "-" + f1 + "-" + f2;
     }
     if (!listaGestiones.isEmpty()) {
       permitirExport = true;
     }
     permitirBoton = true;
     RequestContext.getCurrentInstance().update("formGestionesAdmin");
-  }
-
-  // METODO QUE MANDA EL NOMBRE DEL ARCHIVO YA PRECARGADO. ADVIERTE SI NO HAY DATOS EN EL ARCHIVO
-  public String nombrarArchivo() {
-    if (listaGestiones.isEmpty()) {
-      FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Alerta.", "Se ha exportado un archivo sin gestiones");
-      FacesContext.getCurrentInstance().addMessage(null, msg);
-      return "Sin gestiones";
-    } else {
-      FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se exportaron las gestiones correctamente.");
-      FacesContext.getCurrentInstance().addMessage(null, msg);
-      return nombreArchivo;
-    }
   }
 
 // ***********************************************************************************************************************
@@ -304,6 +302,14 @@ public class GestionesBean implements Serializable {
 
   public void setPermitirBoton(boolean permitirBoton) {
     this.permitirBoton = permitirBoton;
+  }
+
+  public UsuarioDAO getUsuarioDao() {
+    return usuarioDao;
+  }
+
+  public void setUsuarioDao(UsuarioDAO usuarioDao) {
+    this.usuarioDao = usuarioDao;
   }
 
 }
