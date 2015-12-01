@@ -35,28 +35,30 @@
         </div>
       </div>
       <div class="panel panel-default">
-        <div class="padding-md">
-          <div class="col-sm-6 col-md-3">
-            <div class="panel-stat3 bg-danger">
-              <h3 class="m-top-none">Nueva empresa</h3>
-              <div id="botonazo">
-                <p:commandButton value="Agregar" class="btn btn-default" onclick="PF('dlgNuevaEmpresa').show();" />
+        <h:form>
+          <div class="padding-md">
+            <div class="col-sm-6 col-md-3">
+              <div class="panel-stat3 bg-danger">
+                <h3 class="m-top-none">Nueva empresa</h3>
+                <div id="botonazo">
+                  <p:commandButton value="Agregar" class="btn btn-default" onclick="PF('dlgNuevaEmpresa').show();" />
+                </div>
+                <div class="stat-icon">
+                  <i class="fa fa-plus fa-2x" />
+                </div>
               </div>
-              <div class="stat-icon">
-                <i class="fa fa-plus fa-2x" />
-              </div>
-            </div>
-            <div class="panel-stat3 bg-info">
-              <h3 class="m-top-none">Editar empresa</h3>
-              <div id="botonazo">
-                <p:commandButton value="Editar" class="btn btn-default" onclick="PF('dlgEditarEmpresa').show();" />
-              </div>
-              <div class="stat-icon">
-                <i class="fa fa-pencil fa-2x" />
+              <div class="panel-stat3 bg-info">
+                <h3 class="m-top-none">Editar empresa</h3>
+                <div id="botonazo">
+                  <p:commandButton value="Editar" class="btn btn-default" onclick="PF('dlgEditarEmpresa').show();" />
+                </div>
+                <div class="stat-icon">
+                  <i class="fa fa-pencil fa-2x" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </h:form>
       </div>
     </div><!-- /main-container -->
     <ui:include src="barraInferior.xhtml" /><!-- Footer -->
@@ -71,17 +73,17 @@
           <!-- FORMULARIO PARA REGISTRAR UNA NUEVA EMPRESA -->
           <h:outputText value="Razon Social:" />
           <br />
-          <p:inputText id="razon" value="#{vistaEmpresas.sujetoBean.nombreRazonSocial}" size="50" maxlenght="100" required="true" requiredMessage="Debe ingresar una razon social" />
+          <p:inputText id="razon" value="#{vistaInstituciones.sujetoBean.nombreRazonSocial}" size="50" maxlenght="100" required="true" requiredMessage="Debe ingresar una razon social" />
           <p:tooltip for="razon" value="Indique el nombre completo de la empresa incluyendo el tipo de sociedad de la que se trata" />
           <br />
           <h:outputText value="RFC:" />
           <br />
-          <p:inputText id="errefece" value="#{vistaEmpresas.sujetoBean.rfc}" size="12" maxlenght="12" required="true" requiredMessage="Debe ingresar un RFC" />
+          <p:inputText id="errefece" value="#{vistaInstituciones.sujetoBean.rfc}" size="12" maxlenght="12" required="true" requiredMessage="Debe ingresar un RFC" />
           <p:tooltip for="errefece" value="Indique la clave del Registro Federal de Contribuyentes" />
           <br />
           <h:outputText value="Nombre Corto:" />
           <br />
-          <p:inputText id="cortito" value="#{vistaEmpresas.empresaBean.nombreCorto}" size="20" maxlenght="25" required="true" requiredMessage="Debe ingresar un nombre corto para la empresa" />
+          <p:inputText id="cortito" value="#{vistaInstituciones.institucionBean.nombreCorto}" size="20" maxlenght="25" required="true" requiredMessage="Debe ingresar un nombre corto para la empresa" />
           <p:tooltip for="cortito" value="Indique un nombre clave para identificar a esta empresa" />
           <br />
           <!-- AREA DE BOTONES PARA AGREGAR DATOS ADICIONALES DE LA EMPRESA -->
@@ -96,22 +98,22 @@
             <p:overlayPanel id="pnlTelsEmpresa" for="btnTelsEmpresa" hideEffect="size" dynamic="true" style="width: 300px">
               Numero:
               <br />
-              <p:inputText id="numero" value="#{vistaEmpresas.telefonoBean.numero}" size="15" maxlenght="15" />
+              <p:inputText id="numero" value="#{vistaInstituciones.telefonoBean.numero}" size="15" maxlenght="15" />
               <p:tooltip for="numero" value="Indique el numero de la empresa sin clave lada" />
               <br />
               Tipo:
               <br />
-              <p:inputText id="tipo" value="#{vistaEmpresas.telefonoBean.tipo}" size="25" maxlenght="25" />
+              <p:inputText id="tipo" value="#{vistaInstituciones.telefonoBean.tipo}" size="25" maxlenght="25" />
               <p:tooltip for="tipo" value="Indique si es un numero de casa, oficina, etc." />
               <br />
               Clave Lada:
               <br />
-              <p:inputText id="lada" value="#{vistaEmpresas.telefonoBean.lada}" size="3" maxlenght="3" />
+              <p:inputText id="lada" value="#{vistaInstituciones.telefonoBean.lada}" size="3" maxlenght="3" />
               <p:tooltip for="lada" value="Indique la clave lada del telefono proporcionado" />
               <br />
               Horario de llamadas:
               <br />
-              <p:inputText id="hora" value="#{vistaEmpresas.telefonoBean.horario}" size="25" maxlenght="50" />
+              <p:inputText id="hora" value="#{vistaInstituciones.telefonoBean.horario}" size="25" maxlenght="50" />
               <p:tooltip for="hora" value="Indique un horario de atencion para realizar llamadas" />
             </p:overlayPanel>
           </p:commandButton>
@@ -121,7 +123,7 @@
             <p:overlayPanel id="pnlCorreoEmpresa" for="btnCorreoEmpresa" hideEffect="size" dynamic="true" style="width: 300px">
               Direccion de correo electronico:
               <br />
-              <p:inputText id="correo" value="#{vistaEmpresas.emailBean.direccion}" size="30" maxlenght="100" />
+              <p:inputText id="correo" value="#{vistaInstituciones.emailBean.direccion}" size="30" maxlenght="100" />
               <p:tooltip for="correo" value="Indique una direccion de correo electronico de la empresa" />
             </p:overlayPanel>
           </p:commandButton>
@@ -131,17 +133,17 @@
             <p:overlayPanel id="pnlContactosEmpresa" for="btnContactosEmpresa" hideEffect="size" dynamic="true" style="width: 300px">
               Nombre del contacto:
               <br />
-              <p:inputText id="nombreContacto" value="#{vistaEmpresas.sujetoBean.nombreRazonSocial}" size="30" maxlenght="100" />
+              <p:inputText id="nombreContacto" value="#{vistaInstituciones.sujetoBean.nombreRazonSocial}" size="30" maxlenght="100" />
               <p:tooltip for="nombreContacto" value="Indique el nombre del contacto" />
               <br />
               RFC:
               <br />
-              <p:inputText id="rfcContacto" value="#{vistaEmpresas.sujetoBean.rfc}" size="13" maxlenght="13" />
+              <p:inputText id="rfcContacto" value="#{vistaInstituciones.sujetoBean.rfc}" size="13" maxlenght="13" />
               <p:tooltip for="rfcContacto" value="Indique la clave del Registro Federal de Contribuyentes" />
               <br />
               Observaciones:
               <br />
-              <p:inputText id="obs" value="#{vistaEmpresas.contactoBean.observaciones}" size="30" maxlenght="50" />
+              <p:inputText id="obs" value="#{vistaInstituciones.contactoBean.observaciones}" size="30" maxlenght="50" />
               <p:tooltip for="obs" value="Agregue observaciones para este contacto (cargo, parentezco, etc...)" />
             </p:overlayPanel>
           </p:commandButton>
@@ -151,54 +153,54 @@
             <p:overlayPanel id="pnldireccionEmpresa" for="btnDireccionEmpresa" hideEffect="size" dynamic="true" style="width: 500px">
               Calle:
               <br />
-              <p:inputText id="calle" required="true" requiredMessage="Ingrese una calle" value="#{vistaEmpresas.calle}" size="50" maxlenght="50" />
+              <p:inputText id="calle" required="true" requiredMessage="Ingrese una calle" value="#{vistaInstituciones.calle}" size="50" maxlenght="50" />
               <p:tooltip for="calle" value="Indique la calle donde se ubica la empresa" />
               <br />
               <br />
               Numero Exterior:
               &nbsp;
-              <p:inputText id="ext" required="true" requiredMessage="Ingrese un numero exterior" value="#{vistaEmpresas.numext}" size="5" maxlenght="15" />
+              <p:inputText id="ext" required="true" requiredMessage="Ingrese un numero exterior" value="#{vistaInstituciones.numext}" size="5" maxlenght="15" />
               <p:tooltip for="ext" value="Indique el numero exterior de la empresa" />
               &nbsp;&nbsp;
               Numero Interior:
               &nbsp;
-              <p:inputText id="int" value="#{vistaEmpresas.numint}" size="10" maxlenght="20" />
+              <p:inputText id="int" value="#{vistaInstituciones.numint}" size="10" maxlenght="20" />
               <p:tooltip for="int" value="Indique el numero interior, edificio, local, etc. de la empresa" />
               <br />
               <br />
               Estado:
               &nbsp;
-              <p:selectOneMenu id="comboboxEdo" value="#{vistaEmpresas.direccionBean.estado.idEstado}" style="width: 250px" filter="true">
-                <p:ajax listener="#{vistaEmpresas.direccionBean.listarMunicipiosPorEstado()}" update="comboboxMpio,growl" />
+              <p:selectOneMenu id="comboboxEdo" value="#{vistaInstituciones.direccionBean.estado.idEstado}" style="width: 250px" filter="true">
+                <p:ajax listener="#{vistaInstituciones.direccionBean.listarMunicipiosPorEstado()}" update="comboboxMpio,growl" />
                 <f:selectItem itemLabel="Seleccione un estado" itemValue="" />
-                <f:selectItems value="#{vistaEmpresas.direccionBean.estados}" var="estado" itemLabel="#{estado}" itemValue="#{estado.idEstado}" />
+                <f:selectItems value="#{vistaDeudores.direccionBean.estados}" var="estado" itemLabel="#{estado}" itemValue="#{estado.idEstado}" />
               </p:selectOneMenu>
               <p:tooltip for="comboboxEdo" value="Indique en que estado de la republica se ubica la empresa" />
               <br />
               <br />
               Municipio:
               &nbsp;
-              <p:selectOneMenu id="comboboxMpio" value="#{vistaEmpresas.direccionBean.municipio.idMunicipio}" style="width: 250px" filter="true">
-                <p:ajax listener="#{vistaEmpresas.direccionBean.listarColoniasPorMunicipio()}" update="comboboxCol,growl" />
+              <p:selectOneMenu id="comboboxMpio" value="#{vistaInstituciones.direccionBean.municipio.idMunicipio}" style="width: 250px" filter="true">
+                <p:ajax listener="#{vistaInstituciones.direccionBean.listarColoniasPorMunicipio()}" update="comboboxCol,growl" />
                 <f:selectItem itemLabel="Seleccione un municipio o delegaci&oacute;n" itemValue="" />
-                <f:selectItems value="#{vistaEmpresas.direccionBean.municipios}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}" />
+                <f:selectItems value="#{vistaDeudores.direccionBean.municipios}" var="municipio" itemLabel="#{municipio}" itemValue="#{municipio.idMunicipio}" />
               </p:selectOneMenu>
               <p:tooltip for="comboboxMpio" value="Indique el municipio en el que se ubica la empresa" />
               <br />
               <br />
               Localidad:
               &nbsp;
-              <p:selectOneMenu id="comboboxCol" value="#{vistaEmpresas.direccionBean.colonia.idColonia}" style="width: 250px" filter="true">
-                <p:ajax listener="#{vistaEmpresas.direccionBean.agregarCP()}" update="growl" />
+              <p:selectOneMenu id="comboboxCol" value="#{vistaInstituciones.direccionBean.colonia.idColonia}" style="width: 250px" filter="true">
+                <p:ajax listener="#{vistaInstituciones.direccionBean.agregarCP()}" update="growl" />
                 <f:selectItem itemLabel="Seleccione una colonia" itemValue="" />
-                <f:selectItems value="#{vistaClientes.direccionBean.colonias}" var="colonia" itemLabel="#{colonia.nombre}" itemValue="#{colonia.idColonia}" />
+                <f:selectItems value="#{vistaDeudores.direccionBean.colonias}" var="colonia" itemLabel="#{colonia.nombre}" itemValue="#{colonia.idColonia}" />
               </p:selectOneMenu>
               <p:tooltip for="comboboxCol" value="Indique la colonia o localidad en el que se ubica la empresa" />
             </p:overlayPanel>
           </p:commandButton>
         </div>
         <div class="modal-footer" style="text-align: left;">
-          <p:commandButton id="creacion" value="Aceptar" actionListener="#{vistaEmpresas.crearEmpresa}" update="growl" />
+          <p:commandButton id="creacion" value="Aceptar" actionListener="#{vistaInstituciones.crearInstitucion}" update="growl" />
           <p:tooltip for="creacion" value="Click aqui para registrar a la empresa de manera definitiva" />
         </div>
       </h:form>
@@ -214,7 +216,7 @@
             <td>
               <h:form id="tablaEmpresas">
                 <!-- TABLA CON LAS EMPRESAS REGISTRADAS EN EL SISTEMA -->
-                <p:dataTable id="tablaListaEmpresas" var="sujeto" value="#{vistaEmpresas.listaEmpresas}" rowKey="#{sujeto.rfc}" selection="#{vistaEmpresas.sujetoSeleccionado}" selectionMode="single" paginator="true" rows="10" style="width: 500px; text-align: left;">
+                <p:dataTable id="tablaListaEmpresas" var="sujeto" value="#{vistaInstituciones.listaInstituciones}" rowKey="#{sujeto.rfc}" selection="#{vistaInstituciones.sujetoSeleccionado}" selectionMode="single" paginator="true" rows="10" style="width: 500px; text-align: left;">
                   <f:facet name="header">
                     Empresas registradas en el sistema
                   </f:facet>
@@ -225,7 +227,7 @@
                     <h:outputText value="#{sujeto.rfc}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
                   </p:column>
                   <f:facet name="footer">
-                    <p:commandButton process="tablaListaEmpresas" icon="ui-icon-pencil" value="Editar" actionListener="#{vistaEmpresas.cargarEmpresa()}" />
+                    <p:commandButton process="tablaListaEmpresas" icon="ui-icon-pencil" value="Editar" actionListener="#{vistaInstituciones.cargarInstitucion()}" />
                   </f:facet>
                 </p:dataTable>
               </h:form>
@@ -236,25 +238,25 @@
                 <div style="text-align: right;">
                   <h:outputText value="Razon Social:" />
                   <br />
-                  <p:inputText value="#{vistaEmpresas.sujetoBean.nombreRazonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
+                  <p:inputText value="#{vistaInstituciones.sujetoBean.nombreRazonSocial}" size="50" required="true" requiredMessage="Debe ingresar una razon social" />
                   <br />
                   <h:outputText value="RFC:" />
                   <br />
-                  <p:inputText value="#{vistaEmpresas.sujetoBean.rfc}" size="25" required="true" requiredMessage="Debe ingresar un RFC" />
+                  <p:inputText value="#{vistaInstituciones.sujetoBean.rfc}" size="25" required="true" requiredMessage="Debe ingresar un RFC" />
                   <br />
                   <h:outputText value="Nombre Corto:" />
                   <br />
-                  <p:inputText value="#{vistaEmpresas.empresaBean.nombreCorto}" size="25" required="true" requiredMessage="Debe ingresar un nombre corto de empresa" />
+                  <p:inputText value="#{vistaInstituciones.institucionBean.nombreCorto}" size="25" required="true" requiredMessage="Debe ingresar un nombre corto de empresa" />
                   <br />
                   <br />
-                  <p:commandButton value="Aceptar" actionListener="#{vistaEmpresas.editarEmpresa()}" update="growl" />
+                  <p:commandButton value="Aceptar" actionListener="#{vistaInstituciones.editarInstitucion()}" update="growl" />
                 </div>
               </h:form>
               <br />
               <!-- EDICION DE PRODUCTOS -->
               <h:form id="editaProductos">
                 <div style="text-align: right;">
-                  <p:dataTable id="tablaEditarProductos" var="producto" value="#{vistaEmpresas.productoBean.listaProductos}" rowKey="#{producto.idProducto}" selection="#{vistaEmpresas.productoSeleccionado}" selectionMode="single" paginator="true" rows="10" emptyMessage="No hay productos registrados." style="width: 620px;">
+                  <p:dataTable id="tablaEditarProductos" var="producto" value="#{vistaInstituciones.productoBean.listaProductos}" rowKey="#{producto.idProducto}" selection="#{vistaInstituciones.productoSeleccionado}" selectionMode="single" paginator="true" rows="10" emptyMessage="No hay productos registrados." style="width: 620px;">
                     <f:facet name="header">
                       Lista de productos
                     </f:facet>
@@ -265,7 +267,7 @@
                       <h:outputText value="#{producto.descripcion}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" />
                     </p:column>
                     <f:facet name="footer">
-                      <p:commandButton process="tablaEditarProductos" icon="ui-icon-pencil" value="Editar" actionListener="#{vistaEmpresas.guardarProducto()}" oncomplete="PF('modalProducto').show();" />
+                      <p:commandButton process="tablaEditarProductos" icon="ui-icon-pencil" value="Editar" actionListener="#{vistaInstituciones.guardarProducto()}" oncomplete="PF('modalProducto').show();" />
                       <p:commandButton process="tablaEditarProductos" icon="ui-icon-plus" value="Agregar" oncomplete="PF('nuevoProducto').show();" />
                     </f:facet>
                   </p:dataTable>
@@ -275,21 +277,6 @@
           </tr>
         </table>
       </div>
-      <div class="modal-footer">
-      </div>
     </p:dialog>
-
-
-
-
-
-
-    
-
-
-
-
-
-
   </h:body>
 </html>

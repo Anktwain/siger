@@ -44,7 +44,9 @@ public class GestionesBean implements Serializable {
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
   // VARIABLES DE CLASE
+  private int idDespacho;
   private boolean permitirExport;
+  private boolean permitirBoton;
   private String tipoSeleccionado;
   private String nombreArchivo;
   private Gestor gestorSeleccionado;
@@ -64,6 +66,8 @@ public class GestionesBean implements Serializable {
 
   public GestionesBean() {
     permitirExport = false;
+    permitirBoton = false;
+    idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
     gestorSeleccionado = new Gestor();
     productoSeleccionado = new Producto();
     institucionSeleccionada = new Institucion();
@@ -76,9 +80,9 @@ public class GestionesBean implements Serializable {
     gestionDao = new GestionIMPL();
     productoDao = new ProductoIMPL();
     institucionDao = new InstitucionIMPL();
-    listaGestores = gestorDao.buscarTodo();
+    listaGestores = gestorDao.buscarPorDespacho(idDespacho);
     listaTipos = Gestiones.TIPO_GESTION;
-    listaInstituciones = institucionDao.buscarInstitucionesPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
+    listaInstituciones = institucionDao.buscarInstitucionesPorDespacho(idDespacho);
   }
 
   // METODO QUE OBTIENE LA LISTA DE PRODUCTOS DE ACUERDO A LA INSTITUCION SELECCIONADA
@@ -88,30 +92,41 @@ public class GestionesBean implements Serializable {
 
   // METODO QUE BUSCA TODAS LAS GESTIONES SEGUN PARAMETROS INGRESADOS
   public void buscar() {
+    int idGestor = gestorSeleccionado.getIdGestor();
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String f1 = df.format(fechaInicio);
     String f2 = df.format(fechaFin);
     String tipo;
-    if (listaGestiones.isEmpty()) {
-      if (tipoSeleccionado == null) {
-        tipoSeleccionado = "";
-        tipo = "Todas las gestiones";
-      } else {
-        tipo = tipoSeleccionado;
-      }
-      if (gestorSeleccionado.getIdGestor() == 0) {
-        listaGestiones = gestionDao.buscarTodosGestoresPorDespacho(fechaInicio, fechaFin, tipoSeleccionado);
-        nombreArchivo = "Gestiones-Todos los gestores-" + tipo + "-" + f1 + "-" + f2;
-      } else {
-        listaGestiones = gestionDao.buscarGestionesPorGestor(gestorSeleccionado.getIdGestor(), fechaInicio, fechaFin, tipoSeleccionado);
-        nombreArchivo = "Gestiones-" + gestorSeleccionado.getUsuario().getNombreLogin() + "-" + tipo + "-" + f1 + "-" + f2;
-      }
-      permitirExport = true;
-      RequestContext.getCurrentInstance().update("tablaGestiones");
+    String producto;
+    String institucion;
+    if (tipoSeleccionado == null) {
+      tipoSeleccionado = "";
+      tipo = "Todas las gestiones";
     } else {
-      listaGestiones.clear();
-      buscar();
+      tipo = tipoSeleccionado;
     }
+    if (productoSeleccionado.getNombre() == null) {
+      producto = "";
+    } else {
+      producto = productoSeleccionado.getNombre();
+    }
+    if (institucionSeleccionada.getNombreCorto() == null) {
+      institucion = "";
+    } else {
+      institucion = institucionSeleccionada.getNombreCorto();
+    }
+    if (idGestor == 0) {
+      listaGestiones = gestionDao.buscarGestionesPorDespacho(idDespacho, fechaInicio, fechaFin, tipoSeleccionado, institucion, producto);
+      nombreArchivo = "Gestiones-Todos los gestores-" + tipo + "-" + producto + "-" + f1 + "-" + f2;
+    } else {
+      listaGestiones = gestionDao.buscarGestionesPorGestor(idGestor, fechaInicio, fechaFin, tipoSeleccionado, institucion, producto);
+      nombreArchivo = "Gestiones-" + listaGestores.get(idGestor).toString() + "-" + tipo + "-" + producto + "-" + f1 + "-" + f2;
+    }
+    if (!listaGestiones.isEmpty()) {
+      permitirExport = true;
+    }
+    permitirBoton = true;
+    RequestContext.getCurrentInstance().update("formGestionesAdmin");
   }
 
   // METODO QUE MANDA EL NOMBRE DEL ARCHIVO YA PRECARGADO. ADVIERTE SI NO HAY DATOS EN EL ARCHIVO
@@ -281,6 +296,14 @@ public class GestionesBean implements Serializable {
 
   public void setInstitucionDao(InstitucionDAO institucionDao) {
     this.institucionDao = institucionDao;
+  }
+
+  public boolean isPermitirBoton() {
+    return permitirBoton;
+  }
+
+  public void setPermitirBoton(boolean permitirBoton) {
+    this.permitirBoton = permitirBoton;
   }
 
 }

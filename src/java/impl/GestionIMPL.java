@@ -91,14 +91,14 @@ public class GestionIMPL implements GestionDAO {
   }
 
   @Override
-  public List<Gestion> buscarGestionesPorGestor(int idGestor, Date fechaIni, Date fechaF, String tipoGestion) {
+  public List<Gestion> buscarGestionesPorGestor(int idGestor, Date fechaIni, Date fechaF, String tipoGestion, String institucion, String producto) {
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String f1 = df.format(fechaIni);
     String f2 = df.format(fechaF);
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Gestion> gestiones = new ArrayList();
-    String consulta = "SELECT * FROM gestion WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%';";
+    String consulta = "SELECT * FROM gestion WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%' AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion IN (SELECT id_institucion FROM institucion WHERE nombre_corto LIKE '%" + institucion + "%') AND id_producto IN (SELECT id_producto FROM producto WHERE nombre LIKE '%" + producto + "%'));";
     try {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
       Logs.log.info("Se ejecutó query: " + consulta);
@@ -112,14 +112,14 @@ public class GestionIMPL implements GestionDAO {
   }
 
   @Override
-  public List<Gestion> buscarTodosGestoresPorDespacho(Date fechaIni, Date fechaF, String tipoGestion) {
+  public List<Gestion> buscarGestionesPorDespacho(int idDespacho, Date fechaIni, Date fechaF, String tipoGestion, String institucion, String producto) {
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String f1 = df.format(fechaIni);
     String f2 = df.format(fechaF);
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Gestion> gestiones = new ArrayList();
-    String consulta = "SELECT * FROM gestion WHERE id_usuario IN (SELECT id_usuario FROM gestor) AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%';";
+    String consulta = "SELECT * FROM gestion WHERE id_usuario IN (SELECT id_usuario FROM gestor) AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%' AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion IN (SELECT id_institucion FROM institucion WHERE nombre_corto LIKE '%" + institucion + "%') AND id_producto IN (SELECT id_producto FROM producto WHERE nombre LIKE '%" + producto + "%') AND id_despacho = " + idDespacho + ");";
     try {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
       Logs.log.info("Se ejecutó query: " + consulta);
