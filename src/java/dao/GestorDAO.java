@@ -23,4 +23,6 @@ public interface GestorDAO {
     public boolean insertar(Gestor gestor);
     
     public List<Gestor> buscarTodo();
+    
+    public List<Gestor> buscarPorDespacho(int idDespacho);
 }

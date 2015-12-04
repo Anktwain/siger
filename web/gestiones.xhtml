@@ -10,6 +10,7 @@
     <title>SigerWeb - Gestiones</title>
   </h:head> 
   <body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
     <div id="overlay" class="transparent" style="display: none"></div>
     <ui:include src="barraSuperior.xhtml" />
@@ -35,21 +36,106 @@
         </div>
       </div>
       <hr />
-      <div class="clearfix">
+      <div class="clearfix padding-md">
         <h:form id="formGestionesAdmin">
-          Gestor:
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:selectOneMenu id="listaGestoresGestiones" value="#{gestionesBean.gestorSeleccionado}" style="width:200px">
-            <f:selectItem itemLabel="Todos" itemValue="" />
-            <f:selectItems value="#{gestionesBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
-            <p:ajax update="tipoGestionGestiones" />
-          </p:selectOneMenu>
-          Tipo de gestion:
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:selectOneMenu id="tipoGestionGestiones" value="#{gestionesBean.tipoSeleccionado}" style="width:200px">
-            <f:selectItem itemLabel="" itemValue="" />
-            <f:selectItems value="#{gestionesBean.listaTipos}" />
-          </p:selectOneMenu>
+          <table>
+            <tr>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Gestor:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:selectOneMenu id="listaGestoresGestiones" value="#{gestionesBean.gestorSeleccionado.idGestor}" style="width:200px">
+                  <f:selectItem itemLabel="Todos" itemValue="0" />
+                  <f:selectItems value="#{gestionesBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
+                </p:selectOneMenu>
+              </td>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Tipo de gestion:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:selectOneMenu id="tipoGestionGestiones" value="#{gestionesBean.tipoSeleccionado}" style="width:200px">
+                  <f:selectItem itemLabel="Todas" itemValue="" />
+                  <f:selectItems value="#{gestionesBean.listaTipos}" />
+                </p:selectOneMenu>
+              </td>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Institucion:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:selectOneMenu id="listaInstitucionesGestiones" value="#{gestionesBean.institucionSeleccionada.idInstitucion}" style="width:200px">
+                  <f:selectItem itemLabel="Todas" itemValue="0" />
+                  <f:selectItems value="#{gestionesBean.listaInstituciones}" var="i" itemLabel="#{i.nombreCorto}" itemValue="#{i.idInstitucion}" />
+                  <p:ajax update="listaProductosGestiones" listener="#{gestionesBean.obtenerProductos()}" />
+                </p:selectOneMenu>
+              </td>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Producto:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:selectOneMenu id="listaProductosGestiones" value="#{gestionesBean.productoSeleccionado.idProducto}" style="width:300px">
+                  <f:selectItem itemLabel="Todos" itemValue="0" />
+                  <f:selectItems value="#{gestionesBean.listaProductos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idProducto}" />
+                </p:selectOneMenu>
+              </td>
+              <td style="padding: 20px;">
+                <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{gestionesBean.buscar()}" update="growl, tablaGestiones" />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Fecha inicio:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar id="startDate" value="#{gestionesBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial." update="growl">
+                  <p:ajax event="dateSelect" update="endDate" />
+                </p:calendar>
+              </td>
+              <td style="padding: 20px;">
+                <h4 class="no-margin">Fecha fin:</h4>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar id="endDate" value="#{gestionesBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." update="growl" />
+              </td>
+            </tr>
+          </table>
+          <br />
+          <div align="center">
+            <p:button value="Realizar otra busqueda" icon="ui-icon-search" outcome="gestiones" rendered="#{gestionesBean.permitirBoton}" />
+          </div>
+          <hr />
+          <p:dataTable id="tablaGestiones" var="g" value="#{gestionesBean.listaGestiones}" emptyMessage="No existen gestiones." paginator="true" rows="10" paginatorPosition="bottom">
+            <p:column>
+              <f:facet name="header">
+                <h:outputText value="Fecha" />
+              </f:facet>
+              <h:outputText value="#{g.fecha}"/>
+            </p:column>
+            <p:column>
+              <f:facet name="header">
+                <h:outputText value="Tipo Gestion" />
+              </f:facet>
+              <h:outputText value="#{g.tipoGestion}"/>
+            </p:column>
+            <p:column>
+              <f:facet name="header">
+                <h:outputText value="Asunto" />
+              </f:facet>
+              <h:outputText value="#{g.asuntoGestion}"/>
+            </p:column>
+            <p:column>
+              <f:facet name="header">
+                <h:outputText value="Gestion" />
+              </f:facet>
+              <h:outputText value="#{g.gestion}"/>
+            </p:column>
+            <f:facet name="footer">
+              <div align="right">
+                <h:commandLink>
+                  <p:graphicImage name="/img/iconos/excel.png" width="40" rendered="#{gestionesBean.permitirExport}" />
+                  <p:dataExporter type="xls" target="tablaGestiones" fileName="#{gestionesBean.nombrarArchivo()}" />
+                </h:commandLink>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <h:commandLink>
+                  <p:graphicImage name="/img/iconos/pdf.png" width="40" rendered="#{gestionesBean.permitirExport}" />
+                  <p:dataExporter type="pdf" target="tablaGestiones" fileName="#{gestionesBean.nombrarArchivo()}"/>
+                </h:commandLink>
+              </div>
+            </f:facet>
+          </p:dataTable>
         </h:form>
       </div>
     </div><!-- /main-container -->

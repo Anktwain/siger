@@ -29,13 +29,32 @@
           </li>
         </ul>
       </div>
-      <h1>
-        M&oacute;dulo de estatus informativo
-      </h1>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Estatus informativo</h3>
+          <span>Consulte la lista de conceptos para informar al banco.</span>
+          <span>Registre nuevos estatus.</span>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <h:form id="formEstatus">
+          <p:dataTable id="estatus" var="e" value="#{estatusInformativoBean.listaEstatus}" emptyMessage="No existen estatus informativos." paginator="true" rows="15" paginatorPosition="bottom" style="width:300px;">
+            <p:column headerText="Estatus informativo"> 
+              <h:outputText value="#{e.estatus}"/>
+            </p:column>
+            <f:facet name="footer">
+              <p:commandButton value="Nuevo" icon="ui-icon-plus" oncomplete="PF('dialogoNuevoEstatus').show();" />
+            </f:facet>
+          </p:dataTable>
+          <p:dialog id="nuevoEstatusdlg" widgetVar="dialogoNuevoEstatus" modal="true" header="Nuevo estatus">
+            <br />
+            <p:inputText value="#{estatusInformativoBean.nuevoEstatus}" />
+            <br />
+            <br />
+            <p:commandButton value="Nuevo" icon="ui-icon-plus" actionListener="#{estatusInformativoBean.crear()}"  update="growl, estatus" />
+          </p:dialog>
+        </h:form>
+      </div>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />

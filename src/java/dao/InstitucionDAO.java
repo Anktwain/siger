@@ -65,4 +65,6 @@ public interface InstitucionDAO {
     public Number calcularRecuperacionDeInstitucion();
     
     public Number calcularRecuperacionPorGestor(int idGestor);
+    
+    public List<Institucion> buscarInstitucionesPorDespacho(int idDespacho);
 }

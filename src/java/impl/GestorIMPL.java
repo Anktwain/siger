@@ -49,19 +49,8 @@ public class GestorIMPL implements GestorDAO {
     }
     return ok;
   }
-
-  /**
-   *
-   *
-   * @param
-   */
-  private void cerrar(Session sesion) {
-    if (sesion.isOpen()) {
-      sesion.close();
-    }
-  }
-
-  @Override
+  
+@Override
   public List<Gestor> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
@@ -75,7 +64,34 @@ public class GestorIMPL implements GestorDAO {
     } finally {
       cerrar(sesion);
     }
-
     return gestores;
   }
+
+  @Override
+  public List<Gestor> buscarPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    List<Gestor> gestores;
+    try {
+      gestores = sesion.createSQLQuery("SELECT u.*, g.* FROM usuario u JOIN gestor g ON u.id_usuario = g.id_usuario AND u.id_despacho = " + idDespacho + ";").addEntity(Gestor.class).list();
+    } catch (HibernateException he) {
+      gestores = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestores;
+  }
+  
+  /**
+   *
+   *
+   * @param
+   */
+  private void cerrar(Session sesion) {
+    if (sesion.isOpen()) {
+      sesion.close();
+    }
+  }
+  
 }
