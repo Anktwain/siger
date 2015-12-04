@@ -1,5 +1,6 @@
-package beans;
+package beans.convertidores;
 
+import beans.ZonasVistaBean;
 import dao.MunicipioDAO;
 import impl.MunicipioIMPL;
 import javax.faces.component.UIComponent;
@@ -20,7 +21,7 @@ public class MunicipioConverter implements Converter {
 
     if (string != null) {
       if (string.trim().length() > 0) {
-        System.out.println("\n_______________Por devolver el Municipio con el nombre " + string);
+        System.out.println("_______________Por devolver el Municipio con el nombre: " + string);
         return zonaVista.getMpioPorNombre(string);
       }
     }
@@ -31,7 +32,8 @@ public class MunicipioConverter implements Converter {
   public String getAsString(FacesContext fc, UIComponent uic, Object o) {
     if (o != null) {
       if(o.toString()!=null){
-        System.out.println("\n_______________Por devolver la cadena " + o.toString());
+        System.out.println("_______________Por devolver el String: " + o.toString()
+        + " desde un " + o.getClass());
         return o.toString();
       }
     }

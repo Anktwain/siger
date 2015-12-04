@@ -75,4 +75,11 @@ public interface Constantes {
   public static final String[] ZACÁTECAS = {"ZACATECAS"};
 
   public static final String[][] VARIACIONES_ESTADOS_REP = {};
+
+  /**
+   * Cadena para nombrar a las selecciones no definidas en los campos en los que
+   * se solicite un lugar.
+   */
+  public static final String LUGAR_SIN_SELECCION = "sinSeleccion";
+  public static final String LUGAR_SELECCION_COMPLETA = "todos";
 }
