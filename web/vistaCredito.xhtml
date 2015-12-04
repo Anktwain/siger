@@ -21,6 +21,9 @@
             </i>
             <a href="#{indexBean.vista}">Inicio</a>
           </li>
+          <li>
+            <a href="cuentas.xhtml">Cuentas</a>
+          </li>
           <li class="active">
             Detalle credito <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" />
           </li>
@@ -31,7 +34,7 @@
           <div class="pull-left">
             <div class="pull-left m-left-sm">
               <h3 class="m-bottom-xs m-top-xs">
-                <p:outputLabel value="#{vistaCreditoBean.nombreDeudor}" />
+                <p:outputLabel value="#{vistaCreditoBean.nombreDeudor}" style="font-size: 28px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               </h3>
             </div>
           </div>
@@ -43,38 +46,39 @@
             </h5>
           </div>
         </div>
-        <hr />
         <div class="clearfix">
           <div class="pull-left"> 
-            <h4>Informacion del deudor</h4>
+            <h4>Informacion del deudor:</h4>
             <strong>
               Direccion:
             </strong>
             <br />
-            <p:outputLabel value="#{vistaCreditoBean.calleNumero}" />
-            <br />
-            <p:outputLabel value="#{vistaCreditoBean.coloniaMunicipio}" />
-            <br />
-            <p:outputLabel value="#{vistaCreditoBean.estadoCP}" />
+            <p:outputLabel value="#{vistaCreditoBean.calleNumero}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;
+            <p:outputLabel value="#{vistaCreditoBean.coloniaMunicipio}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;
+            <p:outputLabel value="#{vistaCreditoBean.estadoCP}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
             <br />
             <strong>
               Telefono asociado al credito:
             </strong>
             <br />
-            <p:outputLabel value="#{vistaCreditoBean.telefono}" />
+            <p:outputLabel value="#{vistaCreditoBean.telefono}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
             <br />
             <strong>
               Correo electronico:
             </strong>
             <br />
-            <p:outputLabel value="#{vistaCreditoBean.correo}" />
+            <p:outputLabel value="#{vistaCreditoBean.correo}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
             <br />
             <h:form>
               <p:commandButton value="Editar datos del deudor" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Convenios de pago" oncomplete="PF('conveniosDialog').show();"  />
             </h:form>
           </div>
           <div class="pull-right text-right">
-            <h4>Informacion del credito</h4>
+            <h4>Informacion del credito:</h4>
             Numero de creditos: <p:outputLabel value="#{vistaCreditoBean.numeroCreditos}" />
             <br />
             Fecha de inicio: <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" />
@@ -93,10 +97,38 @@
         </div>
         <hr />
         <div class="clearfix">
-          <ui:include src="nuevaGestion.xhtml" />
-          <hr />
-          <h:form id="acordeonDetalleCredito">
+          <h:form id="DetalleCredito">
+            <ui:include src="nuevaGestion.xhtml" />
+            <hr />
             <p:accordionPanel multiple="true" activeIndex="-  1">
+              <p:tab title="Gestiones anteriores">
+                <p:dataTable id="tablaGestionesAnteriores" var="g" value="#{vistaCreditoBean.listaGestiones}" emptyMessage="No existen gestiones anteriores." paginator="true" rows="15" paginatorPosition="bottom">
+                  <p:column style="width: 200px;">
+                    <f:facet name="header">
+                      <h:outputText value="Fecha" />
+                    </f:facet>
+                    <h:outputText value="#{g.fecha}"/>
+                  </p:column>
+                  <p:column style="width: 300px;">
+                    <f:facet name="header">
+                      <h:outputText value="Tipo Gestion" />
+                    </f:facet>
+                    <h:outputText value="#{g.tipoGestion}"/>
+                  </p:column>
+                  <p:column  style="width: 300px;">
+                    <f:facet name="header">
+                      <h:outputText value="Asunto" />
+                    </f:facet>
+                    <h:outputText value="#{g.asuntoGestion}"/>
+                  </p:column>
+                  <p:column>
+                    <f:facet name="header">
+                      <h:outputText value="Gestion" />
+                    </f:facet>
+                    <h:outputText value="#{g.gestion}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:tab>
               <p:tab title="Datos de contacto">
                 <p:accordionPanel multiple="true" activeIndex="-1">
                   <p:tab title="Direcciones">
@@ -173,9 +205,22 @@
                 </p:dataTable>
               </p:tab>
               <p:tab title="Actualizaciones de este adeudo">
-                  
+                <!-- FAC POR, FAC MES, ETC... -->
+              </p:tab>
+              <p:tab title="Historial de este credito">
+                <p:dataTable id="tablaHistorialCredito" var="h" value="#{vistaCreditoBean.historial}" emptyMessage="El credito no cuenta con historial." paginator="true" rows="15" paginatorPosition="bottom">
+                  <p:column headerText="Fecha" style="width:150px;" > 
+                    <h:outputText value="#{h.fecha}"/>
+                  </p:column>
+                  <p:column headerText="Evento"> 
+                    <h:outputText value="#{h.evento}"/>
+                  </p:column>
+                </p:dataTable>
               </p:tab>
             </p:accordionPanel>
+            <p:dialog id="dialogoConvenios" widgetVar="conveniosDialog" modal="true" header="Convenios de pago">
+              No hay convenios actualmente.
+            </p:dialog>
           </h:form>
         </div>
       </div><!-- /.padding20 -->

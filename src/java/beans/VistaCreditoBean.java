@@ -9,11 +9,15 @@ import dao.ContactoDAO;
 import dao.CreditoDAO;
 import dao.DireccionDAO;
 import dao.EmailDAO;
+import dao.GestionDAO;
+import dao.HistorialDAO;
 import dao.TelefonoDAO;
 import dto.tablas.Creditos;
 import dto.Credito;
 import dto.Direccion;
 import dto.Email;
+import dto.Gestion;
+import dto.Historial;
 import dto.Telefono;
 import dto.tablas.Contactos;
 import dto.tablas.Direcciones;
@@ -21,6 +25,8 @@ import impl.ContactoIMPL;
 import impl.CreditoIMPL;
 import impl.DireccionIMPL;
 import impl.EmailIMPL;
+import impl.GestionIMPL;
+import impl.HistorialIMPL;
 import impl.TelefonoIMPL;
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -31,6 +37,7 @@ import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import util.constantes.Perfiles;
 
 /**
  *
@@ -42,6 +49,7 @@ public class VistaCreditoBean implements Serializable {
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+  IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
   CuentasVistaBean cuentasVistaBean = (CuentasVistaBean) elContext.getELResolver().getValue(elContext, null, "cuentasVistaBean");
 
   // VARIABLES DE CLASE
@@ -66,12 +74,16 @@ public class VistaCreditoBean implements Serializable {
   private TelefonoDAO telefonoDAO;
   private EmailDAO emailDAO;
   private ContactoDAO contactoDAO;
+  private HistorialDAO historialDao;
+  private GestionDAO gestionDao;
+  private List<Gestion> listaGestiones;
   private List<Credito> creditosRelacionados;
   private List<Creditos> credsRelacionados;
   private List<Direcciones> listaDirecciones;
   private List<Telefono> listaTelefonos;
   private List<Email> listaCorreos;
   private List<Contactos> listaContactos;
+  private List<Historial> historial;
 
   public VistaCreditoBean() {
     creditoActualCred = new Creditos();
@@ -81,9 +93,13 @@ public class VistaCreditoBean implements Serializable {
     telefonoDAO = new TelefonoIMPL();
     emailDAO = new EmailIMPL();
     contactoDAO = new ContactoIMPL();
+    historialDao = new HistorialIMPL();
+    gestionDao = new GestionIMPL();
     creditosRelacionados = new ArrayList();
     credsRelacionados = new ArrayList();
     listaDirecciones = new ArrayList();
+    historial = new ArrayList();
+    listaGestiones = new ArrayList();
     creditoActualCred = cuentasVistaBean.getCreditoSeleccionado().get(0);
     obtenerDatos();
   }
@@ -99,12 +115,12 @@ public class VistaCreditoBean implements Serializable {
     // OBTIENE LA CADENA CON EL NOMBRE DEL DEUDOR
     nombreDeudor = creditoActualCred.getNombreRazonSocial();
     // OBTENER LA PRIMER DIRECCION DEL DEUDOR
-    Direccion d = new Direccion();
+    Direccion d;
     try{
     d = direccionDAO.buscarPorSujeto(idSujeto).get(0);
-    calleNumero = d.getCalle();
-    coloniaMunicipio = d.getColonia().getNombre() + ", " + d.getMunicipio().getNombre();
-    estadoCP = d.getEstadoRepublica().getNombre() + ", " + d.getColonia().getCodigoPostal();
+    calleNumero = d.getCalle() + ",";
+    coloniaMunicipio = d.getColonia().getNombre() + ",  " + d.getMunicipio().getNombre() + ",";
+    estadoCP = d.getEstadoRepublica().getNombre() + ",  C.P. " + d.getColonia().getCodigoPostal();
     } catch (Exception e) {
     }
     // OBTENEMOS EL NUMERO DE CREDITOS PARA ESTE CLIENTE
@@ -112,11 +128,11 @@ public class VistaCreditoBean implements Serializable {
     // OBTENEMOS LAS DIFERENTES FECHAS QUE SE REQUIEREN
     try {
       // OBTENER EL PRIMER TELEFONO DEL DEUDOR
-      Telefono tel = new Telefono();
+      Telefono tel;
       tel = telefonoDAO.buscarPorSujeto(idSujeto).get(0);
       telefono = "(" + tel.getLada() + ") " + tel.getNumero();
       // OBTENER EL PRIMER CORREO DEL DEUDOR
-      Email mail = new Email();
+      Email mail;
       mail = emailDAO.buscarPorSujeto(idSujeto).get(0);
       correo = mail.getDireccion();
       DateFormat df = new SimpleDateFormat("dd de MM del yyyy");
@@ -128,14 +144,23 @@ public class VistaCreditoBean implements Serializable {
     }
     mensualidad = creditoActual.getMensualidad().toString();
     saldoVencido = "";
+    // OBTENEMOS LA LISTA DE GESTIONES PREVIAS
+    int idCredito = creditoActual.getIdCredito();
+    if(indexBean.getUsuario().getPerfil() == Perfiles.GESTOR){
+      int idUsuario = indexBean.getUsuario().getIdUsuario();
+      listaGestiones = gestionDao.buscarGestionesCreditoGestor(idUsuario, idCredito);
+    }
+    else{
+      listaGestiones = gestionDao.buscarGestionesCredito(idCredito);
+    }
     // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
-    List<Direccion> listaDireccionesSinNormalizar = new ArrayList();
+    List<Direccion> listaDireccionesSinNormalizar;
     listaDireccionesSinNormalizar = direccionDAO.buscarPorSujeto(idSujeto);
     int tam = listaDireccionesSinNormalizar.size();
     if (tam > 0) {
       for (int i = 0; i < tam; i++) {
         Direcciones oneDirection = new Direcciones();
-        Direccion vieja = new Direccion();
+        Direccion vieja;
         vieja = listaDireccionesSinNormalizar.get(i);
         oneDirection.setCalleNumero(vieja.getCalle());
         oneDirection.setColonia(vieja.getColonia().getNombre());
@@ -151,7 +176,7 @@ public class VistaCreditoBean implements Serializable {
     if (tam > 0) {
       for (int i = 0; i < tam; i++) {
         Creditos c = new Creditos();
-        Credito viejo = new Credito();
+        Credito viejo;
         viejo = creditosRelacionados.get(i);
         c.setNumeroCredito(viejo.getNumeroCredito());
         // CUANDO SE DEFINAN LOS TIPOS DE CREDITOS, SE QUITARA LA ASIGNACION DIRECTA
@@ -167,6 +192,8 @@ public class VistaCreditoBean implements Serializable {
     listaCorreos = emailDAO.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CONTACTOS DEL DEUDOR
     listaContactos = contactoDAO.buscarContactoPorSujeto(idSujeto);
+    // OBTENEMOS EL HISTORIAL DEL CREDITO
+    historial = historialDao.buscarHistorialPorIdCredito(creditoActual.getIdCredito());
   }
 
   // ***********************************************************************************************************************
@@ -403,6 +430,46 @@ public class VistaCreditoBean implements Serializable {
 
   public void setListaContactos(List<Contactos> listaContactos) {
     this.listaContactos = listaContactos;
+  }
+
+  public HistorialDAO getHistorialDao() {
+    return historialDao;
+  }
+
+  public void setHistorialDao(HistorialDAO historialDao) {
+    this.historialDao = historialDao;
+  }
+
+  public List<Historial> getHistorial() {
+    return historial;
+  }
+
+  public void setHistorial(List<Historial> historial) {
+    this.historial = historial;
+  }
+
+  public IndexBean getIndexBean() {
+    return indexBean;
+  }
+
+  public void setIndexBean(IndexBean indexBean) {
+    this.indexBean = indexBean;
+  }
+
+  public GestionDAO getGestionDao() {
+    return gestionDao;
+  }
+
+  public void setGestionDao(GestionDAO gestionDao) {
+    this.gestionDao = gestionDao;
+  }
+
+  public List<Gestion> getListaGestiones() {
+    return listaGestiones;
+  }
+
+  public void setListaGestiones(List<Gestion> listaGestiones) {
+    this.listaGestiones = listaGestiones;
   }
 
 }

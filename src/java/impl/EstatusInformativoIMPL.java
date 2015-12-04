@@ -59,6 +59,23 @@ public class EstatusInformativoIMPL implements EstatusInformativoDAO {
     }
     return ok;
   }
+
+  @Override
+  public EstatusInformativo buscar(int idEstatus) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    EstatusInformativo ei = new EstatusInformativo();
+    String consulta = "SELECT * FROM estatus_informativo WHERE id_estatus_informativo = " + idEstatus + ";";
+    try {
+      ei = (EstatusInformativo) sesion.createSQLQuery(consulta).addEntity(EstatusInformativo.class).uniqueResult();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      ei = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return ei;
+  }
   
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {

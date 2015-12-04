@@ -1,5 +1,5 @@
 package dto;
-// Generated 25/11/2015 11:44:49 AM by Hibernate Tools 4.3.1
+// Generated 2/12/2015 01:29:58 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -12,6 +12,7 @@ public class Gestion  implements java.io.Serializable {
 
      private Integer idGestion;
      private Credito credito;
+     private EstatusInformativo estatusInformativo;
      private Usuario usuario;
      private Date fecha;
      private String tipoGestion;
@@ -20,26 +21,14 @@ public class Gestion  implements java.io.Serializable {
      private String descripcionGestion;
      private String tipoSujetoGestion;
      private String sujetoGestion;
-     private String informacionInstitucion;
      private String gestion;
 
     public Gestion() {
     }
 
-	
-    public Gestion(Credito credito, Usuario usuario, String tipoGestion, String lugarGestion, String asuntoGestion, String descripcionGestion, String tipoSujetoGestion, String sujetoGestion, String informacionInstitucion) {
-        this.credito = credito;
-        this.usuario = usuario;
-        this.tipoGestion = tipoGestion;
-        this.lugarGestion = lugarGestion;
-        this.asuntoGestion = asuntoGestion;
-        this.descripcionGestion = descripcionGestion;
-        this.tipoSujetoGestion = tipoSujetoGestion;
-        this.sujetoGestion = sujetoGestion;
-        this.informacionInstitucion = informacionInstitucion;
-    }
-    public Gestion(Credito credito, Usuario usuario, Date fecha, String tipoGestion, String lugarGestion, String asuntoGestion, String descripcionGestion, String tipoSujetoGestion, String sujetoGestion, String informacionInstitucion, String gestion) {
+    public Gestion(Credito credito, EstatusInformativo estatusInformativo, Usuario usuario, Date fecha, String tipoGestion, String lugarGestion, String asuntoGestion, String descripcionGestion, String tipoSujetoGestion, String sujetoGestion, String gestion) {
        this.credito = credito;
+       this.estatusInformativo = estatusInformativo;
        this.usuario = usuario;
        this.fecha = fecha;
        this.tipoGestion = tipoGestion;
@@ -48,7 +37,6 @@ public class Gestion  implements java.io.Serializable {
        this.descripcionGestion = descripcionGestion;
        this.tipoSujetoGestion = tipoSujetoGestion;
        this.sujetoGestion = sujetoGestion;
-       this.informacionInstitucion = informacionInstitucion;
        this.gestion = gestion;
     }
    
@@ -65,6 +53,13 @@ public class Gestion  implements java.io.Serializable {
     
     public void setCredito(Credito credito) {
         this.credito = credito;
+    }
+    public EstatusInformativo getEstatusInformativo() {
+        return this.estatusInformativo;
+    }
+    
+    public void setEstatusInformativo(EstatusInformativo estatusInformativo) {
+        this.estatusInformativo = estatusInformativo;
     }
     public Usuario getUsuario() {
         return this.usuario;
@@ -121,13 +116,6 @@ public class Gestion  implements java.io.Serializable {
     
     public void setSujetoGestion(String sujetoGestion) {
         this.sujetoGestion = sujetoGestion;
-    }
-    public String getInformacionInstitucion() {
-        return this.informacionInstitucion;
-    }
-    
-    public void setInformacionInstitucion(String informacionInstitucion) {
-        this.informacionInstitucion = informacionInstitucion;
     }
     public String getGestion() {
         return this.gestion;

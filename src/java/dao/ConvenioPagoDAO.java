@@ -5,17 +5,15 @@
  */
 package dao;
 
-import dto.Historial;
+import dto.ConvenioPago;
 import java.util.List;
 
 /**
  *
  * @author Eduardo
  */
-public interface HistorialDAO {
+public interface ConvenioPagoDAO {
   
-  public boolean insertarHistorial(int idCredito, String evento);
-  
-  public List<Historial> buscarHistorialPorIdCredito(int idCredito);
-    
+  public List<ConvenioPago> buscarConveniosPorCredito(int idCredito);
+	
 }

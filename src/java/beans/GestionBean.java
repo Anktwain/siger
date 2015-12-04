@@ -49,10 +49,10 @@ public class GestionBean implements Serializable {
   private String asuntoSeleccionado;
   private String tipoSujetoSeleccionado;
   private String sujetoSeleccionado;
-  private String estatusSeleccionado;
+  private EstatusInformativo estatusSeleccionado;
   private String gestion;
-  private GestionDAO gestionDAO;
-  private EstatusInformativoDAO estatusInformativoDAO;
+  private GestionDAO gestionDao;
+  private EstatusInformativoDAO estatusInformativoDao;
 
   // CONSTRUCTOR
   public GestionBean() {
@@ -63,10 +63,11 @@ public class GestionBean implements Serializable {
     listaSujetos = new ArrayList();
     listaEstatus = new ArrayList();
     listaVacia = new ArrayList();
-    gestionDAO = new GestionIMPL();
-    estatusInformativoDAO = new EstatusInformativoIMPL();
+    gestionDao = new GestionIMPL();
+    estatusSeleccionado = new EstatusInformativo();
+    estatusInformativoDao = new EstatusInformativoIMPL();
     listaTipos = Gestiones.TIPO_GESTION;
-    listaEstatus = estatusInformativoDAO.buscarTodos();
+    listaEstatus = estatusInformativoDao.buscarTodos();
   }
 
   public void preparaDonde() {
@@ -129,13 +130,15 @@ public class GestionBean implements Serializable {
     nueva.setDescripcionGestion("SE REALIZA COBRANZA DE LA CUENTA CON");
     nueva.setTipoSujetoGestion(tipoSujetoSeleccionado);
     nueva.setSujetoGestion(sujetoSeleccionado);
-    nueva.setInformacionInstitucion(estatusSeleccionado);
+    EstatusInformativo est = new EstatusInformativo();
+    est = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
+    nueva.setEstatusInformativo(est);
     nueva.setGestion(gestion);
     nueva.setCredito(vistaCreditoBean.getCreditoActual());
     Date fecha = new Date();
     nueva.setFecha(fecha);
     nueva.setUsuario(vistaCreditoBean.cuentasVistaBean.getIndexBean().getUsuario());
-    boolean ok = gestionDAO.insertarGestion(nueva);
+    boolean ok = gestionDao.insertarGestion(nueva);
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {
       limpiarCampos();
@@ -249,11 +252,11 @@ public class GestionBean implements Serializable {
     this.listaEstatus = listaEstatus;
   }
 
-  public String getEstatusSeleccionado() {
+  public EstatusInformativo getEstatusSeleccionado() {
     return estatusSeleccionado;
   }
 
-  public void setEstatusSeleccionado(String estatusSeleccionado) {
+  public void setEstatusSeleccionado(EstatusInformativo estatusSeleccionado) {
     this.estatusSeleccionado = estatusSeleccionado;
   }
 
@@ -279,6 +282,22 @@ public class GestionBean implements Serializable {
 
   public void setGestion(String gestion) {
     this.gestion = gestion;
+  }
+
+  public GestionDAO getGestionDao() {
+    return gestionDao;
+  }
+
+  public void setGestionDao(GestionDAO gestionDao) {
+    this.gestionDao = gestionDao;
+  }
+
+  public EstatusInformativoDAO getEstatusInformativoDao() {
+    return estatusInformativoDao;
+  }
+
+  public void setEstatusInformativoDao(EstatusInformativoDAO estatusInformativoDao) {
+    this.estatusInformativoDao = estatusInformativoDao;
   }
 
 }

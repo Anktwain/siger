@@ -63,9 +63,9 @@
             Informacion para el banco:
           </strong>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:selectOneMenu id="estatusInformativoGestion" value="#{gestionBean.estatusSeleccionado}" style="width:250px">
-            <f:selectItem itemLabel="" itemValue="" />
-            <f:selectItems value="#{gestionBean.listaEstatus}"  var="e" itemLabel="#{e.estatus}" itemValue="#{e.estatus}"  />
+          <p:selectOneMenu id="estatusInformativoGestion" value="#{gestionBean.estatusSeleccionado.idEstatusInformativo}" style="width:250px">
+            <f:selectItem itemLabel="" itemValue="0" />
+            <f:selectItems value="#{gestionBean.listaEstatus}"  var="e" itemLabel="#{e.estatus}" itemValue="#{e.idEstatusInformativo}"  />
           </p:selectOneMenu>
           <br />
           <br />
@@ -73,7 +73,7 @@
             Gestion:
           </strong>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:inputTextarea rows="3" cols="100" id="gestion" value="#{gestionBean.gestion}" >
+          <p:inputTextarea rows="2" cols="100" id="gestion" value="#{gestionBean.gestion}" >
             <p:ajax event="keyup"/>
           </p:inputTextarea>
           <br />

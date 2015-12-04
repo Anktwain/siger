@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 25/11/2015 11:44:50 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="dto.ConceptoDevolucion" table="concepto_devolucion" catalog="sigerbd" optimistic-lock="version">
         <id name="idConceptoDevolucion" type="java.lang.Integer">
@@ -11,5 +11,17 @@
         <property name="concepto" type="string">
             <column name="concepto" length="50" not-null="true" />
         </property>
+        <set name="devolucions" table="devolucion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_concepto_devolucion" not-null="true" />
+            </key>
+            <one-to-many class="dto.Devolucion" />
+        </set>
+        <set name="motivoDevolucions" table="motivo_devolucion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_concepto_devolucion" not-null="true" />
+            </key>
+            <one-to-many class="dto.MotivoDevolucion" />
+        </set>
     </class>
 </hibernate-mapping>

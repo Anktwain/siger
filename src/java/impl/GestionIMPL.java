@@ -34,7 +34,6 @@ public class GestionIMPL implements GestionDAO {
   @Override
   public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Number visitas;
     calcularFechas();
     String consulta = "SELECT COUNT(*) FROM gestion WHERE tipo_gestion = 'VISITA DOMICILIARIA' AND fecha BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
@@ -53,7 +52,6 @@ public class GestionIMPL implements GestionDAO {
   @Override
   public Number calcularVisitasDomiciliariasPorGestor(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Number visitas;
     calcularFechas();
     String consulta = "SELECT COUNT(*) FROM gestion WHERE tipo_gestion = 'VISITA DOMICILIARIA' AND fecha BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' AND id_usuario = " + idUsuario + " AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
@@ -96,7 +94,6 @@ public class GestionIMPL implements GestionDAO {
     String f1 = df.format(fechaIni);
     String f2 = df.format(fechaF);
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Gestion> gestiones = new ArrayList();
     String consulta = "SELECT * FROM gestion WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%' AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion IN (SELECT id_institucion FROM institucion WHERE nombre_corto LIKE '%" + institucion + "%') AND id_producto IN (SELECT id_producto FROM producto WHERE nombre LIKE '%" + producto + "%'));";
     try {
@@ -117,7 +114,6 @@ public class GestionIMPL implements GestionDAO {
     String f1 = df.format(fechaIni);
     String f2 = df.format(fechaF);
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Gestion> gestiones = new ArrayList();
     String consulta = "SELECT * FROM gestion WHERE id_usuario IN (SELECT id_usuario FROM gestor) AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%' AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion IN (SELECT id_institucion FROM institucion WHERE nombre_corto LIKE '%" + institucion + "%') AND id_producto IN (SELECT id_producto FROM producto WHERE nombre LIKE '%" + producto + "%') AND id_despacho = " + idDespacho + ");";
     try {
@@ -193,6 +189,40 @@ public class GestionIMPL implements GestionDAO {
         fechaFin = año + "-" + mes + "-31";
         break;
     }
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesCreditoGestor(int idUsuario, int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_usuario = " + idUsuario + " AND id_credito = " + idCredito + ";";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesCredito(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + ";";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
   }
 
   private void cerrar(Session sesion) {
