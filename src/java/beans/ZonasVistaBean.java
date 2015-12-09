@@ -100,6 +100,9 @@ public class ZonasVistaBean implements Serializable {
 
   private final String lugarSinSeleccion;
   private final String seleccionCompleta;
+  private String tituloDialogo;
+  
+  private final String gestorSinSeleccion;
 
   public ZonasVistaBean() {
     zona = new ZonaBean();
@@ -127,8 +130,13 @@ public class ZonasVistaBean implements Serializable {
 
     acPanColoniasActiveIndex = -1;
     acPanMpiosActiveIndex = -1;
+    
     lugarSinSeleccion = Constantes.LUGAR_SIN_SELECCION;
     seleccionCompleta = Constantes.LUGAR_SELECCION_COMPLETA;
+    
+    tituloDialogo = "Si se despliega este título, algo anda mal...";  // linea de prueba
+    
+    gestorSinSeleccion = Constantes.GESTOR_SIN_SELECCION;
   }
 
   /**
@@ -344,7 +352,7 @@ public class ZonasVistaBean implements Serializable {
 //    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Botón aceptar", "Probando la acción del botón aceptar"));
   }
 
- public Municipio getMpioPorNombre(String nombre) {
+  public Municipio getMpioPorNombre(String nombre) {
     for (Municipio mpioIterador : this.mpiosVisibles) {
       if (mpioIterador.getNombre().equals(nombre)) {
         return mpioIterador;
@@ -364,12 +372,24 @@ public class ZonasVistaBean implements Serializable {
 
   }
 
-  public void onZonasDisplay() {
-    FacesContext context = FacesContext.getCurrentInstance();
+  public void onZonasDisplay(int opcion) {
+    switch (opcion) {
+      case 1:
+        this.tituloDialogo = "Crear nueva zona.";
+        // Lógica de la creación
+        
+        break;
+      case 2:
+        this.tituloDialogo = "Modificar zona existente.";
+        // Lógica de la modificación
+        
+        break;
+    }
 
+    FacesContext context = FacesContext.getCurrentInstance();
     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-            "Evento <onclick>",
-            "Por definir este comportamiento al desplegar el form de Zonas con el evento onclick :P"));
+            "actionListener onZonasDisplay()",
+            "Por definir este comportamiento al desplegar el form de Zonas :P"));
   }
 
   public String getLugarSinSeleccion() {
@@ -388,6 +408,17 @@ public class ZonasVistaBean implements Serializable {
     return seleccionCompleta;
   }
 
+  public String getTituloDialogo() {
+    return tituloDialogo;
+  }
+
+  public void setTituloDialogo(String tituloDialogo) {
+    this.tituloDialogo = tituloDialogo;
+  }
+
   
-  
+  public String getGestorSinSeleccion() {
+    return gestorSinSeleccion;
+  }
+
 }
