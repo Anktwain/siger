@@ -1,3 +1,4 @@
+
 package beans;
 
 import dao.EstadoRepublicaDAO;
@@ -16,7 +17,7 @@ import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import util.constantes.Constantes;
 
@@ -32,7 +33,7 @@ import util.constantes.Constantes;
  * @author Pablo
  */
 @ManagedBean(name = "zonasVistaBean")
-@SessionScoped
+@ViewScoped
 public class ZonasVistaBean implements Serializable {
 
   private final ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -91,17 +92,13 @@ public class ZonasVistaBean implements Serializable {
   private Gestor gestorAsignado;
   private List<Gestor> gestores;
 
-  private boolean switchMpios;
-  private boolean switchMpiosDisabled;
-  private boolean switchColonias;
-  private boolean switchColoniasDisabled;
   private int acPanColoniasActiveIndex;
   private int acPanMpiosActiveIndex;
 
   private final String lugarSinSeleccion;
   private final String seleccionCompleta;
   private String tituloDialogo;
-  
+
   private final String gestorSinSeleccion;
 
   public ZonasVistaBean() {
@@ -123,19 +120,14 @@ public class ZonasVistaBean implements Serializable {
     GestorDAO gestorDao = new GestorIMPL();
     gestores = gestorDao.buscarTodo();
 
-    switchMpios = false;
-    switchMpiosDisabled = true;
-    switchColonias = switchMpios;
-    switchColoniasDisabled = true;
-
     acPanColoniasActiveIndex = -1;
     acPanMpiosActiveIndex = -1;
-    
+
     lugarSinSeleccion = Constantes.LUGAR_SIN_SELECCION;
     seleccionCompleta = Constantes.LUGAR_SELECCION_COMPLETA;
-    
+
     tituloDialogo = "Si se despliega este título, algo anda mal...";  // linea de prueba
-    
+
     gestorSinSeleccion = Constantes.GESTOR_SIN_SELECCION;
   }
 
@@ -156,10 +148,6 @@ public class ZonasVistaBean implements Serializable {
       this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
     }
 
-    this.switchMpios = true;
-    this.switchMpiosDisabled = false;
-
-    this.switchColonias = false;
     this.acPanColoniasActiveIndex = -1;
     this.coloniasDeshabilitadas = true;
   }
@@ -299,30 +287,6 @@ public class ZonasVistaBean implements Serializable {
     this.gestores = gestores;
   }
 
-  public boolean isSwitchMpios() {
-    return switchMpios;
-  }
-
-  public void setSwitchMpios(boolean switchMpios) {
-    this.switchMpios = switchMpios;
-  }
-
-  public boolean isSwitchColonias() {
-    return switchColonias;
-  }
-
-  public void setSwitchColonias(boolean switchColonias) {
-    this.switchColonias = switchColonias;
-  }
-
-  public boolean isSwitchColoniasDisabled() {
-    return switchColoniasDisabled;
-  }
-
-  public void setSwitchColoniasDisabled(boolean switchColoniasDisabled) {
-    this.switchColoniasDisabled = switchColoniasDisabled;
-  }
-
   public int getAcPanColoniasActiveIndex() {
     return acPanColoniasActiveIndex;
   }
@@ -366,7 +330,9 @@ public class ZonasVistaBean implements Serializable {
 
     switch (tipoEvento) {
       default:
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Evento <" + tipoEvento + ">", "Se hizo una llamada con un tipo de evento NO válido."));
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                "Evento <" + tipoEvento + ">", 
+                "Se hizo una llamada con un tipo de evento NO válido."));
         break;
     }
 
@@ -377,12 +343,12 @@ public class ZonasVistaBean implements Serializable {
       case 1:
         this.tituloDialogo = "Crear nueva zona.";
         // Lógica de la creación
-        
+
         break;
       case 2:
         this.tituloDialogo = "Modificar zona existente.";
         // Lógica de la modificación
-        
+
         break;
     }
 
@@ -394,14 +360,6 @@ public class ZonasVistaBean implements Serializable {
 
   public String getLugarSinSeleccion() {
     return lugarSinSeleccion;
-  }
-
-  public boolean isSwitchMpiosDisabled() {
-    return switchMpiosDisabled;
-  }
-
-  public void setSwitchMpiosDisabled(boolean switchMpiosDisabled) {
-    this.switchMpiosDisabled = switchMpiosDisabled;
   }
 
   public String getSeleccionCompleta() {
@@ -416,7 +374,6 @@ public class ZonasVistaBean implements Serializable {
     this.tituloDialogo = tituloDialogo;
   }
 
-  
   public String getGestorSinSeleccion() {
     return gestorSinSeleccion;
   }

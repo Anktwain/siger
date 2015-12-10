@@ -64,7 +64,8 @@
                   <h:form>
                     <p:commandButton value="Nueva Zona" class="btn-default" 
                                      actionListener="${zonasVistaBean.onZonasDisplay(1)}" 
-                                     oncomplete="PF('dlgNuevaZona').show();" update="growl, dialogoNuevaZona"/>
+                                     oncomplete="PF('dlgNuevaZona').show();" 
+                                     update="growl, dialogoNuevaZona"/>
                   </h:form>
 
                 </div>
@@ -80,7 +81,8 @@
                           toggleSpeed="500" >
                 <h:form>
                   <p:contextMenu>
-                    <p:menuitem value="Ver detalle" icon="ui-icon-search" update="growl,dialogoNuevaZona" 
+                    <p:menuitem value="Ver detalle" icon="ui-icon-search" 
+                                update="growl,dialogoNuevaZona" 
                                 actionListener="${zonasVistaBean.onZonasDisplay(2)}"
                                 oncomplete="PF('dlgNuevaZona').show()" />
                   </p:contextMenu>
@@ -162,11 +164,6 @@
             <h:panelGrid columns="1" cellpadding="10">
               <f:facet name="header">
                 <h:outputText value="Municipios " />
-                <p:inputSwitch id="switchBtnMunicipio" value="#{zonasVistaBean.switchMpios}" 
-                               onLabel="S&iacute;" offLabel="No" disabled="${zonasVistaBean.switchMpiosDisabled}">
-                  <p:ajax event="change" listener="${zonasVistaBean.onMostrarMpiosChange}"
-                          update="growl,apMunicipios,formNuevaZona:apMunicipios:apMunicipiosTab0,switchBtnColonia,apColonias" />
-                </p:inputSwitch>
                 <p:separator/>
               </f:facet>
 
@@ -191,11 +188,6 @@
             <h:panelGrid columns="1" cellpadding="10">
               <f:facet name="header">
                 <h:outputText class="text-center" value="Colonias "/>
-                <p:inputSwitch id="switchBtnColonia" value="#{zonasVistaBean.switchColonias}" 
-                               onLabel="S&iacute;" offLabel="No" disabled="${zonasVistaBean.switchColoniasDisabled}" >
-                  <p:ajax event="change" listener="${zonasVistaBean.onMostrarColoniasChange('change')}" 
-                          update="growl,apColonias" />
-                </p:inputSwitch >
                 <p:separator />
               </f:facet>              
 
