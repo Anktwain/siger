@@ -150,7 +150,7 @@
                                var="edo" filter="true" filterMatchMode="contains" 
                                converter="edoRepConverter" >
                 <p:ajax event="change" listener="${zonasVistaBean.onEstadosChange}" 
-                        update="growl,switchBtnMunicipio,apMunicipios,switchBtnColonia,apColonias" />
+                        update="growl,apMunicipios,apColonias" />
                 <f:selectItem itemLabel="Selecciona un estado" noSelectionOption="true"
                               />
                 <f:selectItems value="${zonasVistaBean.estadosRep}" var="edoRep" 
