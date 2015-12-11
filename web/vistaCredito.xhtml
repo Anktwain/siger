@@ -47,8 +47,7 @@
           </div>
         </div>
         <div class="clearfix">
-          <div class="pull-left"> 
-            <h4>Informacion del deudor:</h4>
+          <div class="pull-left">
             <strong>
               Direccion:
             </strong>
@@ -74,11 +73,20 @@
             <h:form>
               <p:commandButton value="Editar datos del deudor" />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:commandButton value="Convenios de pago" oncomplete="PF('conveniosDialog').show();"  />
+              <p:button value="Convenios de pago" outcome="vistaConvenio"  />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:button value="Visita domiciliaria" outcome="vistaVisitas"  />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              Gestor actual:
+              &nbsp;
+              <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px" rendered="#{vistaCreditoBean.reasignarVisible}">
+                <f:selectItem itemValue="#{vistaCreditoBean.gestorActual.idGestor}" itemLabel="#{vistaCreditoBean.gestorActual.toString()}" />
+                <f:selectItems value="#{vistaCreditoBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
+                <p:ajax listener="#{vistaCreditoBean.confirmar()}" />
+              </p:selectOneMenu>
             </h:form>
           </div>
           <div class="pull-right text-right">
-            <h4>Informacion del credito:</h4>
             Numero de creditos: <p:outputLabel value="#{vistaCreditoBean.numeroCreditos}" />
             <br />
             Fecha de inicio: <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" />
@@ -97,12 +105,12 @@
         </div>
         <hr />
         <div class="clearfix">
+          <ui:include src="nuevaGestion.xhtml" />
+          <hr />
           <h:form id="DetalleCredito">
-            <ui:include src="nuevaGestion.xhtml" />
-            <hr />
             <p:accordionPanel multiple="true" activeIndex="-  1">
               <p:tab title="Gestiones anteriores">
-                <p:dataTable id="tablaGestionesAnteriores" var="g" value="#{vistaCreditoBean.listaGestiones}" emptyMessage="No existen gestiones anteriores." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:dataTable id="tablaGestionesAnteriores" var="g" value="#{vistaCreditoBean.listaGestiones}" emptyMessage="No existen gestiones anteriores." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                   <p:column style="width: 200px;">
                     <f:facet name="header">
                       <h:outputText value="Fecha" />
@@ -132,7 +140,7 @@
               <p:tab title="Datos de contacto">
                 <p:accordionPanel multiple="true" activeIndex="-1">
                   <p:tab title="Direcciones">
-                    <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" rows="15" paginatorPosition="bottom">
+                    <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Calle y numero" style="width:500px;" > 
                         <h:outputText value="#{d.calleNumero}"/>
                       </p:column>
@@ -151,7 +159,7 @@
                     </p:dataTable>
                   </p:tab>
                   <p:tab title="Telefonos">
-                    <p:dataTable id="tablaTelefonosDetalleCredito" var="t" value="#{vistaCreditoBean.listaTelefonos}" emptyMessage="No existen numeros telefonicos asociados a este credito." paginator="true" rows="15" paginatorPosition="bottom">
+                    <p:dataTable id="tablaTelefonosDetalleCredito" var="t" value="#{vistaCreditoBean.listaTelefonos}" emptyMessage="No existen numeros telefonicos asociados a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Telefono" > 
                         <h:outputText value="#{t.numero}" />
                       </p:column>
@@ -167,7 +175,7 @@
                     </p:dataTable>
                   </p:tab>
                   <p:tab title="Correos">
-                    <p:dataTable id="tablaCorreosDetalleCredito" var="c" value="#{vistaCreditoBean.listaCorreos}" emptyMessage="No existen correos electronicos asociados a este credito." paginator="true" rows="15" paginatorPosition="bottom">
+                    <p:dataTable id="tablaCorreosDetalleCredito" var="c" value="#{vistaCreditoBean.listaCorreos}" emptyMessage="No existen correos electronicos asociados a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Direccion" > 
                         <h:outputText value="#{c.direccion}" />
                       </p:column>
@@ -177,7 +185,7 @@
                     </p:dataTable>
                   </p:tab>
                   <p:tab title="Contactos">
-                    <p:dataTable id="tablaContactosDetalleCredito" var="con" value="#{vistaCreditoBean.listaContactos}" emptyMessage="No existen contactos de credito." paginator="true" rows="15" paginatorPosition="bottom">
+                    <p:dataTable id="tablaContactosDetalleCredito" var="con" value="#{vistaCreditoBean.listaContactos}" emptyMessage="No existen contactos de credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Nombre del contacto" > 
                         <h:outputText value="#{con.nombreContacto}" />
                       </p:column>
@@ -189,7 +197,7 @@
                 </p:accordionPanel>
               </p:tab>
               <p:tab title="Otros creditos con adeudos">
-                <p:dataTable id="tablaCreditosRelacionados" var="c" value="#{vistaCreditoBean.credsRelacionados}" emptyMessage="No existen creditos relacionados." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:dataTable id="tablaCreditosRelacionados" var="c" value="#{vistaCreditoBean.credsRelacionados}" emptyMessage="No existen creditos relacionados." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                   <p:column headerText="Credito" style="width:100px;" > 
                     <h:outputText value="#{c.numeroCredito}"/>
                   </p:column>
@@ -208,7 +216,7 @@
                 <!-- FAC POR, FAC MES, ETC... -->
               </p:tab>
               <p:tab title="Historial de este credito">
-                <p:dataTable id="tablaHistorialCredito" var="h" value="#{vistaCreditoBean.historial}" emptyMessage="El credito no cuenta con historial." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:dataTable id="tablaHistorialCredito" var="h" value="#{vistaCreditoBean.historial}" emptyMessage="El credito no cuenta con historial." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                   <p:column headerText="Fecha" style="width:150px;" > 
                     <h:outputText value="#{h.fecha}"/>
                   </p:column>
@@ -218,10 +226,19 @@
                 </p:dataTable>
               </p:tab>
             </p:accordionPanel>
-            <p:dialog id="dialogoConvenios" widgetVar="conveniosDialog" modal="true" header="Convenios de pago">
-              No hay convenios actualmente.
-            </p:dialog>
           </h:form>
+          <p:dialog id="dlgConfirmacion" widgetVar="confirmacionDialog2" modal="true" header="Confirme esta reasignacion">
+            <h:form>
+              <h:outputText value="Esta seguro de que desea reasignar este credito?" />
+              <br />
+              <br />
+              <h:outputText value="Esta accion hara que se finalicen todos los convenios de pago en curso." />
+              <br />
+              <br />
+              <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{vistaCreditoBean.reasignarGestor()}" update="growl" />
+              <p:commandButton value="No" icon="ui-icon-close" actionListener="#{vistaCreditoBean.cerrar()}" update="growl" />
+            </h:form>
+          </p:dialog>
         </div>
       </div><!-- /.padding20 -->
     </div><!-- /main-container -->

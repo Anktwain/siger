@@ -71,6 +71,7 @@ public class GestionBean implements Serializable {
   }
 
   public void preparaDonde() {
+    System.out.println("PREPARA DONDE!!!");
     switch (tipoSeleccionado) {
       case "VISITA DOMICILIARIA":
         listaDonde = Gestiones.DONDE_VISITA;
@@ -82,6 +83,7 @@ public class GestionBean implements Serializable {
         listaDonde = Gestiones.DONDE_CORPORATIVO;
         break;
     }
+  RequestContext.getCurrentInstance().update("formNuevaGestion:dondeGestion");
   }
 
   public void preparaAsunto() {
@@ -90,10 +92,12 @@ public class GestionBean implements Serializable {
     } else {
       listaAsuntos = Gestiones.ASUNTO;
     }
+    RequestContext.getCurrentInstance().update("formNuevaGestion:asuntoGestion");
   }
 
   public void preparaTipoSujeto() {
     listaTipoSujetos = Gestiones.TIPO_SUJETOS;
+    RequestContext.getCurrentInstance().update("formNuevaGestion:tipoSujetoGestion");
   }
 
   public void preparaSujetos() {
@@ -120,6 +124,7 @@ public class GestionBean implements Serializable {
         listaSujetos = Gestiones.SUJETOS_REFERENCIAS;
         break;
     }
+    RequestContext.getCurrentInstance().update("formNuevaGestion:sujetoGestion");
   }
 
   public void crearNuevaGestion() {
@@ -130,8 +135,7 @@ public class GestionBean implements Serializable {
     nueva.setDescripcionGestion("SE REALIZA COBRANZA DE LA CUENTA CON");
     nueva.setTipoSujetoGestion(tipoSujetoSeleccionado);
     nueva.setSujetoGestion(sujetoSeleccionado);
-    EstatusInformativo est = new EstatusInformativo();
-    est = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
+    EstatusInformativo est = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
     nueva.setEstatusInformativo(est);
     nueva.setGestion(gestion);
     nueva.setCredito(vistaCreditoBean.getCreditoActual());

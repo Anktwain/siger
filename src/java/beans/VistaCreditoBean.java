@@ -6,37 +6,47 @@
 package beans;
 
 import dao.ContactoDAO;
+import dao.ConvenioPagoDAO;
 import dao.CreditoDAO;
 import dao.DireccionDAO;
 import dao.EmailDAO;
 import dao.GestionDAO;
+import dao.GestorDAO;
 import dao.HistorialDAO;
 import dao.TelefonoDAO;
+import dto.ConvenioPago;
 import dto.tablas.Creditos;
 import dto.Credito;
 import dto.Direccion;
 import dto.Email;
 import dto.Gestion;
+import dto.Gestor;
 import dto.Historial;
 import dto.Telefono;
 import dto.tablas.Contactos;
 import dto.tablas.Direcciones;
 import impl.ContactoIMPL;
+import impl.ConvenioPagoIMPL;
 import impl.CreditoIMPL;
 import impl.DireccionIMPL;
 import impl.EmailIMPL;
 import impl.GestionIMPL;
+import impl.GestorIMPL;
 import impl.HistorialIMPL;
 import impl.TelefonoIMPL;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
+import util.constantes.Convenios;
 import util.constantes.Perfiles;
 
 /**
@@ -53,6 +63,7 @@ public class VistaCreditoBean implements Serializable {
   CuentasVistaBean cuentasVistaBean = (CuentasVistaBean) elContext.getELResolver().getValue(elContext, null, "cuentasVistaBean");
 
   // VARIABLES DE CLASE
+  private boolean reasignarVisible;
   private String nombreDeudor;
   private String numeroCredito;
   private String numeroCreditos;
@@ -69,6 +80,8 @@ public class VistaCreditoBean implements Serializable {
   private String saldoVencido;
   private Creditos creditoActualCred;
   private Credito creditoActual;
+  private Gestor gestorSeleccionado;
+  private Gestor gestorActual;
   private CreditoDAO creditoDao;
   private DireccionDAO direccionDAO;
   private TelefonoDAO telefonoDAO;
@@ -76,7 +89,10 @@ public class VistaCreditoBean implements Serializable {
   private ContactoDAO contactoDAO;
   private HistorialDAO historialDao;
   private GestionDAO gestionDao;
+  private GestorDAO gestorDao;
+  private ConvenioPagoDAO convenioPagoDao;
   private List<Gestion> listaGestiones;
+  private List<Gestor> listaGestores;
   private List<Credito> creditosRelacionados;
   private List<Creditos> credsRelacionados;
   private List<Direcciones> listaDirecciones;
@@ -88,6 +104,8 @@ public class VistaCreditoBean implements Serializable {
   public VistaCreditoBean() {
     creditoActualCred = new Creditos();
     creditoActual = new Credito();
+    gestorSeleccionado = new Gestor();
+    gestorActual = new Gestor();
     creditoDao = new CreditoIMPL();
     direccionDAO = new DireccionIMPL();
     telefonoDAO = new TelefonoIMPL();
@@ -95,11 +113,14 @@ public class VistaCreditoBean implements Serializable {
     contactoDAO = new ContactoIMPL();
     historialDao = new HistorialIMPL();
     gestionDao = new GestionIMPL();
+    gestorDao = new GestorIMPL();
+    convenioPagoDao = new ConvenioPagoIMPL();
     creditosRelacionados = new ArrayList();
     credsRelacionados = new ArrayList();
     listaDirecciones = new ArrayList();
     historial = new ArrayList();
     listaGestiones = new ArrayList();
+    listaGestores = new ArrayList();
     creditoActualCred = cuentasVistaBean.getCreditoSeleccionado().get(0);
     obtenerDatos();
   }
@@ -110,6 +131,8 @@ public class VistaCreditoBean implements Serializable {
     numeroCredito = creditoActualCred.getNumeroCredito();
     // OBTENEMOS EL CREDITO RELACIONADO
     creditoActual = creditoDao.buscarCreditoPorId(creditoDao.obtenerIdDelCredito(numeroCredito));
+    // BUSCAMOS EL GESTOR ACTUAL DEL CREDITO
+    gestorActual = gestorDao.buscarGestorDelCredito(creditoActual.getIdCredito());
     // OBTENEMOS EL ID DEL SUJETO PARA TODAS LAS OPERACIONES
     int idSujeto = creditoActual.getDeudor().getSujeto().getIdSujeto();
     // OBTIENE LA CADENA CON EL NOMBRE DEL DEUDOR
@@ -149,9 +172,13 @@ public class VistaCreditoBean implements Serializable {
     if(indexBean.getUsuario().getPerfil() == Perfiles.GESTOR){
       int idUsuario = indexBean.getUsuario().getIdUsuario();
       listaGestiones = gestionDao.buscarGestionesCreditoGestor(idUsuario, idCredito);
+      // NO SE VISUALIZA LA REASIGNACION DE GESTOR
+      reasignarVisible = false;
     }
     else{
       listaGestiones = gestionDao.buscarGestionesCredito(idCredito);
+      listaGestores = gestorDao.buscarPorDespachoExceptoEste(indexBean.getUsuario().getDespacho().getIdDespacho(), gestorActual.getIdGestor());
+      reasignarVisible = true;
     }
     // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
     List<Direccion> listaDireccionesSinNormalizar;
@@ -195,7 +222,51 @@ public class VistaCreditoBean implements Serializable {
     // OBTENEMOS EL HISTORIAL DEL CREDITO
     historial = historialDao.buscarHistorialPorIdCredito(creditoActual.getIdCredito());
   }
+  
+  // METODO PARA ABRIR EL DIALOGO
+  public void confirmar(){
+    RequestContext.getCurrentInstance().execute("PF('confirmacionDialog2').show();");
+  }
+  
+  // METODO PARA CERRAR EL DIALOGO
+  public void cerrar(){
+    RequestContext.getCurrentInstance().execute("PF('confirmacionDialog2').hide();");
+  }
 
+  // METODO QUE REASIGNARA AL GESTOR
+  public void reasignarGestor(){
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    // FINALIZAMOS LOS CONVENIOS EN CURSO DEL GESTOR ACTUAL PARA ESTE CREDITO
+    List<ConvenioPago> convenios = convenioPagoDao.buscarConveniosEnCursoCredito(creditoActual.getIdCredito());
+    boolean ok = true;
+    for (int i = 0; i < convenios.size(); i++) {
+      ConvenioPago c = convenios.get(i);
+      c.setEstatus(Convenios.FINALIZADO);
+      ok = convenioPagoDao.editar(c);
+    }
+    // CAMBIAMOS EL GESTOR ASIGNADO ACTUALMENTE
+    Credito cred = creditoActual;
+    Gestor nuevoGestor = gestorDao.buscar(gestorSeleccionado.getIdGestor());
+    cred.setGestor(nuevoGestor);
+    ok = ok & (creditoDao.editar(cred));
+    // ESCRIBIMOS EN EL HISTORIAL LA REASIGNACION
+    Historial h = new Historial();
+    h.setCredito(creditoActual);
+    Date fecha = new Date();
+    h.setFecha(fecha);
+    String evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor: " + gestorActual.getUsuario().getNombreLogin() + " al gestor: " + nuevoGestor.getUsuario().getNombreLogin();
+    h.setEvento(evento);
+    ok = ok & (historialDao.insertarHistorial(creditoActual.getIdCredito(), evento));
+    if(ok){
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
+      gestorActual = nuevoGestor;
+    }
+    else{
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
+    }
+    cerrar();
+  }
+  
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
@@ -470,6 +541,46 @@ public class VistaCreditoBean implements Serializable {
 
   public void setListaGestiones(List<Gestion> listaGestiones) {
     this.listaGestiones = listaGestiones;
+  }
+
+  public boolean isReasignarVisible() {
+    return reasignarVisible;
+  }
+
+  public void setReasignarVisible(boolean reasignarVisible) {
+    this.reasignarVisible = reasignarVisible;
+  }
+
+  public Gestor getGestorSeleccionado() {
+    return gestorSeleccionado;
+  }
+
+  public void setGestorSeleccionado(Gestor gestorSeleccionado) {
+    this.gestorSeleccionado = gestorSeleccionado;
+  }
+
+  public GestorDAO getGestorDao() {
+    return gestorDao;
+  }
+
+  public void setGestorDao(GestorDAO gestorDao) {
+    this.gestorDao = gestorDao;
+  }
+
+  public List<Gestor> getListaGestores() {
+    return listaGestores;
+  }
+
+  public void setListaGestores(List<Gestor> listaGestores) {
+    this.listaGestores = listaGestores;
+  }
+
+  public Gestor getGestorActual() {
+    return gestorActual;
+  }
+
+  public void setGestorActual(Gestor gestorActual) {
+    this.gestorActual = gestorActual;
   }
 
 }

@@ -9,12 +9,12 @@ package util.constantes;
  *
  * @author Eduardo
  */
-public interface Convenios {
+public interface Pagos {
   
-  public static final int EN_CURSO = 1;
-  
-  public static final int FINALIZADO = 0;
-  
-  public static final int INCUMPLIDO = -1;
+  public static final int APROBADO = 1;
+          
+  public static final int RECHAZADO = 2;
+          
+  public static final int PENDIENTE = 0;
   
 }

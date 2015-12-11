@@ -1,6 +1,5 @@
 package dao;
 
-import dto.Deudor;
 import dto.Gestor;
 import java.util.List;
 
@@ -22,7 +21,13 @@ public interface GestorDAO {
      */
     public boolean insertar(Gestor gestor);
     
+    public Gestor buscar(int idGestor);
+    
     public List<Gestor> buscarTodo();
     
     public List<Gestor> buscarPorDespacho(int idDespacho);
+    
+    public Gestor buscarGestorDelCredito(int idCredito);
+    
+    public List<Gestor> buscarPorDespachoExceptoEste(int idDespacho, int idGestor);
 }

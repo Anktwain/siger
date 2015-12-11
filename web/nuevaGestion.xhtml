@@ -20,7 +20,7 @@
           <p:selectOneMenu id="tipoGestion" value="#{gestionBean.tipoSeleccionado}" style="width:200px">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaTipos}" />
-            <p:ajax update="tipoGestion, dondeGestion, asuntoGestion, tipoSujetoGestion, sujetoGestion" listener="#{gestionBean.preparaDonde()}" />
+            <p:ajax listener="#{gestionBean.preparaDonde()}" />
           </p:selectOneMenu>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <strong>
@@ -29,7 +29,7 @@
           <p:selectOneMenu id="dondeGestion" value="#{gestionBean.lugarSeleccionado}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaDonde}" />
-            <p:ajax update="asuntoGestion" listener="#{gestionBean.preparaAsunto()}" />
+            <p:ajax listener="#{gestionBean.preparaAsunto()}" />
           </p:selectOneMenu>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <strong>
@@ -38,7 +38,7 @@
           <p:selectOneMenu id="asuntoGestion" value="#{gestionBean.asuntoSeleccionado}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaAsuntos}" />
-            <p:ajax update="tipoSujetoGestion" listener="#{gestionBean.preparaTipoSujeto()}" />
+            <p:ajax listener="#{gestionBean.preparaTipoSujeto()}" />
           </p:selectOneMenu>
           <br />
           <br />
@@ -49,13 +49,12 @@
           <p:selectOneMenu id="tipoSujetoGestion" value="#{gestionBean.tipoSujetoSeleccionado}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaTipoSujetos}" />
-            <p:ajax update="sujetoGestion" listener="#{gestionBean.preparaSujetos()}" />
+            <p:ajax listener="#{gestionBean.preparaSujetos()}" />
           </p:selectOneMenu>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:selectOneMenu id="sujetoGestion" value="#{gestionBean.sujetoSeleccionado}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaSujetos}" />
-            <p:ajax update="estatusInformativoGestion" />
           </p:selectOneMenu>
           <br />
           <br />

@@ -1,7 +1,6 @@
 package impl;
 
 import dao.ProductoDAO;
-import dto.Institucion;
 import dto.Producto;
 import java.util.List;
 import org.hibernate.HibernateException;

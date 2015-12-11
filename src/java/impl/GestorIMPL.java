@@ -1,14 +1,12 @@
 package impl;
 
 import dao.GestorDAO;
-import dto.Deudor;
 import dto.Gestor;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
-import util.constantes.Sujetos;
 import util.log.Logs;
 
 /**
@@ -49,11 +47,25 @@ public class GestorIMPL implements GestorDAO {
     }
     return ok;
   }
+
+  @Override
+  public Gestor buscar(int idGestor) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Gestor gestor;
+    try {
+      gestor = (Gestor) sesion.createSQLQuery("SELECT * FROM gestor WHERE id_gestor = " + idGestor + ";").addEntity(Gestor.class).uniqueResult();
+    } catch (HibernateException he) {
+      gestor = null;
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
+    }
+    return gestor;
+  }
   
 @Override
   public List<Gestor> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Gestor> gestores;
 
     try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
@@ -70,10 +82,39 @@ public class GestorIMPL implements GestorDAO {
   @Override
   public List<Gestor> buscarPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Gestor> gestores;
     try {
-      gestores = sesion.createSQLQuery("SELECT u.*, g.* FROM usuario u JOIN gestor g ON u.id_usuario = g.id_usuario AND u.id_despacho = " + idDespacho + ";").addEntity(Gestor.class).list();
+      gestores = sesion.createSQLQuery("SELECT g.* FROM usuario u JOIN gestor g ON u.id_usuario = g.id_usuario AND u.id_despacho = " + idDespacho + ";").addEntity(Gestor.class).list();
+    } catch (HibernateException he) {
+      gestores = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestores;
+  }
+
+  @Override
+  public Gestor buscarGestorDelCredito(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Gestor gestor;
+    try {
+      gestor = (Gestor) sesion.createSQLQuery("SELECT * FROM gestor WHERE id_gestor = (SELECT id_gestor FROM credito WHERE id_credito = " + idCredito + ");").addEntity(Gestor.class).uniqueResult();
+    } catch (HibernateException he) {
+      gestor = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestor;
+  }
+  
+  @Override
+  public List<Gestor> buscarPorDespachoExceptoEste(int idDespacho, int idGestor) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestor> gestores;
+    try {
+      gestores = sesion.createSQLQuery("SELECT g.* FROM usuario u JOIN gestor g ON u.id_usuario = g.id_usuario AND u.id_despacho = " + idDespacho + " AND g.id_gestor != " + idGestor + ";").addEntity(Gestor.class).list();
     } catch (HibernateException he) {
       gestores = null;
       Logs.log.error(he.getMessage());
