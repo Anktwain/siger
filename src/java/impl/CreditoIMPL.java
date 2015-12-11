@@ -23,6 +23,27 @@ import util.log.Logs;
 public class CreditoIMPL implements CreditoDAO {
 
   @Override
+  public boolean editar(Credito credito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
+    try {
+      sesion.update(credito);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
+  }
+
+  @Override
   public Number contarCreditosActivos(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
@@ -80,7 +101,7 @@ public class CreditoIMPL implements CreditoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Creditos> creditos = new ArrayList<>();
     List<Object[]> c;
-    String consulta = "SELECT c.numero_credito, s.nombre_razon_social, i.nombre_corto, c.tipo_credito, p.nombre, c.monto, u.nombre_login  FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN institucion i JOIN producto p JOIN gestor g JOIN usuario u WHERE d.id_sujeto = s.id_sujeto AND u.id_usuario = g.id_usuario AND g.id_gestor = c.id_gestor AND p.id_producto = c.id_producto AND d.id_deudor = c.id_deudor AND i.id_institucion = c.id_institucion AND id_credito NOT IN (SELECT id_credito FROM devolucion) AND c.id_despacho = des.id_despacho AND des.id_despacho = " + idDespacho + ";";
+    String consulta = "SELECT c.numero_credito, s.nombre_razon_social, i.nombre_corto, c.tipo_credito, p.nombre, c.monto, u.nombre_login  FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN institucion i JOIN producto p JOIN gestor g JOIN usuario u WHERE d.id_sujeto = s.id_sujeto AND u.id_usuario = g.id_usuario AND g.id_gestor = c.id_gestor AND p.id_producto = c.id_producto AND d.id_deudor = c.id_deudor AND i.id_institucion = c.id_institucion AND id_credito NOT IN (SELECT id_credito FROM devolucion) AND c.id_despacho = des.id_despacho AND des.id_despacho = " + idDespacho + " ORDER BY numero_credito ASC;";
     try {
       c = sesion.createSQLQuery(consulta).list();
       for (Object[] row : c) {

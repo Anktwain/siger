@@ -59,5 +59,5 @@ public interface SujetoDAO {
     
     public Number calcularPagosRealizados();
     
-    public Number calcularPagosPorAprobarPorGestor(int idgestor);
+    public Number calcularPagosPorAprobarPorGestor(int idGestor);
 }

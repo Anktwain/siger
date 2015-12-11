@@ -5,6 +5,9 @@
  */
 package dao;
 
+import dto.Historial;
+import java.util.List;
+
 /**
  *
  * @author Eduardo
@@ -12,5 +15,7 @@ package dao;
 public interface HistorialDAO {
   
   public boolean insertarHistorial(int idCredito, String evento);
+  
+  public List<Historial> buscarHistorialPorIdCredito(int idCredito);
     
 }

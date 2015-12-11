@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Convenios</title>
+    <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+  </h:head> 
+  <body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home"></i><a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li>
+            <a href="cuentas.xhtml">Cuentas</a>
+          </li>
+          <li>
+            <a href="vistaCredito.xhtml">Detalle credito <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" /></a>
+          </li>
+          <li class="active">
+            Convenios de pago
+          </li>
+        </ul>
+      </div>
+      <div class="main-header clearfix">
+        <div class="page-title">  
+          <span>Consulte todos los convenios de pago de este credito.</span>
+          <span>Agregue pagos o finalice los convenios cumplidos o incumplidos.</span>
+        </div>
+      </div>
+      <div class="padding-md">
+        <h:form id="formConvenios">
+          <h3>Convenios en curso</h3>
+          <br />
+          <p:contextMenu for="conveniosEnCurso" style="width:200px;">
+            <p:menuitem value="Agregar Pago" icon="ui-icon-folder-collapsed" oncomplete="agregarPagoDialog.show();" />
+            <p:menuitem value="Finalizar" icon="ui-icon-alert" />
+          </p:contextMenu>
+          <p:dataTable id="conveniosEnCurso" var="c" value="#{conveniosBean.listaConvenios}" rowKey="#{c.idConvenioPago}" selection="#{conveniosBean.convenioSeleccionado}" emptyMessage="No existen convenios." selectionMode="multiple" paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width:420px;">
+            <p:column headerText="Fecha" style="width:100px;">
+              <h:outputText value="#{c.fecha}"/>
+            </p:column>
+            <p:column headerText="Saldo negociado" style="width:150px;"> 
+              <h:outputText value="#{c.saldoNegociado}"/>
+            </p:column>
+            <p:column headerText="Pagos a la fecha" style="width:150px;"> 
+              <h:outputText value="#{c.pagosRealizados}"/>
+            </p:column>
+          </p:dataTable>
+          <br />
+          <p:commandButton value="Agregar convenio" oncomplete="PF('agregarConvenioDialog').show();" />
+          <hr />
+          <h3>Historial de convenios</h3>
+          <br />
+          <p:accordionPanel multiple="true" activeIndex="-1" style="width:460px;">
+            <p:tab title="Historial">
+              <p:dataTable id="historialConvenios" var="c" value="#{conveniosBean.listaHistorialConvenios}" emptyMessage="No existen otros convenios." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom"  style="width:420px;">
+                <p:column headerText="Fecha" style="width:100px;">
+                  <h:outputText value="#{c.fecha}"/>
+                </p:column>
+                <p:column headerText="Saldo negociado" style="width:150px;"> 
+                  <h:outputText value="#{c.saldoNegociado}"/>
+                </p:column>
+                <p:column headerText="Pagos a la fecha" style="width:150px;"> 
+                  <h:outputText value="#{c.pagosRealizados}"/>
+                </p:column>
+              </p:dataTable>
+            </p:tab>
+          </p:accordionPanel>
+        </h:form>
+        <p:dialog id="dlgPago" widgetVar="agregarPagoDialog" modal="true" header="Agregar pago">
+          <h:form>
+            Cantidad:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText />
+            <br />
+            Fecha de deposito:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:calendar></p:calendar>
+            <br />
+            Numero de cuenta:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText />
+            <br />
+            Observaciones:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText />
+            <br />
+          </h:form>
+        </p:dialog>
+        <p:dialog id="dlgNuevoConvenio" widgetVar="agregarConvenioDialog" modal="true" header="Agregar convenio">
+          <h:form>
+            Saldo negociado:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText value="#{conveniosBean.saldoNuevoConvenio}" type="number" required="true" requiredMessage="Debe ingresar un valor numerico." placeholder="" />
+            <br />
+            <p:commandButton value="Ok" actionListener="#{conveniosBean.agregarConvenio()}" update="growl, formConvenios:conveniosEnCurso" />
+          </h:form>
+        </p:dialog>
+      </div>
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </body>
+</html>

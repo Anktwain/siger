@@ -15,4 +15,5 @@ import java.util.List;
 public interface EstatusInformativoDAO {
   public List<EstatusInformativo> buscarTodos();
   public boolean insertar(EstatusInformativo estatus);
+  public EstatusInformativo buscar(int idEstatus);
 }

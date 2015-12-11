@@ -30,14 +30,18 @@
     <mapping resource="mapeo/Administrativo.hbm.xml"/>
     <mapping resource="mapeo/CreditoRemesa.hbm.xml"/>
     <mapping resource="mapeo/Email.hbm.xml"/>
+    <mapping resource="mapeo/ConvenioPago.hbm.xml"/>
     <mapping resource="mapeo/Deudor.hbm.xml"/>
     <mapping resource="mapeo/MotivoDevolucion.hbm.xml"/>
     <mapping resource="mapeo/Sujeto.hbm.xml"/>
     <mapping resource="mapeo/Subproducto.hbm.xml"/>
     <mapping resource="mapeo/Despacho.hbm.xml"/>
+    <mapping resource="mapeo/Quincena.hbm.xml"/>
     <mapping resource="mapeo/Gestor.hbm.xml"/>
+    <mapping resource="mapeo/Pago.hbm.xml"/>
     <mapping resource="mapeo/Colonia.hbm.xml"/>
     <mapping resource="mapeo/Municipio.hbm.xml"/>
     <mapping resource="mapeo/Usuario.hbm.xml"/>
+    <mapping resource="mapeo/PromesaPago.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

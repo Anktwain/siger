@@ -14,6 +14,7 @@ import java.util.List;
  * @author Eduardo
  */
 public interface CreditoDAO {
+  public boolean editar(Credito credito);
   public Number contarCreditosActivos(int idDespacho);
   public Number contarCreditosActivosPorGestor(int idUsuario);
   public Credito buscarCreditoPorId(int idCredito);

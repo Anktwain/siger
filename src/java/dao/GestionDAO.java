@@ -20,5 +20,7 @@ public interface GestionDAO {
   public boolean insertarGestion(Gestion gestion);
   public List<Gestion> buscarGestionesPorGestor(int idGestor, Date fechainicio, Date fechaFin, String tipoGestion, String institucion, String producto);
   public List<Gestion> buscarGestionesPorDespacho(int idDespacho, Date fechainicio, Date fechaFin, String tipoGestion, String institucion, String producto);
+  public List<Gestion> buscarGestionesCreditoGestor(int idUsuario, int idCredito);
+  public List<Gestion> buscarGestionesCredito(int idCredito);
 }
 

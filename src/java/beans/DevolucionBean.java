@@ -72,7 +72,7 @@ public class DevolucionBean implements Serializable {
         String quien = indexBean.getUsuario().getNombreLogin();
         devolucion.setRevisor(quien);
         String evento = "El administrador: " + admin + ", aprobo la devolucion del credito";
-        ok = devolucionDao.editar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
+        ok = devolucionDao.editar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
       }
       if (ok) {
         obtenerListas();
@@ -94,7 +94,7 @@ public class DevolucionBean implements Serializable {
       for (int i = 0; i < tam; i++) {
         Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
         String evento = "El administrador: " + admin + ", rechazo la devolucion del credito";
-        ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
+        ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
       }
       if (ok) {
         obtenerListas();
@@ -118,7 +118,7 @@ public class DevolucionBean implements Serializable {
         devolucion.setEstatus(Devoluciones.ESPERA_CONSERVACION);
         devolucion.setSolicitante(indexBean.getUsuario().getNombreLogin());
         String evento = "El administrador: " + admin + ", solicito la conservacion del credito";
-        ok = devolucionDao.editar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
+        ok = devolucionDao.editar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
       }
       if (ok) {
         obtenerListas();
@@ -140,7 +140,7 @@ public class DevolucionBean implements Serializable {
       for (int i = 0; i < tam; i++) {
         Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(devolucionesSeleccionadas.get(i).getNumeroCredito());
         String evento = "El administrador: " + admin + ", reactivo el credito";
-        ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getIdCredito(), evento);
+        ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
       }
       if (ok) {
         obtenerListas();

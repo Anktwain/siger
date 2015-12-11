@@ -111,9 +111,9 @@ public class CuentasVistaBean implements Serializable {
         d.setEstatus(Devoluciones.DEVUELTO);
         Date fecha = new Date();
         d.setFecha(fecha);
-        d.setIdConceptoDevolucion(conceptoSeleccionado.getIdConceptoDevolucion());
+        d.setConceptoDevolucion(conceptoSeleccionado);
         int idCredito = creditoDao.obtenerIdDelCredito(creditoSeleccionado.get(0).getNumeroCredito());
-        d.setIdCredito(idCredito);
+        d.setCredito(creditoDao.buscarCreditoPorId(idCredito));
         d.setObservaciones(observaciones);
         d.setSolicitante(admin);
         d.setRevisor(admin);

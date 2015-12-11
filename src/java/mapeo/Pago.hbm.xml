@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="dto.Pago" table="pago" catalog="sigerbd" optimistic-lock="version">
+        <id name="idPago" type="int">
+            <column name="id_pago" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="gestor" class="dto.Gestor" fetch="select">
+            <column name="id_gestor" not-null="true" />
+        </many-to-one>
+        <many-to-one name="promesaPago" class="dto.PromesaPago" fetch="select">
+            <column name="id_promesa_pago" not-null="true" />
+        </many-to-one>
+        <many-to-one name="quincena" class="dto.Quincena" fetch="select">
+            <column name="id_quincena" not-null="true" />
+        </many-to-one>
+        <property name="fechaDeposito" type="date">
+            <column name="fecha_deposito" length="10" not-null="true" />
+        </property>
+        <property name="fechaRegistro" type="date">
+            <column name="fecha_registro" length="10" not-null="true" />
+        </property>
+        <property name="estatus" type="int">
+            <column name="estatus" not-null="true" />
+        </property>
+        <property name="monto" type="float">
+            <column name="monto" precision="12" scale="0" not-null="true" />
+        </property>
+        <property name="numeroCuenta" type="string">
+            <column name="numero_cuenta" length="50" not-null="true" />
+        </property>
+        <property name="nombreComprobante" type="string">
+            <column name="nombre_comprobante" length="200" not-null="true" unique="true" />
+        </property>
+        <property name="revisor" type="string">
+            <column name="revisor" length="50" />
+        </property>
+        <property name="observaciones" type="string">
+            <column name="observaciones" length="200" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 25/11/2015 11:44:50 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="dto.Gestion" table="gestion" catalog="sigerbd" optimistic-lock="version">
         <id name="idGestion" type="java.lang.Integer">
@@ -11,11 +11,14 @@
         <many-to-one name="credito" class="dto.Credito" fetch="select">
             <column name="id_credito" not-null="true" />
         </many-to-one>
+        <many-to-one name="estatusInformativo" class="dto.EstatusInformativo" fetch="select">
+            <column name="id_estatus_informativo" not-null="true" />
+        </many-to-one>
         <many-to-one name="usuario" class="dto.Usuario" fetch="select">
             <column name="id_usuario" not-null="true" />
         </many-to-one>
         <property name="fecha" type="timestamp">
-            <column name="fecha" length="19" />
+            <column name="fecha" length="19" not-null="true" />
         </property>
         <property name="tipoGestion" type="string">
             <column name="tipo_gestion" length="100" not-null="true" />
@@ -35,11 +38,8 @@
         <property name="sujetoGestion" type="string">
             <column name="sujeto_gestion" length="100" not-null="true" />
         </property>
-        <property name="informacionInstitucion" type="string">
-            <column name="informacion_institucion" length="100" not-null="true" />
-        </property>
         <property name="gestion" type="string">
-            <column name="gestion" length="300" />
+            <column name="gestion" length="300" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>

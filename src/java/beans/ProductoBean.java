@@ -12,12 +12,14 @@ import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import util.log.Logs;
 
 /**
  *
  * @author Eduardo
  */
+
+@ManagedBean(name = "productoBean")
+@ViewScoped
 public class ProductoBean implements Serializable{
   
   // objeto para gestionar
