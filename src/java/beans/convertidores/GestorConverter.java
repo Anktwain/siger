@@ -35,7 +35,7 @@ public class GestorConverter implements Converter {
       System.out.println("o es un " + o.getClass() + " y vale <" + o.toString() + ">.");      
       return o.toString();
     } catch (NullPointerException npo) {
-      System.out.println("Puntero nulo en gestorConverter.getAsString() porque el objeto <o> no tiene un string que devolver.");
+      System.out.println("Puntero nulo en gestorConverter.getAsString() porque el objeto <o> es nulo o su metodo toString() devuelve nulo.");
       return null;
     }
   }

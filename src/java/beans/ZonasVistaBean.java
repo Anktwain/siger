@@ -113,7 +113,7 @@ public class ZonasVistaBean implements Serializable {
 
     edoRepVisible = new EstadoRepublica();
 
-    mpiosDeshabilitados = false;
+    mpiosDeshabilitados = true;
     coloniasDeshabilitadas = true;
 
     GestorDAO gestorDao = new GestorIMPL();

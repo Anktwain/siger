@@ -48,16 +48,18 @@ public class ZonaService {
   }
 
   public EstadoRepublica getEdoRepPorNombre(String nombre) {
+    EstadoRepublica edoEncontrado = null;
     if (nombre.equals(this.lugarSinSeleccion)) {
-      return new EstadoRepublica(nombre);   // Revisar esta línea
+      edoEncontrado = new EstadoRepublica(nombre);   // Revisar esta línea
     } else {
       for (EstadoRepublica edoRepIterador : this.estadosRep) {
         if (edoRepIterador.getNombre().equals(nombre)) {
-          return edoRepIterador;
+          edoEncontrado = edoRepIterador;
         }
       }
     }
-    return null;
+    System.out.println(" ..................... Se encontró: <" + edoEncontrado + ">");
+    return edoEncontrado;
   }
 
   public Gestor getGestorPorNombre(String nombre) {
@@ -66,11 +68,12 @@ public class ZonaService {
       gestorEncontrado = new Gestor(new Usuario()); // Revisar esta línea
     } else {
       for (Gestor gestorIterador : this.gestoresDespachoActual) {
-        if (gestorIterador.getUsuario().toString().equals(nombre)) {
+        if (gestorIterador.toString().equals(nombre)) {
           gestorEncontrado = gestorIterador;
         }
       }
     }
+    System.out.println(" ..................... Se encontró: <" + gestorEncontrado + ">");
     return gestorEncontrado;
   }
 
