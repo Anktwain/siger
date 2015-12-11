@@ -1,3 +1,4 @@
+
 package beans;
 
 import dao.EstadoRepublicaDAO;
@@ -14,11 +15,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.el.ELContext;
-import javax.faces.bean.ApplicationScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
+import util.constantes.Constantes;
 
 /**
  * Este bean maneja las variables que controlan los componentes asociados
@@ -31,15 +32,15 @@ import javax.faces.event.ActionEvent;
  *
  * @author Pablo
  */
-@ManagedBean(name = "zonasVistaBean", eager = true)
-@ApplicationScoped
+@ManagedBean(name = "zonasVistaBean")
+@ViewScoped
 public class ZonasVistaBean implements Serializable {
 
-  ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+  private final ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   /**
    * Inclusion del bean de Zona.
    */
-  ZonaBean zona = (ZonaBean) elContext.getELResolver().getValue(elContext, null, "zona");
+  private ZonaBean zona = (ZonaBean) elContext.getELResolver().getValue(elContext, null, "zonaBean");
 
   /**
    * Todos los estadosRep que se listarán en la vista.
@@ -83,7 +84,6 @@ public class ZonasVistaBean implements Serializable {
    */
   private int idEdoVisible;
 
-  private List<Municipio> mpiosDelEstadoRepSelec;
   private List<Colonia> coloniasDelEstadoRepSelec;
 
   private boolean mpiosDeshabilitados;
@@ -92,11 +92,14 @@ public class ZonasVistaBean implements Serializable {
   private Gestor gestorAsignado;
   private List<Gestor> gestores;
 
-  private boolean switchMpios;
-  private boolean switchColonias;
-  private boolean switchColoniasDisabled;
   private int acPanColoniasActiveIndex;
   private int acPanMpiosActiveIndex;
+
+  private final String lugarSinSeleccion;
+  private final String seleccionCompleta;
+  private String tituloDialogo;
+
+  private final String gestorSinSeleccion;
 
   public ZonasVistaBean() {
     zona = new ZonaBean();
@@ -107,7 +110,6 @@ public class ZonasVistaBean implements Serializable {
 
     coloniasVisibles = new ArrayList<>();
 
-    mpiosDelEstadoRepSelec = new ArrayList<>();
     mpiosVisibles = new ArrayList<>();
 
     edoRepVisible = new EstadoRepublica();
@@ -118,23 +120,36 @@ public class ZonasVistaBean implements Serializable {
     GestorDAO gestorDao = new GestorIMPL();
     gestores = gestorDao.buscarTodo();
 
-    switchMpios = false;
-    switchColonias = switchMpios;
-    switchColoniasDisabled = true;
-
     acPanColoniasActiveIndex = -1;
     acPanMpiosActiveIndex = -1;
+
+    lugarSinSeleccion = Constantes.LUGAR_SIN_SELECCION;
+    seleccionCompleta = Constantes.LUGAR_SELECCION_COMPLETA;
+
+    tituloDialogo = "Si se despliega este título, algo anda mal...";  // linea de prueba
+
+    gestorSinSeleccion = Constantes.GESTOR_SIN_SELECCION;
   }
 
+  /**
+   * Método utilizado para llenar la lista de municipios visibles (aptos para
+   * seleccionar) con base en el estado seleccionado en la vista.
+   */
   public void onEstadosChange() {
-    System.out.println("\n|---------------------------------------------------------------------¬");
-    System.out.println("onEstadosChange().");
-    System.out.println("Por seleccionar datos del estado:");
-    System.out.println("this.edoRepVisible.getNombre() = " + this.edoRepVisible.getNombre());
-    System.out.println("this.edoRepVisible.getIdEstado() = " + this.edoRepVisible.getIdEstado());
+    System.out.println("\n|---------------------onEstadosChange().-----------------------------¬");
+    System.out.println("Por seleccionar datos del estado:"
+            + "\nthis.edoRepVisible.getNombre() = " + this.edoRepVisible.getNombre()
+            + "\nthis.edoRepVisible.getIdEstado() = " + this.edoRepVisible.getIdEstado());
     System.out.println("L_____________________________________________________________________");
 
-    this.mpiosDelEstadoRepSelec = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
+    if (this.edoRepVisible.getNombre().equals(this.lugarSinSeleccion)) {
+      this.mpiosVisibles.clear();
+    } else {
+      this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
+    }
+
+    this.acPanColoniasActiveIndex = -1;
+    this.coloniasDeshabilitadas = true;
   }
 
   public List<EstadoRepublica> getEstadosRep() {
@@ -146,8 +161,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public List<Municipio> getMpiosVisibles() {
-    mpiosVisibles = mpioDao.buscarMunicipiosPorEstado(zona.getEdosRepSeleccionados().get(idEdoVisible).getIdEstado());
-    return mpiosVisibles;
+    return this.mpiosVisibles;
   }
 
   public void setMpiosVisibles(List<Municipio> mpiosVisibles) {
@@ -179,15 +193,15 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public List<Municipio> getMpiosDelEstadoRepSelec() {
-    return mpiosDelEstadoRepSelec;
+    return mpiosVisibles;
   }
 
   public void setMpiosDelEstadoRepSelec(List<Municipio> mpiosDelEstadoRepSelec) {
-    this.mpiosDelEstadoRepSelec = mpiosDelEstadoRepSelec;
+    this.mpiosVisibles = mpiosDelEstadoRepSelec;
   }
 
   public void onMpiosChange() {
-    System.out.println("\n|############# onMpiosChange(). Municipios seleccionados en total:");
+    System.out.println("\n|###### onMpiosChange(). Municipios seleccionados en total: #######");
     for (Municipio mpio : this.zona.getMpiosSeleccionados()) {
       System.out.println(mpio);
     }
@@ -204,33 +218,36 @@ public class ZonasVistaBean implements Serializable {
 
   public void onMostrarMpiosChange() {
     if (this.switchMpios == false) {
+      this.acPanMpiosActiveIndex = -1;
       this.switchColonias = false;
       this.switchColoniasDisabled = true;
-      this.acPanMpiosActiveIndex = -1;
     } else {
       this.switchColoniasDisabled = false;
+      if (this.mpiosVisibles.isEmpty()) {
+        onEstadosChange();
+      }
     }
     this.mpiosDeshabilitados = !this.switchMpios;
 
-    System.out.println("\nonMostrarMpiosChange(). - municipios " 
-            + (mpiosDeshabilitados == true ? "DEShabilitados" : "Habilitados."));
+    System.out.println("\n|#################### onMostrarMpiosChange(). - municipios "
+            + (mpiosDeshabilitados == true ? "DEShabilitados" : "Habilitados.")
+            + " ############# \n########## Municipios visibles del estadoRep actual:"); // linea de debug
 
-    System.out.println("|#################### Municipios seleccionados del estadoRep actual:");
-    for (Municipio mpio : this.mpiosDelEstadoRepSelec) {
+    for (Municipio mpio : this.mpiosVisibles) {
       System.out.println(mpio);
     }
-    System.out.println("|_#################### #################### ####################_|");
+    System.out.println("|_#################### #################### #################### ####################_|"); // linea de debug
 
   }
 
-  public void onMostrarColoniasChange() {
+  public void onMostrarColoniasChange(String evento) {
     if (this.switchColonias == false) {
       this.coloniasDeshabilitadas = true;
       this.acPanColoniasActiveIndex = -1;
     } else {
       this.coloniasDeshabilitadas = false;
     }
-    System.out.println("onMostrarColoniasChange(). - colonias " + (coloniasDeshabilitadas == true ? "DEShabilitados" : "Habilitadas."));
+    System.out.println("onMostrarColoniasChange(" + evento + "). - colonias " + (coloniasDeshabilitadas == true ? "DEShabilitados" : "Habilitadas."));
 
   }
 
@@ -270,30 +287,6 @@ public class ZonasVistaBean implements Serializable {
     this.gestores = gestores;
   }
 
-  public boolean isSwitchMpios() {
-    return switchMpios;
-  }
-
-  public void setSwitchMpios(boolean switchMpios) {
-    this.switchMpios = switchMpios;
-  }
-
-  public boolean isSwitchColonias() {
-    return switchColonias;
-  }
-
-  public void setSwitchColonias(boolean switchColonias) {
-    this.switchColonias = switchColonias;
-  }
-
-  public boolean isSwitchColoniasDisabled() {
-    return switchColoniasDisabled;
-  }
-
-  public void setSwitchColoniasDisabled(boolean switchColoniasDisabled) {
-    this.switchColoniasDisabled = switchColoniasDisabled;
-  }
-
   public int getAcPanColoniasActiveIndex() {
     return acPanColoniasActiveIndex;
   }
@@ -319,24 +312,70 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onAceptar() {
+//    FacesContext context = FacesContext.getCurrentInstance();
+//    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Botón aceptar", "Probando la acción del botón aceptar"));
   }
 
-  public EstadoRepublica getEdoRepPorId(int id) {
-    for (EstadoRepublica edoRepIterador : this.estadosRep) {
-      if (edoRepIterador.getIdEstado() == id) {
-        return edoRepIterador;
+  public Municipio getMpioPorNombre(String nombre) {
+    for (Municipio mpioIterador : this.mpiosVisibles) {
+      if (mpioIterador.getNombre().equals(nombre)) {
+        return mpioIterador;
       }
     }
     return null;
   }
 
-  public EstadoRepublica getEdoRepPorNombre(String nombre) {
-    for (EstadoRepublica edoRepIterador : this.estadosRep) {
-      if (edoRepIterador.getNombre().equals(nombre)) {
-        return edoRepIterador;
-      }
+  public void onEventOccurs(String tipoEvento) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    switch (tipoEvento) {
+      default:
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                "Evento <" + tipoEvento + ">", 
+                "Se hizo una llamada con un tipo de evento NO válido."));
+        break;
     }
-    return null;
+
+  }
+
+  public void onZonasDisplay(int opcion) {
+    switch (opcion) {
+      case 1:
+        this.tituloDialogo = "Crear nueva zona.";
+        // Lógica de la creación
+
+        break;
+      case 2:
+        this.tituloDialogo = "Modificar zona existente.";
+        // Lógica de la modificación
+
+        break;
+    }
+
+    FacesContext context = FacesContext.getCurrentInstance();
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "actionListener onZonasDisplay()",
+            "Por definir este comportamiento al desplegar el form de Zonas :P"));
+  }
+
+  public String getLugarSinSeleccion() {
+    return lugarSinSeleccion;
+  }
+
+  public String getSeleccionCompleta() {
+    return seleccionCompleta;
+  }
+
+  public String getTituloDialogo() {
+    return tituloDialogo;
+  }
+
+  public void setTituloDialogo(String tituloDialogo) {
+    this.tituloDialogo = tituloDialogo;
+  }
+
+  public String getGestorSinSeleccion() {
+    return gestorSinSeleccion;
   }
 
 }
