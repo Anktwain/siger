@@ -149,10 +149,9 @@
               <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.edoRepVisible}" 
                                var="edo" filter="true" filterMatchMode="contains" 
                                converter="edoRepConverter" >
-                <p:ajax event="change" listener="${zonasVistaBean.onEstadosChange}" 
-                        update="growl,switchBtnMunicipio,apMunicipios,switchBtnColonia,apColonias" />
-                <f:selectItem itemLabel="Selecciona un estado" noSelectionOption="true"
-                              />
+                <p:ajax listener="${zonasVistaBean.onEstadosChange}" 
+                        update="growl,apMunicipios,apColonias,monitActInMpio,monitMpioDeshab,monitActInColonia,monitColoniaDeshab" />
+                <f:selectItem itemLabel="Selecciona un estado" noSelectionOption="true" />
                 <f:selectItems value="${zonasVistaBean.estadosRep}" var="edoRep" 
                                itemValue="${edoRep}" />
                 <p:column>
@@ -161,9 +160,13 @@
               </p:selectOneMenu>
             </h:panelGrid>
 
-            <h:panelGrid columns="1" cellpadding="10">
+            <h:panelGrid id="panGridMpios" columns="1" cellpadding="10">
               <f:facet name="header">
                 <h:outputText value="Municipios " />
+                <br/>
+                <h:outputText id="monitActInMpio" value="activeIndex: ${zonasVistaBean.acPanMpiosActiveIndex}" />
+                <br/>
+                <h:outputText id="monitMpioDeshab" value="tabDisabled: ${zonasVistaBean.mpiosDeshabilitados}" />
                 <p:separator/>
               </f:facet>
 
@@ -175,7 +178,7 @@
                                     filterMatchMode="contains" showCheckbox="true"  
                                     converter="mpioConverter">
                     <p:ajax event="change" listener="${zonasVistaBean.onMpiosChange}" 
-                            update="growl,listaMunicipio" />
+                            update="growl,listaMunicipio,formNuevaZona:panGridMpios:monitActInMpio,formNuevaZona:panGridMpios:monitMpioDeshab,formNuevaZona:panGridColonias:monitActInColonia,formNuevaZona:panGridColonias:monitColoniaDeshab" />
                     <f:selectItem itemLabel="Todos (${zonasVistaBean.mpiosDelEstadoRepSelec.size()})" 
                                   noSelectionOption="true"/>
                     <f:selectItems value="${zonasVistaBean.mpiosDelEstadoRepSelec}" 
@@ -185,9 +188,13 @@
               </p:accordionPanel>
             </h:panelGrid>
 
-            <h:panelGrid columns="1" cellpadding="10">
+            <h:panelGrid id="panGridColonias" columns="1" cellpadding="10">
               <f:facet name="header">
                 <h:outputText class="text-center" value="Colonias "/>
+                <br/>
+                <h:outputText id="monitActInColonia" value="activeIndex: ${zonasVistaBean.acPanColoniasActiveIndex}" />
+                <br/>
+                <h:outputText id="monitColoniaDeshab" value="tabDisabled: ${zonasVistaBean.coloniasDeshabilitadas}" />
                 <p:separator />
               </f:facet>              
 
@@ -198,6 +205,8 @@
                   <p:selectManyMenu id="listaColonia" filter="true"
                                     value="#{zonasVistaBean.zona.coloniasSeleccionadas}"
                                     filterMatchMode="contains" showCheckbox="true" >
+                    <p:ajax event="change" listener="${zonasVistaBean.onColoniasChange}" 
+                            update="growl,monitActInMpio,monitMpioDeshab,monitActInColonia,monitColoniaDeshab" />
                     <f:selectItem itemLabel="Todos" noSelectionOption="true" />
                     <f:selectItems value="${zonasVistaBean.coloniasDelEstadoRepSelec}" 
                                    var="col" itemLabel="${col.nombre}" />
@@ -219,6 +228,55 @@
 
         </h:form>
       </p:dialog>
+
+      <!-- FORMULARIO PARA REGISTRAR UNA NUEVA ZONA -->
+      <!--
+  
+
+      
+                    <p:outputLabel for="municipio" value="Municipios: " />
+                    <p:selectManyMenu id="municipio" value="{zonasVistaBean.mpiosSeleccionados}"
+                                      var="m" filter="true" filterMatchMode="contains" showCheckbox="true">
+                      <p:ajax listener="{zonasVistaBean.onMpiosChange}" update="colonia" />
+      
+                      <f:selectItem itemLabel="Todos" itemValue="todos" />
+      
+                      <f:selectItems value="{zonasVistaBean.mpiosDelEstadoRepSelec}" var="mpio" itemLabel="itemLabel MpiosDePrueba" />
+      
+                      <p:column>
+                        <h:outputText value="{m}" />
+                      </p:column>
+                    </p:selectManyMenu>
+                  </h:panelGrid>
+                  
+                                       GRID COLONIAS                            
+      
+                  <h:panelGrid columns="2" cellpadding="10" columnClasses="label, value">
+                    <f:facet name="header">Colonias
+                      <p:separator/>
+                    </f:facet>
+                    <p:outputLabel for="colonia" value="Colonia:" />
+                    <p:selectManyMenu id="colonia" value="{zonasVistaBean.coloniasSeleccionadas}"
+                                      var="c" filter="true" filterMatchMode="contains" showCheckbox="true">
+      
+                      <f:selectItem itemLabel="Todos" itemValue="todos" />
+      
+                      <f:selectItems value="{zonasVistaBean.coloniasDelEstadoRepSelec}" var="col" />
+      
+                      <p:column>
+                        <h:outputText value="{c}" />
+                      </p:column>
+                    </p:selectManyMenu>
+      
+                  </h:panelGrid>
+                  <f:facet name="footer" >
+                    <p:commandButton value="Aceptar" icon="ui-icon-check"/>
+                    <p:commandButton value="Cancelar" icon="ui-icon-close"/>
+                  </f:facet>
+                </p:panelGrid>
+      
+              </h:form>
+            </p:dialog>-->
 
     </div> <!-- main container -->
     <ui:include src="barraInferior.xhtml"/>

@@ -24,4 +24,5 @@ public interface CreditoDAO {
   public List<Credito> buscarCreditosRelacionados(Credito creditoActual);
   public List<String> barraBusquedaAdmin(String valor, int idDespacho);
   public List<String> barraBusquedaGestor(String valor, int idUsuario);
+  public Credito buscar(String numeroCredito);
 }

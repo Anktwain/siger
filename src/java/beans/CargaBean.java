@@ -119,7 +119,7 @@ public class CargaBean implements Serializable {
     //String archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = FilenameUtils.getBaseName(nombreArchivo);
     archivoSql = Directorios.RUTA_REMESAS + archivoSql + ".sql";
-    int[] ns = {0,0}; // el primer elemento del arreglo indica los casos no exitosos, el segundo, los exitosos.
+    int[] ns = {0,0}; // {i,j}, i: indica los casos no exitosos, j: los exitosos.
     String resultado;
     filaBean = new FilaBean();
     fila = new Fila();
@@ -133,16 +133,21 @@ public class CargaBean implements Serializable {
     }
     
     // Recorre el archivo xls, pasando por todas sus filas
-    for (int i = 1; i < numeroDeFilas; i++) { // Comienza en la fila 1, dado que la fila 0 contiene los encabezados
+    for (int i = 1; i < numeroDeFilas; i++) { // Inicia en fila 1, fila 0 contiene encabezados
       System.out.println("FILA " + i);
       crearFila(i); // Crea un objeto Fila para cada fila del archivo xls
       filaBean.setFilaActual(fila);
       // Valida la fila a través de filaBean. Suma 1 para mantener la concordancia
       // con el archivo xls en cuanto al etiquetado de las filas: 1, 2, 3, ...
-      if (validarFila(i + 1)) { // i+1 el sólo para efectos de imprimir el número de línea en la cual ocurrió el error en caso de que lo hubiera. Se envía i + 1 para que el número de línea corresponda con el de excel, por ejemplo si el error ocurre en la línea 1, en excel corresponde a la línea 1+1=2, dado que la primera línea es de encabezados
+      if (validarFila(i + 1)) { // i+1 el sólo para efectos de imprimir el número de línea
+        // en la cual ocurrió el error en caso de que lo hubiera. Se envía i + 1 para que el
+        // número de línea corresponda con el de excel, por ejemplo si el error ocurre en la
+        // línea 1, en excel corresponde a la línea 1+1=2, dado que la primera línea es de encabezados
         // Dado que la fila es válida, prosigue...
-        // A continuación clasificamos a los créditos como: en la fiesta, estaba en la fiesta, nuevo crédito, nuevo total
-        // AQUÍ SE INSERTA LA LLAMADA A UNA FUNCIÓN QUE BUSCA UNA CRÉDITO EN LA BD, RECIBE COMO PARÁMETRO EL CRÉDITO
+        // A continuación clasificamos a los créditos como: en la fiesta, estaba en la fiesta,
+        // nuevo crédito, nuevo total
+        // AQUÍ SE INSERTA LA LLAMADA A UNA FUNCIÓN QUE BUSCA UN CRÉDITO EN LA BD, RECIBE COMO
+        // PARÁMETRO EL CRÉDITO
         // A BUSCAR Y DEVUELVE TRUE O FALSE SI ENCONTRÓ O NO ENCONTRÓ EL CRÉDITO, RESPECTIVAMENTE
         if(buscarCredito(fila.getCredito())){ // Sí se encontró el crédito
           if(seGestionoEnElPeriodoAnterior(fila.getCredito())){

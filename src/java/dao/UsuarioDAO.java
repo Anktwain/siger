@@ -85,4 +85,5 @@ public interface UsuarioDAO {
     public Usuario buscarCorreo(String correo);
     
     public Usuario buscarUsuarioPorIdGestor(int idGestor);
+    public List<Usuario> buscarGestores(int idDespacho);
 }

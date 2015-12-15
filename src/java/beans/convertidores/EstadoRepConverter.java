@@ -16,34 +16,33 @@ public class EstadoRepConverter implements Converter {
   @Override
   public Object getAsObject(FacesContext fc, UIComponent uic, String string) {
     ZonaService zonaService = (ZonaService) fc.getExternalContext().getApplicationMap().get("zonaService");
+    Object devuelto = null;
 
-    if (string != null){
-      if(string.trim().length() > 0) {
-      System.out.println("________________________________edoRepConverter.getAsObject { string = " 
-              + string + "}."
-              + " Intentando enviar el EstadoRepublica que coincida con este nombre."); // Línea de prueba
-
-      return zonaService.getEdoRepPorNombre(string);
-      }else{
-        return null;
+    if (string != null) {
+      if (string.trim().length() > 0) {
+        devuelto = zonaService.getEdoRepPorNombre(string);
+        System.out.println("________________edoRepConverter.getAsObject { string = "
+                + string + "}."
+                + " Enviando el " + devuelto.getClass() + " " + devuelto.toString()); // Línea de prueba
       }
     } else {
-      System.out.println("________________________________edoRepConverter.getAsObject { string = null }"); // Línea de prueba
-      return null;
+      System.out.println("________________edoRepConverter.getAsObject { <string> = null, o bien, <string.trim().length()> = 0 } -> Enviando null"); // Línea de prueba
     }
+    return devuelto;
   }
 
   @Override
   public String getAsString(FacesContext fc, UIComponent uic, Object o) {
+    String devuelta = null;
     if (o != null) {
       if (o.toString() != null) {
-        System.out.println("_______________________________edoRepConverter.getAsString { o = " 
-                + o + ", o.getClass() = " + o.getClass() + "}");      // Línea de prueba
+        devuelta = o.toString();
+        System.out.println("________________edoRepConverter.getAsString { Enviando "
+                + devuelta + ", o.getClass() = " + o.getClass() + "}");      // Línea de prueba
       }
-      return o.toString();
     } else {
-      System.out.println("_________________________________edoRepConverter.getAsString { o = null }");    // Línea de prueba
-      return null;
+      System.out.println("________________edoRepConverter.getAsString { <o> = null, o bien, <o.toString()> = null } -> Enviando null.");    // Línea de prueba
     }
+    return devuelta;
   }
 }

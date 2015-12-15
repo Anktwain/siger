@@ -17,5 +17,9 @@ hibernate.reveng.xml
 
 *~
 /dist/
-/nbproject/private/
-/build/
+/src/java/beans/VistaCliente.java
+/web/clientes2.xhtml
+/src/java/beans/ClienteBean2.java
+/src/java/beans/NuevaCargaBean.java
+/src/java/beans/NuevaVistaCarga.java
+/src/java/util/FuncionLike.java

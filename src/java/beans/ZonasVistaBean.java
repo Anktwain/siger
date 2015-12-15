@@ -1,4 +1,3 @@
-
 package beans;
 
 import dao.EstadoRepublicaDAO;
@@ -83,6 +82,8 @@ public class ZonasVistaBean implements Serializable {
    * estado que actualmente se despliega en la vista.
    */
   private int idEdoVisible;
+  
+  EstadoRepublicaDAO estadoRepDao;
 
   private List<Colonia> coloniasDelEstadoRepSelec;
 
@@ -217,17 +218,18 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onMostrarMpiosChange() {
-    if (this.switchMpios == false) {
-      this.acPanMpiosActiveIndex = -1;
-      this.switchColonias = false;
-      this.switchColoniasDisabled = true;
+    if (this.acPanMpiosActiveIndex == -1) {
+      this.mpiosDeshabilitados = true;
+      this.coloniasDeshabilitadas = true;
+      this.acPanColoniasActiveIndex = -1;
+
     } else {
-      this.switchColoniasDisabled = false;
+      this.mpiosDeshabilitados = false;
+      
       if (this.mpiosVisibles.isEmpty()) {
         onEstadosChange();
       }
     }
-    this.mpiosDeshabilitados = !this.switchMpios;
 
     System.out.println("\n|#################### onMostrarMpiosChange(). - municipios "
             + (mpiosDeshabilitados == true ? "DEShabilitados" : "Habilitados.")
@@ -241,13 +243,13 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onMostrarColoniasChange(String evento) {
-    if (this.switchColonias == false) {
+    if (this.acPanColoniasActiveIndex == -1) {
       this.coloniasDeshabilitadas = true;
-      this.acPanColoniasActiveIndex = -1;
     } else {
       this.coloniasDeshabilitadas = false;
     }
-    System.out.println("onMostrarColoniasChange(" + evento + "). - colonias " + (coloniasDeshabilitadas == true ? "DEShabilitados" : "Habilitadas."));
+    System.out.println("onMostrarColoniasChange(" + evento + "). - colonias " 
+            + (coloniasDeshabilitadas == true ? "DEShabilitados" : "Habilitadas."));
 
   }
 
@@ -330,8 +332,8 @@ public class ZonasVistaBean implements Serializable {
 
     switch (tipoEvento) {
       default:
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-                "Evento <" + tipoEvento + ">", 
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Evento <" + tipoEvento + ">",
                 "Se hizo una llamada con un tipo de evento NO válido."));
         break;
     }

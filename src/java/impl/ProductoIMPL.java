@@ -7,6 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.log.Logs;
 
 /**
  * La clase {@code ProductoIMPL} permite ...
@@ -160,5 +161,21 @@ public class ProductoIMPL implements ProductoDAO {
     if (sesion.isOpen()) {
       sesion.close();
     }
+  }
+
+  @Override
+  public Producto buscar(String nombreProducto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    Producto producto;
+    try {
+      producto = (Producto) sesion.createSQLQuery("select * from producto where nombre = '" + nombreProducto + "';").addEntity(Producto.class).uniqueResult();
+    } catch (HibernateException he) {
+      producto = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return producto;
   }
 }
