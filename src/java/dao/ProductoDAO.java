@@ -41,6 +41,7 @@ public interface ProductoDAO {
      * @return
      */
     public Producto buscar(int idProducto);
+    public Producto buscar(String nombreProducto);
 
     /**
      *

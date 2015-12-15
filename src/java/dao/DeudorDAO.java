@@ -42,6 +42,7 @@ public interface DeudorDAO {
      * @return
      */
     public Deudor buscar(int idDeudor);
+    public Deudor buscar(String numeroDeudor);
 
     /**
      *

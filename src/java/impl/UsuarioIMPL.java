@@ -304,6 +304,28 @@ public class UsuarioIMPL implements UsuarioDAO {
     return usuario;
   }
 
+  @Override
+  public List<Usuario> buscarGestores(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    List<Usuario> listaUsuario;
+    String query = "select * from usuario u where u.perfil = " + Perfiles.GESTOR
+            + " and u.id_despacho = " + idDespacho;
+
+    try {
+      listaUsuario = sesion.createSQLQuery(query).addEntity(Usuario.class).list();
+    } catch (HibernateException he) {
+      listaUsuario = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+
+    return listaUsuario;
+  }
+  
+  
+
   /**
    *
    *

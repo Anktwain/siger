@@ -102,6 +102,8 @@ public class ZonasVistaBean implements Serializable {
    * estado que actualmente se despliega en la vista.
    */
   private int idEdoVisible;
+  
+  EstadoRepublicaDAO estadoRepDao;
 
   private List<Municipio> mpiosDelEstadoRepSelec;
   private List<Colonia> coloniasDelEstadoRepSelec;
@@ -140,7 +142,9 @@ public class ZonasVistaBean implements Serializable {
 //    coloniasDePrueba.add("Anáhuac");
     /* **** Código de prueba *****/
     
-    EstadoRepublicaDAO estadoRepDao = new EstadoRepublicaIMPL();
+    edoRepVisible = new EstadoRepublica();
+    
+    estadoRepDao = new EstadoRepublicaIMPL();
     mpioDao = new MunicipioIMPL();
 
     estadosRep = estadoRepDao.buscarTodo();
@@ -258,6 +262,10 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onEstadosChange() {
+    
+    edoRepVisible = estadoRepDao.buscar(edoRepVisible.getIdEstado());
+    System.out.println(edoRepVisible);
+    mpiosSeleccionados = mpioDao.buscarMunicipiosPorEstado(edoRepVisible.getIdEstado());
   }
 
   public List<EstadoRepublica> getEstadosRep() {

@@ -55,6 +55,23 @@ public class CreditoIMPL implements CreditoDAO {
     }
     return creditos;
   }
+
+  @Override
+  public Credito buscar(String numeroCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    Credito credito;
+    
+    try {
+      credito = (Credito) sesion.createSQLQuery("select * from credito where numero_credito = '" + numeroCredito + "';").addEntity(Credito.class).uniqueResult();
+    } catch (HibernateException he) {
+      credito = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return credito;
+  }
   
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
