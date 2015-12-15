@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="dto.ConvenioPago" table="convenio_pago" catalog="sigerbd" optimistic-lock="version">
+        <id name="idConvenioPago" type="int">
+            <column name="id_convenio_pago" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="credito" class="dto.Credito" fetch="select">
+            <column name="id_credito" not-null="true" />
+        </many-to-one>
+        <property name="fecha" type="date">
+            <column name="fecha" length="10" not-null="true" />
+        </property>
+        <property name="estatus" type="int">
+            <column name="estatus" not-null="true" />
+        </property>
+        <property name="saldoNegociado" type="float">
+            <column name="saldo_negociado" precision="12" scale="0" not-null="true" />
+        </property>
+        <property name="pagosRealizados" type="int">
+            <column name="pagos_realizados" not-null="true" />
+        </property>
+        <set name="promesaPagos" table="promesa_pago" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_convenio_pago" not-null="true" />
+            </key>
+            <one-to-many class="dto.PromesaPago" />
+        </set>
+    </class>
+</hibernate-mapping>

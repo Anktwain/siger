@@ -1,92 +1,86 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package beans;
 
-import dao.ZonaDAO;
 import dto.Colonia;
-import dto.Despacho;
 import dto.EstadoRepublica;
-import dto.Gestor;
 import dto.Municipio;
-import dto.Zona;
-import impl.ZonaIMPL;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 
 /**
+ * La lógica del manejo de datos para la vista Zonas. El manejo de los controles
+ * de la vista se hace en el Bean ZonasVistaBean
  *
- * @author brionvega
+ * @author Pablo
+ * @see ZonasVistaBean
  */
-@ManagedBean
-@ViewScoped
+@ManagedBean(name = "zonaBean")
+@SessionScoped
 public class ZonaBean implements Serializable {
-  // Objeto gestionado por esta bean:
-  private Zona zona;
-  
-  // Atributos del objeto gestionado:
-  private String nombreZona;
-  private Despacho despacho;
-  private Gestor gestor;
-  
-  // Acceso a la BD:
-  private ZonaDAO zonaDao;
-  
-  // Otros beans:
-  @ManagedProperty(value = "#{regionBean}")
-  private RegionBean regionBean;
-  
-  // Construyendo...
+
+  /**
+   * El nombre de la zona con el que se le identificará en su respectivo
+   * despacho de creación. El nombre de zona es <strong> único por despacho
+   * </strong>, pero dos despachos cualesquiera podrían tener zonas con los
+   * mismos nombres.
+   */
+  private String nombre;
+
+  /**
+   * Lista donde se almacenan todos los estadosRep de la república seleccionados
+   * en la vista.
+   */
+  private List<EstadoRepublica> edosRepSeleccionados;
+
+  /**
+   * Lista en la que se almacenan todos los municipios seleccionados de todos
+   * los estadosRep.
+   */
+  private List<Municipio> mpiosSeleccionados;
+  /**
+   * Lista en la que se almacenan todas las colonias seleccionadas de todos los
+   * municipios.
+   */
+  private List<Colonia> coloniasSeleccionadas;
+
   public ZonaBean() {
-    zona = new Zona();
-    zonaDao = new ZonaIMPL();
-  }
-  
-  // Setters y Getters
-  public Zona getZona() {
-    return zona;
+    edosRepSeleccionados = new ArrayList<>();
+    mpiosSeleccionados = new ArrayList<>();
+    coloniasSeleccionadas = new ArrayList<>();
   }
 
-  public void setZona(Zona zona) {
-    this.zona = zona;
+  public String getNombre() {
+    return nombre;
   }
 
-  public String getNombreZona() {
-    return nombreZona;
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
   }
 
-  public void setNombreZona(String nombreZona) {
-    this.nombreZona = nombreZona;
+  public List<EstadoRepublica> getEdosRepSeleccionados() {
+    return edosRepSeleccionados;
   }
 
-  public Despacho getDespacho() {
-    return despacho;
+  public void setEdosRepSeleccionados(List<EstadoRepublica> edosRepSelec) {
+    this.edosRepSeleccionados = edosRepSelec;
   }
 
-  public void setDespacho(Despacho despacho) {
-    this.despacho = despacho;
+  public List<Municipio> getMpiosSeleccionados() {
+    return mpiosSeleccionados;
   }
 
-  public Gestor getGestor() {
-    return gestor;
+  public void setMpiosSeleccionados(List<Municipio> mpiosSeleccionados) {
+    this.mpiosSeleccionados = mpiosSeleccionados;
   }
 
-  public void setGestor(Gestor gestor) {
-    this.gestor = gestor;
+  public List<Colonia> getColoniasSeleccionadas() {
+    return coloniasSeleccionadas;
   }
 
-  public RegionBean getRegionBean() {
-    return regionBean;
+  public void setColoniasSeleccionadas(List<Colonia> coloniasSeleccionadas) {
+    this.coloniasSeleccionadas = coloniasSeleccionadas;
   }
 
-  public void setRegionBean(RegionBean regionBean) {
-    this.regionBean = regionBean;
-  }
-  
-  
 }

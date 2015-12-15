@@ -1,20 +1,33 @@
 package beans;
 
 import dao.EstadoRepublicaDAO;
+import dao.GestorDAO;
 import dao.MunicipioDAO;
 import dto.Colonia;
 import dto.EstadoRepublica;
+import dto.Gestor;
 import dto.Municipio;
 import impl.EstadoRepublicaIMPL;
+import impl.GestorIMPL;
 import impl.MunicipioIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.el.ELContext;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import util.log.Logs;
+import javax.faces.context.FacesContext;
+import util.constantes.Constantes;
 
 /**
+ * Este bean maneja las variables que controlan los componentes asociados
+ * directamente con la vista. Los datos relacionados directamente con la zona se
+ * encuentran en la clase ZonaBean.
+ *
+ * Si se asigna al atributo eager el valor true y el bean tiene alcance
+ * ApplicationScoped, se instanciará el objeto <strong> al iniciar la aplicación
+ * </strong>, reemplazando la carga "lazy" que por defecto ocurre.
  *
  * @author Pablo
  */
@@ -22,30 +35,12 @@ import util.log.Logs;
 @ViewScoped
 public class ZonasVistaBean implements Serializable {
 
+  private final ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   /**
-   * El nombre de la zona con el que se le identificará en su respectivo
-   * despacho de creación. El nombre de zona es <strong> único por despacho
-   * </strong>, pero dos despachos cualesquiera podrían tener zonas con los
-   * mismos nombres.
+   * Inclusion del bean de Zona.
    */
-  private String nombre;
+  private ZonaBean zona = (ZonaBean) elContext.getELResolver().getValue(elContext, null, "zonaBean");
 
-  /* **** Código de prueba *****/
-//  private String estadoSeleccionado;
-//
-//  private List<String> estadosDePrueba;
-//  private List<String> mpiosDePrueba;
-//  private List<String> coloniasDePrueba;
-//
-//  private List<String> estadosAutoCompletados;
-//  private List<String> mpiosAutoCompletados;
-//  private List<String> coloniasAutoCompletadas;
-//
-//  private List<String> estadosSeleccionados;
-//  private List<String> mpiosSeleccionados;
-//  private List<String> coloniasSeleccionadas;
-  /* **** Código de prueba *****/
-  
   /**
    * Todos los estadosRep que se listarán en la vista.
    */
@@ -73,26 +68,11 @@ public class ZonasVistaBean implements Serializable {
   private List<Colonia> coloniasAutoCompletadas;
 
   /**
-   * Lista en la que se almacenan todos los municipios seleccionados de todos
-   * los estadosRep.
-   */
-  private List<Municipio> mpiosSeleccionados;
-  /**
-   * Lista en la que se almacenan todas las colonias seleccionadas de todos los
-   * municipios.
-   */
-  private List<Colonia> coloniasSeleccionadas;
-
-  /**
    * Objeto DAO para realizar las operaciones en la base de datos que
    * corresponden con la tabla Municipio.
    */
-  private MunicipioDAO mpioDao;
-  /**
-   * Lista donde se almacenan todos los estadosRep de la república seleccionados
-   * en la vista.
-   */
-  private List<EstadoRepublica> edosRepSeleccionados;
+  private final MunicipioDAO mpioDao;
+
   /**
    * Estado que actualmente se despliega en la vista.
    */
@@ -105,167 +85,72 @@ public class ZonasVistaBean implements Serializable {
   
   EstadoRepublicaDAO estadoRepDao;
 
-  private List<Municipio> mpiosDelEstadoRepSelec;
   private List<Colonia> coloniasDelEstadoRepSelec;
 
-  public ZonasVistaBean() {
+  private boolean mpiosDeshabilitados;
+  private boolean coloniasDeshabilitadas;
 
-    /* **** Código de prueba *****/
-//    estadosDePrueba = new ArrayList<>();
-//    mpiosDePrueba = new ArrayList<>();
-//    coloniasDePrueba = new ArrayList<>();
-//
-//    estadosAutoCompletados = new ArrayList<>();
-//    mpiosAutoCompletados = new ArrayList<>();
-//    coloniasAutoCompletadas = new ArrayList<>();
-//
-//    estadosSeleccionados = new ArrayList<>();
-//    mpiosSeleccionados = new ArrayList<>();
-//    coloniasSeleccionadas = new ArrayList<>();
-//
-//    estadosDePrueba.add("Aguascalientes");
-//    estadosDePrueba.add("Chiapas");
-//    estadosDePrueba.add("Distrito Federal");
-//    estadosDePrueba.add("Querétaro");
-//    estadosDePrueba.add("Zacatecas");
-//
-//    mpiosDePrueba.add("Álvaro Obregón");
-//    mpiosDePrueba.add("Benito Juárez");
-//    mpiosDePrueba.add("Cuauhtémoc");
-//    mpiosDePrueba.add("Milpa Alta");
-//    mpiosDePrueba.add("Venustiano Carranza");
-//
-//    coloniasDePrueba.add("Obrera");
-//    coloniasDePrueba.add("Doctores");
-//    coloniasDePrueba.add("Tránsito");
-//    coloniasDePrueba.add("Pro hogar");
-//    coloniasDePrueba.add("Anáhuac");
-    /* **** Código de prueba *****/
-    
-    edoRepVisible = new EstadoRepublica();
-    
-    estadoRepDao = new EstadoRepublicaIMPL();
+  private Gestor gestorAsignado;
+  private List<Gestor> gestores;
+
+  private int acPanColoniasActiveIndex;
+  private int acPanMpiosActiveIndex;
+
+  private final String lugarSinSeleccion;
+  private final String seleccionCompleta;
+  private String tituloDialogo;
+
+  private final String gestorSinSeleccion;
+
+  public ZonasVistaBean() {
+    zona = new ZonaBean();
+    EstadoRepublicaDAO estadoRepDao = new EstadoRepublicaIMPL();
     mpioDao = new MunicipioIMPL();
 
     estadosRep = estadoRepDao.buscarTodo();
-    edosRepSeleccionados = new ArrayList<>();
 
     coloniasVisibles = new ArrayList<>();
 
-    mpiosDelEstadoRepSelec = new ArrayList<>();
     mpiosVisibles = new ArrayList<>();
-    
-    mpiosSeleccionados = new ArrayList<>();
-    coloniasSeleccionadas = new ArrayList<>();
 
+    edoRepVisible = new EstadoRepublica();
+
+    mpiosDeshabilitados = true;
+    coloniasDeshabilitadas = true;
+
+    GestorDAO gestorDao = new GestorIMPL();
+    gestores = gestorDao.buscarTodo();
+
+    acPanColoniasActiveIndex = -1;
+    acPanMpiosActiveIndex = -1;
+
+    lugarSinSeleccion = Constantes.LUGAR_SIN_SELECCION;
+    seleccionCompleta = Constantes.LUGAR_SELECCION_COMPLETA;
+
+    tituloDialogo = "Si se despliega este título, algo anda mal...";  // linea de prueba
+
+    gestorSinSeleccion = Constantes.GESTOR_SIN_SELECCION;
   }
 
-//  public String getEstadosDePrueba() {
-//    StringBuilder edp = new StringBuilder(estadosDePrueba.get(0));
-//
-//    for (int i = 1; i < estadosDePrueba.size(); i++) {
-//      edp.append("\n");
-//      edp.append(estadosDePrueba.get(i));
-//    }
-//    return edp.toString();
-//  }
-//
-//  public void setEstadosDePrueba(List<String> estadosDePrueba) {
-//    this.estadosDePrueba = estadosDePrueba;
-//  }
-//
-//  public List<String> getMpiosDePrueba() {
-//    return mpiosDePrueba;
-//  }
-//
-//  public void setMpiosDePrueba(List<String> mpiosDePrueba) {
-//    this.mpiosDePrueba = mpiosDePrueba;
-//  }
-//
-//  public List<String> autocompletarEstados() {
-//    estadosAutoCompletados.add(estadosDePrueba.get(0));
-//    estadosAutoCompletados.add(estadosDePrueba.get(estadosDePrueba.size() - 1));
-//    return estadosAutoCompletados;
-//  }
-//
-//  public List<String> getEstadosAutoCompletados() {
-//    return estadosAutoCompletados;
-//  }
-//
-//  public void setEstadosAutoCompletados(List<String> estadosAutoCompletados) {
-//    this.estadosAutoCompletados = estadosAutoCompletados;
-//  }
-//
-//  public List<String> getEstadosSeleccionados() {
-//    estadosSeleccionados = estadosDePrueba;
-//    return estadosSeleccionados;
-//  }
-//
-//  public void setEstadosSeleccionados(List<String> estadosSeleccionados) {
-//    this.estadosSeleccionados = estadosSeleccionados;
-//  }
-//
-//  public List<String> getMpiosSeleccionados() {
-//    return mpiosSeleccionados;
-//  }
-//
-//  public void setMpiosSeleccionados(List<String> mpiosSeleccionados) {
-//    this.mpiosSeleccionados = mpiosSeleccionados;
-//  }
-//
-//  public List<String> getMpiosAutoCompletados() {
-//    return mpiosAutoCompletados;
-//  }
-//
-//  public void setMpiosAutoCompletados(List<String> mpiosAutoCompletados) {
-//    this.mpiosAutoCompletados = mpiosAutoCompletados;
-//  }
-//
-//  public String getEstadoSeleccionado() {
-//    return estadoSeleccionado;
-//  }
-//
-//  public void setEstadoSeleccionado(String estadoSeleccionado) {
-//    this.estadoSeleccionado = estadoSeleccionado;
-//  }
-//
-//  public List<String> getColoniasDePrueba() {
-//    return coloniasDePrueba;
-//  }
-//
-//  public void setColoniasDePrueba(List<String> coloniasDePrueba) {
-//    this.coloniasDePrueba = coloniasDePrueba;
-//  }
-//
-//  public List<String> getColoniasAutoCompletadas() {
-//    return coloniasAutoCompletadas;
-//  }
-//
-//  public void setColoniasAutoCompletadas(List<String> coloniasAutoCompletadas) {
-//    this.coloniasAutoCompletadas = coloniasAutoCompletadas;
-//  }
-//
-//  public List<String> getColoniasSeleccionadas() {
-//    return coloniasSeleccionadas;
-//  }
-//
-//  public void setColoniasSeleccionadas(List<String> coloniasSeleccionadas) {
-//    this.coloniasSeleccionadas = coloniasSeleccionadas;
-//  }
-  
-  public String getNombre() {
-    return nombre;
-  }
-
-  public void setNombre(String nombre) {
-    this.nombre = nombre;
-  }
-
+  /**
+   * Método utilizado para llenar la lista de municipios visibles (aptos para
+   * seleccionar) con base en el estado seleccionado en la vista.
+   */
   public void onEstadosChange() {
-    
-    edoRepVisible = estadoRepDao.buscar(edoRepVisible.getIdEstado());
-    System.out.println(edoRepVisible);
-    mpiosSeleccionados = mpioDao.buscarMunicipiosPorEstado(edoRepVisible.getIdEstado());
+    System.out.println("\n|---------------------onEstadosChange().-----------------------------¬");
+    System.out.println("Por seleccionar datos del estado:"
+            + "\nthis.edoRepVisible.getNombre() = " + this.edoRepVisible.getNombre()
+            + "\nthis.edoRepVisible.getIdEstado() = " + this.edoRepVisible.getIdEstado());
+    System.out.println("L_____________________________________________________________________");
+
+    if (this.edoRepVisible.getNombre().equals(this.lugarSinSeleccion)) {
+      this.mpiosVisibles.clear();
+    } else {
+      this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
+    }
+
+    this.acPanColoniasActiveIndex = -1;
+    this.coloniasDeshabilitadas = true;
   }
 
   public List<EstadoRepublica> getEstadosRep() {
@@ -277,8 +162,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public List<Municipio> getMpiosVisibles() {
-    mpiosVisibles = mpioDao.buscarMunicipiosPorEstado(edosRepSeleccionados.get(idEdoVisible).getIdEstado());
-    return mpiosVisibles;
+    return this.mpiosVisibles;
   }
 
   public void setMpiosVisibles(List<Municipio> mpiosVisibles) {
@@ -291,14 +175,6 @@ public class ZonasVistaBean implements Serializable {
 
   public void setColoniasVisibles(List<Colonia> coloniasVisibles) {
     this.coloniasVisibles = coloniasVisibles;
-  }
-
-  public List<EstadoRepublica> getEdosRepSeleccionados() {
-    return edosRepSeleccionados;
-  }
-
-  public void setEdosRepSeleccionados(List<EstadoRepublica> edosRepSelec) {
-    this.edosRepSeleccionados = edosRepSelec;
   }
 
   public int getIdEdoVisible() {
@@ -318,14 +194,19 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public List<Municipio> getMpiosDelEstadoRepSelec() {
-    return mpiosDelEstadoRepSelec;
+    return mpiosVisibles;
   }
 
   public void setMpiosDelEstadoRepSelec(List<Municipio> mpiosDelEstadoRepSelec) {
-    this.mpiosDelEstadoRepSelec = mpiosDelEstadoRepSelec;
+    this.mpiosVisibles = mpiosDelEstadoRepSelec;
   }
 
   public void onMpiosChange() {
+    System.out.println("\n|###### onMpiosChange(). Municipios seleccionados en total: #######");
+    for (Municipio mpio : this.zona.getMpiosSeleccionados()) {
+      System.out.println(mpio);
+    }
+    System.out.println("|_#################### #################### ####################_| ");
   }
 
   public List<Colonia> getColoniasDelEstadoRepSelec() {
@@ -336,22 +217,167 @@ public class ZonasVistaBean implements Serializable {
     this.coloniasDelEstadoRepSelec = coloniasDelEstadoRepSelec;
   }
 
-  public List<Municipio> getMpiosSeleccionados() {
-    return mpiosSeleccionados;
+  public void onMostrarMpiosChange() {
+    if (this.acPanMpiosActiveIndex == -1) {
+      this.mpiosDeshabilitados = true;
+      this.coloniasDeshabilitadas = true;
+      this.acPanColoniasActiveIndex = -1;
+
+    } else {
+      this.mpiosDeshabilitados = false;
+      
+      if (this.mpiosVisibles.isEmpty()) {
+        onEstadosChange();
+      }
+    }
+
+    System.out.println("\n|#################### onMostrarMpiosChange(). - municipios "
+            + (mpiosDeshabilitados == true ? "DEShabilitados" : "Habilitados.")
+            + " ############# \n########## Municipios visibles del estadoRep actual:"); // linea de debug
+
+    for (Municipio mpio : this.mpiosVisibles) {
+      System.out.println(mpio);
+    }
+    System.out.println("|_#################### #################### #################### ####################_|"); // linea de debug
+
   }
 
-  public void setMpiosSeleccionados(List<Municipio> mpiosSeleccionados) {
-    this.mpiosSeleccionados = mpiosSeleccionados;
+  public void onMostrarColoniasChange(String evento) {
+    if (this.acPanColoniasActiveIndex == -1) {
+      this.coloniasDeshabilitadas = true;
+    } else {
+      this.coloniasDeshabilitadas = false;
+    }
+    System.out.println("onMostrarColoniasChange(" + evento + "). - colonias " 
+            + (coloniasDeshabilitadas == true ? "DEShabilitados" : "Habilitadas."));
+
   }
 
-  public List<Colonia> getColoniasSeleccionadas() {
-    return coloniasSeleccionadas;
+  public boolean isMpiosDeshabilitados() {
+    return mpiosDeshabilitados;
   }
 
-  public void setColoniasSeleccionadas(List<Colonia> coloniasSeleccionadas) {
-    this.coloniasSeleccionadas = coloniasSeleccionadas;
+  public void setMpiosDeshabilitados(boolean mpiosDeshabilitados) {
+    this.mpiosDeshabilitados = mpiosDeshabilitados;
   }
 
-  
-  
+  public boolean isColoniasDeshabilitadas() {
+    return coloniasDeshabilitadas;
+  }
+
+  public void setColoniasDeshabilitadas(boolean coloniasDeshabilitadas) {
+    this.coloniasDeshabilitadas = coloniasDeshabilitadas;
+  }
+
+  public void onGestorAsignadoChange() {
+    System.out.println("onGestorAsignadoChange().");
+  }
+
+  public Gestor getGestorAsignado() {
+    return gestorAsignado;
+  }
+
+  public void setGestorAsignado(Gestor gestorAsignado) {
+    this.gestorAsignado = gestorAsignado;
+  }
+
+  public List<Gestor> getGestores() {
+    return gestores;
+  }
+
+  public void setGestores(List<Gestor> gestores) {
+    this.gestores = gestores;
+  }
+
+  public int getAcPanColoniasActiveIndex() {
+    return acPanColoniasActiveIndex;
+  }
+
+  public void setAcPanColoniasActiveIndex(int acPanColoniasActiveIndex) {
+    this.acPanColoniasActiveIndex = acPanColoniasActiveIndex;
+  }
+
+  public int getAcPanMpiosActiveIndex() {
+    return acPanMpiosActiveIndex;
+  }
+
+  public void setAcPanMpiosActiveIndex(int acPanMpiosActiveIndex) {
+    this.acPanMpiosActiveIndex = acPanMpiosActiveIndex;
+  }
+
+  public ZonaBean getZona() {
+    return zona;
+  }
+
+  public void setZona(ZonaBean zona) {
+    this.zona = zona;
+  }
+
+  public void onAceptar() {
+//    FacesContext context = FacesContext.getCurrentInstance();
+//    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Botón aceptar", "Probando la acción del botón aceptar"));
+  }
+
+  public Municipio getMpioPorNombre(String nombre) {
+    for (Municipio mpioIterador : this.mpiosVisibles) {
+      if (mpioIterador.getNombre().equals(nombre)) {
+        return mpioIterador;
+      }
+    }
+    return null;
+  }
+
+  public void onEventOccurs(String tipoEvento) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    switch (tipoEvento) {
+      default:
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Evento <" + tipoEvento + ">",
+                "Se hizo una llamada con un tipo de evento NO válido."));
+        break;
+    }
+
+  }
+
+  public void onZonasDisplay(int opcion) {
+    switch (opcion) {
+      case 1:
+        this.tituloDialogo = "Crear nueva zona.";
+        // Lógica de la creación
+
+        break;
+      case 2:
+        this.tituloDialogo = "Modificar zona existente.";
+        // Lógica de la modificación
+
+        break;
+    }
+
+    FacesContext context = FacesContext.getCurrentInstance();
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "actionListener onZonasDisplay()",
+            "Por definir este comportamiento al desplegar el form de Zonas :P"));
+  }
+
+  public String getLugarSinSeleccion() {
+    return lugarSinSeleccion;
+  }
+
+  public String getSeleccionCompleta() {
+    return seleccionCompleta;
+  }
+
+  public String getTituloDialogo() {
+    return tituloDialogo;
+  }
+
+  public void setTituloDialogo(String tituloDialogo) {
+    this.tituloDialogo = tituloDialogo;
+  }
+
+  public String getGestorSinSeleccion() {
+    return gestorSinSeleccion;
+  }
+
 }

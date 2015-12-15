@@ -5,12 +5,22 @@
  */
 package dao;
 
+import dto.Gestion;
+import java.util.Date;
+import java.util.List;
+
 /**
  *
  * @author Eduardo
  */
 public interface GestionDAO {
   
-  public Number calcularVisitasDomiciliarias();
-  public Number calcularVisitasDomiciliariasPorGestor(int idGestor);
+  public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho);
+  public Number calcularVisitasDomiciliariasPorGestor(int idusuario);
+  public boolean insertarGestion(Gestion gestion);
+  public List<Gestion> buscarGestionesPorGestor(int idGestor, Date fechainicio, Date fechaFin, String tipoGestion, String institucion, String producto);
+  public List<Gestion> buscarGestionesPorDespacho(int idDespacho, Date fechainicio, Date fechaFin, String tipoGestion, String institucion, String producto);
+  public List<Gestion> buscarGestionesCreditoGestor(int idUsuario, int idCredito);
+  public List<Gestion> buscarGestionesCredito(int idCredito);
 }
+

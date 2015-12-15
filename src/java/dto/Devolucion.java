@@ -1,5 +1,5 @@
 package dto;
-// Generated 26/10/2015 11:55:09 AM by Hibernate Tools 4.3.1
+// Generated 2/12/2015 01:29:58 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -11,9 +11,9 @@ public class Devolucion  implements java.io.Serializable {
 
 
      private Integer idDevolucion;
+     private ConceptoDevolucion conceptoDevolucion;
+     private Credito credito;
      private Date fecha;
-     private int idCredito;
-     private int idConceptoDevolucion;
      private String observaciones;
      private String solicitante;
      private String revisor;
@@ -23,18 +23,17 @@ public class Devolucion  implements java.io.Serializable {
     }
 
 	
-    public Devolucion(Date fecha, int idCredito, int idConceptoDevolucion, String solicitante, String revisor, int estatus) {
+    public Devolucion(ConceptoDevolucion conceptoDevolucion, Credito credito, Date fecha, String solicitante, int estatus) {
+        this.conceptoDevolucion = conceptoDevolucion;
+        this.credito = credito;
         this.fecha = fecha;
-        this.idCredito = idCredito;
-        this.idConceptoDevolucion = idConceptoDevolucion;
         this.solicitante = solicitante;
-        this.revisor = revisor;
         this.estatus = estatus;
     }
-    public Devolucion(Date fecha, int idCredito, int idConceptoDevolucion, String observaciones, String solicitante, String revisor, int estatus) {
+    public Devolucion(ConceptoDevolucion conceptoDevolucion, Credito credito, Date fecha, String observaciones, String solicitante, String revisor, int estatus) {
+       this.conceptoDevolucion = conceptoDevolucion;
+       this.credito = credito;
        this.fecha = fecha;
-       this.idCredito = idCredito;
-       this.idConceptoDevolucion = idConceptoDevolucion;
        this.observaciones = observaciones;
        this.solicitante = solicitante;
        this.revisor = revisor;
@@ -48,26 +47,26 @@ public class Devolucion  implements java.io.Serializable {
     public void setIdDevolucion(Integer idDevolucion) {
         this.idDevolucion = idDevolucion;
     }
+    public ConceptoDevolucion getConceptoDevolucion() {
+        return this.conceptoDevolucion;
+    }
+    
+    public void setConceptoDevolucion(ConceptoDevolucion conceptoDevolucion) {
+        this.conceptoDevolucion = conceptoDevolucion;
+    }
+    public Credito getCredito() {
+        return this.credito;
+    }
+    
+    public void setCredito(Credito credito) {
+        this.credito = credito;
+    }
     public Date getFecha() {
         return this.fecha;
     }
     
     public void setFecha(Date fecha) {
         this.fecha = fecha;
-    }
-    public int getIdCredito() {
-        return this.idCredito;
-    }
-    
-    public void setIdCredito(int idCredito) {
-        this.idCredito = idCredito;
-    }
-    public int getIdConceptoDevolucion() {
-        return this.idConceptoDevolucion;
-    }
-    
-    public void setIdConceptoDevolucion(int idConceptoDevolucion) {
-        this.idConceptoDevolucion = idConceptoDevolucion;
     }
     public String getObservaciones() {
         return this.observaciones;

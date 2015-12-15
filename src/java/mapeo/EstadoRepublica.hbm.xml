@@ -1,32 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 26/10/2015 11:55:10 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.EstadoRepublica" optimistic-lock="version" table="estado_republica">
-    <id name="idEstado" type="java.lang.Integer">
-      <column name="id_estado"/>
-      <generator class="identity"/>
-    </id>
-    <property name="nombre" type="string">
-      <column length="50" name="nombre" not-null="true"/>
-    </property>
-    <set fetch="select" inverse="true" lazy="true" name="municipios" table="municipio">
-      <key>
-        <column name="id_estado" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Municipio"/>
-    </set>
-    <set fetch="select" inverse="true" lazy="true" name="regions" table="region">
-      <key>
-        <column name="id_estado"/>
-      </key>
-      <one-to-many class="dto.Region"/>
-    </set>
-    <set fetch="select" inverse="true" lazy="true" name="direccions" table="direccion">
-      <key>
-        <column name="id_estado" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Direccion"/>
-    </set>
-  </class>
+    <class name="dto.EstadoRepublica" table="estado_republica" catalog="sigerbd" optimistic-lock="version">
+        <id name="idEstado" type="java.lang.Integer">
+            <column name="id_estado" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="50" not-null="true" />
+        </property>
+        <set name="municipios" table="municipio" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_estado" not-null="true" />
+            </key>
+            <one-to-many class="dto.Municipio" />
+        </set>
+        <set name="regions" table="region" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_estado" />
+            </key>
+            <one-to-many class="dto.Region" />
+        </set>
+        <set name="direccions" table="direccion" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_estado" not-null="true" />
+            </key>
+            <one-to-many class="dto.Direccion" />
+        </set>
+    </class>
 </hibernate-mapping>

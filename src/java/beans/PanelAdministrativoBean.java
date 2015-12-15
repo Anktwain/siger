@@ -1,5 +1,8 @@
 package beans;
 
+import dao.SujetoDAO;
+import dto.Sujeto;
+import impl.SujetoIMPL;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
@@ -28,6 +31,9 @@ public class PanelAdministrativoBean implements Serializable {
     private String imagenDePerfil;
     private String nombre;
     private String correo;
+    private String despacho;
+    private Sujeto sujeto;
+    private SujetoDAO sujetoDao;
 
     /**
      *
@@ -39,6 +45,10 @@ public class PanelAdministrativoBean implements Serializable {
         nombreUsuario = indexBean.getUsuario().getNombreLogin();
         imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
         correo = indexBean.getUsuario().getCorreo();
+        sujeto = new Sujeto();
+        sujetoDao = new SujetoIMPL();
+        sujeto = sujetoDao.buscar(indexBean.getUsuario().getDespacho().getSujeto().getIdSujeto());
+        despacho = sujeto.getNombreRazonSocial();
     }
 
     /**
@@ -126,5 +136,29 @@ public class PanelAdministrativoBean implements Serializable {
     public void setIndexBean(IndexBean indexBean) {
         this.indexBean = indexBean;
     }
+
+  public String getDespacho() {
+    return despacho;
+  }
+
+  public void setDespacho(String despacho) {
+    this.despacho = despacho;
+  }
+
+  public Sujeto getSujeto() {
+    return sujeto;
+  }
+
+  public void setSujeto(Sujeto sujeto) {
+    this.sujeto = sujeto;
+  }
+
+  public SujetoDAO getSujetoDao() {
+    return sujetoDao;
+  }
+
+  public void setSujetoDao(SujetoDAO sujetoDao) {
+    this.sujetoDao = sujetoDao;
+  }
 
 }

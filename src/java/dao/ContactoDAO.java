@@ -1,6 +1,7 @@
 package dao;
 
 import dto.Contacto;
+import dto.tablas.Contactos;
 import java.util.List;
 
 /**
@@ -49,4 +50,6 @@ public interface ContactoDAO {
     public List<Contacto> buscarTodo();
     
     public List<Contacto> buscarPorSujeto(int idSujeto);
+    
+    public List<Contactos> buscarContactoPorSujeto(int idSujeto);
 }

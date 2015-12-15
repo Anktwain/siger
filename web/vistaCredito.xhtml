@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Detalle de credito</title>
+  </h:head> 
+  <h:body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li>
+            <a href="cuentas.xhtml">Cuentas</a>
+          </li>
+          <li class="active">
+            Detalle credito <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" />
+          </li>
+        </ul>
+      </div>
+      <div class="padding-md">
+        <div class="clearfix">
+          <div class="pull-left">
+            <div class="pull-left m-left-sm">
+              <h3 class="m-bottom-xs m-top-xs">
+                <p:outputLabel value="#{vistaCreditoBean.nombreDeudor}" style="font-size: 28px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              </h3>
+            </div>
+          </div>
+          <div class="pull-right">
+            <h5>
+              <strong>
+                Numero de credito: <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" />
+              </strong>
+            </h5>
+          </div>
+        </div>
+        <div class="clearfix">
+          <div class="pull-left">
+            <strong>
+              Direccion:
+            </strong>
+            <br />
+            <p:outputLabel value="#{vistaCreditoBean.calleNumero}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;
+            <p:outputLabel value="#{vistaCreditoBean.coloniaMunicipio}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;
+            <p:outputLabel value="#{vistaCreditoBean.estadoCP}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            <br />
+            <strong>
+              Telefono asociado al credito:
+            </strong>
+            <br />
+            <p:outputLabel value="#{vistaCreditoBean.telefono}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            <br />
+            <strong>
+              Correo electronico:
+            </strong>
+            <br />
+            <p:outputLabel value="#{vistaCreditoBean.correo}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            <br />
+            <h:form>
+              <p:commandButton value="Editar datos del deudor" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:button value="Convenios de pago" outcome="vistaConvenio"  />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:button value="Visita domiciliaria" outcome="vistaVisitas"  />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              Gestor actual:
+              &nbsp;
+              <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px" rendered="#{vistaCreditoBean.reasignarVisible}">
+                <f:selectItem itemValue="#{vistaCreditoBean.gestorActual.idGestor}" itemLabel="#{vistaCreditoBean.gestorActual.toString()}" />
+                <f:selectItems value="#{vistaCreditoBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
+                <p:ajax listener="#{vistaCreditoBean.confirmar()}" />
+              </p:selectOneMenu>
+            </h:form>
+          </div>
+          <div class="pull-right text-right">
+            Numero de creditos: <p:outputLabel value="#{vistaCreditoBean.numeroCreditos}" />
+            <br />
+            Fecha de inicio: <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" />
+            <br />
+            Fecha Ultimo Pago: <p:outputLabel value="#{vistaCreditoBean.fup}" />
+            <br />
+            Fecha Ultimo Vencimiento Pagado: <p:outputLabel value="#{vistaCreditoBean.fvp}" />
+            <br />
+            Fecha Fin del credito: <p:outputLabel value="#{vistaCreditoBean.fechaFin}" />
+            <br />
+            Mensualidad: $<p:outputLabel value="#{vistaCreditoBean.mensualidad}" />
+            <br />
+            Saldo vencido: $<p:outputLabel value="#{vistaCreditoBean.saldoVencido}" />
+            <br />
+          </div>
+        </div>
+        <hr />
+        <div class="clearfix">
+          <ui:include src="nuevaGestion.xhtml" />
+          <hr />
+          <h:form id="DetalleCredito">
+            <p:accordionPanel multiple="true" activeIndex="-  1">
+              <p:tab title="Gestiones anteriores">
+                <p:dataTable id="tablaGestionesAnteriores" var="g" value="#{vistaCreditoBean.listaGestiones}" emptyMessage="No existen gestiones anteriores." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                  <p:column style="width: 200px;">
+                    <f:facet name="header">
+                      <h:outputText value="Fecha" />
+                    </f:facet>
+                    <h:outputText value="#{g.fecha}"/>
+                  </p:column>
+                  <p:column style="width: 300px;">
+                    <f:facet name="header">
+                      <h:outputText value="Tipo Gestion" />
+                    </f:facet>
+                    <h:outputText value="#{g.tipoGestion}"/>
+                  </p:column>
+                  <p:column  style="width: 300px;">
+                    <f:facet name="header">
+                      <h:outputText value="Asunto" />
+                    </f:facet>
+                    <h:outputText value="#{g.asuntoGestion}"/>
+                  </p:column>
+                  <p:column>
+                    <f:facet name="header">
+                      <h:outputText value="Gestion" />
+                    </f:facet>
+                    <h:outputText value="#{g.gestion}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:tab>
+              <p:tab title="Datos de contacto">
+                <p:accordionPanel multiple="true" activeIndex="-1">
+                  <p:tab title="Direcciones">
+                    <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                      <p:column headerText="Calle y numero" style="width:500px;" > 
+                        <h:outputText value="#{d.calleNumero}"/>
+                      </p:column>
+                      <p:column headerText="Colonia" style="width:250px;" > 
+                        <h:outputText value="#{d.colonia}"/>
+                      </p:column>
+                      <p:column headerText="Municipio" style="width:200px;" > 
+                        <h:outputText value="#{d.municipio}"/>
+                      </p:column>
+                      <p:column headerText="Estado"> 
+                        <h:outputText value="#{d.estado}"/>
+                      </p:column>
+                      <p:column headerText="Codigo postal" style="width:150px;" > 
+                        <h:outputText value="#{d.cp}"/>
+                      </p:column>
+                    </p:dataTable>
+                  </p:tab>
+                  <p:tab title="Telefonos">
+                    <p:dataTable id="tablaTelefonosDetalleCredito" var="t" value="#{vistaCreditoBean.listaTelefonos}" emptyMessage="No existen numeros telefonicos asociados a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                      <p:column headerText="Telefono" > 
+                        <h:outputText value="#{t.numero}" />
+                      </p:column>
+                      <p:column headerText="Clave LADA" > 
+                        <h:outputText value="#{t.lada}" />
+                      </p:column>
+                      <p:column headerText="Tipo" > 
+                        <h:outputText value="#{t.tipo}" />
+                      </p:column>
+                      <p:column headerText="Horario de atencion"> 
+                        <h:outputText value="#{t.horario}" />
+                      </p:column>
+                    </p:dataTable>
+                  </p:tab>
+                  <p:tab title="Correos">
+                    <p:dataTable id="tablaCorreosDetalleCredito" var="c" value="#{vistaCreditoBean.listaCorreos}" emptyMessage="No existen correos electronicos asociados a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                      <p:column headerText="Direccion" > 
+                        <h:outputText value="#{c.direccion}" />
+                      </p:column>
+                      <p:column headerText="Tipo" > 
+                        <h:outputText value="#{c.tipo}" />
+                      </p:column>
+                    </p:dataTable>
+                  </p:tab>
+                  <p:tab title="Contactos">
+                    <p:dataTable id="tablaContactosDetalleCredito" var="con" value="#{vistaCreditoBean.listaContactos}" emptyMessage="No existen contactos de credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                      <p:column headerText="Nombre del contacto" > 
+                        <h:outputText value="#{con.nombreContacto}" />
+                      </p:column>
+                      <p:column headerText="Descripcion" > 
+                        <h:outputText value="#{con.descripcion}" />
+                      </p:column>
+                    </p:dataTable>
+                  </p:tab>
+                </p:accordionPanel>
+              </p:tab>
+              <p:tab title="Otros creditos con adeudos">
+                <p:dataTable id="tablaCreditosRelacionados" var="c" value="#{vistaCreditoBean.credsRelacionados}" emptyMessage="No existen creditos relacionados." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                  <p:column headerText="Credito" style="width:100px;" > 
+                    <h:outputText value="#{c.numeroCredito}"/>
+                  </p:column>
+                  <p:column headerText="Tipo de credito"> 
+                    <h:outputText value="#{c.tipoCredito}"/>
+                  </p:column>
+                  <p:column headerText="Producto"> 
+                    <h:outputText value="#{c.nombreProducto}"/>
+                  </p:column>
+                  <p:column headerText="Saldo vencido" style="width:150px;" > 
+                    <h:outputText value="#{c.saldoVencido}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:tab>
+              <p:tab title="Actualizaciones de este adeudo">
+                <!-- FAC POR, FAC MES, ETC... -->
+              </p:tab>
+              <p:tab title="Historial de este credito">
+                <p:dataTable id="tablaHistorialCredito" var="h" value="#{vistaCreditoBean.historial}" emptyMessage="El credito no cuenta con historial." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                  <p:column headerText="Fecha" style="width:150px;" > 
+                    <h:outputText value="#{h.fecha}"/>
+                  </p:column>
+                  <p:column headerText="Evento"> 
+                    <h:outputText value="#{h.evento}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:tab>
+            </p:accordionPanel>
+          </h:form>
+          <p:dialog id="dlgConfirmacion" widgetVar="confirmacionDialog2" modal="true" header="Confirme esta reasignacion">
+            <h:form>
+              <h:outputText value="Esta seguro de que desea reasignar este credito?" />
+              <br />
+              <br />
+              <h:outputText value="Esta accion hara que se finalicen todos los convenios de pago en curso." />
+              <br />
+              <br />
+              <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{vistaCreditoBean.reasignarGestor()}" update="growl" />
+              <p:commandButton value="No" icon="ui-icon-close" actionListener="#{vistaCreditoBean.cerrar()}" update="growl" />
+            </h:form>
+          </p:dialog>
+        </div>
+      </div><!-- /.padding20 -->
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </h:body>
+</html>

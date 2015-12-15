@@ -30,7 +30,6 @@ public class InstitucionIMPL implements InstitucionDAO {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
-
         try {
             sesion.save(institucion);
             tx.commit();
@@ -59,7 +58,6 @@ public class InstitucionIMPL implements InstitucionDAO {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
-
         try {
             sesion.update(institucion);
             tx.commit();
@@ -73,7 +71,6 @@ public class InstitucionIMPL implements InstitucionDAO {
         } finally {
             cerrar(sesion);
         }
-
         return ok;
     }
 
@@ -87,7 +84,6 @@ public class InstitucionIMPL implements InstitucionDAO {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
-
         try {
             // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
             sesion.update(institucion);
@@ -102,7 +98,6 @@ public class InstitucionIMPL implements InstitucionDAO {
         } finally {
             cerrar(sesion);
         }
-
         return ok;
     }
 
@@ -113,15 +108,23 @@ public class InstitucionIMPL implements InstitucionDAO {
      */
     @Override
     public Institucion buscar(int idInstitucion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Institucion institucion;
+        try { 
+            institucion = (Institucion) sesion.createSQLQuery("SELECT * FROM institucion WHERE id_institucion =" + idInstitucion + ";").addEntity(Institucion.class).uniqueResult();
+        } catch(HibernateException he) {
+            institucion = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return institucion;
     }
     
     @Override
     public Institucion buscarInstitucionPorSujeto(int idInstitucion) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
         Institucion institucion;
-        
         try { 
             institucion = (Institucion) sesion.createSQLQuery("select * from institucion where id_sujeto = " + Integer.toString(idInstitucion) + ";").addEntity(Institucion.class).uniqueResult();
         } catch(HibernateException he) {
@@ -143,7 +146,6 @@ public class InstitucionIMPL implements InstitucionDAO {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         List<Institucion> listaInstitucion;
-
         try { // Buscamos todas las Institucions.
             listaInstitucion = sesion.createSQLQuery("from Institucion").list();
         } catch (HibernateException he) {
@@ -153,9 +155,6 @@ public class InstitucionIMPL implements InstitucionDAO {
             cerrar(sesion);
         }
         return listaInstitucion;
-        /*
-         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-         */
     }
     /**
      *
@@ -168,7 +167,6 @@ public class InstitucionIMPL implements InstitucionDAO {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         List<Sujeto> listaSujeto;
-
         try { // Buscamos todas las Instituciones.
             //"select e.name, a.city from Employee e INNER JOIN e.address a"
             listaSujeto = sesion.createSQLQuery("select * from sujeto s join institucion e where s.eliminado = " + Sujetos.ACTIVO + " and s.id_sujeto = e.id_sujeto;").addEntity(Sujeto.class).list();
@@ -190,6 +188,22 @@ public class InstitucionIMPL implements InstitucionDAO {
     public Number calcularRecuperacionPorGestor(int idGestor) {
     return 0;
     }
+
+  @Override
+  public List<Institucion> buscarInstitucionesPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx = sesion.beginTransaction();
+        List<Institucion> listaInstituciones;
+        try { 
+            listaInstituciones = sesion.createSQLQuery("SELECT * FROM institucion i WHERE i.id_institucion IN (SELECT c.id_institucion FROM credito c WHERE c.id_despacho = 2);").addEntity(Institucion.class).list();
+        } catch(HibernateException he) {
+            listaInstituciones = null;
+            he.printStackTrace();
+        } finally {
+            cerrar(sesion);
+        }
+        return listaInstituciones;
+  }
     
     /**
      *

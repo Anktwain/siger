@@ -9,6 +9,7 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Zonas</title>
+    <h:outputStylesheet library="css" name="propias.css" />
     <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
     <script
       src="http://maps.googleapis.com/maps/api/js">
@@ -24,10 +25,10 @@
       }
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
-
   </h:head>
+
   <h:body>
-    <p:growl id="growl" showDetail="true" />
+    <p:growl id="growl" showDetail="true" life="9500"/>
 
     <div id="overlay" class="transparent" style="display: none;"></div>
     <ui:include src="barraLateral.xhtml" />
@@ -38,7 +39,7 @@
         <ul class="breadcrumb">
           <li>
             <i class="fa fa-home"></i>
-            <a href="panelAdministrativo.xhtml">Inicio</a>
+            <a href="${indexBean.vista}">Inicio</a>
           </li>
           <li class="active">Zonas</li>
         </ul>
@@ -47,41 +48,52 @@
       <div class="main-header clearfix">
         <div class="page-title">
           <h3 class="no-margin">Zonas</h3>
-          <span>Crear, visualizar, editar las zonas de cobranza.</span>
+          <span>Crear, visualizar y editar las zonas de cobranza.</span>
         </div>
       </div>
 
-      <h:form>
-        <!--          <p:ajax event="toggle" />-->
-        <div class="row">
-          <div class="col-sm-6" id="googleMap" style="width:450px;height:380px; margin-left: 50px"></div>
-          <div class="col-sm-6">
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="panel-stat3 bg-info">
-                  <h3 class="m-top-none">Crear nueva zona</h3>
-                  <div id="botonazo">
-                    <p:commandButton value="Nueva Zona" class="btn-default" actionListener="#{vistaZonas.regionBean.listarEstados()}"
-                                     onclick="PF('dlgNuevaZona').show();" update="" />
-                  </div>
+      <div class="row">
+        <div class="col-sm-6" id="googleMap" style="width:450px;height:380px; margin-left: 50px">
+        </div>
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="panel-stat3 bg-info">
+                <h3 class="m-top-none">Crear nueva zona</h3>
+                <div id="botonazo">
+                  <h:form>
+                    <p:commandButton value="Nueva Zona" class="btn-default" 
+                                     actionListener="${zonasVistaBean.onZonasDisplay(1)}" 
+                                     oncomplete="PF('dlgNuevaZona').show();" 
+                                     update="growl, dialogoNuevaZona"/>
+                  </h:form>
 
-                  <div class="stat-icon">
-                    <i class="fa fa-pencil fa-3x"/>
-                  </div>
                 </div>
-              </div>                                          
-            </div>
-            <div class="row">
-              <div class="col-sm-12">
-                <p:fieldset  style="" legend="Zonas en el mapa" toggleable="true" toggleSpeed="500">
+                <div class="stat-icon">
+                  <i class="fa fa-pencil fa-3x"/>
+                </div>
+              </div>
+            </div>                                          
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <p:fieldset id="fsTabla" legend="Zonas en el mapa" toggleable="true" 
+                          toggleSpeed="500" >
+                <h:form>
+                  <p:contextMenu>
+                    <p:menuitem value="Ver detalle" icon="ui-icon-search" 
+                                update="growl,dialogoNuevaZona" 
+                                actionListener="${zonasVistaBean.onZonasDisplay(2)}"
+                                oncomplete="PF('dlgNuevaZona').show()" />
+                  </p:contextMenu>
                   <p:dataTable emptyMessage="Todav&iacute;a no hay zonas registradas"
-                               paginator="true" rows="10" paginatorAlwaysVisible="false" paginatorPosition="bottom"
-                               rowKey="" selection=""  id="zonas" widgetVar="zonaDataTable" var="zona">
+                               paginator="true" rows="10" paginatorAlwaysVisible="false" 
+                               paginatorPosition="bottom" rowKey="" selection=""  
+                               id="zonas" widgetVar="zonaDataTable" var="zona">
 
                     <f:facet name="header">
                       <p:outputPanel>
                         <h:outputText value="Buscar en todas las zonas:  " />
-                        <!--<p:inputText id="globalFilter" onkeyup="PF('zonaDataTable').filter()" style="width:150px" placeholder="Palabra clave"/>-->
                       </p:outputPanel>
                     </f:facet>
 
@@ -96,49 +108,124 @@
                     </p:column>
 
                   </p:dataTable>
-                  <!--  Estos son los datos que le faltaron al dataTable 
-                 <p:dataTable selectionMode="single"  filteredValue="" value=""> </p:dataTable>
-                  -->
-                </p:fieldset>
-              </div>
+                </h:form>
+              </p:fieldset>               
+
             </div>
           </div>
-        </div> <!-- row -->
-      </h:form>
+        </div>
+      </div> <!-- row -->
 
-      <p:dialog widgetVar="dlgNuevaZona" width="auto" header="Agregar nueva zona" modal="true" resizable="false">
-        <h:form id="formNuevaZona">
-          <p:outputLabel value="Nombre: " for="nombreZona" />
-          <p:inputText id="nombreZona" value="#{vistaZonas.zonaActual.nombre}" placeholder="Teclea un nuevo nombre" size="25" />
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <p:outputLabel value="Estado:" for="cboxEdo" />
-                <p:selectOneMenu id="cboxEdo" value="#{zonasVistaBean.edoRepVisible.idEstado}" style="width: 100%" filter="true">
-                  <p:ajax listener="#{zonasVistaBean.onEstadosChange()}" update="cboxMpio,growl"/>
-                  <f:selectItem itemLabel="Seleccione un estado" itemValue="" class="form-control chzn-select"/>
-                  <f:selectItems value="#{vistaZonas.regionBean.estados}" var="estado" itemLabel="#{estado}" itemValue="#{estado.idEstado}" />
-                </p:selectOneMenu>
-              </div>
-            </div> <!-- /.col-->                          
-            <div class="col-md-6">
-              <div class="form-group">
-                <p:outputLabel value="Municipio:" for="cboxMpio"/>
-                    <p:selectManyMenu id="cboxMpio" value="#{zonasVistaBean.mpiosSeleccionados}"
-                                      var="m" filter="true" filterMatchMode="contains" showCheckbox="true">
-                      <p:ajax listener="#{zonasVistaBean.onMpiosChange}" update="growl" />
-      
-                      <f:selectItem itemLabel="Todos" itemValue="todos" />
-      
-                      <f:selectItems value="#{zonasVistaBean.mpiosDelEstadoRepSelec}" var="mpio" itemLabel="itemLabel MpiosDePrueba" />
-      
-                      <p:column>
-                        <h:outputText value="#{m}" />
-                      </p:column>
-                    </p:selectManyMenu>
-              </div>
-            </div> <!-- /.col-->  
-          </div> <!-- /.row-->
+      <!-- FORMULARIO PARA REGISTRAR UNA NUEVA ZONA -->
+      <p:dialog widgetVar="dlgNuevaZona" width="auto" header="${zonasVistaBean.tituloDialogo}" 
+                modal="true" resizable="false" closeOnEscape="true" id="dialogoNuevaZona" >
+        <h:form id="formNuevaZona" >          
+          <p:panelGrid columns="2">
+            <h:panelGrid columns="2" columnClasses="label, value">
+              <p:outputLabel value="Nombre: " for="nombreZona" />
+              <p:inputText id="nombreZona" value="#{zonasVistaBean.zona.nombre}" 
+                           placeholder="Teclea un nuevo nombre" size="25" />  
+            </h:panelGrid>  
+
+            <h:panelGrid columns="2" columnClasses="label, value">
+              <p:outputLabel value="Gestor asignado: " for="cmbGestor" />
+              <p:selectOneMenu id="cmbGestor" value="#{zonasVistaBean.gestorAsignado}" 
+                               filter="true" filterMatchMode="contains" maxlength="30" 
+                               converter="gestorConverter" >
+                <p:ajax event="change" listener="${zonasVistaBean.onGestorAsignadoChange}" 
+                        update="growl" />
+                <f:selectItem itemLabel="${zonasVistaBean.gestorSinSeleccion}" noSelectionOption="true" />
+                <f:selectItems value="${zonasVistaBean.gestores}" var="gestor" itemValue="${gestor}" />
+              </p:selectOneMenu>
+            </h:panelGrid>
+          </p:panelGrid>
+
+          <p:panelGrid columns="3">
+            <h:panelGrid columns="1" >
+              <f:facet name="header" >
+                <h:outputText value="Estados" />
+                <p:separator />
+              </f:facet>
+              <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.edoRepVisible}" 
+                               var="edo" filter="true" filterMatchMode="contains" 
+                               converter="edoRepConverter" >
+                <p:ajax listener="${zonasVistaBean.onEstadosChange}" 
+                        update="growl,apMunicipios,apColonias,monitActInMpio,monitMpioDeshab,monitActInColonia,monitColoniaDeshab" />
+                <f:selectItem itemLabel="Selecciona un estado" noSelectionOption="true" />
+                <f:selectItems value="${zonasVistaBean.estadosRep}" var="edoRep" 
+                               itemValue="${edoRep}" />
+                <p:column>
+                  <h:outputText value="${edo.nombre}" />
+                </p:column>
+              </p:selectOneMenu>
+            </h:panelGrid>
+
+            <h:panelGrid id="panGridMpios" columns="1" cellpadding="10">
+              <f:facet name="header">
+                <h:outputText value="Municipios " />
+                <br/>
+                <h:outputText id="monitActInMpio" value="activeIndex: ${zonasVistaBean.acPanMpiosActiveIndex}" />
+                <br/>
+                <h:outputText id="monitMpioDeshab" value="tabDisabled: ${zonasVistaBean.mpiosDeshabilitados}" />
+                <p:separator/>
+              </f:facet>
+
+              <p:accordionPanel id="apMunicipios" dynamic="true" cache="false" 
+                                activeIndex="#{zonasVistaBean.acPanMpiosActiveIndex}">
+                <p:tab id="apMunicipiosTab0" title="Seleccione los municipios" 
+                       disabled="${zonasVistaBean.mpiosDeshabilitados}">
+                  <p:selectManyMenu id="listaMunicipio" class="dropDMpios" filter="true" 
+                                    filterMatchMode="contains" showCheckbox="true"  
+                                    converter="mpioConverter">
+                    <p:ajax event="change" listener="${zonasVistaBean.onMpiosChange}" 
+                            update="growl,listaMunicipio,formNuevaZona:panGridMpios:monitActInMpio,formNuevaZona:panGridMpios:monitMpioDeshab,formNuevaZona:panGridColonias:monitActInColonia,formNuevaZona:panGridColonias:monitColoniaDeshab" />
+                    <f:selectItem itemLabel="Todos (${zonasVistaBean.mpiosDelEstadoRepSelec.size()})" 
+                                  noSelectionOption="true"/>
+                    <f:selectItems value="${zonasVistaBean.mpiosDelEstadoRepSelec}" 
+                                   var="mpio" itemLabel="${mpio.nombre}" />
+                  </p:selectManyMenu>
+                </p:tab>
+              </p:accordionPanel>
+            </h:panelGrid>
+
+            <h:panelGrid id="panGridColonias" columns="1" cellpadding="10">
+              <f:facet name="header">
+                <h:outputText class="text-center" value="Colonias "/>
+                <br/>
+                <h:outputText id="monitActInColonia" value="activeIndex: ${zonasVistaBean.acPanColoniasActiveIndex}" />
+                <br/>
+                <h:outputText id="monitColoniaDeshab" value="tabDisabled: ${zonasVistaBean.coloniasDeshabilitadas}" />
+                <p:separator />
+              </f:facet>              
+
+              <p:accordionPanel id="apColonias" dynamic="true" cache="false" 
+                                activeIndex="#{zonasVistaBean.acPanColoniasActiveIndex}" >
+                <p:tab id="apColoniasTab0" title="Seleccione las colonias" 
+                       disabled="#{zonasVistaBean.coloniasDeshabilitadas}" >
+                  <p:selectManyMenu id="listaColonia" filter="true"
+                                    value="#{zonasVistaBean.zona.coloniasSeleccionadas}"
+                                    filterMatchMode="contains" showCheckbox="true" >
+                    <p:ajax event="change" listener="${zonasVistaBean.onColoniasChange}" 
+                            update="growl,monitActInMpio,monitMpioDeshab,monitActInColonia,monitColoniaDeshab" />
+                    <f:selectItem itemLabel="Todos" noSelectionOption="true" />
+                    <f:selectItems value="${zonasVistaBean.coloniasDelEstadoRepSelec}" 
+                                   var="col" itemLabel="${col.nombre}" />
+                  </p:selectManyMenu>
+                </p:tab>
+              </p:accordionPanel>
+            </h:panelGrid>
+
+
+            <f:facet name="footer" >
+              <p:commandButton value="Aceptar" id="btnAceptar" icon="ui-icon-check" 
+                               styleClass="ui-priority-primary">
+                <p:ajax event="click" listener="${zonasVistaBean.onAceptar}" update="growl"/>
+              </p:commandButton>
+              <p:commandButton value="Cancelar" id="btnCancelar" update="growl" 
+                               onclick="PF('dlgNuevaZona').hide();" icon="ui-icon-close" />
+            </f:facet>
+          </p:panelGrid>
+
         </h:form>
       </p:dialog>
 

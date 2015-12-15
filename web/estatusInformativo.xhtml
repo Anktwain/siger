@@ -8,44 +8,53 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Estatus informativo</title>
-    <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
-    <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
-    <h:outputStylesheet library="css" name="pace.css" />
-    <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
-    <h:outputStylesheet library="css" name="morris.css" />
-    <h:outputStylesheet library="css" name="endless.min.css" />
-    <h:outputStylesheet library="css" name="endless-skin.css" />
-    <h:outputStylesheet library="css" name="usuarios.css" />
-    <h:outputScript library="js" name="jquery-1.10.2.min.js" />
-    <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
-    <h:outputScript library="js" name="jquery.flot.min.js" />
-    <h:outputScript library="js" name="rapheal.min.js" />
-    <h:outputScript library="js" name="morris.min.js" />
-    <h:outputScript library="js" name="jquery.colorbox.min.js" />
-    <h:outputScript library="js" name="jquery.sparkline.min.js" />
-    <h:outputScript library="js" name="/uncompressed/pace.js" />
-    <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
-    <h:outputScript library="js" name="jquery.slimscroll.min.js" />
-    <h:outputScript library="js" name="modernizr.min.js" />
-    <h:outputScript library="js" name="jquery.cookie.min.js" />
-    <h:outputScript library="js" name="/endless/endless_dashboard.js" />
-    <h:outputScript library="js" name="/endless/endless.js" />
     <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
   </h:head> 
-  <body class="overflow-hidden">
+  <body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
-    <div id="overlay" class="transparent"></div>
+    <div id="overlay" class="transparent" style="display: none"></div>
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-      <h1>
-        M&oacute;dulo de estatus informativo
-      </h1>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Estatus informativo
+          </li>
+        </ul>
+      </div>
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Estatus informativo</h3>
+          <span>Consulte la lista de conceptos para informar al banco.</span>
+          <span>Registre nuevos estatus.</span>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <h:form id="formEstatus">
+          <p:dataTable id="estatus" var="e" value="#{estatusInformativoBean.listaEstatus}" emptyMessage="No existen estatus informativos." paginator="true" rows="15" paginatorPosition="bottom" style="width:300px;">
+            <p:column headerText="Estatus informativo"> 
+              <h:outputText value="#{e.estatus}"/>
+            </p:column>
+            <f:facet name="footer">
+              <p:commandButton value="Nuevo" icon="ui-icon-plus" oncomplete="PF('dialogoNuevoEstatus').show();" />
+            </f:facet>
+          </p:dataTable>
+          <p:dialog id="nuevoEstatusdlg" widgetVar="dialogoNuevoEstatus" modal="true" header="Nuevo estatus">
+            <br />
+            <p:inputText value="#{estatusInformativoBean.nuevoEstatus}" />
+            <br />
+            <br />
+            <p:commandButton value="Nuevo" icon="ui-icon-plus" actionListener="#{estatusInformativoBean.crear()}"  update="growl, estatus" />
+          </p:dialog>
+        </h:form>
+      </div>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />

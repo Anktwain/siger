@@ -9,21 +9,90 @@
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Cuentas</title>
   </h:head> 
-  <body>
+  <h:body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
     <div id="overlay" class="transparent" style="display: none"></div>
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-      <h1>
-        M&oacute;dulo de cuentas
-      </h1>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="panelAdministrativo.xhtml">Inicio</a>
+          </li>
+          <li class="active">
+            Cuentas
+          </li>
+        </ul>
+      </div>
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Cuentas</h3>
+          <span>Consulte todas las cuentas que su despacho esta gestionando</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="padding-md">
+          <div class="col-lg-12">
+            <h:form id="formCuentas">
+              <p:contextMenu for="cuentas" style="width:200px;">
+                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{cuentasVistaBean.selectorDeVista()}" />
+                <p:menuitem value="Devolver" icon="ui-icon-alert" oncomplete="PF('confirmacionDialog').show();" />
+              </p:contextMenu>
+              <p:dialog id="dlg1" widgetVar="confirmacionDialog" modal="true" header="Confirme esta devolucion">
+                <h:outputText value="Esta seguro de que desea devolver este credito?" />
+                <br />
+                <br />
+                <h:outputText value="Esta accion hara que el credito ya no se pueda gestionar." />
+                <br />
+                <br />
+                Seleccione el concepto de devolucion:
+                <br />
+                <p:selectOneMenu id="concepto" value="#{cuentasVistaBean.conceptoSeleccionado.idConceptoDevolucion}" style="width:200px">
+                  <f:selectItem itemLabel="" itemValue="0" />
+                  <f:selectItems value="#{cuentasVistaBean.listaConceptos}" var="c" itemLabel="#{c.concepto}" itemValue="#{c.idConceptoDevolucion}" />
+                </p:selectOneMenu>
+                <br />
+                Observaciones:
+                <br />
+                <p:inputText value="#{cuentasVistaBean.observaciones}" style="width:300px" />
+                <br />
+                <br />
+                <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{cuentasVistaBean.devolverDirecto()}" update="growl" />
+                <p:commandButton value="No" icon="ui-icon-close" oncomplete="PF('confirmacionDialog').hide();" />
+              </p:dialog>
+              <p:dataTable id="cuentas" var="c" value="#{cuentasVistaBean.creditosGestionables}" rowKey="#{c.numeroCredito}" selection="#{cuentasVistaBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="multiple" paginator="true" rows="15" paginatorPosition="bottom">
+                <p:column headerText="Credito" style="width:100px;" >
+                  <h:outputText value="#{c.numeroCredito}"/>
+                </p:column>
+                <p:column headerText="Deudor" style="width:400px;" > 
+                  <h:outputText value="#{c.nombreRazonSocial}"/>
+                </p:column>
+                <p:column headerText="Institucion" style="width:100px;" > 
+                  <h:outputText value="#{c.nombreCortoInstitucion}"/>
+                </p:column>
+                <p:column headerText="Tipo de credito"> 
+                  <h:outputText value="#{c.tipoCredito}"/>
+                </p:column>
+                <p:column headerText="Producto"> 
+                  <h:outputText value="#{c.nombreProducto}"/>
+                </p:column>
+                <p:column headerText="Saldo vencido" style="width:150px;" > 
+                  <h:outputText value="#{c.saldoVencido}"/>
+                </p:column>
+                <p:column headerText="Gestor asignado"> 
+                  <h:outputText value="#{c.gestorAsignado}"/>
+                </p:column>
+              </p:dataTable>
+            </h:form>
+          </div>
+        </div>
+      </div>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
-  </body>
+  </h:body>
 </html>

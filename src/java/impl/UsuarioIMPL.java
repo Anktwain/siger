@@ -35,7 +35,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     int id;
-
     try {
       sesion.save(usuario);
       tx.commit();
@@ -65,7 +64,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       sesion.update(usuario);
       tx.commit();
@@ -79,7 +77,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     } finally {
       cerrar(sesion);
     }
-
     return ok;
   }
 
@@ -94,7 +91,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       usuario.setPerfil(Perfiles.ELIMINADO);
       sesion.update(usuario);
@@ -109,7 +105,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     } finally {
       cerrar(sesion);
     }
-
     return ok;
   }
 
@@ -124,7 +119,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Usuario usuario;
-
     try {
       usuario = (Usuario) sesion.get(Usuario.class, idUsuario);
       // obtuvo el usuario, solo se muestra si no ha sido eliminado:
@@ -139,7 +133,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     } finally {
       cerrar(sesion);
     }
-
     return usuario;
   }
 
@@ -156,7 +149,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Usuario usuario;
-
     try {
       usuario = (Usuario) sesion.createQuery("from Usuario u where "
               + "u.perfil != " + Perfiles.ELIMINADO + " and u.perfil != "
@@ -183,22 +175,18 @@ public class UsuarioIMPL implements UsuarioDAO {
   @Override
   public Usuario buscarPorCorreo(String nombreLogin, String correo) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Usuario usuario;
-
     try {
       usuario = (Usuario) sesion.createQuery("from Usuario u where "
               + "u.perfil != " + Perfiles.ELIMINADO + " and u.nombreLogin = '"
               + nombreLogin + "' and u.correo = '"
               + correo + "'").uniqueResult();
-
     } catch (HibernateException he) {
       usuario = null;
       he.printStackTrace();
     } finally {
       cerrar(sesion);
     }
-
     return usuario;
   }
 
@@ -213,7 +201,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Usuario> listaUsuario;
-
     try {
       listaUsuario = sesion.createQuery("from Usuario u"
               + " where u.perfil != " + Perfiles.ELIMINADO
@@ -224,7 +211,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     } finally {
       cerrar(sesion);
     }
-
     return listaUsuario;
   }
 
@@ -238,7 +224,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Usuario> listaUsuarioNoConfirmados;
-
     try {
       listaUsuarioNoConfirmados = sesion.createQuery("from Usuario u"
               + " where u.perfil = " + Perfiles.GESTOR_NO_CONFIRMADO).list();
@@ -248,7 +233,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     } finally {
       cerrar(sesion);
     }
-
     return listaUsuarioNoConfirmados;
   }
 
@@ -263,7 +247,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Usuario usuario;
-
     try {
       usuario = (Usuario) sesion.createQuery("from Usuario u where "
               + "u.perfil != " + Perfiles.ELIMINADO
@@ -274,7 +257,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     } finally {
       cerrar(sesion);
     }
-
     return usuario;
   }
 
@@ -289,7 +271,6 @@ public class UsuarioIMPL implements UsuarioDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Usuario usuario;
-
     try {
       usuario = (Usuario) sesion.createQuery("from Usuario u where "
               + "u.perfil != " + Perfiles.ELIMINADO
@@ -300,7 +281,22 @@ public class UsuarioIMPL implements UsuarioDAO {
     } finally {
       cerrar(sesion);
     }
+    return usuario;
+  }
 
+  @Override
+  public Usuario buscarUsuarioPorIdGestor(int idGestor) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    Usuario usuario;
+    try {
+      usuario = (Usuario) sesion.createSQLQuery("SELECT * FROM usuario WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ");").addEntity(Usuario.class).uniqueResult();
+    } catch (HibernateException he) {
+      usuario = null;
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
+    }
     return usuario;
   }
 

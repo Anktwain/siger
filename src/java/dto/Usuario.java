@@ -1,5 +1,5 @@
 package dto;
-// Generated 26/10/2015 11:55:09 AM by Hibernate Tools 4.3.1
+// Generated 2/12/2015 01:29:58 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -23,6 +23,7 @@ public class Usuario  implements java.io.Serializable {
      private String imagenPerfil;
      private Set administrativos = new HashSet(0);
      private Set gestors = new HashSet(0);
+     private Set gestions = new HashSet(0);
 
     public Usuario() {
     }
@@ -37,7 +38,7 @@ public class Usuario  implements java.io.Serializable {
         this.perfil = perfil;
         this.correo = correo;
     }
-    public Usuario(Despacho despacho, String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagenPerfil, Set administrativos, Set gestors) {
+    public Usuario(Despacho despacho, String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagenPerfil, Set administrativos, Set gestors, Set gestions) {
        this.despacho = despacho;
        this.nombre = nombre;
        this.paterno = paterno;
@@ -49,6 +50,7 @@ public class Usuario  implements java.io.Serializable {
        this.imagenPerfil = imagenPerfil;
        this.administrativos = administrativos;
        this.gestors = gestors;
+       this.gestions = gestions;
     }
    
     public Integer getIdUsuario() {
@@ -134,6 +136,13 @@ public class Usuario  implements java.io.Serializable {
     
     public void setGestors(Set gestors) {
         this.gestors = gestors;
+    }
+    public Set getGestions() {
+        return this.gestions;
+    }
+    
+    public void setGestions(Set gestions) {
+        this.gestions = gestions;
     }
 
 

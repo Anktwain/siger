@@ -1,5 +1,5 @@
 package dto;
-// Generated 26/10/2015 11:55:09 AM by Hibernate Tools 4.3.1
+// Generated 2/12/2015 01:29:58 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -17,17 +17,21 @@ public class Remesa  implements java.io.Serializable {
      private Float saldoVencido;
      private String estatus;
      private Date fechaUltimoPago;
+     private Date fechaUltimoVencimientoPagado;
+     private Date vigencia;
      private Set creditoRemesas = new HashSet(0);
      private Set facs = new HashSet(0);
 
     public Remesa() {
     }
 
-    public Remesa(Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Set creditoRemesas, Set facs) {
+    public Remesa(Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Date fechaUltimoVencimientoPagado, Date vigencia, Set creditoRemesas, Set facs) {
        this.mesesVencidos = mesesVencidos;
        this.saldoVencido = saldoVencido;
        this.estatus = estatus;
        this.fechaUltimoPago = fechaUltimoPago;
+       this.fechaUltimoVencimientoPagado = fechaUltimoVencimientoPagado;
+       this.vigencia = vigencia;
        this.creditoRemesas = creditoRemesas;
        this.facs = facs;
     }
@@ -66,6 +70,20 @@ public class Remesa  implements java.io.Serializable {
     
     public void setFechaUltimoPago(Date fechaUltimoPago) {
         this.fechaUltimoPago = fechaUltimoPago;
+    }
+    public Date getFechaUltimoVencimientoPagado() {
+        return this.fechaUltimoVencimientoPagado;
+    }
+    
+    public void setFechaUltimoVencimientoPagado(Date fechaUltimoVencimientoPagado) {
+        this.fechaUltimoVencimientoPagado = fechaUltimoVencimientoPagado;
+    }
+    public Date getVigencia() {
+        return this.vigencia;
+    }
+    
+    public void setVigencia(Date vigencia) {
+        this.vigencia = vigencia;
     }
     public Set getCreditoRemesas() {
         return this.creditoRemesas;

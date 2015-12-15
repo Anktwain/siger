@@ -1,7 +1,6 @@
 package impl;
 
 import dao.ProductoDAO;
-import dto.Institucion;
 import dto.Producto;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -128,22 +127,6 @@ public class ProductoIMPL implements ProductoDAO {
   }
 
   @Override
-  public Producto buscar(String nombreProducto) {
-    Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
-    Producto producto;
-    try {
-      producto = (Producto) sesion.createSQLQuery("select * from producto where nombre = '" + nombreProducto + "';").addEntity(Producto.class).uniqueResult();
-    } catch (HibernateException he) {
-      producto = null;
-      Logs.log.error(he.getMessage());
-    } finally {
-      cerrar(sesion);
-    }
-    return producto;
-  }
-
-  @Override
   public List<Producto> buscarProductosPorInstitucion(int idInstitucion) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
@@ -158,7 +141,7 @@ public class ProductoIMPL implements ProductoDAO {
     }
     return productos;
   }
-
+  
   /**
    *
    *

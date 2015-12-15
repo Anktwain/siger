@@ -1,35 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 26/10/2015 11:55:10 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.Deudor" optimistic-lock="version" table="deudor">
-    <id name="idDeudor" type="java.lang.Integer">
-      <column name="id_deudor"/>
-      <generator class="identity"/>
-    </id>
-    <many-to-one class="dto.Sujeto" fetch="select" name="sujeto">
-      <column name="id_sujeto" not-null="true"/>
-    </many-to-one>
-    <property name="numeroDeudor" type="string">
-      <column length="25" name="numero_deudor"/>
-    </property>
-    <property name="curp" type="string">
-      <column length="20" name="curp"/>
-    </property>
-    <property name="numeroSeguroSocial" type="string">
-      <column length="20" name="numero_seguro_social"/>
-    </property>
-    <set fetch="select" inverse="true" lazy="true" name="contactos" table="contacto">
-      <key>
-        <column name="id_deudor" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Contacto"/>
-    </set>
-    <set fetch="select" inverse="true" lazy="true" name="creditos" table="credito">
-      <key>
-        <column name="id_deudor" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Credito"/>
-    </set>
-  </class>
+    <class name="dto.Deudor" table="deudor" catalog="sigerbd" optimistic-lock="version">
+        <id name="idDeudor" type="java.lang.Integer">
+            <column name="id_deudor" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="sujeto" class="dto.Sujeto" fetch="select">
+            <column name="id_sujeto" not-null="true" />
+        </many-to-one>
+        <property name="numeroDeudor" type="string">
+            <column name="numero_deudor" length="25" />
+        </property>
+        <property name="curp" type="string">
+            <column name="curp" length="20" />
+        </property>
+        <property name="numeroSeguroSocial" type="string">
+            <column name="numero_seguro_social" length="20" />
+        </property>
+        <set name="contactos" table="contacto" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_deudor" not-null="true" />
+            </key>
+            <one-to-many class="dto.Contacto" />
+        </set>
+        <set name="creditos" table="credito" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_deudor" not-null="true" />
+            </key>
+            <one-to-many class="dto.Credito" />
+        </set>
+    </class>
 </hibernate-mapping>

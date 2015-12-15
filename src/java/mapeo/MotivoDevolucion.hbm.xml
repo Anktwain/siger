@@ -1,17 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 26/10/2015 11:55:10 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.MotivoDevolucion" optimistic-lock="version" table="motivo_devolucion">
-    <id name="idMotivoDevolucion" type="java.lang.Integer">
-      <column name="id_motivo_devolucion"/>
-      <generator class="identity"/>
-    </id>
-    <property name="motivo" type="string">
-      <column length="100" name="motivo" not-null="true"/>
-    </property>
-    <property name="descripcion" type="string">
-      <column length="500" name="descripcion" not-null="true"/>
-    </property>
-  </class>
+    <class name="dto.MotivoDevolucion" table="motivo_devolucion" catalog="sigerbd" optimistic-lock="version">
+        <id name="idMotivoDevolucion" type="java.lang.Integer">
+            <column name="id_motivo_devolucion" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="conceptoDevolucion" class="dto.ConceptoDevolucion" fetch="select">
+            <column name="id_concepto_devolucion" not-null="true" />
+        </many-to-one>
+        <property name="motivo" type="string">
+            <column name="motivo" length="100" not-null="true" />
+        </property>
+        <property name="descripcion" type="string">
+            <column name="descripcion" length="500" not-null="true" />
+        </property>
+    </class>
 </hibernate-mapping>

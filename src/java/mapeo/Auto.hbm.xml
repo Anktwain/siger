@@ -1,29 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 26/10/2015 11:55:10 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-  <class catalog="sigerbd" name="dto.Auto" optimistic-lock="version" table="auto">
-    <id name="idAuto" type="int">
-      <column name="id_auto"/>
-      <generator class="assigned"/>
-    </id>
-    <many-to-one class="dto.Credito" fetch="select" name="credito">
-      <column name="id_credito" not-null="true"/>
-    </many-to-one>
-    <property name="clave" type="string">
-      <column length="30" name="clave"/>
-    </property>
-    <property name="marca" type="string">
-      <column length="25" name="marca"/>
-    </property>
-    <property name="modelo" type="string">
-      <column length="25" name="modelo"/>
-    </property>
-    <property name="color" type="string">
-      <column length="25" name="color"/>
-    </property>
-    <property name="valor" type="java.lang.Float">
-      <column name="valor" precision="12" scale="0"/>
-    </property>
-  </class>
+    <class name="dto.Auto" table="auto" catalog="sigerbd" optimistic-lock="version">
+        <id name="idAuto" type="int">
+            <column name="id_auto" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="credito" class="dto.Credito" fetch="select">
+            <column name="id_credito" not-null="true" />
+        </many-to-one>
+        <property name="clave" type="string">
+            <column name="clave" length="30" />
+        </property>
+        <property name="marca" type="string">
+            <column name="marca" length="25" />
+        </property>
+        <property name="modelo" type="string">
+            <column name="modelo" length="25" />
+        </property>
+        <property name="color" type="string">
+            <column name="color" length="25" />
+        </property>
+        <property name="valor" type="java.lang.Float">
+            <column name="valor" precision="12" scale="0" />
+        </property>
+    </class>
 </hibernate-mapping>
