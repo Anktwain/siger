@@ -54,7 +54,7 @@
       <div class="row">
         <div class="col-sm-1"></div>
         <div class="col-sm-10" id="divMensajes">
-          <p:messages id="mensajes" showDetail="true" autoUpdate="true"/>
+          <p:messages id="mensajes" showDetail="true" autoUpdate="true"/>  
         </div>
         <div class="col-sm-1"></div>
       </div>
@@ -82,87 +82,88 @@
                 </p:tab>
 
                 <p:tab id="subir_archivo" disabled="true">
-                  <div class="row">
-                    <div class="col-sm-7 col-md-4">
-                      <div class="panel-stat3 bg-success">
-                        <h3 class="m-top-none">Seleccione archivo</h3>
+                  <h:form id="frmSubirArchivo">
+                    <div class="row">
+                      <div class="col-sm-7 col-md-4">
+                        <div class="panel-stat3 bg-success">
+                          <h3 class="m-top-none">Seleccione archivo</h3>
 
-                        <div class="stat-icon">
-                          <i class="fa fa-file-excel-o fa-2x" />
+                          <div class="stat-icon">
+                            <i class="fa fa-file-excel-o fa-2x" />
+                          </div>
+                          formato: &uacute;nicamente xls <br />tama&ntilde;o: no mayor a 4 MB
                         </div>
-                        formato: &uacute;nicamente xls <br />tama&ntilde;o: no mayor a 4 MB
-                      </div>
-                      <h:form id="frmSubirArchivo">
+
                         <p:fileUpload mode="advanced" dragDropSupport="true" label="Seleccionar archivo" class="btn btn-small" id="fileUpload"
                                       update="mensajes,frmActividades:paso1,tabView" sizeLimit="4194304" allowTypes="/(\.|\/)(xls|xlsx|sql)$/" auto="true"
                                       invalidFileMessage="Tipo de archivo no v&aacute;lido. Extensiones aceptadas: .xls, .xlsx, .sql"
                                       invalidSizeMessage="El tama&ntilde;o del archivo es demasiado grande. El archivo debe tener un tama&ntilde;o menor o igual a 4 MB"
                                       fileUploadListener="#{vistaCarga.subirArchivo}" messageTemplate="{name}">
                         </p:fileUpload>
-                      </h:form>
+                      </div>
                     </div>
-                  </div>
+                  </h:form>
                 </p:tab>
 
                 <p:tab id="leer_archivo" disabled="true">
-                  <div class="row">
-                    <div class="col-sm-7 col-md-4">
-                      <div class="panel-stat3 bg-success">
-                        <h3 class="m-top-none">Leer archivo</h3>
-                        <div class="stat-icon">
-                          <i class="fa fa-file-text-o fa-2x" />
+                  <h:form id="frmLeerArchivo">
+                    <div class="row">
+                      <div class="col-sm-7 col-md-4">
+                        <div class="panel-stat3 bg-success">
+                          <h3 class="m-top-none">Leer archivo</h3>
+                          <div class="stat-icon">
+                            <i class="fa fa-file-text-o fa-2x" />
+                          </div>
+                          Presione el bot&oacute;n para leer el archivo.
                         </div>
-                        Presione el bot&oacute;n para leer el archivo.
-                      </div>
-                      <h:form id="frmLeerArchivo">
                         <h:commandButton value="Leer archivo" class="btn btn-success" >
                           <!--<f:ajax event="click" listener="{vistaCarga.leerArchivo}" render=":frmActividades:paso2 tabView"/>-->
                           <p:ajax listener="#{vistaCarga.leerArchivo()}" update="frmActividades:paso2, tabView"/>
                         </h:commandButton>
-                      </h:form>
+                      </div>
                     </div>
-                  </div>
+                  </h:form>
                 </p:tab>
 
                 <p:tab id="validar_datos" disabled="true">
-                  <div class="row">
-                    <div class="col-sm-7 col-md-4">
-                      <div class="panel-stat3 bg-success">
-                        <h3 class="m-top-none">Validar datos</h3>
-                        <div class="stat-icon">
-                          <i class="fa fa-check-circle-o fa-2x" />
+                  <h:form id="frmValidarDatos">
+                    <div class="row">
+                      <div class="col-sm-7 col-md-4">
+                        <div class="panel-stat3 bg-success">
+                          <h3 class="m-top-none">Validar datos</h3>
+                          <div class="stat-icon">
+                            <i class="fa fa-check-circle-o fa-2x" />
+                          </div>
+                          Se encontraron #{vistaCarga.numeroDeCreditos} cr&eacute;ditos
+                          <br/>Presione el bot&oacute;n para validarlos.
                         </div>
-                        Se encontraron #{vistaCarga.numeroDeCreditos} cr&eacute;ditos
-                        <br/>Presione el bot&oacute;n para validarlos.
-                      </div>
-                      <h:form id="frmValidarDatos">
                         <h:commandButton value="Validar datos" class="btn btn-success">
                           <!--<f:ajax event="click" listener="{vistaCarga.validarDatos}" render=":frmActividades:paso3 tabView" />-->
                           <p:ajax listener="#{vistaCarga.validarDatos()}" update="frmActividades:paso3, tabView" />
                         </h:commandButton>
-                      </h:form>
+                      </div>
                     </div>
-                  </div>
+                  </h:form>
                 </p:tab>
 
                 <p:tab id="clasificar_creditos" disabled="true">
-                  <div class="row">
-                    <div class="col-sm-7 col-md-4">
-                      <div class="panel-stat3 bg-success">
-                        <h3 class="m-top-none">Clasificar cr&eacute;ditos</h3>
-                        <div class="stat-icon">
-                          <i class="fa fa-list-ol fa-2x" />
+                  <h:form>
+                    <div class="row">
+                      <div class="col-sm-7 col-md-4">
+                        <div class="panel-stat3 bg-success">
+                          <h3 class="m-top-none">Clasificar cr&eacute;ditos</h3>
+                          <div class="stat-icon">
+                            <i class="fa fa-list-ol fa-2x" />
+                          </div>
+                          Se van a clasificar los cr&eacute;ditos de acuerdo a su estado.
+                          <br/>Presione el bot&oacute;n para clasificarlos.
                         </div>
-                        Se van a clasificar los cr&eacute;ditos de acuerdo a su estado.
-                        <br/>Presione el bot&oacute;n para clasificarlos.
-                      </div>
-                      <h:form>
                         <h:commandButton value="Clasificar cr&eacute;ditos" class="btn btn-success" >
                           <p:ajax listener="#{vistaCarga.clasificarCreditos()}" update="frmActividades:paso4, tabView" />
                         </h:commandButton>
-                      </h:form>
+                      </div>
                     </div>
-                  </div>
+                  </h:form>
                 </p:tab>
 
                 <p:tab id="asignar_creditos" disabled="true">
@@ -278,7 +279,7 @@
                   </div>
                   <div class="row">
                     <h:form id="frmParticipantes">
-                        <p:dataTable id="tblParticipantes" var="participante" value="#{vistaCarga.asignaciones}" rowKey="#{participante.gestor}"
+                      <p:dataTable id="tblParticipantes" var="participante" value="#{vistaCarga.asignaciones}" rowKey="#{participante.gestor}"
                                    rows="10" rowsPerPageTemplate="5,10,15" emptyMessage="No hay asignaciones" selectionMode="single"
                                    class="table table-bordered table-condensed table-hover table-striped table-responsive">
                         <p:ajax event="rowSelect" listener="#{vistaCarga.onAsignacionSelect}"
@@ -301,9 +302,11 @@
                   </div>
                   <div class="row">
                     <div class="col-sm-10 col-md-8"></div>
-                    <h:commandButton value="Terminar" class="btn btn-success">
-                      <p:ajax listener="#{vistaCarga.crearSQL()}" update="frmActividades:paso6, tabView"/>
-                    </h:commandButton>
+                    <h:form>
+                      <h:commandButton value="Terminar" class="btn btn-success">
+                        <p:ajax listener="#{vistaCarga.crearSQL()}" update="frmActividades:paso6, tabView"/>
+                      </h:commandButton>
+                    </h:form>
                   </div>
                 </p:tab>
 

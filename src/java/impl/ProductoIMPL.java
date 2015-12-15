@@ -162,4 +162,20 @@ public class ProductoIMPL implements ProductoDAO {
       sesion.close();
     }
   }
+
+  @Override
+  public Producto buscar(String nombreProducto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    Producto producto;
+    try {
+      producto = (Producto) sesion.createSQLQuery("select * from producto where nombre = '" + nombreProducto + "';").addEntity(Producto.class).uniqueResult();
+    } catch (HibernateException he) {
+      producto = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return producto;
+  }
 }
