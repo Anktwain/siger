@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 11/12/2015 11:59:29 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="dto.Gestion" table="gestion" catalog="sigerbd" optimistic-lock="version">
         <id name="idGestion" type="java.lang.Integer">
@@ -36,7 +36,7 @@
             <column name="tipo_sujeto_gestion" length="50" not-null="true" />
         </property>
         <property name="sujetoGestion" type="string">
-            <column name="sujeto_gestion" length="100" not-null="true" />
+            <column name="sujeto_gestion" length="100" />
         </property>
         <property name="gestion" type="string">
             <column name="gestion" length="300" not-null="true" />

@@ -64,6 +64,7 @@ public class VistaCreditoBean implements Serializable {
 
   // VARIABLES DE CLASE
   private boolean reasignarVisible;
+  private boolean conveniosVisible;
   private String nombreDeudor;
   private String numeroCredito;
   private String numeroCreditos;
@@ -169,16 +170,20 @@ public class VistaCreditoBean implements Serializable {
     saldoVencido = "";
     // OBTENEMOS LA LISTA DE GESTIONES PREVIAS
     int idCredito = creditoActual.getIdCredito();
+    // LOS ADMINISTRADORES NO PUEDEN REALIZAR CONVENIOS DE PAGO
+    // LOS GESTORES NO PUEDEN REASIGNAR CREDITOS
     if(indexBean.getUsuario().getPerfil() == Perfiles.GESTOR){
       int idUsuario = indexBean.getUsuario().getIdUsuario();
       listaGestiones = gestionDao.buscarGestionesCreditoGestor(idUsuario, idCredito);
       // NO SE VISUALIZA LA REASIGNACION DE GESTOR
       reasignarVisible = false;
+      conveniosVisible = true;
     }
     else{
       listaGestiones = gestionDao.buscarGestionesCredito(idCredito);
       listaGestores = gestorDao.buscarPorDespachoExceptoEste(indexBean.getUsuario().getDespacho().getIdDespacho(), gestorActual.getIdGestor());
       reasignarVisible = true;
+      conveniosVisible = false;
     }
     // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
     List<Direccion> listaDireccionesSinNormalizar;
@@ -230,6 +235,8 @@ public class VistaCreditoBean implements Serializable {
   
   // METODO PARA CERRAR EL DIALOGO
   public void cerrar(){
+    gestorSeleccionado = gestorActual;
+    RequestContext.getCurrentInstance().update("barraDetalleCreditoForm:listaGestoresVistaCredito");
     RequestContext.getCurrentInstance().execute("PF('confirmacionDialog2').hide();");
   }
 
@@ -254,7 +261,7 @@ public class VistaCreditoBean implements Serializable {
     h.setCredito(creditoActual);
     Date fecha = new Date();
     h.setFecha(fecha);
-    String evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor: " + gestorActual.getUsuario().getNombreLogin() + " al gestor: " + nuevoGestor.getUsuario().getNombreLogin();
+    String evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + gestorActual.getUsuario().getNombreLogin() + " al gestor " + nuevoGestor.getUsuario().getNombreLogin();
     h.setEvento(evento);
     ok = ok & (historialDao.insertarHistorial(creditoActual.getIdCredito(), evento));
     if(ok){
@@ -581,6 +588,14 @@ public class VistaCreditoBean implements Serializable {
 
   public void setGestorActual(Gestor gestorActual) {
     this.gestorActual = gestorActual;
+  }
+
+  public boolean isConveniosVisible() {
+    return conveniosVisible;
+  }
+
+  public void setConveniosVisible(boolean conveniosVisible) {
+    this.conveniosVisible = conveniosVisible;
   }
 
 }
