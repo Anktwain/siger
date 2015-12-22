@@ -19,3 +19,4 @@ hibernate.reveng.xml
 /dist/
 /nbproject/private/
 /build/
+/web/nuevaVista.xhtml
