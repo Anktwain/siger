@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import org.primefaces.event.FileUploadEvent;
@@ -21,21 +20,29 @@ import util.log.Logs;
  */
 public class Cargador {
 
+  // El nombre del archivo generado del lado del servidor.
   private String nombreArchivo;
-  private int numeroFilas;
-  private int numeroColumnas;
-  private Workbook libroExcel;
-  private Sheet hojaExcel;
-  private Fila fila;
-  private List<Fila> listaFilas;
 
+  /**
+   * Método que sube un archivo de carga al servidor. Este archivo deberá ser en
+   * formato xls.
+   *
+   * @param evento el evento invocado desde el fileUpload.
+   * @return El nombre original del archivo subido por el usuario. En caso de
+   * que el archivo no pudiera cargarse, enviará null.
+   */
   public String subirArchivo(FileUploadEvent evento) {
-    UploadedFile archivoRecibido = evento.getFile();
+    UploadedFile archivoRecibido = evento.getFile(); // Obtien el archivo.
+    
+    /* cambia el nombre original del archivo por un nombre generado por el método
+      "bautizar" de la clase BautistaDeArchivos. Esa clase se encarga de generar
+      nombres que no se repitan.
+    */
     nombreArchivo = BautistaDeArchivos.bautizar(archivoRecibido.getFileName(),
-            Directorios.RUTA_REMESAS + "Remesa", 1);
+            Directorios.RUTA_REMESAS + "Remesa", BautistaDeArchivos.PREFIJO);
 
     byte[] bytes = null;
-    String ok;
+    String ok; // Permite conocer si la operación fue o no exitosa.
 
     try {
       if (archivoRecibido != null) {
@@ -56,16 +63,22 @@ public class Cargador {
     return ok;
   }
 
+  /**
+   * Método que lee un archivo de carga del servidor. El archivo a leer será el
+   * indicado por "nombreArchivo", este archivo deberá tener formato xls.
+   *
+   * @return Una lista de objetos Fila contenidos en el archivo.
+   */
   public List<Fila> leerArchivo() throws IOException, BiffException {
-    libroExcel = Workbook.getWorkbook(new File(nombreArchivo));
+    /* Objeto que aloja al libro de excel contenido en el archivo a leer */
+    Workbook libroExcel = Workbook.getWorkbook(new File(nombreArchivo));
     ProcesadorArchivoExcel procesador = new ProcesadorArchivoExcel(libroExcel);
-    listaFilas = procesador.obtenerFilas();
+    List<Fila> listaFilas = procesador.obtenerFilas();
 
     if (listaFilas.size() > 1) {
       return listaFilas;
     } else {
       return null;
     }
-
   }
 }
