@@ -64,6 +64,14 @@ public class Fila implements Serializable, Comparable<Fila> {
 
   private ArrayList<String> direcsAdicionales;
 
+  private String marcaje;
+  private String fechaQuebranto;
+
+  private Fecha fecha = new Fecha();
+  private String error;
+  private String detalleError;
+  private int clasificacion;
+
   public Fila() {
     refsAdicionales = new ArrayList<String>();
     correos = new ArrayList<String>();
@@ -73,14 +81,6 @@ public class Fila implements Serializable, Comparable<Fila> {
     facs = new ArrayList<>();
     clasificacion = 0;
   }
-
-  private String marcaje;
-  private String fechaQuebranto;
-
-  private Fecha fecha = new Fecha();
-  private String error;
-  private String detalleError;
-  private int clasificacion;
 
   private String corregirFecha(String fecha) {
     if (fecha == null || fecha.equals("-") || fecha.equals("")) {
@@ -176,8 +176,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code credito} el campo de la columna 1 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code credito} Número de crédito. Este número debe ser único ya
+   * que funciona como identificador del crédito.
    */
   public String getCredito() {
     return credito;
@@ -188,8 +188,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code nombre} el campo de la columna 2 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code nombre} El nombre del deudor, o razón social, si se trata de
+   * una empresa.
    */
   public String getNombre() {
     return nombre;
@@ -200,8 +200,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code refCobro} el campo de la columna 3 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code refCobro} Referencia de cobro. Es una cadena de números que
+   * representa un número telefónico asociado al crédito.
    */
   public String getRefCobro() {
     return refCobro;
@@ -212,8 +212,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code linea} el campo de la columna 4 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code linea} Línea de crédito. Una clasificación que hace el banco
+   * sobre sus productos de crédito.
    */
   public String getLinea() {
     return linea;
@@ -224,8 +224,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code tipoCredito} el campo de la columna 5 en el archivo estándar
-   * de excel para la carga de remesas en SigerWeb1
+   * @return {@code tipoCredito} Tipo de crédito. Clasificación realizada por el
+   * banco.
    */
   public String getTipoCredito() {
     return tipoCredito;
@@ -236,8 +236,9 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code estatus} el campo de la columna 6 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code estatus} Estatus del crédito. Es una clave que utiliza el
+   * banco para indicar la situcaión actual del crédito en cuestión. El estatus
+   * puede ser: MV (Meses vencidos), etc.
    */
   public String getEstatus() {
     return estatus;
@@ -248,8 +249,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code mesesVencidos} el campo de la columna 7 en el archivo
-   * estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code mesesVencidos} El número de meses vencidos que presenta ese
+   * crédito en el momento de hacer la carga.
    */
   public String getMesesVencidos() {
     return mesesVencidos;
@@ -260,8 +261,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code despacho} el campo de la columna 8 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code despacho} Es una cadena que representa el nombre corto del
+   * despacho al cual está asignado el crédito en cuestión.
    */
   public String getDespacho() {
     return despacho;
@@ -272,8 +273,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code fechaInicioCredito} el campo de la columna 9 en el archivo
-   * estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code fechaInicioCredito} Fecha de inicio del crédito.
    */
   public String getFechaInicioCredito() {
 
@@ -286,8 +286,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code fechaVencimientoCred} el campo de la columna 10 en el
-   * archivo estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code fechaVencimientoCred} Fecha de vencimiento del crédito.
    */
   public String getFechaVencimientoCred() {
     return fechaVencimientoCred;
@@ -299,8 +298,9 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code disposicion} el campo de la columna 11 en el archivo
-   * estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code disposicion} Disposición o monto. Es la cantidad original
+   * que el banco prestó al deudor. Este dato está representado por una cadena
+   * de texto.
    */
   public String getDisposicion() {
     return disposicion;
@@ -309,14 +309,18 @@ public class Fila implements Serializable, Comparable<Fila> {
   public void setDisposicion(String disposicion) {
     this.disposicion = disposicion;
   }
-  
-  public Float getDisposicionFloat(){
+
+    /**
+   * @return {@code disposicion} Disposición o monto. Dato recuperado como tipo
+   * Float.
+   */
+  public Float getDisposicionFloat() {
     return Float.parseFloat(disposicion);
   }
 
   /**
-   * @return {@code mensualidad} el campo de la columna 12 en el archivo
-   * estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code mensualidad} La mensualidad que debe pagar el deudor. Se
+   * representa mediante una cadena de texto.
    */
   public String getMensualidad() {
     return mensualidad;
@@ -327,8 +331,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code saldoInsoluto} el campo de la columna 13 en el archivo
-   * estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code saldoInsoluto} El saldo insoluto?. Es la cantidad que resta
+   * el deudor por pagar.
    */
   public String getSaldoInsoluto() {
     return saldoInsoluto;
@@ -339,13 +343,17 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code saldoVencido} el campo de la columna 14 en el archivo
-   * estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code saldoVencido} Es el saldo que tiene vencido el deudor, y que
+   * por lo tanto hace que su crédito se encuentre en cobranza.
    */
   public String getSaldoVencido() {
     return saldoVencido;
   }
-  
+
+  /**
+   * @return {@code saldoVencido} Es el saldo que tiene vencido el deudor. Este
+   * dato es recuperado como un tipo Float.
+   */
   public Float getSaldoVencidoFloat() {
     return Float.parseFloat(saldoVencido);
   }
@@ -355,8 +363,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code tasa} el campo de la columna 15 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code tasa} La tasa de interés para el crédito en cuestión.
    */
   public String getTasa() {
     return tasa;
@@ -367,9 +374,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code cuenta} el campo de la columna 16 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
-   */
+   * @return {@code cuenta} Cuenta. Es una cadena de texto formada por dígitos que
+   * representa un número de cuenta? en donde el deudor deposita su pago.   */
   public String getCuenta() {
     return cuenta;
   }
@@ -379,8 +385,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code fechaUltimoPago} el campo de la columna 17 en el archivo
-   * estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code fechaUltimoPago} La fecha en que el deudor hizo el último pago
+   * de su crédito.
    */
   public String getFechaUltimoPago() {
     return fechaUltimoPago;
@@ -392,8 +398,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code fechaUltimoVencimientoPagado} el campo de la columna 18 en
-   * el archivo estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code fechaUltimoVencimientoPagado} El último vencimiento pagado
+   * del crédito.
    */
   public String getFechaUltimoVencimientoPagado() {
     return fechaUltimoVencimientoPagado;
@@ -405,8 +411,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code idCliente} el campo de la columna 19 en el archivo estándar
-   * de excel para la carga de remesas en SigerWeb1
+   * @return {@code idCliente} Una cadena única, generalmente compuesta de dígitos,
+   * que representa el identificador para un deudor.
    */
   public String getIdCliente() {
     return idCliente;
@@ -417,8 +423,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code rfc} el campo de la columna 20 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code rfc} El RFC del deudor
    */
   public String getRfc() {
     return rfc;
@@ -429,8 +434,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code calle} el campo de la columna 21 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code calle} Calle. Forma parte del domicilio del deudor.
    */
   public String getCalle() {
     return calle;
@@ -441,8 +445,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code colonia} el campo de la columna 22 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code colonia} Colonia. Forma parte del domicilio del deudor.
    */
   public String getColonia() {
     return colonia;
@@ -453,8 +456,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code estado} el campo de la columna 23 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code estado} Estado. Forma parte del domicilio del deudor.
    */
   public String getEstado() {
     return estado;
@@ -465,8 +467,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code municipio} el campo de la columna 24 en el archivo estándar
-   * de excel para la carga de remesas en SigerWeb1
+   * @return {@code municipio} Municipio. Forma parte del domicilio del deudor.
    */
   public String getMunicipio() {
     return municipio;
@@ -477,8 +478,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code cp} el campo de la columna 25 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1
+   * @return {@code cp} Código postal. Forma parte del domicilio del deudor.
    */
   public String getCp() {
     return cp;
@@ -489,10 +489,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code anio} el ArrayList que contiene los hasta 3 registros
-   * (columnas 26, 30 y 34 en el archivo estándar de excel) del año
-   * correspondientes a las fechas de facturacion de los créditos que se
-   * facturan por un tercero.
+   * @return {@code anio} Año. Conjunto de años que forman parte de un objeto Fac.
    */
   public ArrayList<String> getAnio() {
     return anio;
@@ -503,10 +500,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code mes} el ArrayList que contiene los hasta 3 registros
-   * (columnas 27, 31 y 35 en el archivo estándar de excel) del mes
-   * correspondientes a las fechas de facturacion de los créditos que se
-   * facturan por un tercero.
+   * @return {@code mes} Meses. Conjunto de meses que forman parte de un objeto Fac.
    */
   public ArrayList<String> getMes() {
     return mes;
@@ -517,10 +511,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code facMes} el ArrayList que contiene los hasta 3 registros
-   * (columnas 28, 32 y 36 en el archivo estándar de excel) fac_mes
-   * correspondientes a las fechas de facturacion de los créditos que se
-   * facturan por un tercero.
+   * @return {@code facMes} Fac Mes. Conjunto de Fac mes que forman parte de un objeto Fac.
    */
   public ArrayList<String> getFacMes() {
     return facMes;
@@ -531,10 +522,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code facMes} el ArrayList que contiene los hasta 3 registros
-   * (columnas 29, 33 y 37 en el archivo estándar de excel) del monto
-   * correspondientes a las fechas de facturacion de los créditos que se
-   * facturan por un tercero.
+   * @return {@code facMes} Montos. Conjunto de montos que forman parte de un objeto Fac.
    */
   public ArrayList<String> getMonto() {
     return monto;
@@ -545,8 +533,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code refsAdicionales} ArrayList que contiene los hasta 3
-   * registros (columnas 38, 39 y 40) de las referencias.
+   * @return {@code refsAdicionales} Conjunto de referencias adicionales asociadas
+   * a un crédito.
    */
   public ArrayList<String> getRefsAdicionales() {
     return refsAdicionales;
@@ -557,9 +545,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code correos} ArrayList que contiene los correos electrónicos de
-   * contacto del deudor. <strong>Sólo existe una columna (la 41) en el archivo
-   * estándar de excel para la carga de remesas en SigerWeb1.</strong>
+   * @return {@code correos} Conjunto de correos electrónicos del deudor.
    */
   public ArrayList<String> getCorreos() {
     return correos;
@@ -570,10 +556,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code telsAdicionales} ArrayList con los hasta 2 registros de
-   * teléfonos de contacto adicionales del deudor, correspondientes a las
-   * columnas 42 y 43 en el archivo estándar de excel para la carga de remesas
-   * en SigerWeb1.
+   * @return {@code telsAdicionales} Teléfonos adicionales proporcionados por el
+   * deudor para hacer contacto con él.
    */
   public ArrayList<String> getTelsAdicionales() {
     return telsAdicionales;
@@ -584,9 +568,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code correos} ArrayList que contiene las direcciones adicionales
-   * del deudor. <strong>Sólo existe una columna (la 44) en el archivo estándar
-   * de excel para la carga de remesas en SigerWeb1.</strong>
+   * @return {@code correos} Direcciones adicionales proporcionados por el deudor
+   * para visitas domiciliarias.
    */
   public ArrayList<String> getDirecsAdicionales() {
     return direcsAdicionales;
@@ -597,8 +580,9 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code marcaje} el campo de la columna 46 en el archivo estándar de
-   * excel para la carga de remesas en SigerWeb1.
+   * @return {@code marcaje} Marcaje. Es un dato interno que sirve para conocer
+   * la situación de un crédito respecto a su gestión. Por default los créditos
+   * no tienen marcaje "Sin Marcaje".
    */
   public String getMarcaje() {
     return marcaje;
@@ -609,8 +593,7 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code fechaQuebranto} el campo de la columna 47 en el archivo
-   * estándar de excel para la carga de remesas en SigerWeb1
+   * @return {@code fechaQuebranto} Fecha de quebranto del crédito. Si es el caso.
    */
   public String getFechaQuebranto() {
     return fechaQuebranto;

@@ -77,4 +77,16 @@ public class ZonaService {
     return gestorEncontrado;
   }
 
+  public Gestor getGestorPorId(int id) {
+    Gestor gestorEncontrado = null;
+    for (int i = 0; i < this.gestoresDespachoActual.size(); i++) {
+      if (this.gestoresDespachoActual.get(i).getIdGestor() == id) {
+        gestorEncontrado = this.gestoresDespachoActual.get(i);
+        i = this.gestoresDespachoActual.size();
+      }
+    }
+    System.out.println(" ..................... Se encontró: <" + gestorEncontrado + ">");
+    return gestorEncontrado;
+  }
+
 }

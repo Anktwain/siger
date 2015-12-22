@@ -18,6 +18,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 import util.constantes.Constantes;
 
 /**
@@ -82,15 +83,12 @@ public class ZonasVistaBean implements Serializable {
    * estado que actualmente se despliega en la vista.
    */
   private int idEdoVisible;
-  
-  EstadoRepublicaDAO estadoRepDao;
 
   private List<Colonia> coloniasDelEstadoRepSelec;
 
   private boolean mpiosDeshabilitados;
   private boolean coloniasDeshabilitadas;
 
-  private Gestor gestorAsignado;
   private List<Gestor> gestores;
 
   private int acPanColoniasActiveIndex;
@@ -225,7 +223,7 @@ public class ZonasVistaBean implements Serializable {
 
     } else {
       this.mpiosDeshabilitados = false;
-      
+
       if (this.mpiosVisibles.isEmpty()) {
         onEstadosChange();
       }
@@ -248,7 +246,7 @@ public class ZonasVistaBean implements Serializable {
     } else {
       this.coloniasDeshabilitadas = false;
     }
-    System.out.println("onMostrarColoniasChange(" + evento + "). - colonias " 
+    System.out.println("onMostrarColoniasChange(" + evento + "). - colonias "
             + (coloniasDeshabilitadas == true ? "DEShabilitados" : "Habilitadas."));
 
   }
@@ -270,15 +268,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onGestorAsignadoChange() {
-    System.out.println("onGestorAsignadoChange().");
-  }
-
-  public Gestor getGestorAsignado() {
-    return gestorAsignado;
-  }
-
-  public void setGestorAsignado(Gestor gestorAsignado) {
-    this.gestorAsignado = gestorAsignado;
+    System.out.println("                                 Terminó ejecución ajax de onGestorAsignadoChange() en <p:selectOneMenu>");
   }
 
   public List<Gestor> getGestores() {
@@ -314,8 +304,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onAceptar() {
-//    FacesContext context = FacesContext.getCurrentInstance();
-//    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Botón aceptar", "Probando la acción del botón aceptar"));
+
   }
 
   public Municipio getMpioPorNombre(String nombre) {
@@ -341,6 +330,8 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onZonasDisplay(int opcion) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
     switch (opcion) {
       case 1:
         this.tituloDialogo = "Crear nueva zona.";
@@ -354,7 +345,6 @@ public class ZonasVistaBean implements Serializable {
         break;
     }
 
-    FacesContext context = FacesContext.getCurrentInstance();
     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
             "actionListener onZonasDisplay()",
             "Por definir este comportamiento al desplegar el form de Zonas :P"));
@@ -380,4 +370,32 @@ public class ZonasVistaBean implements Serializable {
     return gestorSinSeleccion;
   }
 
+  public void onChange(String origen) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "onChange()",
+            "Terminó ejecución de onChange() en " + origen));
+
+    RequestContext.getCurrentInstance().update("growl");
+  }
+
+  public void valueChangeListener(String origen) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "valueChangeListener()",
+            "Terminó ejecución de valueChangeListener() en " + origen));
+
+    RequestContext.getCurrentInstance().update("growl");
+  }
+
+  public void monitorear() {
+    FacesContext context = FacesContext.getCurrentInstance();
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "Monitoreo",
+            "Gestor asignado: " + this.zona.getGestorAsignado()
+            + "\nEstado seleccionado: " + this.edoRepVisible
+            + "\nid Estado visible: " + idEdoVisible));
+  }
 }

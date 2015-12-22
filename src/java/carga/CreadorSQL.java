@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import util.BautistaDeArchivos;
 import util.constantes.Directorios;
 
 /**
@@ -21,6 +22,14 @@ import util.constantes.Directorios;
  */
 public class CreadorSQL {
 
+  /**
+   * Crea tantos objetos Sujeto como créditos clasificados como "nuevos totales"
+   * se hayan encontrado en la remesa. Estos objetos se asociarán con los nuevos
+   * deudores.
+   *
+   * @param filas La lista de objetos Fila que contiene a todos los créditos
+   * clasificados como "nuevos totales".
+   */
   public static void crearSujetos(List<Fila> filas) {
     Sujeto sujeto;
     SujetoDAO sujetoDao = new SujetoIMPL();
@@ -39,8 +48,15 @@ public class CreadorSQL {
 
       }
     }
-  } // fin de crearSujetos
+  } // fin del método crearSujetos
 
+  /**
+   * Crea tantas sentencias sql como objetos Fila se obtuvo del archivo de remesa.
+   * Estas sentencias son guardadas en un script que más tarde se ejecuta para
+   * consumar la carga.
+   *
+   * @param filas La lista de objetos Fila para las cuales se generarán las sentencias.
+   */
   public static String crearSQL(List<Fila> filas) {
     String query = "";
     String linea = null;
@@ -81,17 +97,25 @@ public class CreadorSQL {
               + "'" + f.getCuenta() + "', '1', '1', '" + f.getIdProducto() + "', '" + f.getIdSubproducto() + "', '" + f.getIdDeudor() + "', "
               + "'" + f.getIdGestor() + "', '" + f.getIdDespacho() + "');\n";
       
+      // Este archivo fungirá como script
+      archivoSql = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("script", BautistaDeArchivos.PREFIJO, "sql");
       
       // Llegado a este punto, se deberá guardar la query en un archivo...
-      archivoSql = Directorios.RUTA_REMESAS + "script.sql"; // Este archivo fungirá como script
       guardarQueryEnArchivo(query, archivoSql);
       query = "";
       if(linea != null)
         System.out.println(linea);
     }
     return archivoSql;
-  }
+  } // fin del método crearSQL
 
+  /**
+   * Prepara una fecha para que se aceptada por mysql. Toma una fecha en formato
+   * dd/mm/aaaa y la regresa en formato aaaa-mm-dd.
+   *
+   * @param fecha Un String que representa la fecha en formato dd/mm/aaaa
+   * @return Un String que representa la fecha en formato aaaa-mm-dd
+   */
   private static String fechador(String fecha) {
     // La fecha originalmente viene en formato: dd/mm/aaaa, se regresara como: aaaa-mm-dd
     if (fecha == null || fecha.isEmpty()) {
@@ -102,6 +126,14 @@ public class CreadorSQL {
     }
   }
 
+  /**
+   * Coloca el valor "0" en caso de que el número dado sea null o una cadena vacía.
+   * Esto evita errores de punteros nulos.
+   *
+   * @param numero Un String que representa un número
+   * @return Un String que el mismo número o u 0 en caso de que el valor de entrada
+   * sea null o cadena vacía.
+   */
   private static String numerador(String numero) {
     if (numero == null || numero.isEmpty()) {
       return "0";
@@ -110,6 +142,13 @@ public class CreadorSQL {
     }
   }
   
+  /**
+   * Guarda la sentencia en un archivo sql.
+   *
+   * @param query Un String que contiene la sentencia sql.
+   * @param nombreArchivoSql Un String que contiene el nombre y ruta del archivo
+   * en que se guardará la sentencia.
+   */
   private static void guardarQueryEnArchivo(String query, String nombreArchivoSql) {
     // SE CREA UN ARCHIVO "VIRTUAL" PARA COMPROBAR SU EXISTENCIA
     File fichero = new File(nombreArchivoSql);
