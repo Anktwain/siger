@@ -9,7 +9,7 @@ package dto.tablas;
  *
  * @author Eduardo
  */
-public class Contactos {
+public class Contactos implements java.io.Serializable {
   private String nombreContacto;
   private String descripcion;
 

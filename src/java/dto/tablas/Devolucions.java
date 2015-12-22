@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author Eduardo
  */
-public class Devolucions {
+public class Devolucions implements java.io.Serializable {
 
   private Date fecha;
   private String estatus;

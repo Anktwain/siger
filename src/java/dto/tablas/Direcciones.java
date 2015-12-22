@@ -9,7 +9,7 @@ package dto.tablas;
  *
  * @author Eduardo
  */
-public class Direcciones {
+public class Direcciones implements java.io.Serializable {
   
   private String calleNumero;
   private String colonia;

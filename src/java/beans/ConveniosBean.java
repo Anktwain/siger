@@ -8,14 +8,24 @@ package beans;
 import dao.ConvenioPagoDAO;
 import dao.EstatusInformativoDAO;
 import dao.GestionDAO;
+import dao.GestorDAO;
+import dao.PagoDAO;
+import dao.QuincenaDAO;
 import dto.ConvenioPago;
 import dto.Credito;
 import dto.EstatusInformativo;
 import dto.Gestion;
+import dto.Gestor;
+import dto.Pago;
+import dto.Quincena;
 import impl.ConvenioPagoIMPL;
 import impl.EstatusInformativoIMPL;
 import impl.GestionIMPL;
+import impl.GestorIMPL;
+import impl.PagoIMPL;
+import impl.QuincenaIMPL;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +39,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import util.constantes.Convenios;
 import util.constantes.Gestiones;
+import util.constantes.Pagos;
 import util.log.Logs;
 
 /**
@@ -47,24 +58,43 @@ public class ConveniosBean implements Serializable {
   // VARIABLES DE CLASE
   private boolean habilitaConvenios;
   private float saldoNuevoConvenio;
+  private float saldoNuevoPago;
   private float saldoMaximo;
+  private Number saldoPendiente;
+  private Date fechaDeposito;
+  private String cuentaPago;
+  private String observacionesPago;
+  private String ruta;
+  private String nombrePago;
   private Credito creditoActual;
+  private EstatusInformativoDAO estatusInformativoDao;
+  private GestionDAO gestionDao;
+  private QuincenaDAO quincenaDao;
+  private PagoDAO pagoDao;
+  private GestorDAO gestorDao;
   private ConvenioPagoDAO convenioPagoDao;
   private List<ConvenioPago> listaConvenios;
   private List<ConvenioPago> convenioSeleccionado;
   private List<ConvenioPago> listaHistorialConvenios;
-  private EstatusInformativoDAO estatusInformativoDao;
-  private GestionDAO gestionDao;
+  private List<Pago> listaPagosConvenioActivo;
+  private List<Pago> listaHistorialPagos;
+  private UploadedFile archivo;
 
   // CONSTRUCTOR
   public ConveniosBean() {
+    ruta = "C:\\Comprobantes\\";
     creditoActual = vistaCreditoBean.getCreditoActual();
     saldoMaximo = creditoActual.getMonto();
     convenioPagoDao = new ConvenioPagoIMPL();
     listaConvenios = new ArrayList();
     listaHistorialConvenios = new ArrayList();
+    listaPagosConvenioActivo = new ArrayList();
+    listaHistorialPagos = new ArrayList();
     estatusInformativoDao = new EstatusInformativoIMPL();
     gestionDao = new GestionIMPL();
+    quincenaDao = new QuincenaIMPL();
+    pagoDao = new PagoIMPL();
+    gestorDao = new GestorIMPL();
     cargarListas();
   }
 
@@ -73,10 +103,16 @@ public class ConveniosBean implements Serializable {
     int idCredito = creditoActual.getIdCredito();
     listaConvenios = convenioPagoDao.buscarConveniosEnCursoCredito(idCredito);
     listaHistorialConvenios = convenioPagoDao.buscarConveniosFinalizadosCredito(idCredito);
+    listaHistorialPagos = pagoDao.buscarPagosPorCredito(idCredito);
     if (listaConvenios.isEmpty()) {
+      listaPagosConvenioActivo.clear();
       habilitaConvenios = false;
+      saldoPendiente = 0;
     } else {
       habilitaConvenios = true;
+      int idConvenio = listaConvenios.get(0).getIdConvenioPago();
+      saldoPendiente = convenioPagoDao.calcularSaldoPendiente(idConvenio);
+      listaPagosConvenioActivo = pagoDao.buscarPagosPorConvenioActivo(idConvenio);
     }
   }
 
@@ -99,7 +135,7 @@ public class ConveniosBean implements Serializable {
         g.setCredito(creditoActual);
         g.setFecha(fecha);
         g.setUsuario(indexBean.getUsuario());
-        g.setTipoGestion(Gestiones.ASUNTO.get(2));
+        g.setTipoGestion(Gestiones.TIPO_GESTION.get(2));
         g.setLugarGestion(Gestiones.DONDE_CORPORATIVO.get(0));
         g.setAsuntoGestion(Gestiones.ASUNTO.get(6));
         g.setDescripcionGestion("SE REALIZA CONVENIO DE PAGO CON ");
@@ -129,7 +165,6 @@ public class ConveniosBean implements Serializable {
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se finalizo convenio."));
-      cargarListas();
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se finalizo el convenio. Contacte al equipo de sistemas."));
     }
@@ -137,24 +172,26 @@ public class ConveniosBean implements Serializable {
   }
 
   // METODO AUXILIAR PARA TOMAR EL EVENTO DE CARGA DE ARCHIVOS
-  public String cargarArchivo(FileUploadEvent evento) {
+  public String eventoDeCarga(FileUploadEvent evento) {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    UploadedFile archivoRecibido = evento.getFile();
-    byte[] bytes = null;
+    archivo = evento.getFile();
+    byte[] bytes;
     String ok;
     try {
-      String ruta = "C:\\Program Files\\Apache Software Foundation\\Apache Tomcat 8.0.3\\bin\\Comprobantes\\";
-      Date fecha = new Date();
-      String nombre = ruta + indexBean.getUsuario().getNombreLogin() + "-" + fecha + archivoRecibido.getFileName().substring(evento.getFile().getFileName().indexOf("."));
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+      Date f = new Date();
+      String fecha = dateFormat.format(f);
+      String nombre = indexBean.getUsuario().getNombreLogin() + "-" + fecha + archivo.getFileName().substring(archivo.getFileName().indexOf("."));
       nombre = nombre.replace(" ", "");
-      nombre = nombre.replace(":", "-");
-      bytes = archivoRecibido.getContents();
+      nombre = nombre.replace(":", "_");
+      nombrePago = nombre;
+      nombre = ruta + nombre;
+      bytes = archivo.getContents();
       BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(nombre)));
       stream.write(bytes);
-      stream.close();
       Logs.log.info("Se carga archivo al servidor: " + nombre);
-      ok = archivoRecibido.getFileName();
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "El comprobante se cargo con exito."));
+      ok = archivo.getFileName();
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Carga exitosa.", "El comprobante se cargo con exito."));
     } catch (IOException ioe) {
       Logs.log.error(ioe);
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se cargo el comprobante."));
@@ -165,7 +202,49 @@ public class ConveniosBean implements Serializable {
 
   // METODO QUE CARGA UN PAGO A UN CONVENIO EN ESPECIFICO
   public void agregarPago() {
-    System.out.println("SUCK MY DICK");
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    float montoMaximo = convenioSeleccionado.get(0).getSaldoNegociado();
+    if (saldoNuevoPago > 0 && saldoNuevoPago <= montoMaximo) {
+      Pago p = new Pago();
+      p.setMonto(saldoNuevoPago);
+      p.setConvenioPago(convenioSeleccionado.get(0));
+      p.setEstatus(Pagos.PENDIENTE);
+      p.setFechaDeposito(fechaDeposito);
+      Date fechaRegistro = new Date();
+      p.setFechaRegistro(fechaRegistro);
+      p.setNombreComprobante(nombrePago);
+      p.setNumeroCuenta(cuentaPago);
+      Quincena q = quincenaDao.obtenerQuincenaActual();
+      p.setQuincena(q);
+      p.setObservaciones(observacionesPago);
+      Gestor g = gestorDao.buscarGestorDelCredito(creditoActual.getIdCredito());
+      p.setGestor(g);
+      boolean ok = pagoDao.insertar(p);
+      if (ok) {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego un nuevo pago."));
+        cargarListas();
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el pago. Contacte al equipo de sistemas."));
+      }
+    } else {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El monto del pago debe ser mayor a cero y menor al saldo convenido."));
+    }
+    RequestContext.getCurrentInstance().execute("PF('agregarPagoDialog').hide();");
+  }
+
+  // METODO QUE LE DA UNA ETIQUETA A LOS VALORES NUMERICOS DEL ESTATUS DE PAGOS
+  public String etiquetarEstatus(int estatus) {
+    String estado = null;
+    if (estatus == Pagos.APROBADO) {
+      estado = "Aprobado";
+    }
+    if (estatus == Pagos.PENDIENTE) {
+      estado = "Pendiente";
+    }
+    if (estatus == Pagos.RECHAZADO) {
+      estado = "Rechazado";
+    }
+    return estado;
   }
 
   // ***********************************************************************************************************************
@@ -274,6 +353,94 @@ public class ConveniosBean implements Serializable {
 
   public void setSaldoMaximo(float saldoMaximo) {
     this.saldoMaximo = saldoMaximo;
+  }
+
+  public float getSaldoNuevoPago() {
+    return saldoNuevoPago;
+  }
+
+  public void setSaldoNuevoPago(float saldoNuevoPago) {
+    this.saldoNuevoPago = saldoNuevoPago;
+  }
+
+  public Date getFechaDeposito() {
+    return fechaDeposito;
+  }
+
+  public void setFechaDeposito(Date fechaDeposito) {
+    this.fechaDeposito = fechaDeposito;
+  }
+
+  public String getCuentaPago() {
+    return cuentaPago;
+  }
+
+  public void setCuentaPago(String cuentaPago) {
+    this.cuentaPago = cuentaPago;
+  }
+
+  public String getObservacionesPago() {
+    return observacionesPago;
+  }
+
+  public void setObservacionesPago(String observacionesPago) {
+    this.observacionesPago = observacionesPago;
+  }
+
+  public UploadedFile getArchivo() {
+    return archivo;
+  }
+
+  public void setArchivo(UploadedFile archivo) {
+    this.archivo = archivo;
+  }
+
+  public Number getSaldoPendiente() {
+    return saldoPendiente;
+  }
+
+  public void setSaldoPendiente(Number saldoPendiente) {
+    this.saldoPendiente = saldoPendiente;
+  }
+
+  public QuincenaDAO getQuincenaDao() {
+    return quincenaDao;
+  }
+
+  public void setQuincenaDao(QuincenaDAO quincenaDao) {
+    this.quincenaDao = quincenaDao;
+  }
+
+  public PagoDAO getPagoDao() {
+    return pagoDao;
+  }
+
+  public void setPagoDao(PagoDAO pagoDao) {
+    this.pagoDao = pagoDao;
+  }
+
+  public GestorDAO getGestorDao() {
+    return gestorDao;
+  }
+
+  public void setGestorDao(GestorDAO gestorDao) {
+    this.gestorDao = gestorDao;
+  }
+
+  public List<Pago> getListaPagosConvenioActivo() {
+    return listaPagosConvenioActivo;
+  }
+
+  public void setListaPagosConvenioActivo(List<Pago> listaPagosConvenioActivo) {
+    this.listaPagosConvenioActivo = listaPagosConvenioActivo;
+  }
+
+  public List<Pago> getListaHistorialPagos() {
+    return listaHistorialPagos;
+  }
+
+  public void setListaHistorialPagos(List<Pago> listaHistorialPagos) {
+    this.listaHistorialPagos = listaHistorialPagos;
   }
 
 }
