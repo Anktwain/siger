@@ -129,14 +129,18 @@
 
             <h:panelGrid columns="2" columnClasses="label, value">
               <p:outputLabel value="Gestor asignado: " for="cmbGestor" />
-              <p:selectOneMenu id="cmbGestor" value="#{zonasVistaBean.gestorAsignado}" 
+              <p:selectOneMenu id="cmbGestor" value="#{zonasVistaBean.zona.gestorAsignado}" 
                                filter="true" filterMatchMode="contains" maxlength="30" 
-                               converter="gestorConverter" >
-                <p:ajax event="change" listener="${zonasVistaBean.onGestorAsignadoChange}" 
-                        update="growl" />
-                <f:selectItem itemLabel="${zonasVistaBean.gestorSinSeleccion}" noSelectionOption="true" />
-                <f:selectItems value="${zonasVistaBean.gestores}" var="gestor" itemValue="${gestor}" />
+                               converter="gestorConverter" onchange="#{zonasVistaBean.onChange('&lt;p:selectOneMenu&gt; de Gestor')}" 
+                               valueChangeListener="#{zonasVistaBean.valueChangeListener('&lt;p:selectOneMenu&gt; de Gestor')}">
+
+                <f:selectItems value="#{zonasVistaBean.gestores}" var="gestor" 
+                               itemValue="#{gestor.idGestor}" itemLabel="#{gestor.usuario.nombreLogin}" />
+
               </p:selectOneMenu>
+
+              <h:outputText value="Gestor asignado: " />
+              <h:outputText id="monit0" value="${zonasVistaBean.zona.gestorAsignado}" />
             </h:panelGrid>
           </p:panelGrid>
 
@@ -146,17 +150,13 @@
                 <h:outputText value="Estados" />
                 <p:separator />
               </f:facet>
-              <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.edoRepVisible}" 
-                               var="edo" filter="true" filterMatchMode="contains" 
-                               converter="edoRepConverter" >
-                <p:ajax listener="${zonasVistaBean.onEstadosChange}" 
-                        update="growl,apMunicipios,apColonias,monitActInMpio,monitMpioDeshab,monitActInColonia,monitColoniaDeshab" />
-                <f:selectItem itemLabel="Selecciona un estado" noSelectionOption="true" />
+              <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.idEdoVisible}" 
+                               filter="true" filterMatchMode="contains" 
+                               onchange="#{zonasVistaBean.onChange('&lt;p:selectOneMenu&gt; de Estado')}" 
+                               valueChangeListener="#{zonasVistaBean.valueChangeListener('&lt;p:selectOneMenu&gt; de Estado')}">
+                <f:selectItem itemLabel="Selecciona un estado" itemValue="" />
                 <f:selectItems value="${zonasVistaBean.estadosRep}" var="edoRep" 
-                               itemValue="${edoRep}" />
-                <p:column>
-                  <h:outputText value="${edo.nombre}" />
-                </p:column>
+                               itemValue="${edoRep.idEstado}" itemLabel="#{edoRep.nombre}"/>
               </p:selectOneMenu>
             </h:panelGrid>
 
@@ -164,9 +164,9 @@
               <f:facet name="header">
                 <h:outputText value="Municipios " />
                 <br/>
-                <h:outputText id="monitActInMpio" value="activeIndex: ${zonasVistaBean.acPanMpiosActiveIndex}" />
+                <h:outputText id="monit1" value="activeIndex: ${zonasVistaBean.acPanMpiosActiveIndex}" />
                 <br/>
-                <h:outputText id="monitMpioDeshab" value="tabDisabled: ${zonasVistaBean.mpiosDeshabilitados}" />
+                <h:outputText id="monit2" value="tabDisabled: ${zonasVistaBean.mpiosDeshabilitados}" />
                 <p:separator/>
               </f:facet>
 
@@ -178,7 +178,7 @@
                                     filterMatchMode="contains" showCheckbox="true"  
                                     converter="mpioConverter">
                     <p:ajax event="change" listener="${zonasVistaBean.onMpiosChange}" 
-                            update="growl,listaMunicipio,formNuevaZona:panGridMpios:monitActInMpio,formNuevaZona:panGridMpios:monitMpioDeshab,formNuevaZona:panGridColonias:monitActInColonia,formNuevaZona:panGridColonias:monitColoniaDeshab" />
+                            update="growl,listaMunicipio,formNuevaZona:panGridMpios:monit1,formNuevaZona:panGridMpios:monit2,formNuevaZona:panGridColonias:monit3,formNuevaZona:panGridColonias:monit4" />
                     <f:selectItem itemLabel="Todos (${zonasVistaBean.mpiosDelEstadoRepSelec.size()})" 
                                   noSelectionOption="true"/>
                     <f:selectItems value="${zonasVistaBean.mpiosDelEstadoRepSelec}" 
@@ -192,9 +192,9 @@
               <f:facet name="header">
                 <h:outputText class="text-center" value="Colonias "/>
                 <br/>
-                <h:outputText id="monitActInColonia" value="activeIndex: ${zonasVistaBean.acPanColoniasActiveIndex}" />
+                <h:outputText id="monit3" value="activeIndex: ${zonasVistaBean.acPanColoniasActiveIndex}" />
                 <br/>
-                <h:outputText id="monitColoniaDeshab" value="tabDisabled: ${zonasVistaBean.coloniasDeshabilitadas}" />
+                <h:outputText id="monit4" value="tabDisabled: ${zonasVistaBean.coloniasDeshabilitadas}" />
                 <p:separator />
               </f:facet>              
 
@@ -206,7 +206,7 @@
                                     value="#{zonasVistaBean.zona.coloniasSeleccionadas}"
                                     filterMatchMode="contains" showCheckbox="true" >
                     <p:ajax event="change" listener="${zonasVistaBean.onColoniasChange}" 
-                            update="growl,monitActInMpio,monitMpioDeshab,monitActInColonia,monitColoniaDeshab" />
+                            update="growl,monit1,monit2,monit3,monit4" />
                     <f:selectItem itemLabel="Todos" noSelectionOption="true" />
                     <f:selectItems value="${zonasVistaBean.coloniasDelEstadoRepSelec}" 
                                    var="col" itemLabel="${col.nombre}" />
@@ -219,10 +219,14 @@
             <f:facet name="footer" >
               <p:commandButton value="Aceptar" id="btnAceptar" icon="ui-icon-check" 
                                styleClass="ui-priority-primary">
-                <p:ajax event="click" listener="${zonasVistaBean.onAceptar}" update="growl"/>
+                <p:ajax event="click" listener="${zonasVistaBean.onAceptar}"  />
               </p:commandButton>
-              <p:commandButton value="Cancelar" id="btnCancelar" update="growl" 
+              <p:commandButton value="Cancelar" id="btnCancelar" update="growl,monit0,monit1,monit2,monit3,monit4" 
                                onclick="PF('dlgNuevaZona').hide();" icon="ui-icon-close" />
+              <p:commandButton value="Monitorear" id="btnMonit2" icon="ui-icon-star" 
+                               styleClass="ui-priority-primary">
+                <p:ajax event="click" listener="${zonasVistaBean.monitorear}" update="growl"/>
+              </p:commandButton>
             </f:facet>
           </p:panelGrid>
 

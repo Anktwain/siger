@@ -84,7 +84,7 @@ public class Gestor implements java.io.Serializable {
     if (usuario != null) {
       return this.usuario.getNombre() + " " + this.usuario.getPaterno() + " " + this.usuario.getMaterno();
     } else {
-      return "cadena de prueba";
+      return null;
     }
   }
 
