@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 2/12/2015 01:29:59 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 11/12/2015 11:59:29 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="dto.Pago" table="pago" catalog="sigerbd" optimistic-lock="version">
-        <id name="idPago" type="int">
+        <id name="idPago" type="java.lang.Integer">
             <column name="id_pago" />
-            <generator class="assigned" />
+            <generator class="identity" />
         </id>
+        <many-to-one name="convenioPago" class="dto.ConvenioPago" fetch="select">
+            <column name="id_convenio_pago" not-null="true" />
+        </many-to-one>
         <many-to-one name="gestor" class="dto.Gestor" fetch="select">
             <column name="id_gestor" not-null="true" />
-        </many-to-one>
-        <many-to-one name="promesaPago" class="dto.PromesaPago" fetch="select">
-            <column name="id_promesa_pago" not-null="true" />
         </many-to-one>
         <many-to-one name="quincena" class="dto.Quincena" fetch="select">
             <column name="id_quincena" not-null="true" />

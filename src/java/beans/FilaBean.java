@@ -1,15 +1,21 @@
 package beans;
 
+import carga.Direccionador;
 import dto.Fila;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import carga.BuscadorTxt;
+import dao.DespachoDAO;
+import dao.ProductoDAO;
+import dao.SubproductoDAO;
+import dto.Despacho;
+import dto.Producto;
+import dto.Subproducto;
+import impl.DespachoIMPL;
+import impl.ProductoIMPL;
+import impl.SubproductoIMPL;
 import util.constantes.Constantes;
 import util.constantes.Errores;
 import util.constantes.Patrones;
-import util.log.Logs;
 
 /**
  *
@@ -18,12 +24,25 @@ import util.log.Logs;
 public class FilaBean implements Serializable {
 
   private static Fila filaActual;
+  private Despacho despacho;
+  private DespachoDAO despachoDao;
+  private Producto producto;
+  private ProductoDAO productoDao;
+  private Subproducto subproducto;
+  private SubproductoDAO subproductoDao;
 
   /**
    * Constructor nulo.
    */
   public FilaBean() {
 
+  }
+
+  public FilaBean(Fila f) {
+    setFilaActual(f);
+    despachoDao = new DespachoIMPL();
+    productoDao = new ProductoIMPL();
+    subproductoDao = new SubproductoIMPL();
   }
 
   /**
@@ -91,16 +110,16 @@ public class FilaBean implements Serializable {
    * dd/mm/aaaa o alguna de sus partes es inválida.
    */
   private void validarFecha(String valorCampo, String nombreCampo) throws Exception {
-    if (!valorCampo.isEmpty()) {
+    if (!estaVacio(valorCampo)) {
       if (valorCampo.matches(Patrones.PATRON_FECHA_DDMMAAAA)) {
         if ((Integer.parseInt(valorCampo.substring(0, 2)) > 31) || (Integer.parseInt(valorCampo.substring(0, 2)) <= 0)
                 || (Integer.parseInt(valorCampo.substring(3, 5)) > 12) || (Integer.parseInt(valorCampo.substring(3, 5)) <= 0)
                 || (Integer.parseInt(valorCampo.substring(6, 10)) < Constantes.LIM_INF_ANIO_EXCEL)
                 || (Integer.parseInt(valorCampo.substring(6, 10)) > Constantes.LIM_SUP_ANIO_EXCEL)) {
-          throw new Exception("Error en el campo \"" + nombreCampo + "\". " + Errores.CAMPO_FECHA_INVALIDO);
+          throw new Exception("Error en el campo \"" + nombreCampo + "\". " + Errores.CAMPO_FECHA_INVALIDO + ": " + valorCampo);
         }
       } else {
-        throw new Exception("Error en el campo \"" + nombreCampo + "\". " + Errores.CAMPO_DDMMAAA_REQUERIDO);
+        throw new Exception("Error en el campo \"" + nombreCampo + "\". " + Errores.CAMPO_DDMMAAA_REQUERIDO + ": " + valorCampo);
       }
     }
   }
@@ -132,7 +151,7 @@ public class FilaBean implements Serializable {
    * validar se encuentra vacío.
    */
   public void validarNumCred() throws Exception {
-    if (!this.filaActual.getCredito().isEmpty()) {
+    if (this.filaActual.getCredito() != null && !this.filaActual.getCredito().isEmpty()) {
       validarVarchar(this.filaActual.getCredito(), "numero_credito", Constantes.LIM_CREDITO_numero_credito);
     } else {
       throw new Exception("Error en el campo \"numero_credito\". " + Errores.CAMPO_VACIO);
@@ -146,7 +165,7 @@ public class FilaBean implements Serializable {
    * validar se encuentra vacío.
    */
   public void validarNombreRazonSoc() throws Exception {
-    if (!this.filaActual.getNombre().isEmpty()) {
+    if (this.filaActual.getNombre() != null && !this.filaActual.getNombre().isEmpty()) {
       validarVarchar(this.filaActual.getNombre(), "nombre_razon_social", Constantes.LIM_SUJETO_nombre_razon_social);
     } else {
       throw new Exception("Error en el campo \"nombre_razon_social\". " + Errores.CAMPO_VACIO);
@@ -160,7 +179,7 @@ public class FilaBean implements Serializable {
    * validar se encuentra vacío.
    */
   public void validarRefCobro() throws Exception {
-    if (!this.filaActual.getRefCobro().isEmpty()) {
+    if (this.filaActual.getRefCobro() != null && !this.filaActual.getRefCobro().isEmpty()) {
       validarVarchar(this.filaActual.getRefCobro(), "linea_telefono", Constantes.LIM_LINEA_telefono);
     } else {
       throw new Exception("Error en el campo \"linea_telefono\". " + Errores.CAMPO_VACIO);
@@ -175,11 +194,17 @@ public class FilaBean implements Serializable {
    * validar se encuentra vacío.
    */
   public void validarIdProducto() throws Exception {
-    if (!this.filaActual.getLinea().isEmpty()) {
-      validarInt(this.filaActual.getLinea(), "productos_id_producto");
+    String p = filaActual.getTipoCredito();
+    if(p != null && !p.isEmpty()) {
+      producto = productoDao.buscar(p);
+      if(producto == null)
+        throw new Exception("No se encontró el producto: " + p + ". " + "Agréguelo o corrija el archivo.");
+      else
+        filaActual.setIdProducto(producto.getIdProducto());
     } else {
-      throw new Exception("Error en el campo \"productos_id_producto\". " + Errores.CAMPO_VACIO);
+      throw new Exception("El campo \"producto\" no debe encontrarse vacío.");
     }
+    
   }
 
   /**
@@ -189,9 +214,17 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarIdSubproducto() throws Exception {
-    if (!this.filaActual.getTipoCredito().isEmpty()) {
-      validarInt(this.filaActual.getTipoCredito(), "subproductos_id_subproducto");
+    String s = filaActual.getLinea();
+    if(s != null && !s.isEmpty()) {
+      subproducto = subproductoDao.buscar(s);
+      if(subproducto == null)
+        throw new Exception("No se encontró el subproducto: " + s 
+                + ", asociado al producto: " + filaActual.getTipoCredito()
+                + ". Agréguelo o corrija el archivo.");
+      else
+        filaActual.setIdSubproducto(subproducto.getIdSubproducto());
     }
+
   }
 
   /**
@@ -200,7 +233,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarEstatus() throws Exception {
-    if (!this.filaActual.getEstatus().isEmpty()) {
+    if (this.filaActual.getEstatus() != null && !this.filaActual.getEstatus().isEmpty()) {
       validarVarchar(this.filaActual.getEstatus(), "estatus", Constantes.LIM_REMESA_estatus);
     }
   }
@@ -212,7 +245,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarMesesVencidos() throws Exception {
-    if (!this.filaActual.getMesesVencidos().isEmpty()) {
+    if (this.filaActual.getMesesVencidos() != null && !this.filaActual.getMesesVencidos().isEmpty()) {
       validarInt(this.filaActual.getMesesVencidos(), "meses_vencidos");
     }
   }
@@ -223,7 +256,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarFechaInicio() throws Exception {
-    if (!this.filaActual.getFechaInicioCredito().isEmpty()) {
+    if (this.filaActual.getFechaInicioCredito() != null && !this.filaActual.getFechaInicioCredito().isEmpty()) {
       validarFecha(this.filaActual.getFechaInicioCredito(), "fecha_inicio");
     }
   }
@@ -234,7 +267,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarFechaFin() throws Exception {
-    if (!this.filaActual.getFechaVencimientoCred().isEmpty()) {
+    if (this.filaActual.getFechaVencimientoCred() != null && !this.filaActual.getFechaVencimientoCred().isEmpty()) {
       validarFecha(this.filaActual.getFechaVencimientoCred(), "fecha_fin");
     }
   }
@@ -294,7 +327,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarMonto() throws Exception {
-    if (!this.filaActual.getDisposicion().isEmpty()) {
+    if (this.filaActual.getDisposicion() != null && !this.filaActual.getDisposicion().isEmpty()) {
       validarFloat(this.filaActual.getDisposicion(), "monto");
     }
   }
@@ -305,7 +338,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarMensualidad() throws Exception {
-    if (!this.filaActual.getMensualidad().isEmpty()) {
+    if (this.filaActual.getMensualidad() != null && !this.filaActual.getMensualidad().isEmpty()) {
       validarFloat(this.filaActual.getMensualidad(), "mensualidad");
     }
   }
@@ -314,8 +347,10 @@ public class FilaBean implements Serializable {
    * El saldo ins (saldo insoluto) deberá guardarse en la tabla remesa, sin
    * embargo todavía no existe un campo para hacerlo. Se creará ese campo
    */
-  public void validarSaldoIns() {
-// do nothing :D
+  public void validarSaldoIns() throws Exception {
+    if (this.filaActual.getSaldoInsoluto() != null && !this.filaActual.getSaldoInsoluto().isEmpty()) {
+      validarFloat(this.filaActual.getSaldoInsoluto(), "saldo_ins");
+    }
   }
 
   /**
@@ -324,7 +359,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarSaldoVen() throws Exception {
-    if (!this.filaActual.getSaldoVencido().isEmpty()) {
+    if (this.filaActual.getSaldoVencido() != null && !this.filaActual.getSaldoVencido().isEmpty()) {
       validarFloat(this.filaActual.getSaldoVencido(), "saldo_vencido");
     }
   }
@@ -335,7 +370,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarTasaInt() throws Exception {
-    if (!this.filaActual.getTasa().isEmpty()) {
+    if (this.filaActual.getTasa() != null && !this.filaActual.getTasa().isEmpty()) {
       validarFloat(this.filaActual.getTasa(), "tasa_interes");
     }
   }
@@ -346,7 +381,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarNumCta() throws Exception {
-    if (!this.filaActual.getCuenta().isEmpty()) {
+    if (this.filaActual.getCuenta() != null && !this.filaActual.getCuenta().isEmpty()) {
       validarVarchar(this.filaActual.getCuenta(), "numero_cuenta", Constantes.LIM_CREDITO_numero_cuenta);
     }
   }
@@ -357,7 +392,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarFechaUltP() throws Exception {
-    if (!this.filaActual.getFechaUltimoPago().isEmpty()) {
+    if (this.filaActual.getFechaUltimoPago() != null && !this.filaActual.getFechaUltimoPago().isEmpty()) {
       validarFecha(this.filaActual.getFechaUltimoPago(), "fecha_ultimo_pago");
     }
   }
@@ -391,7 +426,7 @@ public class FilaBean implements Serializable {
    * @throws java.lang.Exception
    */
   public void validarRfc() throws Exception {
-    if (!this.filaActual.getRfc().isEmpty()) {
+    if (this.filaActual.getRfc() != null && !this.filaActual.getRfc().isEmpty()) {
       validarVarchar(this.filaActual.getRfc(), "rfc", Constantes.LIM_SUJETO_rfc);
     }
   }
@@ -403,7 +438,7 @@ public class FilaBean implements Serializable {
    * validar se encuentra vacío.
    */
   public void validarCalle() throws Exception {
-    if (!this.filaActual.getCalle().isEmpty()) {
+    if (this.filaActual.getCalle() != null && !this.filaActual.getCalle().isEmpty()) {
       validarVarchar(this.filaActual.getCalle(), "calle", Constantes.LIM_DIRECCION_calle);
     } else {
       throw new Exception("Error en el campo \"calle\". " + Errores.CAMPO_VACIO);
@@ -417,7 +452,7 @@ public class FilaBean implements Serializable {
    * validar se encuentra vacío.
    */
   public void validarColonia() throws Exception {
-    if (!this.filaActual.getColonia().isEmpty()) {
+    if (this.filaActual.getColonia() != null && !this.filaActual.getColonia().isEmpty()) {
       validarVarchar(this.filaActual.getColonia(), "colonia", Constantes.LIM_COLONIA_nombre);
     } else {
       throw new Exception("Error en el campo \"colonia\". " + Errores.CAMPO_VACIO);
@@ -431,7 +466,7 @@ public class FilaBean implements Serializable {
    * validar se encuentra vacío.
    */
   public void validarEstadoRep() throws Exception {
-    if (!this.filaActual.getEstado().isEmpty()) {
+    if (this.filaActual.getEstado() != null && !this.filaActual.getEstado().isEmpty()) {
       validarVarchar(this.filaActual.getEstado(), "estado_republica", Constantes.LIM_ESTADO_REPUBLICA_nombre);
     } else {
       throw new Exception("Error en el campo \"estado_republica\". " + Errores.CAMPO_VACIO);
@@ -445,7 +480,7 @@ public class FilaBean implements Serializable {
    * validar se encuentra vacío.
    */
   public void validarMunicipio() throws Exception {
-    if (!this.filaActual.getMunicipio().isEmpty()) {
+    if (this.filaActual.getMunicipio() != null && !this.filaActual.getMunicipio().isEmpty()) {
       validarVarchar(this.filaActual.getMunicipio(), "municipio", Constantes.LIM_MUNICIPIO_nombre);
     } else {
       throw new Exception("Error en el campo \"municipio\". " + Errores.CAMPO_VACIO);
@@ -459,7 +494,7 @@ public class FilaBean implements Serializable {
    * validar se encuentra vacío.
    */
   public void validarCodPost() throws Exception {
-    if (!this.filaActual.getCp().isEmpty()) {
+    if (this.filaActual.getCp() != null && !this.filaActual.getCp().isEmpty()) {
       validarVarchar(this.filaActual.getCp(), "codigo_postal", Constantes.LIM_COLONIA_cp);
     } else {
       throw new Exception("Error en el campo \"codigo_postal\". " + Errores.CAMPO_VACIO);
@@ -510,14 +545,13 @@ public class FilaBean implements Serializable {
 
   /**
    *
-   * @throws java.lang.Exception
    * @throws Exception
    */
   public void validarEmail() throws Exception {
     for (String correoActual : this.filaActual.getCorreos()) {
       if (!correoActual.isEmpty()) {
         if (!correoActual.matches(Patrones.PATRON_EMAIL)) {
-          throw new Exception("Error en el campo \"email\". " + Errores.FORMATO_EMAIL_INVALIDO);
+          throw new Exception("Error en el campo \"email\". " + Errores.FORMATO_EMAIL_INVALIDO + ": " + correoActual);
         }
       }
     }
@@ -528,9 +562,33 @@ public class FilaBean implements Serializable {
    * @throws Exception
    */
   public void validarMarcaje() throws Exception {
-    if (!this.filaActual.getMarcaje().isEmpty()) {
+    if (this.filaActual.getMarcaje() != null && !this.filaActual.getMarcaje().isEmpty()) {
       validarInt(this.filaActual.getMarcaje(), "marcaje");
     }
   }
+
+  private boolean estaVacio(String campo) {
+    if (campo == null || campo.equals("-") || campo.equals("")) {
+      return true;
+    }
+    return false;
+  }
   
+  public void validarDespacho() throws Exception {
+    String d = filaActual.getDespacho();
+    if (d != null && !d.isEmpty()) {
+      despacho = despachoDao.buscar(d);
+      if(despacho == null)
+        throw new Exception("No se encontró el despacho: " + d + ". " + "Agréguelo o corrija el archivo" );
+      else
+        filaActual.setIdDespacho(despacho.getIdDespacho());
+    } else {
+      throw new Exception("El campo \"despacho\" no debe encontrarse vacío.");
+    }
+  }
+  
+  public void validarDireccion() {
+    filaActual = Direccionador.obtenerDireccion(filaActual);
+  }
+
 }

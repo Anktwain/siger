@@ -17,9 +17,9 @@
     <mapping resource="mapeo/Linea.hbm.xml"/>
     <mapping resource="mapeo/Fac.hbm.xml"/>
     <mapping resource="mapeo/Direccion.hbm.xml"/>
-    <mapping resource="mapeo/Auto.hbm.xml"/>
     <mapping resource="mapeo/Credito.hbm.xml"/>
     <mapping resource="mapeo/EstatusInformativo.hbm.xml"/>
+    <mapping resource="mapeo/Auto.hbm.xml"/>
     <mapping resource="mapeo/Zona.hbm.xml"/>
     <mapping resource="mapeo/Historial.hbm.xml"/>
     <mapping resource="mapeo/Institucion.hbm.xml"/>
@@ -42,6 +42,5 @@
     <mapping resource="mapeo/Colonia.hbm.xml"/>
     <mapping resource="mapeo/Municipio.hbm.xml"/>
     <mapping resource="mapeo/Usuario.hbm.xml"/>
-    <mapping resource="mapeo/PromesaPago.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

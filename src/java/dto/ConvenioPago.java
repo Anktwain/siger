@@ -1,5 +1,5 @@
 package dto;
-// Generated 2/12/2015 01:29:58 PM by Hibernate Tools 4.3.1
+// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -12,41 +12,39 @@ import java.util.Set;
 public class ConvenioPago  implements java.io.Serializable {
 
 
-     private int idConvenioPago;
+     private Integer idConvenioPago;
      private Credito credito;
      private Date fecha;
      private int estatus;
      private float saldoNegociado;
      private int pagosRealizados;
-     private Set promesaPagos = new HashSet(0);
+     private Set pagos = new HashSet(0);
 
     public ConvenioPago() {
     }
 
 	
-    public ConvenioPago(int idConvenioPago, Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosRealizados) {
-        this.idConvenioPago = idConvenioPago;
+    public ConvenioPago(Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosRealizados) {
         this.credito = credito;
         this.fecha = fecha;
         this.estatus = estatus;
         this.saldoNegociado = saldoNegociado;
         this.pagosRealizados = pagosRealizados;
     }
-    public ConvenioPago(int idConvenioPago, Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosRealizados, Set promesaPagos) {
-       this.idConvenioPago = idConvenioPago;
+    public ConvenioPago(Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosRealizados, Set pagos) {
        this.credito = credito;
        this.fecha = fecha;
        this.estatus = estatus;
        this.saldoNegociado = saldoNegociado;
        this.pagosRealizados = pagosRealizados;
-       this.promesaPagos = promesaPagos;
+       this.pagos = pagos;
     }
    
-    public int getIdConvenioPago() {
+    public Integer getIdConvenioPago() {
         return this.idConvenioPago;
     }
     
-    public void setIdConvenioPago(int idConvenioPago) {
+    public void setIdConvenioPago(Integer idConvenioPago) {
         this.idConvenioPago = idConvenioPago;
     }
     public Credito getCredito() {
@@ -84,12 +82,12 @@ public class ConvenioPago  implements java.io.Serializable {
     public void setPagosRealizados(int pagosRealizados) {
         this.pagosRealizados = pagosRealizados;
     }
-    public Set getPromesaPagos() {
-        return this.promesaPagos;
+    public Set getPagos() {
+        return this.pagos;
     }
     
-    public void setPromesaPagos(Set promesaPagos) {
-        this.promesaPagos = promesaPagos;
+    public void setPagos(Set pagos) {
+        this.pagos = pagos;
     }
 
 

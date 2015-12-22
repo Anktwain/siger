@@ -11,13 +11,16 @@
     <title>SigerWeb - Carga</title>
   </h:head>
   <h:body>
-    <p:growl id="growl" showDetail="true" />
+    <!--<p:growl id="growl" showDetail="true" />-->
 
-    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"  />
 
     <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
               closable="false" resizable="false" showHeader="false" >
+      <p:outputLabel value="SigerWeb est&aacute; trabajando. Espere..."/>
       <p:graphicImage library="img" name="loadingBarra.gif" />
+      <br/>
+      <p:graphicImage library="img" name="trabajando.jpg" />
     </p:dialog>
 
     <div id="overlay" class="transparent" style="display: none;"></div>
@@ -46,127 +49,393 @@
         </div>
       </div>
 
-      <div class="tab-content">
-        <div class="tab-pane fade in active" id="inicio">
-          <div class="row">
-            <div class="padding-md">
-              <div class="col-sm-6 col-md-3">
-                <div class="panel-stat3 bg-success">
-                  <h3 class="m-top-none">Iniciar Carga</h3>
-                  <a href="#paso1" data-toggle="tab" class="btn btn-success btn-small darkCustomModal_open">Iniciar</a>
 
-                  <div class="stat-icon">
-                    <i class="fa fa-cloud-upload fa-2x" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> <!-- row -->
+
+      <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10" id="divMensajes">
+          <p:messages id="mensajes" showDetail="true" autoUpdate="true"/>  
         </div>
+        <div class="col-sm-1"></div>
+      </div>
 
-        <div class="tab-pane fade" id="paso1">
-          <div class="row">
-            <div class="panel-body">
-              <div class="main-header clearfix">
-                <div class="page-title">
-                  <h4 class="no-margin">PASO 1</h4>
-                  <span>Seleccione el archivo que desea cargar, este archivo deber&aacute; tener
-                    extensi&oacute;n .xls y adem&aacute;s no deber&aacute; exceder de 4 MB</span>
-                  <div class="panel-body">
-                    <fieldset class="form-horizontal form-border">
-                      <div class="col-md-3 col-sm-6">
-                        <div class="form-group">
-                          <h:form id="frmPaso1">
-                            <p:fileUpload mode="advanced" dragDropSupport="true" label="Seleccionar archivo" class="upload-demo"
-                                          update="growl,btnSigPaso2" sizeLimit="4194304" allowTypes="/(\.|\/)(xls|xlsx|sql)$/" auto="true"
-                                          invalidFileMessage="Tipo de archivo no v&aacute;lido. Extensiones aceptadas: .xls, .xlsx, .sql"
-                                          invalidSizeMessage="El tama&ntilde;o del archivo es demasiado grande. El archivo debe tener un tama&ntilde;o menor o igual a 4 MB"
-                                          fileUploadListener="#{nuevaVistaCarga.subirArchivo}"/>
-                          </h:form>
-                        </div><!-- /form-group -->
+      <div class="row">
+        <div class="col-sm-9" id="divTrabajo">
+          <div class="padding-md">
+            <div class="tab-content">
+
+              <p:tabView  binding="#{vistaCarga.tabView}" id="tabView">
+                <p:tab id="inicio" disabled="true">
+                  <h:form id="frmInicio">
+                    <div class="row">
+                      <div class="col-sm-7 col-md-4">
+                        <div class="panel-stat3 bg-success" >
+                          <h3 class="m-top-none">Iniciar Carga</h3>
+                          <h:commandButton value="Iniciar Carga" class="btn btn-success" actionListener="#{vistaCarga.iniciarCarga()}"/>
+                          <div class="stat-icon">
+                            <i class="fa fa-cloud-upload fa-2x" />
+                          </div>
+                        </div>
                       </div>
-                    </fieldset>
-                    
-                    <a href="#paso2" data-toggle="tab">
-                      <p:commandButton id="btnSigPaso2" value="Siguiente" class="btn btn-success btn-xs" update="dlgNumeroDeFilas,growl"
-                                       disabled="#{nuevaVistaCarga.btnSigPaso2Disabled}" actionListener="#{nuevaVistaCarga.leerArchivoExcel()}"/>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> <!-- row -->
-        </div>
+                    </div>
+                  </h:form>
+                </p:tab>
 
-        <div class="tab-pane fade" id="paso2">
-          <div class="row">
-            <div class="panel-body">
-              <div class="main-header clearfix">
-                <div class="page-title">
-                  <h4 class="no-margin">PASO 2</h4>
-                  <span>Generando archivo sql... Por favor espere</span>
-                  
-                  <div class="panel-body">
-                    <fieldset class="form-horizontal form-border">
-                      <div class="form-group">
-                        <h:form id="frmPaso2">
-                          <h3>Leyendo informaci&oacute;n</h3>
-                          <p:inputTextarea id="txtareaFilas" class="form-control" rows="15" cols="70" value=""/>
-                        </h:form>
-                      </div><!-- /form-group -->
-                    </fieldset>
-                    
-                    <a href="#paso3" data-toggle="tab">
-                      <p:commandButton id="btnSigPaso3" value="Siguiente" class="btn btn-success btn-xs" update="growl"
-                                       disabled="#{nuevaVistaCarga.btnSigPaso3Disabled}" actionListener="#{nuevaVistaCarga.crearArchivoSql()}"/>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> <!-- row -->
-        </div>
-        
-        <div class="tab-pane fade" id="paso3">
-          <div class="row">
-            <div class="panel-body">
-              <div class="main-header clearfix">
-                <div class="page-title">
-                  <h4 class="no-margin">PASO 3</h4>
-                  <span>Paso 3</span>
-                  <div class="panel-body">
-                    <fieldset class="form-horizontal form-border">
-                      <div class="form-group">
-                        Este ya es uno de los ultimos pasos
-                      </div><!-- /form-group -->
-                    </fieldset>
-                    <p:commandButton id="btnSigPaso4" value="Siguiente" class="btn btn-success btn-xs" update="growl"
-                                     actionListener="#{nuevaVistaCarga.leerArchivoSql()}" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> <!-- row -->
-        </div>
+                <p:tab id="subir_archivo" disabled="true">
+                  <h:form id="frmSubirArchivo">
+                    <div class="row">
+                      <div class="col-sm-7 col-md-4">
+                        <div class="panel-stat3 bg-success">
+                          <h3 class="m-top-none">Seleccione archivo</h3>
 
+                          <div class="stat-icon">
+                            <i class="fa fa-file-excel-o fa-2x" />
+                          </div>
+                          formato: &uacute;nicamente xls <br />tama&ntilde;o: no mayor a 4 MB
+                        </div>
+
+                        <p:fileUpload mode="advanced" dragDropSupport="true" label="Seleccionar archivo" class="btn btn-small" id="fileUpload"
+                                      update="mensajes,frmActividades:paso1,tabView" sizeLimit="4194304" allowTypes="/(\.|\/)(xls)$/" auto="true"
+                                      invalidFileMessage="Tipo de archivo no v&aacute;lido. Extensiones aceptadas: .xls"
+                                      invalidSizeMessage="El tama&ntilde;o del archivo es demasiado grande. El archivo debe tener un tama&ntilde;o menor o igual a 4 MB"
+                                      fileUploadListener="#{vistaCarga.subirArchivo}" messageTemplate="{name}">
+                        </p:fileUpload>
+                      </div>
+                    </div>
+                  </h:form>
+                </p:tab>
+
+                <p:tab id="leer_archivo" disabled="true">
+                  <h:form id="frmLeerArchivo">
+                    <div class="row">
+                      <div class="col-sm-7 col-md-4">
+                        <div class="panel-stat3 bg-success">
+                          <h3 class="m-top-none">Leer archivo</h3>
+                          <div class="stat-icon">
+                            <i class="fa fa-file-text-o fa-2x" />
+                          </div>
+                          Presione el bot&oacute;n para leer el archivo.
+                        </div>
+                        <h:commandButton value="Leer archivo" class="btn btn-success" >
+                          <p:ajax listener="#{vistaCarga.leerArchivo()}" update="frmActividades:paso2, tabView"/>
+                        </h:commandButton>
+                      </div>
+                    </div>
+                  </h:form>
+                </p:tab>
+
+                <p:tab id="validar_datos" disabled="true">
+                  <h:form id="frmValidarDatos">
+                    <div class="row">
+                      <div class="col-sm-7 col-md-4">
+                        <div class="panel-stat3 bg-success">
+                          <h3 class="m-top-none">Validar datos</h3>
+                          <div class="stat-icon">
+                            <i class="fa fa-check-circle-o fa-2x" />
+                          </div>
+                          Se encontraron #{vistaCarga.totalCreditos} cr&eacute;ditos
+                          <br/>Presione el bot&oacute;n para validarlos.
+                        </div>
+                        <h:commandButton value="Validar datos" class="btn btn-success">
+                          <!--<f:ajax event="click" listener="{vistaCarga.validarDatos}" render=":frmActividades:paso3 tabView" />-->
+                          <p:ajax listener="#{vistaCarga.validarDatos()}" update="frmActividades:paso3, tabView" />
+                        </h:commandButton>
+                      </div>
+                    </div>
+                  </h:form>
+                </p:tab>
+
+                <p:tab id="clasificar_creditos" disabled="true">
+                  <h:form>
+                    <div class="row">
+                      <div class="col-sm-7 col-md-4">
+                        <div class="panel-stat3 bg-success">
+                          <h3 class="m-top-none">Clasificar cr&eacute;ditos</h3>
+                          <div class="stat-icon">
+                            <i class="fa fa-list-ol fa-2x" />
+                          </div>
+                          Se van a clasificar los cr&eacute;ditos de acuerdo a su estado.
+                          <br/>Presione el bot&oacute;n para clasificarlos.
+                        </div>
+                        <h:commandButton value="Clasificar cr&eacute;ditos" class="btn btn-success" >
+                          <p:ajax listener="#{vistaCarga.clasificarCreditos()}" update="frmActividades:paso4, tabView" />
+                        </h:commandButton>
+                      </div>
+                    </div>
+                  </h:form>
+                </p:tab>
+
+                <p:tab id="asignar_creditos" disabled="true">
+                  <div class="row">
+                    <div class="col-sm-7 col-md-4">
+                      <div class="panel-stat3 bg-success">
+                        <h3 class="m-top-none">Asignar Cr&eacute;ditos</h3>
+                        <div class="stat-icon">
+                          <i class="fa fa-hand-o-right fa-2x" />
+                        </div>
+                        Asigne los cr&eacute;ditos a los gestores.
+                        <br /> Presione el bot&oacute;n para asignarlos.
+                      </div>
+                      <p:panelGrid id="gridClasificacion" columns="2">
+                        <f:facet name="header">
+                          Clasificaci&oacute;n de cr&eacute;ditos
+                        </f:facet>
+                        <h:outputText value="Estaban en la fiesta" />
+                        <p:outputLabel value="#{vistaCarga.totalEstabanEnLaFiesta}"/>
+                        <h:outputText value="En la fiesta" />
+                        <p:outputLabel value="#{vistaCarga.totalEnLaFiesta}"/>
+                        <h:outputText value="Nuevos cr&eacute;ditos" />
+                        <p:outputLabel value="#{vistaCarga.totalNuevosCreditos}"/>
+                        <h:outputText value="Nuevos totales" />
+                        <p:outputLabel value="#{vistaCarga.totalNuevosTotales}"/>
+                      </p:panelGrid>
+
+                    </div>
+                    <div class="col-sm-5 col-md-4">
+                      <h:form>
+                        <p:panelGrid id="gridAsignacion">
+                          <p:row>
+                            <p:column>Seleccione criterio:</p:column>
+                            <p:column>
+                              <p:selectOneRadio id="redioCr" value="#{vistaCarga.criterioDeAsignacion}"
+                                                required="true" requiredMessage="Seleccione criterio">
+                                <f:selectItem itemLabel="Montos" itemValue="montos" />
+                                <f:selectItem itemLabel="Zonas" itemValue="zonas" />
+                              </p:selectOneRadio>
+                            </p:column>
+                          </p:row>
+                          <p:row>
+                            <p:column colspan="2">Seleccione gestores:</p:column>
+                          </p:row>
+                          <p:row>
+                            <p:column colspan="2">
+                              <p:selectManyMenu id="mmenuGestores" filter="true" showCheckbox="true" style="width: 100%"
+                                                value="#{vistaCarga.gestoresSeleccionados}" filterMatchMode="contains">
+                                <f:selectItems value="#{vistaCarga.gestores}" var="gestor" itemLabel="#{gestor.usuario.nombre} #{gestor.usuario.paterno}" itemValue="#{gestor.idGestor}" />
+                              </p:selectManyMenu>
+                            </p:column>
+                          </p:row>
+                          <p:row>
+                            <p:column colspan="2">
+                              <p:commandButton value="Asignar cr&eacute;ditos" process="gridAsignacion"
+                                               actionListener="#{vistaCarga.asignarCreditos()}" update="frmActividades:paso5, tabView"/>
+                            </p:column>
+                          </p:row>
+                        </p:panelGrid>
+
+                      </h:form>
+                    </div>
+                  </div>
+                </p:tab>
+
+                <p:tab id="balance_carga" disabled="true">
+                  <div class="row">
+                    <div class="col-sm-7 col-md-4">
+                      <div class="panel-stat3 bg-success">
+                        <h3 class="m-top-none">Balanceo de carga</h3>
+                        <div class="stat-icon">
+                          <i class="fa fa-sliders fa-2x" />
+                        </div>
+                        Balancee la carga seg&uacute;n lo crea conveniente
+                      </div>
+                    </div>
+                    <div class="col-sm-10 col-md-8">
+                      <h:form id="frmAsignacion">
+                        <p:panelGrid id="gridDetalleAsignacion" columns="2">
+                          <h:outputText value="Gestor:" />
+                          <h:outputText id="txtNombre" value="#{vistaCarga.asignacionActual.nombreDelGestor}" />
+
+                          <h:outputText value="Total créditos:" />
+                          <h:outputText value="#{vistaCarga.asignacionActual.totalCreditos}" >
+                            <f:convertNumber type="number" groupingUsed="," />
+                          </h:outputText>
+
+                          <h:outputText value="Total monto:" />
+                          <h:outputText value="#{vistaCarga.asignacionActual.montoTotal}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                          </h:outputText>
+
+                        </p:panelGrid>
+                        <div class="seperator" />
+                        <p:dataTable id="tblAsignadas" var="asignada" value="#{vistaCarga.asignacionActual.creditos}" paginator="true" selectionMode="single"
+                                     rows="5" rowsPerPageTemplate="5,10,15" emptyMessage="No hay asignaciones" paginatorPosition="top" rowKey="#{asignada.credito}"
+                                     class="table table-bordered table-condensed table-hover table-striped table-responsive">
+                          <p:ajax event="rowSelect" listener="#{vistaCarga.onCreditoSelect}" update="dlgReasignar" oncomplete="PF('dlgReasignar').show()"/>
+                          <p:column headerText="Deudor" width="50%">
+                            <h:outputText id="lblDeudor" value="#{asignada.nombre}" />
+                          </p:column>
+                          <p:column headerText="Cr&eacute;dito">
+                            <h:outputText id="lblCredito" value="#{asignada.credito}"/>
+                          </p:column>
+                          <p:column headerText="Saldo vencido">
+                            <h:outputText id="lblSaldoVencido" value="#{asignada.saldoVencidoFloat}">
+                              <f:convertNumber type="currency" currencySymbol="$" />
+                            </h:outputText>
+                          </p:column>
+                        </p:dataTable>
+                      </h:form>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <h:form id="frmParticipantes">
+                      <p:dataTable id="tblParticipantes" var="participante" value="#{vistaCarga.asignaciones}" rowKey="#{participante.gestor}"
+                                   rows="10" rowsPerPageTemplate="5,10,15" emptyMessage="No hay asignaciones" selectionMode="single"
+                                   class="table table-bordered table-condensed table-hover table-striped table-responsive">
+                        <p:ajax event="rowSelect" listener="#{vistaCarga.onAsignacionSelect}"
+                                update="tabView:frmAsignacion,@this"/>
+                        <p:column headerText="Gestor">
+                          <h:outputText id="lblGestor" value="#{participante.nombreDelGestor}"/>
+                        </p:column>
+                        <p:column headerText="Total cuentas">
+                          <h:outputText id="lblCuentas" value="#{participante.totalCreditos}">
+                            <f:convertNumber type="number" groupingUsed="," />
+                          </h:outputText>
+                        </p:column>
+                        <p:column headerText="Monto total">
+                          <h:outputText id="lblMonto" value="#{participante.montoTotal}">
+                            <f:convertNumber type="currency" currencySymbol="$" />
+                          </h:outputText>
+                        </p:column>
+                      </p:dataTable>
+                    </h:form>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-10 col-md-8"></div>
+                    <h:form>
+                      <h:commandButton value="Terminar" class="btn btn-success">
+                        <p:ajax listener="#{vistaCarga.crearSQL()}" update="frmActividades:paso6, tabView"/>
+                      </h:commandButton>
+                    </h:form>
+                  </div>
+                </p:tab>
+
+                <p:tab id="terminar" disabled="true">
+                  <div class="row">
+                    <div class="col-sm-7 col-md-4">
+                      <div class="panel-stat3 bg-success">
+                        <h3 class="m-top-none">Confirme la carga</h3>
+                        <div class="stat-icon">
+                          <i class="fa fa-check-square-o fa-2x" />
+                        </div>
+                        Confirme la carga o cancele la operaci&oacute;n
+                      </div>
+                      <h:form id="frmTerminar">
+                        <h:commandButton value="Confirmar" class="btn btn-success">
+                          <!--<f:ajax event="click" listener="{vistaCarga.validarDatos}" render=":frmActividades:paso3 tabView" />-->
+                          <p:ajax listener="#{vistaCarga.confirmarCarga}"/>
+                        </h:commandButton>
+                      </h:form>
+                    </div>
+                  </div>
+                </p:tab>
+
+              </p:tabView>
+
+            </div>
+          </div>
+        </div> <!-- divTrabajo -->
+
+        <div class="col-sm-3" id="divActividades">
+          <div class="panel-body">
+            <h:form id="frmActividades">
+
+              <p:panelGrid>
+                <p:row>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:selectBooleanButton id="paso1" value="#{vistaCarga.paso1}" onLabel="Si" offLabel="No" onIcon="fa fa-check-square" offIcon="fa fa-times-circle" disabled="true" />
+                  </p:column>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:outputLabel value="Subir Archivo" />
+                  </p:column>
+                </p:row>
+
+                <p:row>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:selectBooleanButton id="paso2" value="#{vistaCarga.paso2}" onLabel="Si" offLabel="No" onIcon="fa fa-check-square" offIcon="fa fa-times-circle" disabled="true"/>
+                  </p:column>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:outputLabel value="Leer Archivo"/>
+                  </p:column>
+                </p:row>
+
+                <p:row>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:selectBooleanButton id="paso3" value="#{vistaCarga.paso3}" onLabel="Si" offLabel="No" onIcon="fa fa-check-square" offIcon="fa fa-times-circle" disabled="true"/>
+                  </p:column>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:outputLabel value="Validar Datos" />
+                  </p:column>
+                </p:row >
+
+                <p:row>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:selectBooleanButton id="paso4" value="#{vistaCarga.paso4}" onLabel="Si" offLabel="No" onIcon="fa fa-check-square" offIcon="fa fa-times-circle" disabled="true"/>
+                  </p:column>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:outputLabel value="Clasificar Cr&eacute;ditos" />
+                  </p:column>
+                </p:row >
+
+                <p:row>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:selectBooleanButton id="paso5" value="#{vistaCarga.paso5}" onLabel="Si" offLabel="No" onIcon="fa fa-check-square" offIcon="fa fa-times-circle" disabled="true"/>
+                  </p:column>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:outputLabel value="Asignar Cr&eacute;ditos" />
+                  </p:column>
+                </p:row >
+
+                <p:row>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:selectBooleanButton id="paso6" value="#{vistaCarga.paso6}" onLabel="Si" offLabel="No" onIcon="fa fa-check-square" offIcon="fa fa-times-circle" disabled="true" />
+                  </p:column>
+                  <p:column style="background-color: #f7f7f7;border-color: #f7f7f7">
+                    <p:outputLabel value="Balanceo de Carga" />
+                  </p:column>
+                </p:row>
+              </p:panelGrid>
+
+            </h:form>
+          </div>
+        </div> <!-- divActividades -->
       </div>
 
     </div> <!-- main-container -->
     <ui:include src="barraInferior.xhtml"/>
-    
-    <p:dialog widgetVar="dlgNumeroDeFilas" modal="true" draggable="false" showEffect="size"
-              header="SigerWeb dice:" closable="true" resizable="false" hideEffect="size"
-              id="dlgNumeroDeFilas" class="modal-lg">
-      <div class="panel panel-default">
-        <div class="form-group">
-      <h:outputText value="La remesa contiene: #{nuevaVistaCarga.numeroCreditosEnLaRemesa} cr&eacute;ditos" />
-      </div>
-        <div class="form-group">
-          <p:commandButton value="Aceptar" class="btn btn-success btn-xs" onclick="PF('dlgNumeroDeFilas').hide()" update="btnSigPaso3" />
-      </div>
-      </div>
+
+    <p:dialog widgetVar="dlgReasignar" header="Reasignar Cr&eacute;dito" showEffect="size"
+              hideEffect="size" resizable="true" id="dlgReasignar">
+      <h:form id="frmDlgReasignar">
+        <p:panelGrid id="gridDlgDetalle" columns="2">
+          <h:outputText value="Cr&eacute;dito:" />
+          <h:outputText value="#{vistaCarga.creditoActual.credito}" />
+
+          <h:outputText value="Deudor:" />
+          <h:outputText value="#{vistaCarga.creditoActual.nombre}" />
+
+          <h:outputText value="Monto:" />
+          <h:outputText value="#{vistaCarga.creditoActual.disposicionFloat}">
+            <f:convertNumber type="currency" currencySymbol="$" />
+          </h:outputText>
+
+          <h:outputText value="Saldo a recuperar:" />
+          <h:outputText value="#{vistaCarga.creditoActual.saldoVencidoFloat}">
+            <f:convertNumber type="currency" currencySymbol="$" />
+          </h:outputText>
+
+          <h:outputText value="Reasignar:" />
+          <p:selectOneMenu id="cmbReasignar" value="#{vistaCarga.gestorAReasignar}" style="width: 100%">
+            <p:ajax listener="#{vistaCarga.reasignar()}" update="tabView:frmAsignacion,tabView:frmParticipantes,dlgReasignar,mensajes"
+                    oncomplete="PF('dlgReasignar').hide()"/>
+            <f:selectItem itemLabel="Reasignar a..." itemValue="" />
+            <f:selectItems value="#{vistaCarga.asignaciones}" var="reasignarA"
+                           itemLabel="#{reasignarA.nombreDelGestor}" itemValue="#{reasignarA.gestor}" />
+          </p:selectOneMenu>
+
+        </p:panelGrid>
+      </h:form>
     </p:dialog>
   </h:body>
-    
-  
+
+
 </html>

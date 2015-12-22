@@ -41,6 +41,7 @@ public interface SubproductoDAO {
      * @return
      */
     public Subproducto buscar(int idSubproducto);
+    public Subproducto buscar(String nombreSubproducto);
 
     /**
      *
