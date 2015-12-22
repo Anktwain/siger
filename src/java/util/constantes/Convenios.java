@@ -15,6 +15,4 @@ public interface Convenios {
   
   public static final int FINALIZADO = 0;
   
-  public static final int INCUMPLIDO = -1;
-  
 }

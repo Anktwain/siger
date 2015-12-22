@@ -54,6 +54,7 @@ public class CuentasVistaBean implements Serializable {
   private MotivoDevolucionDAO motivoDevolucionDao;
   private List<Creditos> creditosGestionables;
   private List<Creditos> creditoSeleccionado;
+  private List<Creditos> filtrados;
   private List<ConceptoDevolucion> listaConceptos;
   private List<SelectItem> listaConceptosVista;
   private List<MotivoDevolucion> listaMotivos;
@@ -274,6 +275,14 @@ public class CuentasVistaBean implements Serializable {
 
   public void setListaConceptosVista(List<SelectItem> listaConceptosVista) {
     this.listaConceptosVista = listaConceptosVista;
+  }
+
+  public List<Creditos> getFiltrados() {
+    return filtrados;
+  }
+
+  public void setFiltrados(List<Creditos> filtrados) {
+    this.filtrados = filtrados;
   }
 
 }

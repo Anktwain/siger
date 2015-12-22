@@ -23,7 +23,23 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
 
   @Override
   public boolean insertar(ConvenioPago convenio) {
-    return true;
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
+    try {
+      sesion.save(convenio);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
   }
 
   @Override
