@@ -11,7 +11,7 @@ import dao.DevolucionDAO;
 import dao.HistorialDAO;
 import dao.MotivoDevolucionDAO;
 import dto.ConceptoDevolucion;
-import dto.tablas.Creditos;
+import dto.Credito;
 import dto.Devolucion;
 import dto.MotivoDevolucion;
 import impl.ConceptoDevolucionIMPL;
@@ -32,6 +32,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import org.primefaces.context.RequestContext;
 import util.constantes.Devoluciones;
+import util.constantes.TipoCreditos;
 
 /**
  *
@@ -52,9 +53,9 @@ public class CuentasVistaBean implements Serializable {
   private HistorialDAO historialDao;
   private ConceptoDevolucionDAO conceptoDevolucionDao;
   private MotivoDevolucionDAO motivoDevolucionDao;
-  private List<Creditos> creditosGestionables;
-  private List<Creditos> creditoSeleccionado;
-  private List<Creditos> filtrados;
+  private List<Credito> creditosGestionables;
+  private List<Credito> creditoSeleccionado;
+  private List<Credito> filtrados;
   private List<ConceptoDevolucion> listaConceptos;
   private List<SelectItem> listaConceptosVista;
   private List<MotivoDevolucion> listaMotivos;
@@ -95,7 +96,6 @@ public class CuentasVistaBean implements Serializable {
     md.setMotivo("Seleccione un motivo");
     listaMotivos.add(md);
     List<MotivoDevolucion> lista;
-    lista = new ArrayList();
     lista = motivoDevolucionDao.obtenerMotivosPorConcepto(conceptoSeleccionado);
     for (int i = 0; i < (lista.size()); i++) {
       listaMotivos.add(lista.get(i));
@@ -141,6 +141,15 @@ public class CuentasVistaBean implements Serializable {
     }
   }
 
+  // METODO QUE LE DA UNA ETIQUETA A LOS VALORES NUMERICOS DEL TIPO DE CREDITO
+  public String etiquetarTipoCredito(int tipoCredito) {
+    String tipo = null;
+    if (tipoCredito == TipoCreditos.LINEA_TELEFONICA) {
+      tipo = "Linea telefonica";
+    }
+    return tipo;
+  }
+  
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
@@ -169,19 +178,19 @@ public class CuentasVistaBean implements Serializable {
     this.creditoDao = creditoDao;
   }
 
-  public List<Creditos> getCreditosGestionables() {
+  public List<Credito> getCreditosGestionables() {
     return creditosGestionables;
   }
 
-  public void setCreditosGestionables(List<Creditos> creditosGestionables) {
+  public void setCreditosGestionables(List<Credito> creditosGestionables) {
     this.creditosGestionables = creditosGestionables;
   }
 
-  public List<Creditos> getCreditoSeleccionado() {
+  public List<Credito> getCreditoSeleccionado() {
     return creditoSeleccionado;
   }
 
-  public void setCreditoSeleccionado(List<Creditos> creditoSeleccionado) {
+  public void setCreditoSeleccionado(List<Credito> creditoSeleccionado) {
     this.creditoSeleccionado = creditoSeleccionado;
   }
 
@@ -277,11 +286,11 @@ public class CuentasVistaBean implements Serializable {
     this.listaConceptosVista = listaConceptosVista;
   }
 
-  public List<Creditos> getFiltrados() {
+  public List<Credito> getFiltrados() {
     return filtrados;
   }
 
-  public void setFiltrados(List<Creditos> filtrados) {
+  public void setFiltrados(List<Credito> filtrados) {
     this.filtrados = filtrados;
   }
 

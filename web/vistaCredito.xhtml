@@ -143,19 +143,19 @@
                   <p:tab title="Direcciones">
                     <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Calle y numero" style="width:500px;" > 
-                        <h:outputText value="#{d.calleNumero}"/>
+                          <h:outputText value="#{d.calle}"/>
                       </p:column>
                       <p:column headerText="Colonia" style="width:250px;" > 
-                        <h:outputText value="#{d.colonia}"/>
+                        <h:outputText value="#{d.colonia.nombre}"/>
                       </p:column>
                       <p:column headerText="Municipio" style="width:200px;" > 
-                        <h:outputText value="#{d.municipio}"/>
+                        <h:outputText value="#{d.municipio.nombre}"/>
                       </p:column>
                       <p:column headerText="Estado"> 
-                        <h:outputText value="#{d.estado}"/>
+                        <h:outputText value="#{d.estadoRepublica.nombre}"/>
                       </p:column>
                       <p:column headerText="Codigo postal" style="width:150px;" > 
-                        <h:outputText value="#{d.cp}"/>
+                        <h:outputText value="#{d.colonia.codigoPostal}"/>
                       </p:column>
                     </p:dataTable>
                   </p:tab>
@@ -176,40 +176,40 @@
                     </p:dataTable>
                   </p:tab>
                   <p:tab title="Correos">
-                    <p:dataTable id="tablaCorreosDetalleCredito" var="c" value="#{vistaCreditoBean.listaCorreos}" emptyMessage="No existen correos electronicos asociados a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                    <p:dataTable id="tablaCorreosDetalleCredito" var="co" value="#{vistaCreditoBean.listaCorreos}" emptyMessage="No existen correos electronicos asociados a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Direccion" > 
-                        <h:outputText value="#{c.direccion}" />
+                        <h:outputText value="#{co.direccion}" />
                       </p:column>
                       <p:column headerText="Tipo" > 
-                        <h:outputText value="#{c.tipo}" />
+                        <h:outputText value="#{co.tipo}" />
                       </p:column>
                     </p:dataTable>
                   </p:tab>
                   <p:tab title="Contactos">
                     <p:dataTable id="tablaContactosDetalleCredito" var="con" value="#{vistaCreditoBean.listaContactos}" emptyMessage="No existen contactos de credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Nombre del contacto" > 
-                        <h:outputText value="#{con.nombreContacto}" />
+                        <h:outputText value="#{con.sujeto.nombreRazonSocial}" />
                       </p:column>
                       <p:column headerText="Descripcion" > 
-                        <h:outputText value="#{con.descripcion}" />
+                        <h:outputText value="#{con.observaciones}" />
                       </p:column>
                     </p:dataTable>
                   </p:tab>
                 </p:accordionPanel>
               </p:tab>
               <p:tab title="Otros creditos con adeudos">
-                <p:dataTable id="tablaCreditosRelacionados" var="c" value="#{vistaCreditoBean.credsRelacionados}" emptyMessage="No existen creditos relacionados." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                <p:dataTable id="tablaCreditosRelacionados" var="cre" value="#{vistaCreditoBean.credsRelacionados}" emptyMessage="No existen creditos relacionados." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                   <p:column headerText="Credito" style="width:100px;" > 
-                    <h:outputText value="#{c.numeroCredito}"/>
+                    <h:outputText value="#{cre.numeroCredito}"/>
                   </p:column>
                   <p:column headerText="Tipo de credito"> 
-                    <h:outputText value="#{c.tipoCredito}"/>
+                    <h:outputText value="#{vistaCreditoBean.etiquetarTipoCredito(cre.tipoCredito)}"/>
                   </p:column>
                   <p:column headerText="Producto"> 
-                    <h:outputText value="#{c.nombreProducto}"/>
+                    <h:outputText value="#{cre.producto.nombre}"/>
                   </p:column>
                   <p:column headerText="Saldo vencido" style="width:150px;" > 
-                    <h:outputText value="#{c.saldoVencido}"/>
+                    <h:outputText value="#{cre.monto}"/>
                   </p:column>
                 </p:dataTable>
               </p:tab>

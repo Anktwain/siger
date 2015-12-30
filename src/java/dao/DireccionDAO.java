@@ -1,7 +1,6 @@
 package dao;
 
 import dto.Direccion;
-import dto.tablas.Direcciones;
 import java.util.List;
 
 /**
@@ -51,5 +50,5 @@ public interface DireccionDAO {
     
     public List<Direccion> buscarPorSujeto(int idSujeto);
     
-    public Direcciones obtenerDireccionCompleta(int idDireccion);
+    public Direccion obtenerDireccionCompleta(int idDireccion);
 }

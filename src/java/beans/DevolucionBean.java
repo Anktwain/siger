@@ -7,7 +7,6 @@ package beans;
 
 import dao.DevolucionDAO;
 import dao.HistorialDAO;
-import dto.tablas.Devolucions;
 import dto.Devolucion;
 import impl.DevolucionIMPL;
 import impl.HistorialIMPL;
@@ -36,12 +35,12 @@ public class DevolucionBean implements Serializable {
   // VARIABLES DE CLASE
   private DevolucionDAO devolucionDao;
   private final HistorialDAO historialDao;
-  public List<Devolucions> retiradosSeleccionados;
-  public List<Devolucions> bandejaSeleccionados;
-  public List<Devolucions> devolucionesSeleccionadas;
-  public List<Devolucions> listaRetirados;
-  public List<Devolucions> listaDevoluciones;
-  public List<Devolucions> listaDevueltos;
+  public List<Devolucion> retiradosSeleccionados;
+  public List<Devolucion> bandejaSeleccionados;
+  public List<Devolucion> devolucionesSeleccionadas;
+  public List<Devolucion> listaRetirados;
+  public List<Devolucion> listaDevoluciones;
+  public List<Devolucion> listaDevueltos;
   private final int idDespacho;
   private final String admin;
 
@@ -61,13 +60,13 @@ public class DevolucionBean implements Serializable {
   }
 
   // METODO PARA APROBAR UNA DEVOLUCION
-  public void aprobar(List<Devolucions> lista) {
+  public void aprobar(List<Devolucion> lista) {
     FacesContext contexto = FacesContext.getCurrentInstance();
     int tam = lista.size();
     if ((!lista.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
-        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getCredito().getNumeroCredito());
         devolucion.setEstatus(Devoluciones.DEVUELTO);
         String quien = indexBean.getUsuario().getNombreLogin();
         devolucion.setRevisor(quien);
@@ -86,13 +85,13 @@ public class DevolucionBean implements Serializable {
   }
 
   // METODO PARA RECHAZAR UNA DEVOLUCION
-  public void rechazar(List<Devolucions> lista) {
+  public void rechazar(List<Devolucion> lista) {
     FacesContext contexto = FacesContext.getCurrentInstance();
     int tam = lista.size();
     if ((!lista.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
-        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getCredito().getNumeroCredito());
         String evento = "El administrador: " + admin + ", rechazo la devolucion del credito";
         ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
       }
@@ -108,13 +107,13 @@ public class DevolucionBean implements Serializable {
   }
 
   // METODO PARA PEDIR AL BANCO UNA CONSERVACION
-  public void conservar(List<Devolucions> lista) {
+  public void conservar(List<Devolucion> lista) {
     FacesContext contexto = FacesContext.getCurrentInstance();
     int tam = lista.size();
     if ((!lista.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
-        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getNumeroCredito());
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getCredito().getNumeroCredito());
         devolucion.setEstatus(Devoluciones.ESPERA_CONSERVACION);
         devolucion.setSolicitante(indexBean.getUsuario().getNombreLogin());
         String evento = "El administrador: " + admin + ", solicito la conservacion del credito";
@@ -138,7 +137,7 @@ public class DevolucionBean implements Serializable {
     if ((!devolucionesSeleccionadas.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
-        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(devolucionesSeleccionadas.get(i).getNumeroCredito());
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(devolucionesSeleccionadas.get(i).getCredito().getNumeroCredito());
         String evento = "El administrador: " + admin + ", reactivo el credito";
         ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
       }
@@ -160,6 +159,24 @@ public class DevolucionBean implements Serializable {
     listaDevueltos = devolucionDao.devueltosPorDespacho(idDespacho);
     // OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
     listaRetirados = devolucionDao.retiradosBancoPorDespacho(idDespacho);
+  }
+  
+  // METODO QUE LE DA UNA ETIQUETA A LOS VALORES NUMERICOS DEL ESTATUS DE PAGOS
+  public String etiquetarEstatus(int estatus) {
+    String estado = null;
+    if (estatus == Devoluciones.CONSERVADO) {
+      estado = "Conservado";
+    }
+    if (estatus == Devoluciones.DEVUELTO) {
+      estado = "Devuelto";
+    }
+    if (estatus == Devoluciones.ESPERA_CONSERVACION) {
+      estado = "Espera conservacion";
+    }
+    if (estatus == Devoluciones.PENDIENTE) {
+      estado = "Pendiente";
+    }
+    return estado;
   }
 
   // ***********************************************************************************************************************
@@ -190,51 +207,51 @@ public class DevolucionBean implements Serializable {
     this.devolucionDao = devolucionDao;
   }
 
-  public List<Devolucions> getRetiradosSeleccionados() {
+  public List<Devolucion> getRetiradosSeleccionados() {
     return retiradosSeleccionados;
   }
 
-  public void setRetiradosSeleccionados(List<Devolucions> retiradosSeleccionados) {
+  public void setRetiradosSeleccionados(List<Devolucion> retiradosSeleccionados) {
     this.retiradosSeleccionados = retiradosSeleccionados;
   }
 
-  public List<Devolucions> getBandejaSeleccionados() {
+  public List<Devolucion> getBandejaSeleccionados() {
     return bandejaSeleccionados;
   }
 
-  public void setBandejaSeleccionados(List<Devolucions> bandejaSeleccionados) {
+  public void setBandejaSeleccionados(List<Devolucion> bandejaSeleccionados) {
     this.bandejaSeleccionados = bandejaSeleccionados;
   }
 
-  public List<Devolucions> getListaRetirados() {
+  public List<Devolucion> getListaRetirados() {
     return listaRetirados;
   }
 
-  public void setListaRetirados(List<Devolucions> listaRetirados) {
+  public void setListaRetirados(List<Devolucion> listaRetirados) {
     this.listaRetirados = listaRetirados;
   }
 
-  public List<Devolucions> getListaDevoluciones() {
+  public List<Devolucion> getListaDevoluciones() {
     return listaDevoluciones;
   }
 
-  public void setListaDevoluciones(List<Devolucions> listaDevoluciones) {
+  public void setListaDevoluciones(List<Devolucion> listaDevoluciones) {
     this.listaDevoluciones = listaDevoluciones;
   }
 
-  public List<Devolucions> getListaDevueltos() {
+  public List<Devolucion> getListaDevueltos() {
     return listaDevueltos;
   }
 
-  public void setListaDevueltos(List<Devolucions> listaDevueltos) {
+  public void setListaDevueltos(List<Devolucion> listaDevueltos) {
     this.listaDevueltos = listaDevueltos;
   }
 
-  public List<Devolucions> getDevolucionesSeleccionadas() {
+  public List<Devolucion> getDevolucionesSeleccionadas() {
     return devolucionesSeleccionadas;
   }
 
-  public void setDevolucionesSeleccionadas(List<Devolucions> devolucionesSeleccionadas) {
+  public void setDevolucionesSeleccionadas(List<Devolucion> devolucionesSeleccionadas) {
     this.devolucionesSeleccionadas = devolucionesSeleccionadas;
   }
 

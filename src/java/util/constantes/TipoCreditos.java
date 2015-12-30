@@ -11,5 +11,5 @@ package util.constantes;
  */
 public interface TipoCreditos {
   
-  public static final int CT_EXPRESS_ATORADISIMO = 1;
+  public static final int LINEA_TELEFONICA = 1;
 }
