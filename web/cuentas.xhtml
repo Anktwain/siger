@@ -68,23 +68,23 @@
                 <p:column headerText="Credito" style="width:130px;" filterBy="#{c.numeroCredito}">
                   <h:outputText value="#{c.numeroCredito}"/>
                 </p:column>
-                <p:column headerText="Deudor" style="width:500px;" filterBy="#{c.nombreRazonSocial}"> 
-                  <h:outputText value="#{c.nombreRazonSocial}"/>
+                <p:column headerText="Deudor" style="width:500px;" filterBy="#{c.deudor.sujeto.nombreRazonSocial}"> 
+                  <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
                 </p:column>
-                <p:column headerText="Institucion" style="width:130px;" filterBy="#{c.nombreCortoInstitucion}"> 
-                  <h:outputText value="#{c.nombreCortoInstitucion}"/>
+                <p:column headerText="Institucion" style="width:130px;" filterBy="#{c.producto.institucion.nombreCorto}"> 
+                  <h:outputText value="#{c.producto.institucion.nombreCorto}"/>
                 </p:column>
-                <p:column headerText="Tipo de credito" style="width:150px;" filterBy="#{c.tipoCredito}"> 
-                  <h:outputText value="#{c.tipoCredito}"/>
+                <p:column headerText="Tipo de credito" style="width:150px;" filterBy="#{cuentasVistaBean.etiquetarTipoCredito(c.tipoCredito)}"> 
+                  <h:outputText value="#{cuentasVistaBean.etiquetarTipoCredito(c.tipoCredito)}"/>
                 </p:column>
-                <p:column headerText="Producto" filterBy="#{c.nombreProducto}"> 
-                  <h:outputText value="#{c.nombreProducto}"/>
+                <p:column headerText="Producto" filterBy="#{c.producto.nombre}"> 
+                  <h:outputText value="#{c.producto.nombre}"/>
                 </p:column>
-                <p:column headerText="Saldo vencido" style="width:150px;" filterBy="#{c.saldoVencido}"> 
-                  <h:outputText value="#{c.saldoVencido}"/>
+                <p:column headerText="Saldo vencido" style="width:150px;" filterBy="#{c.monto}"> 
+                  <h:outputText value="#{c.monto}"/>
                 </p:column>
-                <p:column headerText="Gestor asignado" style="width:130px;" filterBy="#{c.gestorAsignado}"> 
-                  <h:outputText value="#{c.gestorAsignado}"/>
+                <p:column headerText="Gestor asignado" style="width:130px;" filterBy="#{c.gestor.usuario.nombreLogin}"> 
+                  <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>
                 </p:column>
               </p:dataTable>
             </h:form>

@@ -2,7 +2,6 @@ package impl;
 
 import dao.ContactoDAO;
 import dto.Contacto;
-import dto.tablas.Contactos;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -154,19 +153,12 @@ public class ContactoIMPL implements ContactoDAO {
   }
 
   @Override
-  public List<Contactos> buscarContactoPorSujeto(int idSujeto) {
+  public List<Contacto> buscarContactoPorSujeto(int idSujeto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Contactos> contactos = new ArrayList<>();
-    List<Object[]> c;
-    String consulta = "SELECT s.nombre_razon_social, c.observaciones FROM contacto c JOIN sujeto s WHERE s.id_sujeto = c.id_sujeto AND c.id_deudor = (SELECT id_deudor FROM deudor WHERE id_sujeto = " + idSujeto + ");";
+    List<Contacto> contactos = new ArrayList<>();
+    String consulta = "SELECT c.* FROM contacto c JOIN sujeto s WHERE s.id_sujeto = c.id_sujeto AND c.id_deudor = (SELECT id_deudor FROM deudor WHERE id_sujeto = " + idSujeto + ");";
     try {
-      c = sesion.createSQLQuery(consulta).list();
-      for (Object[] row : c) {
-        Contactos contacto = new Contactos();
-        contacto.setNombreContacto(row[0].toString());
-        contacto.setDescripcion(row[1].toString());
-        contactos.add(contacto);
-      }
+      contactos = sesion.createSQLQuery(consulta).addEntity(Contacto.class).list();
       Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       contactos = null;

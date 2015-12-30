@@ -6,7 +6,6 @@
 package impl;
 
 import dao.CreditoDAO;
-import dto.tablas.Creditos;
 import dto.Credito;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,27 +96,15 @@ public class CreditoIMPL implements CreditoDAO {
   }
 
   @Override
-  public List<Creditos> creditosEnGestionPorDespacho(int idDespacho) {
+  public List<Credito> creditosEnGestionPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Creditos> creditos = new ArrayList<>();
-    List<Object[]> c;
-    String consulta = "SELECT c.numero_credito, s.nombre_razon_social, i.nombre_corto, c.tipo_credito, p.nombre, c.monto, u.nombre_login  FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN institucion i JOIN producto p JOIN gestor g JOIN usuario u WHERE d.id_sujeto = s.id_sujeto AND u.id_usuario = g.id_usuario AND g.id_gestor = c.id_gestor AND p.id_producto = c.id_producto AND d.id_deudor = c.id_deudor AND i.id_institucion = c.id_institucion AND id_credito NOT IN (SELECT id_credito FROM devolucion) AND c.id_despacho = des.id_despacho AND des.id_despacho = " + idDespacho + " ORDER BY numero_credito ASC;";
+    List<Credito> creditos = new ArrayList<>();
+    String consulta = "SELECT c.*  FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN institucion i JOIN producto p JOIN gestor g JOIN usuario u WHERE d.id_sujeto = s.id_sujeto AND u.id_usuario = g.id_usuario AND g.id_gestor = c.id_gestor AND p.id_producto = c.id_producto AND d.id_deudor = c.id_deudor AND i.id_institucion = c.id_institucion AND id_credito NOT IN (SELECT id_credito FROM devolucion) AND c.id_despacho = des.id_despacho AND des.id_despacho = " + idDespacho + " ORDER BY numero_credito ASC;";
     try {
-      c = sesion.createSQLQuery(consulta).list();
-      for (Object[] row : c) {
-        Creditos cr = new Creditos();
-        cr.setNumeroCredito(row[0].toString());
-        cr.setNombreRazonSocial(row[1].toString());
-        cr.setNombreCortoInstitucion(row[2].toString());
-        // CUANDO SE DEFINAN LOS TIPOS DE CREDITOS, QUITAR LA ASIGNACION DIRECTA E IMPLEMENTAR UN SWITCH
-        cr.setTipoCredito("Linea Telefonica");
-        cr.setNombreProducto(row[4].toString());
-        cr.setSaldoVencido(Float.parseFloat(row[5].toString()));
-        cr.setGestorAsignado(row[6].toString());
-        creditos.add(cr);
-      }
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
       Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
+      creditos = null;
       Logs.log.error(he.getStackTrace());
     } finally {
       cerrar(sesion);

@@ -14,8 +14,8 @@ import dao.GestionDAO;
 import dao.GestorDAO;
 import dao.HistorialDAO;
 import dao.TelefonoDAO;
+import dto.Contacto;
 import dto.ConvenioPago;
-import dto.tablas.Creditos;
 import dto.Credito;
 import dto.Direccion;
 import dto.Email;
@@ -23,8 +23,6 @@ import dto.Gestion;
 import dto.Gestor;
 import dto.Historial;
 import dto.Telefono;
-import dto.tablas.Contactos;
-import dto.tablas.Direcciones;
 import impl.ContactoIMPL;
 import impl.ConvenioPagoIMPL;
 import impl.CreditoIMPL;
@@ -48,6 +46,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Convenios;
 import util.constantes.Perfiles;
+import util.constantes.TipoCreditos;
 
 /**
  *
@@ -79,7 +78,7 @@ public class VistaCreditoBean implements Serializable {
   private String fvp;
   private String mensualidad;
   private String saldoVencido;
-  private Creditos creditoActualCred;
+  private Credito creditoActualCred;
   private Credito creditoActual;
   private Gestor gestorSeleccionado;
   private Gestor gestorActual;
@@ -95,15 +94,15 @@ public class VistaCreditoBean implements Serializable {
   private List<Gestion> listaGestiones;
   private List<Gestor> listaGestores;
   private List<Credito> creditosRelacionados;
-  private List<Creditos> credsRelacionados;
-  private List<Direcciones> listaDirecciones;
+  private List<Credito> credsRelacionados;
+  private List<Direccion> listaDirecciones;
   private List<Telefono> listaTelefonos;
   private List<Email> listaCorreos;
-  private List<Contactos> listaContactos;
+  private List<Contacto> listaContactos;
   private List<Historial> historial;
 
   public VistaCreditoBean() {
-    creditoActualCred = new Creditos();
+    creditoActualCred = new Credito();
     creditoActual = new Credito();
     gestorSeleccionado = new Gestor();
     gestorActual = new Gestor();
@@ -137,7 +136,7 @@ public class VistaCreditoBean implements Serializable {
     // OBTENEMOS EL ID DEL SUJETO PARA TODAS LAS OPERACIONES
     int idSujeto = creditoActual.getDeudor().getSujeto().getIdSujeto();
     // OBTIENE LA CADENA CON EL NOMBRE DEL DEUDOR
-    nombreDeudor = creditoActualCred.getNombreRazonSocial();
+    nombreDeudor = creditoActualCred.getDeudor().getSujeto().getNombreRazonSocial();
     // OBTENER LA PRIMER DIRECCION DEL DEUDOR
     Direccion d;
     try{
@@ -186,38 +185,9 @@ public class VistaCreditoBean implements Serializable {
       conveniosVisible = false;
     }
     // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
-    List<Direccion> listaDireccionesSinNormalizar;
-    listaDireccionesSinNormalizar = direccionDAO.buscarPorSujeto(idSujeto);
-    int tam = listaDireccionesSinNormalizar.size();
-    if (tam > 0) {
-      for (int i = 0; i < tam; i++) {
-        Direcciones oneDirection = new Direcciones();
-        Direccion vieja;
-        vieja = listaDireccionesSinNormalizar.get(i);
-        oneDirection.setCalleNumero(vieja.getCalle());
-        oneDirection.setColonia(vieja.getColonia().getNombre());
-        oneDirection.setMunicipio(vieja.getMunicipio().getNombre());
-        oneDirection.setEstado(vieja.getEstadoRepublica().getNombre());
-        oneDirection.setCp(vieja.getColonia().getCodigoPostal());
-        listaDirecciones.add(oneDirection);
-      }
-    }
+    listaDirecciones = direccionDAO.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CREDITOS RELACIONADOS
     creditosRelacionados = creditoDao.buscarCreditosRelacionados(creditoActual);
-    tam = creditosRelacionados.size();
-    if (tam > 0) {
-      for (int i = 0; i < tam; i++) {
-        Creditos c = new Creditos();
-        Credito viejo;
-        viejo = creditosRelacionados.get(i);
-        c.setNumeroCredito(viejo.getNumeroCredito());
-        // CUANDO SE DEFINAN LOS TIPOS DE CREDITOS, SE QUITARA LA ASIGNACION DIRECTA
-        c.setTipoCredito("Linea telefonica");
-        c.setNombreProducto(viejo.getProducto().getNombre());
-        c.setSaldoVencido(viejo.getMonto());
-        credsRelacionados.add(c);
-      }
-    }
     // OBTENEMOS LA LISTA DE TELEFONOS DEL DEUDOR
     listaTelefonos = telefonoDAO.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CORREOS ELECTRONICOS DEL DEUDOR
@@ -274,6 +244,15 @@ public class VistaCreditoBean implements Serializable {
     cerrar();
   }
   
+  // METODO QUE LE DA UNA ETIQUETA A LOS VALORES NUMERICOS DEL TIPO DE CREDITO
+  public String etiquetarTipoCredito(int tipoCredito) {
+    String tipo = null;
+    if (tipoCredito == TipoCreditos.LINEA_TELEFONICA) {
+      tipo = "Linea telefonica";
+    }
+    return tipo;
+  }
+  
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
@@ -310,11 +289,11 @@ public class VistaCreditoBean implements Serializable {
     this.numeroCredito = numeroCredito;
   }
 
-  public Creditos getCreditoActualCred() {
+  public Credito getCreditoActualCred() {
     return creditoActualCred;
   }
 
-  public void setCreditoActualCred(Creditos creditoActualCred) {
+  public void setCreditoActualCred(Credito creditoActualCred) {
     this.creditoActualCred = creditoActualCred;
   }
 
@@ -462,19 +441,19 @@ public class VistaCreditoBean implements Serializable {
     this.creditosRelacionados = creditosRelacionados;
   }
 
-  public List<Direcciones> getListaDirecciones() {
+  public List<Direccion> getListaDirecciones() {
     return listaDirecciones;
   }
 
-  public void setListaDirecciones(List<Direcciones> listaDirecciones) {
+  public void setListaDirecciones(List<Direccion> listaDirecciones) {
     this.listaDirecciones = listaDirecciones;
   }
 
-  public List<Creditos> getCredsRelacionados() {
+  public List<Credito> getCredsRelacionados() {
     return credsRelacionados;
   }
 
-  public void setCredsRelacionados(List<Creditos> credsRelacionados) {
+  public void setCredsRelacionados(List<Credito> credsRelacionados) {
     this.credsRelacionados = credsRelacionados;
   }
 
@@ -502,11 +481,11 @@ public class VistaCreditoBean implements Serializable {
     this.listaCorreos = listaCorreos;
   }
 
-  public List<Contactos> getListaContactos() {
+  public List<Contacto> getListaContactos() {
     return listaContactos;
   }
 
-  public void setListaContactos(List<Contactos> listaContactos) {
+  public void setListaContactos(List<Contacto> listaContactos) {
     this.listaContactos = listaContactos;
   }
 
