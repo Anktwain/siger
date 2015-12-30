@@ -28,7 +28,7 @@
   </h:head>
 
   <h:body>
-    <p:growl id="growl" showDetail="true" life="9500"/>
+    <p:growl id="growl" showDetail="true" life="9500" escape="false"/>
 
     <div id="overlay" class="transparent" style="display: none;"></div>
     <ui:include src="barraLateral.xhtml" />
@@ -131,9 +131,10 @@
               <p:outputLabel value="Gestor asignado: " for="cmbGestor" />
               <p:selectOneMenu id="cmbGestor" value="#{zonasVistaBean.zona.gestorAsignado}" 
                                filter="true" filterMatchMode="contains" maxlength="30" 
-                               converter="gestorConverter" onchange="#{zonasVistaBean.onChange('&lt;p:selectOneMenu&gt; de Gestor')}" 
-                               valueChangeListener="#{zonasVistaBean.valueChangeListener('&lt;p:selectOneMenu&gt; de Gestor')}">
-
+                               onchange="#{zonasVistaBean.onChange('&lt;p:selectOneMenu&gt; de Gestor')}">
+                <p:ajax listener="#{zonasVistaBean.valueChangeListener('&lt;p:selectOneMenu&gt; de Gestor')}" update="growl">
+                  
+                </p:ajax>
                 <f:selectItems value="#{zonasVistaBean.gestores}" var="gestor" 
                                itemValue="#{gestor.idGestor}" itemLabel="#{gestor.usuario.nombreLogin}" />
 
@@ -155,8 +156,8 @@
                                onchange="#{zonasVistaBean.onChange('&lt;p:selectOneMenu&gt; de Estado')}" 
                                valueChangeListener="#{zonasVistaBean.valueChangeListener('&lt;p:selectOneMenu&gt; de Estado')}">
                 <f:selectItem itemLabel="Selecciona un estado" itemValue="" />
-                <f:selectItems value="${zonasVistaBean.estadosRep}" var="edoRep" 
-                               itemValue="${edoRep.idEstado}" itemLabel="#{edoRep.nombre}"/>
+                <f:selectItems value="#{zonasVistaBean.estadosRep}" var="edoRep" 
+                               itemValue="#{edoRep.idEstado}" itemLabel="#{edoRep.nombre}"/>
               </p:selectOneMenu>
             </h:panelGrid>
 

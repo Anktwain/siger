@@ -395,7 +395,8 @@ public class ZonasVistaBean implements Serializable {
     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
             "Monitoreo",
             "Gestor asignado: " + this.zona.getGestorAsignado()
-            + "\nEstado seleccionado: " + this.edoRepVisible
-            + "\nid Estado visible: " + idEdoVisible));
+            + "<br/>Estado seleccionado: " + this.edoRepVisible
+            + "<br/>id Estado visible: " + this.idEdoVisible));
+    System.out.println("\nid Estado visible: " + this.idEdoVisible);
   }
 }
