@@ -59,7 +59,7 @@
               <td style="padding: 20px;">
                 <h4 class="no-margin">Institucion:</h4>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:selectOneMenu id="listaInstitucionesGestiones" value="#{gestionesBean.institucionSeleccionada.idInstitucion}" style="width:200px">
+                <p:selectOneMenu id="listaInstitucionesGestiones" value="#{gestionesBean.institucionSeleccionada.idInstitucion}" style="width:200px" required="#{not empty param[submit.idInstitucion]}" >
                   <f:selectItem itemLabel="Todas" itemValue="0" />
                   <f:selectItems value="#{gestionesBean.listaInstituciones}" var="i" itemLabel="#{i.nombreCorto}" itemValue="#{i.idInstitucion}" />
                   <p:ajax update="listaProductosGestiones" listener="#{gestionesBean.obtenerProductos()}" />
@@ -81,14 +81,14 @@
               <td style="padding: 20px;">
                 <h4 class="no-margin">Fecha inicio:</h4>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:calendar id="startDate" value="#{gestionesBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial." update="growl">
+                <p:calendar id="startDate" value="#{gestionesBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial.">
                   <p:ajax event="dateSelect" update="endDate" />
                 </p:calendar>
               </td>
               <td style="padding: 20px;">
                 <h4 class="no-margin">Fecha fin:</h4>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:calendar id="endDate" value="#{gestionesBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." update="growl" />
+                <p:calendar id="endDate" value="#{gestionesBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." />
               </td>
             </tr>
           </table>
@@ -98,29 +98,20 @@
           </div>
           <hr />
           <p:dataTable id="tablaGestiones" var="g" value="#{gestionesBean.listaGestiones}" emptyMessage="No existen gestiones." paginator="true" rows="10" paginatorPosition="bottom">
-            <p:column style="width: 200px;">
-              <f:facet name="header">
-                <h:outputText value="Fecha" />
-              </f:facet>
+            <p:column headerText="Fecha" style="width: 100px;">
               <h:outputText value="#{g.fecha}"/>
             </p:column>
-            <p:column style="width: 300px;">
-              <f:facet name="header">
-                <h:outputText value="Tipo Gestion" />
-              </f:facet>
+            <p:column headerText="Tipo Gestion" style="width: 200px;">
               <h:outputText value="#{g.tipoGestion}"/>
             </p:column>
-            <p:column  style="width: 300px;">
-              <f:facet name="header">
-                <h:outputText value="Asunto" />
-              </f:facet>
+            <p:column headerText="Asunto" style="width: 200px;">
               <h:outputText value="#{g.asuntoGestion}"/>
             </p:column>
-            <p:column>
-              <f:facet name="header">
-                <h:outputText value="Gestion" />
-              </f:facet>
+            <p:column headerText="Gestion">
               <h:outputText value="#{g.gestion}"/>
+            </p:column>
+            <p:column headerText="Gestor" style="width: 150px;">
+              <h:outputText value="#{g.usuario.nombreLogin}" />
             </p:column>
             <f:facet name="footer">
               <div align="right">

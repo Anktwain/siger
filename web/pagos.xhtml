@@ -58,7 +58,9 @@
                     <h:outputText value="#{rev.fechaDeposito}" />
                   </p:column>
                   <p:column headerText="Monto" style="width:70px;"> 
-                    <h:outputText value="#{rev.monto}" />
+                    <h:outputText value="#{rev.monto}" >
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
                   </p:column>
                   <p:column headerText="Credito" style="width:200px;">
                     <h:outputText value="#{rev.convenioPago.credito.numeroCredito}" />
@@ -91,7 +93,9 @@
                     <h:outputText value="#{p.revisor}" />
                   </p:column>
                   <p:column headerText="Monto" style="width:100px;"> 
-                    <h:outputText value="#{p.monto}" />
+                    <h:outputText value="#{p.monto}" >
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
                   </p:column>
                   <p:column headerText="Credito" style="width:100px;"> 
                     <h:outputText value="#{p.convenioPago.credito.numeroCredito}" />
@@ -110,7 +114,7 @@
             </div>
           </div>
         </div>
-        <p:dialog id="dlgRevisionPago" widgetVar="detallePagoDialog" modal="true" position="right top" resizable="false" width="500" height="800" header="Revisar pago">
+        <p:dialog id="dlgRevisionPago" widgetVar="detallePagoDialog" position="right top" resizable="false" width="500" height="800" header="Revisar pago">
           <h:form id="formVisorPago">
             <h:graphicImage value="/comprobantes/#{pagosBean.nombreImagen}" width="490" height="780" />
           </h:form>
