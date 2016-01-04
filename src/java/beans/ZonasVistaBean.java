@@ -135,20 +135,22 @@ public class ZonasVistaBean implements Serializable {
    * seleccionar) con base en el estado seleccionado en la vista.
    */
   public void onEstadosChange() {
-    System.out.println("\n|---------------------onEstadosChange().-----------------------------¬");
-    System.out.println("Por seleccionar datos del estado:"
-            + "\nthis.edoRepVisible.getNombre() = " + this.edoRepVisible.getNombre()
-            + "\nthis.edoRepVisible.getIdEstado() = " + this.edoRepVisible.getIdEstado());
-    System.out.println("L_____________________________________________________________________");
 
-    if (this.edoRepVisible.getNombre().equals(this.lugarSinSeleccion)) {
-      this.mpiosVisibles.clear();
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    if (this.idEdoVisible != -1) {
+      this.edoRepVisible = this.estadosRep.get(idEdoVisible);
+      this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado() - 1);
     } else {
-      this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
+      this.mpiosVisibles.clear();
     }
 
     this.acPanColoniasActiveIndex = -1;
     this.coloniasDeshabilitadas = true;
+
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "valueChangeListener()",
+            "Terminó ejecución de onEstadosChange()."));
   }
 
   public List<EstadoRepublica> getEstadosRep() {
@@ -267,10 +269,6 @@ public class ZonasVistaBean implements Serializable {
     this.coloniasDeshabilitadas = coloniasDeshabilitadas;
   }
 
-  public void onGestorAsignadoChange() {
-    System.out.println("                                 Terminó ejecución ajax de onGestorAsignadoChange() en <p:selectOneMenu>");
-  }
-
   public List<Gestor> getGestores() {
     return gestores;
   }
@@ -330,8 +328,6 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onZonasDisplay(int opcion) {
-    FacesContext context = FacesContext.getCurrentInstance();
-
     switch (opcion) {
       case 1:
         this.tituloDialogo = "Crear nueva zona.";
@@ -344,10 +340,6 @@ public class ZonasVistaBean implements Serializable {
 
         break;
     }
-
-    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-            "actionListener onZonasDisplay()",
-            "Por definir este comportamiento al desplegar el form de Zonas :P"));
   }
 
   public String getLugarSinSeleccion() {
@@ -395,7 +387,8 @@ public class ZonasVistaBean implements Serializable {
     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
             "Monitoreo",
             "Gestor asignado: " + this.zona.getGestorAsignado()
-            + "\nEstado seleccionado: " + this.edoRepVisible
-            + "\nid Estado visible: " + idEdoVisible));
+            + "<br/>Estado seleccionado: " + this.edoRepVisible
+            + "<br/>id Estado visible: " + this.idEdoVisible));
+    System.out.println("\nid Estado visible: " + this.idEdoVisible);
   }
 }
