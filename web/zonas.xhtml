@@ -130,14 +130,9 @@
             <h:panelGrid columns="2" columnClasses="label, value">
               <p:outputLabel value="Gestor asignado: " for="cmbGestor" />
               <p:selectOneMenu id="cmbGestor" value="#{zonasVistaBean.zona.gestorAsignado}" 
-                               filter="true" filterMatchMode="contains" maxlength="30" 
-                               onchange="#{zonasVistaBean.onChange('&lt;p:selectOneMenu&gt; de Gestor')}">
-                <p:ajax listener="#{zonasVistaBean.valueChangeListener('&lt;p:selectOneMenu&gt; de Gestor')}" update="growl">
-                  
-                </p:ajax>
+                               filter="true" filterMatchMode="contains" maxlength="30">
                 <f:selectItems value="#{zonasVistaBean.gestores}" var="gestor" 
                                itemValue="#{gestor.idGestor}" itemLabel="#{gestor.usuario.nombreLogin}" />
-
               </p:selectOneMenu>
 
               <h:outputText value="Gestor asignado: " />
@@ -152,10 +147,10 @@
                 <p:separator />
               </f:facet>
               <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.idEdoVisible}" 
-                               filter="true" filterMatchMode="contains" 
-                               onchange="#{zonasVistaBean.onChange('&lt;p:selectOneMenu&gt; de Estado')}" 
-                               valueChangeListener="#{zonasVistaBean.valueChangeListener('&lt;p:selectOneMenu&gt; de Estado')}">
-                <f:selectItem itemLabel="Selecciona un estado" itemValue="" />
+                               filter="true" filterMatchMode="contains">
+                <p:ajax update="growl,apMunicipios,apMunicipiosTab0" listener="#{zonasVistaBean.onEstadosChange()}" >
+                </p:ajax>
+                <f:selectItem itemLabel="Selecciona un estado" itemValue="-1" />
                 <f:selectItems value="#{zonasVistaBean.estadosRep}" var="edoRep" 
                                itemValue="#{edoRep.idEstado}" itemLabel="#{edoRep.nombre}"/>
               </p:selectOneMenu>
