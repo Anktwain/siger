@@ -139,8 +139,8 @@ public class ZonasVistaBean implements Serializable {
     FacesContext context = FacesContext.getCurrentInstance();
 
     if (this.idEdoVisible != -1) {
-      this.edoRepVisible = this.estadosRep.get(idEdoVisible);
-      this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado() - 1);
+      this.edoRepVisible = this.estadosRep.get(idEdoVisible - 1);
+      this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
     } else {
       this.mpiosVisibles.clear();
     }
@@ -149,7 +149,7 @@ public class ZonasVistaBean implements Serializable {
     this.coloniasDeshabilitadas = true;
 
     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-            "valueChangeListener()",
+            "onEstadosChange()",
             "Terminó ejecución de onEstadosChange()."));
   }
 

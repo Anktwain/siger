@@ -17,15 +17,7 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
 
   /**
    * Devuelve un {@code List<>} con todos los EstadoRepublica que se encuentren
-   * dados de alta en el sistema. <br/>
-   * Nota: <strong>Es sumamente importante que
-   * los estados que se devuelvan en el {@code List<>} se encuentren ordenados
-   * alfabéticamente ascendentemente.</strong> Para ello debe hacerse un query
-   * manual donde se especifique tal ordenamiento en la sentencia select, de
-   * este modo:    
-   * <code>
-   * select * from estado_republica order by nombre asc;
-   * </code>
+   * dados de alta en el sistema.
    */
   @Override
   public List<EstadoRepublica> buscarTodo() {
@@ -33,7 +25,7 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
     Transaction tx = sesion.beginTransaction();
     List<EstadoRepublica> estados;
     try {
-      estados = sesion.createSQLQuery("").addEntity(EstadoRepublica.class).list();
+      estados = sesion.createSQLQuery("select * from estado_republica;").addEntity(EstadoRepublica.class).list();
     } catch (HibernateException he) {
       estados = null;
       Logs.log.error("No se pudo obtener lista: EstadoRepublica");

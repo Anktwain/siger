@@ -148,7 +148,8 @@
               </f:facet>
               <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.idEdoVisible}" 
                                filter="true" filterMatchMode="contains">
-                <p:ajax update="growl,apMunicipios,apMunicipiosTab0" listener="#{zonasVistaBean.onEstadosChange()}" >
+                <p:ajax update="growl,apMunicipios,formNuevaZona:apMunicipios:apMunicipiosTab0" 
+                        listener="#{zonasVistaBean.onEstadosChange()}" >
                 </p:ajax>
                 <f:selectItem itemLabel="Selecciona un estado" itemValue="-1" />
                 <f:selectItems value="#{zonasVistaBean.estadosRep}" var="edoRep" 
@@ -174,7 +175,7 @@
                                     filterMatchMode="contains" showCheckbox="true"  
                                     converter="mpioConverter">
                     <p:ajax event="change" listener="${zonasVistaBean.onMpiosChange}" 
-                            update="growl,listaMunicipio,formNuevaZona:panGridMpios:monit1,formNuevaZona:panGridMpios:monit2,formNuevaZona:panGridColonias:monit3,formNuevaZona:panGridColonias:monit4" />
+                            update="growl,listaMunicipio,monit0,formNuevaZona:panGridMpios:monit1,formNuevaZona:panGridMpios:monit2,formNuevaZona:panGridColonias:monit3,formNuevaZona:panGridColonias:monit4" />
                     <f:selectItem itemLabel="Todos (${zonasVistaBean.mpiosDelEstadoRepSelec.size()})" 
                                   noSelectionOption="true"/>
                     <f:selectItems value="${zonasVistaBean.mpiosDelEstadoRepSelec}" 
@@ -221,7 +222,7 @@
                                onclick="PF('dlgNuevaZona').hide();" icon="ui-icon-close" />
               <p:commandButton value="Monitorear" id="btnMonit2" icon="ui-icon-star" 
                                styleClass="ui-priority-primary">
-                <p:ajax event="click" listener="${zonasVistaBean.monitorear}" update="growl"/>
+                <p:ajax event="click" listener="${zonasVistaBean.monitorear}" update="growl,monit1,monit2,monit3,monit4"/>
               </p:commandButton>
             </f:facet>
           </p:panelGrid>
