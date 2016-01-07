@@ -81,7 +81,9 @@
                   <h:outputText value="#{c.producto.nombre}"/>
                 </p:column>
                 <p:column headerText="Saldo vencido" style="width:150px;" filterBy="#{c.monto}"> 
-                  <h:outputText value="#{c.monto}"/>
+                  <h:outputText value="#{c.monto}">
+                    <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                  </h:outputText>
                 </p:column>
                 <p:column headerText="Gestor asignado" style="width:130px;" filterBy="#{c.gestor.usuario.nombreLogin}"> 
                   <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>

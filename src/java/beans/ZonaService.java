@@ -24,13 +24,13 @@ public class ZonaService {
   private final List<EstadoRepublica> estadosRep;
   private List<Gestor> gestoresDespachoActual;
   private final String gestorSinSeleccion;
+  private EstadoRepublicaDAO estadoRepublicaDao;
 
   public ZonaService() {
-    EstadoRepublicaDAO estadoRepDao = new EstadoRepublicaIMPL();
+    EstadoRepublicaDAO estadoRepublicaDao = new EstadoRepublicaIMPL();
     GestorDAO gestorDao = new GestorIMPL();
-
     this.lugarSinSeleccion = Constantes.LUGAR_SIN_SELECCION;
-    estadosRep = estadoRepDao.buscarTodo();
+    estadosRep = estadoRepublicaDao.buscarTodo();
     System.out.println("............................ Estados Listados en ZonaService ..........................");
     for (EstadoRepublica estadoIterador : estadosRep) {
       System.out.println(estadoIterador);

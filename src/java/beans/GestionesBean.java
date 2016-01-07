@@ -114,13 +114,13 @@ public class GestionesBean implements Serializable {
       tipo = tipoSeleccionado;
     }
     if (idInstitucion == 0) {
-      institucion = "NULL";
+      institucion = "";
     } else {
       Institucion ins = institucionDao.buscar(idInstitucion);
       institucion = ins.getNombreCorto();
     }
     if(idProducto == 0){
-      producto = "NULL";
+      producto = "";
     }
     else{
       Producto prod = productoDao.buscar(idProducto);
