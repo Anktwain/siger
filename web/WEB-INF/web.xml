@@ -24,10 +24,6 @@
     <servlet-name>Faces Servlet</servlet-name>
     <url-pattern>/faces/*</url-pattern>
   </servlet-mapping>
-  <init-param>
-    <param-name>listings</param-name>
-    <param-value>true</param-value>
-  </init-param>
   <session-config>
     <session-timeout>
       30

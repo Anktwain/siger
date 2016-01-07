@@ -26,6 +26,7 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
    * <code>
    * select * from estado_republica order by nombre asc;
    * </code>
+   * @return 
    */
   @Override
   public List<EstadoRepublica> buscarTodo() {
@@ -33,7 +34,7 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
     Transaction tx = sesion.beginTransaction();
     List<EstadoRepublica> estados;
     try {
-      estados = sesion.createSQLQuery("").addEntity(EstadoRepublica.class).list();
+      estados = sesion.createSQLQuery("SELECT * FROM estado_republica ORDER BY ASC;").addEntity(EstadoRepublica.class).list();
     } catch (HibernateException he) {
       estados = null;
       Logs.log.error("No se pudo obtener lista: EstadoRepublica");
