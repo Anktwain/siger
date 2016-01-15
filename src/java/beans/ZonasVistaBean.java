@@ -12,6 +12,8 @@ import impl.GestorIMPL;
 import impl.MunicipioIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
@@ -19,6 +21,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
 import util.constantes.Constantes;
 
 /**
@@ -100,12 +103,20 @@ public class ZonasVistaBean implements Serializable {
 
   private final String gestorSinSeleccion;
 
+  private ZonaService zonaService;
+
+  private String encabezadoMpiosBase;
+  private String tituloMpiosCompleto;
+  private String tituloMpiosSeleccion;
+
   public ZonasVistaBean() {
     zona = new ZonaBean();
-    EstadoRepublicaDAO estadoRepDao = new EstadoRepublicaIMPL();
+
+    zonaService = (ZonaService) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("zonaService");
+
     mpioDao = new MunicipioIMPL();
 
-    estadosRep = estadoRepDao.buscarTodo();
+    estadosRep = zonaService.getEstadosRep();
 
     coloniasVisibles = new ArrayList<>();
 
@@ -128,6 +139,9 @@ public class ZonasVistaBean implements Serializable {
     tituloDialogo = "Si se despliega este título, algo anda mal...";  // linea de prueba
 
     gestorSinSeleccion = Constantes.GESTOR_SIN_SELECCION;
+
+    tituloMpiosSeleccion = "Seleccione los municipios";
+    encabezadoMpiosBase = tituloMpiosSeleccion;
   }
 
   /**
@@ -139,13 +153,17 @@ public class ZonasVistaBean implements Serializable {
     FacesContext context = FacesContext.getCurrentInstance();
 
     if (this.idEdoVisible != -1) {
-      this.edoRepVisible = this.estadosRep.get(idEdoVisible - 1);
+      this.edoRepVisible = this.zonaService.getEdoRep(idEdoVisible);
       this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
+      this.acPanMpiosActiveIndex = 0;
+      this.mpiosDeshabilitados = false;
+      this.tituloMpiosCompleto = this.seleccionCompleta + "(" + mpiosVisibles.size() + ")";
+      this.encabezadoMpiosBase = this.tituloMpiosCompleto;
     } else {
       this.mpiosVisibles.clear();
     }
 
-    this.acPanColoniasActiveIndex = -1;
+//    this.acPanColoniasActiveIndex = -1;
     this.coloniasDeshabilitadas = true;
 
     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -314,16 +332,14 @@ public class ZonasVistaBean implements Serializable {
     return null;
   }
 
-  public void onEventOccurs(String tipoEvento) {
+  public void onEventOccurs(TabChangeEvent event) {
     FacesContext context = FacesContext.getCurrentInstance();
 
-    switch (tipoEvento) {
-      default:
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Evento <" + tipoEvento + ">",
-                "Se hizo una llamada con un tipo de evento NO válido."));
-        break;
-    }
+    
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Evento <" + event.toString() + ">",
+                "Se hizo una llamada con un tipo de evento en prueba."));
+    
 
   }
 
@@ -391,4 +407,13 @@ public class ZonasVistaBean implements Serializable {
             + "<br/>id Estado visible: " + this.idEdoVisible));
     System.out.println("\nid Estado visible: " + this.idEdoVisible);
   }
+
+  public String getEncabezadoMpiosBase() {
+    return encabezadoMpiosBase;
+  }
+
+  public void setEncabezadoMpiosBase(String encabezadoMpiosBase) {
+    this.encabezadoMpiosBase = encabezadoMpiosBase;
+  }
+
 }

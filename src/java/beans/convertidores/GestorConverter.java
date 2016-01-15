@@ -35,7 +35,7 @@ public class GestorConverter implements Converter {
     Object devuelto = null;
 
     if ((string != null) && (!string.trim().equals(""))) {
-      devuelto = zonaService.getGestorPorId(Integer.valueOf(string));
+      devuelto = zonaService.getGestor(Integer.valueOf(string));
 
       System.out.println("______________ gestorConverter.getAsObject() { string = "
               + string + "}."

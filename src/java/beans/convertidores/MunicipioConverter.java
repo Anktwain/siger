@@ -7,6 +7,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import util.constantes.Constantes;
 
 /**
  *
@@ -21,6 +22,9 @@ public class MunicipioConverter implements Converter {
 
     if (string != null) {
       if (string.trim().length() > 0) {
+        if(string.equals(Constantes.LUGAR_SELECCION_COMPLETA)){
+          
+        }
         System.out.println("_______________Por devolver el Municipio con el nombre: " + string);
         return zonaVista.getMpioPorNombre(string);
       }

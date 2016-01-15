@@ -148,7 +148,8 @@
               </f:facet>
               <p:selectOneMenu id="listaEstado" value="#{zonasVistaBean.idEdoVisible}" 
                                filter="true" filterMatchMode="contains">
-                <p:ajax update="growl,apMunicipios,formNuevaZona:apMunicipios:apMunicipiosTab0" 
+                <p:ajax update="growl,apMunicipios,
+                        formNuevaZona:apMunicipios:apMunicipiosTab0" 
                         listener="#{zonasVistaBean.onEstadosChange()}" >
                 </p:ajax>
                 <f:selectItem itemLabel="Selecciona un estado" itemValue="-1" />
@@ -168,19 +169,29 @@
               </f:facet>
 
               <p:accordionPanel id="apMunicipios" dynamic="true" cache="false" 
-                                activeIndex="#{zonasVistaBean.acPanMpiosActiveIndex}">
-                <p:tab id="apMunicipiosTab0" title="Seleccione los municipios" 
-                       disabled="${zonasVistaBean.mpiosDeshabilitados}">
+                                activeIndex="#{zonasVistaBean.acPanMpiosActiveIndex}" >
+                <p:ajax listener="${zonasVistaBean.onEventOccurs('selecci&oacute;n de tab')}" update="growl"/>
+                <p:tab id="apMunicipiosTab0" title="${zonasVistaBean.encabezadoMpiosBase}" 
+                       disabled="${zonasVistaBean.mpiosDeshabilitados}" >
+                  
+
+                  <h:panelGrid columns="2" >
+                    <h:outputText value="${zonasVistaBean.seleccionCompleta} (${zonasVistaBean.mpiosDelEstadoRepSelec.size()}): " />
+                    <p:inputSwitch  onLabel="S&iacute;" offLabel="No">
+                      <p:ajax listener="${zonasVistaBean.onChange('inputSwitch')}" />
+                    </p:inputSwitch>
+
+                  </h:panelGrid>
+
                   <p:selectManyMenu id="listaMunicipio" class="dropDMpios" filter="true" 
                                     filterMatchMode="contains" showCheckbox="true"  
                                     converter="mpioConverter">
                     <p:ajax event="change" listener="${zonasVistaBean.onMpiosChange}" 
-                            update="growl,listaMunicipio,monit0,formNuevaZona:panGridMpios:monit1,formNuevaZona:panGridMpios:monit2,formNuevaZona:panGridColonias:monit3,formNuevaZona:panGridColonias:monit4" />
-                    <f:selectItem itemLabel="Todos (${zonasVistaBean.mpiosDelEstadoRepSelec.size()})" 
-                                  noSelectionOption="true"/>
+                            update="growl,listaMunicipio,formNuevaZona:monit0,formNuevaZona:monit1,formNuevaZona:monit2,formNuevaZona:monit3,formNuevaZona:monit4" />
                     <f:selectItems value="${zonasVistaBean.mpiosDelEstadoRepSelec}" 
                                    var="mpio" itemLabel="${mpio.nombre}" />
                   </p:selectManyMenu>
+
                 </p:tab>
               </p:accordionPanel>
             </h:panelGrid>
