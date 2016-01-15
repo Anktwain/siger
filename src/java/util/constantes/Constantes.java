@@ -81,8 +81,7 @@ public interface Constantes {
    * se solicite un lugar.
    */
   public static final String LUGAR_SIN_SELECCION = "sinSeleccion";
-  public static final String LUGAR_SELECCION_COMPLETA = "todos";
-  
+  public static final String LUGAR_SELECCION_COMPLETA = "Todos";
 
   public static final String GESTOR_SIN_SELECCION = "Ninguno";
 }

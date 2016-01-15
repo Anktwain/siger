@@ -20,7 +20,7 @@ public class EstadoRepConverter implements Converter {
 
     if (string != null) {
       if (string.trim().length() > 0) {
-        devuelto = zonaService.getEdoRepPorNombre(string);
+        devuelto = zonaService.getEdoRep(string);
         System.out.println("________________edoRepConverter.getAsObject { string = "
                 + string + "}."
                 + " Enviando el " + devuelto.getClass() + " " + devuelto.toString()); // Línea de prueba
