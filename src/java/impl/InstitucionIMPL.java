@@ -3,6 +3,7 @@ package impl;
 import dao.InstitucionDAO;
 import dto.Institucion;
 import dto.Sujeto;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -144,17 +145,16 @@ public class InstitucionIMPL implements InstitucionDAO {
     @Override
     public List<Institucion> buscarTodo() {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
-        List<Institucion> listaInstitucion;
-        try { // Buscamos todas las Institucions.
-            listaInstitucion = sesion.createSQLQuery("from Institucion").list();
+        List<Institucion> listaInstituciones = new ArrayList();
+        try {
+            listaInstituciones = sesion.createSQLQuery("SELECT * FROM institucion;").addEntity(Institucion.class).list();
         } catch (HibernateException he) {
-            listaInstitucion = null;
+            listaInstituciones = null;
             he.printStackTrace();
         } finally {
             cerrar(sesion);
         }
-        return listaInstitucion;
+        return listaInstituciones;
     }
     /**
      *
@@ -195,7 +195,7 @@ public class InstitucionIMPL implements InstitucionDAO {
         Transaction tx = sesion.beginTransaction();
         List<Institucion> listaInstituciones;
         try { 
-            listaInstituciones = sesion.createSQLQuery("SELECT * FROM institucion i WHERE i.id_institucion IN (SELECT c.id_institucion FROM credito c WHERE c.id_despacho = 2);").addEntity(Institucion.class).list();
+            listaInstituciones = sesion.createSQLQuery("SELECT * FROM institucion i WHERE i.id_institucion IN (SELECT c.id_institucion FROM credito c WHERE c.id_despacho = " + idDespacho + ");").addEntity(Institucion.class).list();
         } catch(HibernateException he) {
             listaInstituciones = null;
             he.printStackTrace();

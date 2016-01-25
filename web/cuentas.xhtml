@@ -36,7 +36,7 @@
       </div>
       <div class="row">
         <div class="padding-md">
-          <div class="col-lg-12">
+          <div class="col-lg-12"  style="width: 1200px;">
             <h:form id="formCuentas">
               <p:contextMenu for="cuentas" style="width:200px;">
                 <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{cuentasVistaBean.selectorDeVista()}" />
@@ -65,27 +65,27 @@
                 <p:commandButton value="No" icon="ui-icon-close" oncomplete="PF('confirmacionDialog').hide();" />
               </p:dialog>
               <p:dataTable id="cuentas" var="c" value="#{cuentasVistaBean.creditosGestionables}" rowKey="#{c.numeroCredito}" selection="#{cuentasVistaBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="multiple" paginator="true" rows="15" paginatorPosition="bottom" filteredValue="#{cuentasVistaBean.filtrados}">
-                <p:column headerText="Credito" style="width:130px;" filterBy="#{c.numeroCredito}">
-                  <h:outputText value="#{c.numeroCredito}"/>
+                <p:column headerText="Credito" style="width:100px;" filterBy="#{c.numeroCredito}" filterStyle="width:70px;">
+                  <h:outputText value="#{c.numeroCredito}" style="float:right"/>
                 </p:column>
-                <p:column headerText="Deudor" style="width:500px;" filterBy="#{c.deudor.sujeto.nombreRazonSocial}"> 
+                <p:column headerText="Nombre del deudor" style="width:350px;" filterBy="#{c.deudor.sujeto.nombreRazonSocial}">
                   <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
                 </p:column>
-                <p:column headerText="Institucion" style="width:130px;" filterBy="#{c.producto.institucion.nombreCorto}"> 
+                <p:column headerText="Institucion" style="width:100px;" filterBy="#{c.producto.institucion.nombreCorto}"> 
                   <h:outputText value="#{c.producto.institucion.nombreCorto}"/>
                 </p:column>
                 <p:column headerText="Tipo de credito" style="width:150px;" filterBy="#{cuentasVistaBean.etiquetarTipoCredito(c.tipoCredito)}"> 
                   <h:outputText value="#{cuentasVistaBean.etiquetarTipoCredito(c.tipoCredito)}"/>
                 </p:column>
-                <p:column headerText="Producto" filterBy="#{c.producto.nombre}"> 
+                <p:column headerText="Producto" style="width:200px;" filterBy="#{c.producto.nombre}"> 
                   <h:outputText value="#{c.producto.nombre}"/>
                 </p:column>
-                <p:column headerText="Saldo vencido" style="width:150px;" filterBy="#{c.monto}"> 
-                  <h:outputText value="#{c.monto}">
+                <p:column headerText="Saldo vencido" style="width:100px;" filterBy="#{c.monto}"> 
+                  <h:outputText value="#{c.monto}" style="float:right">
                     <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                   </h:outputText>
                 </p:column>
-                <p:column headerText="Gestor asignado" style="width:130px;" filterBy="#{c.gestor.usuario.nombreLogin}"> 
+                <p:column headerText="Gestor" style="width:100px;" filterBy="#{c.gestor.usuario.nombreLogin}"> 
                   <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>
                 </p:column>
               </p:dataTable>

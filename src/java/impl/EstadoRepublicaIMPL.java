@@ -31,10 +31,9 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
   @Override
   public List<EstadoRepublica> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<EstadoRepublica> estados;
     try {
-      estados = sesion.createSQLQuery("SELECT * FROM estado_republica ORDER BY ASC;").addEntity(EstadoRepublica.class).list();
+      estados = sesion.createSQLQuery("SELECT * FROM estado_republica ORDER BY nombre ASC;").addEntity(EstadoRepublica.class).list();
     } catch (HibernateException he) {
       estados = null;
       Logs.log.error("No se pudo obtener lista: EstadoRepublica");
@@ -48,7 +47,6 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
   @Override
   public EstadoRepublica buscar(int idEstado) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     EstadoRepublica estado;
 
     try {
@@ -67,7 +65,6 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
   @Override
   public EstadoRepublica buscar(String cadena) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     EstadoRepublica estado;
 
     try {

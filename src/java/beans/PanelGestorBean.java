@@ -24,116 +24,119 @@ public class PanelGestorBean implements Serializable {
 //    @ManagedProperty(value = "indexBean")
 //    private IndexBean indexBean;
 
-    ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-    IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+  IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
-    private String nombreUsuario;
-    private String imagenDePerfil;
-    private String nombre;
-    private String correo;
-    private String despacho;
-    private Sujeto sujeto;
-    private SujetoDAO sujetoDao;
+  private String nombreUsuario;
+  private String imagenDePerfil;
+  private String nombre;
+  private String correo;
+  private String despacho;
+  private Sujeto sujeto;
+  private SujetoDAO sujetoDao;
 
   /**
    *
    */
   public PanelGestorBean() {
-        nombre = indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno();
-        nombreUsuario = indexBean.getUsuario().getNombreLogin();
-        imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
-        correo = indexBean.getUsuario().getCorreo();
-        sujeto = new Sujeto();
-        sujetoDao = new SujetoIMPL();
-        sujeto = sujetoDao.buscar(indexBean.getUsuario().getDespacho().getSujeto().getIdSujeto());
-        despacho = sujeto.getNombreRazonSocial();
-    }
+    nombre = indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno();
+    nombreUsuario = indexBean.getUsuario().getNombreLogin();
+    imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
+    correo = indexBean.getUsuario().getCorreo();
+    sujeto = new Sujeto();
+    sujetoDao = new SujetoIMPL();
+    despacho = indexBean.getUsuario().getDespacho().getSujeto().getNombreRazonSocial();
+  }
 
-    /**
-     *
-     *
-     * @return
-     */
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
+  /**
+   *
+   *
+   * @return
+   */
+  public String getNombreUsuario() {
+    return nombreUsuario;
+  }
 
-    /**
-     *
-     *
-   * @param nombreUsuario */
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
+  /**
+   *
+   *
+   * @param nombreUsuario
+   */
+  public void setNombreUsuario(String nombreUsuario) {
+    this.nombreUsuario = nombreUsuario;
+  }
 
-    /**
-     *
-     *
-     * @return
-     */
-    public String getImagenDePerfil() {
-        return imagenDePerfil;
-    }
+  /**
+   *
+   *
+   * @return
+   */
+  public String getImagenDePerfil() {
+    return imagenDePerfil;
+  }
 
-    /**
-     *
-     *
-   * @param imagenDePerfil     */
-    public void setImagenDePerfil(String imagenDePerfil) {
-        this.imagenDePerfil = imagenDePerfil;
-    }
+  /**
+   *
+   *
+   * @param imagenDePerfil
+   */
+  public void setImagenDePerfil(String imagenDePerfil) {
+    this.imagenDePerfil = imagenDePerfil;
+  }
 
-    /**
-     *
-     *
-     * @return
-     */
-    public String getNombre() {
-        return nombre;
-    }
+  /**
+   *
+   *
+   * @return
+   */
+  public String getNombre() {
+    return nombre;
+  }
 
-    /**
-     *
-     *
-   * @param nombre     */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+  /**
+   *
+   *
+   * @param nombre
+   */
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
 
-    /**
-     *
-     *
-     * @return
-     */
-    public String getCorreo() {
-        return correo;
-    }
+  /**
+   *
+   *
+   * @return
+   */
+  public String getCorreo() {
+    return correo;
+  }
 
-    /**
-     *
-     *
-   * @param correo     */
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
+  /**
+   *
+   *
+   * @param correo
+   */
+  public void setCorreo(String correo) {
+    this.correo = correo;
+  }
 
-    /**
-     *
-     *
-     * @return
-     */
-    public IndexBean getIndexBean() {
-        return indexBean;
-    }
+  /**
+   *
+   *
+   * @return
+   */
+  public IndexBean getIndexBean() {
+    return indexBean;
+  }
 
-    /**
-     *
-     *
+  /**
+   *
+   *
    * @param indexBean
-     */
-    public void setIndexBean(IndexBean indexBean) {
-        this.indexBean = indexBean;
-    }
+   */
+  public void setIndexBean(IndexBean indexBean) {
+    this.indexBean = indexBean;
+  }
 
   public String getDespacho() {
     return despacho;
@@ -157,6 +160,14 @@ public class PanelGestorBean implements Serializable {
 
   public void setSujetoDao(SujetoDAO sujetoDao) {
     this.sujetoDao = sujetoDao;
+  }
+
+  public ELContext getElContext() {
+    return elContext;
+  }
+
+  public void setElContext(ELContext elContext) {
+    this.elContext = elContext;
   }
 
 }

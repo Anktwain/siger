@@ -48,7 +48,6 @@ public class GestionesBean implements Serializable {
   // VARIABLES DE CLASE
   private final int idDespacho;
   private boolean permitirExport;
-  private boolean permitirBoton;
   private String tipoSeleccionado;
   private String nombreArchivo;
   private Gestor gestorSeleccionado;
@@ -70,7 +69,6 @@ public class GestionesBean implements Serializable {
 
   public GestionesBean() {
     permitirExport = false;
-    permitirBoton = false;
     idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
     gestorSeleccionado = new Gestor();
     productoSeleccionado = new Producto();
@@ -101,44 +99,54 @@ public class GestionesBean implements Serializable {
     int idGestor = gestorSeleccionado.getIdGestor();
     int idInstitucion = institucionSeleccionada.getIdInstitucion();
     int idProducto = productoSeleccionado.getIdProducto();
+    String tipoGestion = tipoSeleccionado;
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String f1 = df.format(fechaInicio);
     String f2 = df.format(fechaFin);
-    String tipo;
-    String producto;
-    String institucion;
-    if (tipoSeleccionado == null) {
-      tipoSeleccionado = "";
-      tipo = "Todas las gestiones";
-    } else {
-      tipo = tipoSeleccionado;
+    if ((idGestor == 0) && (tipoGestion.isEmpty()) && (idInstitucion == 0) && (idProducto == 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorDespacho(idDespacho, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-TodosGestores-TodosTipos-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
     }
-    if (idInstitucion == 0) {
-      institucion = "";
-    } else {
-      Institucion ins = institucionDao.buscar(idInstitucion);
-      institucion = ins.getNombreCorto();
+    if ((idGestor != 0) && (tipoGestion.isEmpty()) && (idInstitucion == 0) && (idProducto == 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorGestor(idDespacho, idGestor, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-TodosTipos-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
     }
-    if(idProducto == 0){
-      producto = "";
+    if ((idGestor == 0) && (!tipoGestion.isEmpty()) && (idInstitucion == 0) && (idProducto == 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorTipo(idDespacho, tipoGestion, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-TodosGestores-" + tipoGestion + "-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
     }
-    else{
-      Producto prod = productoDao.buscar(idProducto);
-      producto = prod.getNombre();
+    if ((idGestor == 0) && (tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto == 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorInstitucion(idDespacho, idInstitucion, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-TodosGestores-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-TodosProductos-" + f1 + "-" + f2;
     }
-    if (idGestor == 0) {
-      listaGestiones = gestionDao.buscarGestionesPorDespacho(idDespacho, fechaInicio, fechaFin, tipoSeleccionado, institucion, producto);
-      nombreArchivo = "Gestiones-Todos los gestores-" + tipo + "-" + producto + "-" + f1 + "-" + f2;
-    } else {
-      usuario = usuarioDao.buscarUsuarioPorIdGestor(idGestor);
-      String nombreGestor = usuario.getNombre() + " " + usuario.getPaterno();
-      listaGestiones = gestionDao.buscarGestionesPorGestor(idGestor, fechaInicio, fechaFin, tipoSeleccionado, institucion, producto);
-      nombreArchivo = "Gestiones-" + nombreGestor + "-" + tipo + "-" + producto + "-" + f1 + "-" + f2;
+    if ((idGestor == 0) && (tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto != 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorInstitucionProducto(idDespacho, idInstitucion, idProducto, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-TodosGestores-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
     }
-    if (!listaGestiones.isEmpty()) {
-      permitirExport = true;
+    if ((idGestor != 0) && (!tipoGestion.isEmpty()) && (idInstitucion == 0) && (idProducto == 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorGestorTipo(idDespacho, idGestor, tipoGestion, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-" + tipoGestion + "-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
     }
-    permitirBoton = true;
+    if ((idGestor != 0) && (tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto == 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorGestorInstitucion(idDespacho, idGestor, idInstitucion, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-TodosProductos-" + f1 + "-" + f2;
+    }
+    if ((idGestor != 0) && (tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto != 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorGestorInstitucionProducto(idDespacho, idGestor, idInstitucion, idProducto, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
+    }
+    if ((idGestor == 0) && (!tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto == 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorTipoInstitucion(idDespacho, tipoGestion, idInstitucion, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-TodosGestores-" + tipoGestion + "-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-TodosProductos-" + f1 + "-" + f2;
+    }
+    if ((idGestor == 0) && (!tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto != 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorTipoInstitucionProducto(idDespacho, tipoGestion, idInstitucion, idProducto, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-TodosGestores-" + tipoGestion + "-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
+    }
+    if ((idGestor != 0) && (!tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto != 0)) {
+      listaGestiones = gestionDao.buscarGestionesPorGestorTipoInstitucionProducto(idDespacho, idGestor, tipoGestion, idInstitucion, idProducto, fechaInicio, fechaFin);
+      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-" + tipoGestion + "-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
+    }
     RequestContext.getCurrentInstance().update("formGestionesAdmin");
   }
 
@@ -296,14 +304,6 @@ public class GestionesBean implements Serializable {
 
   public void setInstitucionDao(InstitucionDAO institucionDao) {
     this.institucionDao = institucionDao;
-  }
-
-  public boolean isPermitirBoton() {
-    return permitirBoton;
-  }
-
-  public void setPermitirBoton(boolean permitirBoton) {
-    this.permitirBoton = permitirBoton;
   }
 
   public UsuarioDAO getUsuarioDao() {

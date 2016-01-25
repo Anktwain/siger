@@ -92,10 +92,6 @@
               </td>
             </tr>
           </table>
-          <br />
-          <div align="center">
-            <p:button value="Realizar otra busqueda" icon="ui-icon-search" outcome="gestiones" rendered="#{gestionesBean.permitirBoton}" />
-          </div>
           <hr />
           <p:dataTable id="tablaGestiones" var="g" value="#{gestionesBean.listaGestiones}" emptyMessage="No existen gestiones." paginator="true" rows="10" paginatorPosition="bottom">
             <p:column headerText="Fecha" style="width: 100px;">
