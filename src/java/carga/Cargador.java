@@ -22,6 +22,13 @@ public class Cargador {
 
   // El nombre del archivo generado del lado del servidor.
   private String nombreArchivo;
+  
+  // Mes de carga
+  private int mesCarga;
+
+  public Cargador(int mesCarga) {
+    this.mesCarga = mesCarga;
+  }
 
   /**
    * Método que sube un archivo de carga al servidor. Este archivo deberá ser en
@@ -32,7 +39,7 @@ public class Cargador {
    * que el archivo no pudiera cargarse, enviará null.
    */
   public String subirArchivo(FileUploadEvent evento) {
-    UploadedFile archivoRecibido = evento.getFile(); // Obtien el archivo.
+    UploadedFile archivoRecibido = evento.getFile(); // Obtiene el archivo.
     
     /* cambia el nombre original del archivo por un nombre generado por el método
       "bautizar" de la clase BautistaDeArchivos. Esa clase se encarga de generar
@@ -72,13 +79,23 @@ public class Cargador {
   public List<Fila> leerArchivo() throws IOException, BiffException {
     /* Objeto que aloja al libro de excel contenido en el archivo a leer */
     Workbook libroExcel = Workbook.getWorkbook(new File(nombreArchivo));
-    ProcesadorArchivoExcel procesador = new ProcesadorArchivoExcel(libroExcel);
+    
+    /* Crea un objeto de tipo ProcesadorArchivoExcel, el cual se encarga de
+    leer del archivo Excel exactamente los datos que necesitará para la carga. */
+    ProcesadorArchivoExcel procesador = new ProcesadorArchivoExcel(libroExcel, mesCarga);
+    
+    /* Ahora obtiene todas las filas contenidas en el archivo Excel. */
     List<Fila> listaFilas = procesador.obtenerFilas();
 
+    /* Regresa el resultado de leer filas.*/
     if (listaFilas.size() > 1) {
       return listaFilas;
     } else {
       return null;
     }
+  }
+
+  public void setMesCarga(int mesCarga) {
+    this.mesCarga = mesCarga;
   }
 }

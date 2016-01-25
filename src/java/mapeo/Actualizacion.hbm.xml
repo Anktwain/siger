@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 25/01/2016 12:05:16 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="dto.Actualizacion" table="actualizacion" catalog="sigerbd" optimistic-lock="version">
+        <id name="idActualizacion" type="java.lang.Integer">
+            <column name="id_actualizacion" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="credito" class="dto.Credito" fetch="select">
+            <column name="id_credito" not-null="true" />
+        </many-to-one>
+        <many-to-one name="remesa" class="dto.Remesa" fetch="select">
+            <column name="id_remesa" not-null="true" />
+        </many-to-one>
+        <property name="mesesVencidos" type="java.lang.Integer">
+            <column name="meses_vencidos" />
+        </property>
+        <property name="saldoVencido" type="java.lang.Float">
+            <column name="saldo_vencido" precision="12" scale="0" />
+        </property>
+        <property name="estatus" type="string">
+            <column name="estatus" length="10" />
+        </property>
+        <property name="fechaUltimoPago" type="date">
+            <column name="fecha_ultimo_pago" length="10" />
+        </property>
+        <property name="fechaUltimoVencimientoPagado" type="date">
+            <column name="fecha_ultimo_vencimiento_pagado" length="10" />
+        </property>
+    </class>
+</hibernate-mapping>

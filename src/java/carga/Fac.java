@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package carga;
 
 import java.io.Serializable;
 
-/**
- *
+/** 
+ * Clase que representa un Fac con su respectiva informacion. En cada remesa se
+ * incluyen datos de meses previos, se incluyen generalmente tres o más de estos
+ * "Fac". 
+ * 
  * @author antonio
  */
 public class Fac implements Serializable{

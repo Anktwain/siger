@@ -1,5 +1,5 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 25/01/2016 12:05:14 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -13,9 +13,9 @@ public class EstadoRepublica  implements java.io.Serializable {
 
      private Integer idEstado;
      private String nombre;
-     private Set municipios = new HashSet(0);
      private Set regions = new HashSet(0);
      private Set direccions = new HashSet(0);
+     private Set municipios = new HashSet(0);
 
     public EstadoRepublica() {
     }
@@ -24,11 +24,11 @@ public class EstadoRepublica  implements java.io.Serializable {
     public EstadoRepublica(String nombre) {
         this.nombre = nombre;
     }
-    public EstadoRepublica(String nombre, Set municipios, Set regions, Set direccions) {
+    public EstadoRepublica(String nombre, Set regions, Set direccions, Set municipios) {
        this.nombre = nombre;
-       this.municipios = municipios;
        this.regions = regions;
        this.direccions = direccions;
+       this.municipios = municipios;
     }
    
     public Integer getIdEstado() {
@@ -45,13 +45,6 @@ public class EstadoRepublica  implements java.io.Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public Set getMunicipios() {
-        return this.municipios;
-    }
-    
-    public void setMunicipios(Set municipios) {
-        this.municipios = municipios;
-    }
     public Set getRegions() {
         return this.regions;
     }
@@ -66,10 +59,17 @@ public class EstadoRepublica  implements java.io.Serializable {
     public void setDireccions(Set direccions) {
         this.direccions = direccions;
     }
-
-  @Override
-  public String toString() {
-    return nombre;
-  }
+    public Set getMunicipios() {
+        return this.municipios;
+    }
     
+    public void setMunicipios(Set municipios) {
+        this.municipios = municipios;
+    }
+
+
+
+
 }
+
+

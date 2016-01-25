@@ -13,6 +13,7 @@ import dto.Subproducto;
 import impl.DespachoIMPL;
 import impl.ProductoIMPL;
 import impl.SubproductoIMPL;
+import java.util.List;
 import util.constantes.Constantes;
 import util.constantes.Errores;
 import util.constantes.Patrones;
@@ -195,16 +196,43 @@ public class FilaBean implements Serializable {
    */
   public void validarIdProducto() throws Exception {
     String p = filaActual.getTipoCredito();
-    if(p != null && !p.isEmpty()) {
+    if (p != null && !p.isEmpty()) {
       producto = productoDao.buscar(p);
-      if(producto == null)
+      if (producto == null) {
         throw new Exception("No se encontró el producto: " + p + ". " + "Agréguelo o corrija el archivo.");
-      else
+      } else {
         filaActual.setIdProducto(producto.getIdProducto());
+      }
     } else {
       throw new Exception("El campo \"producto\" no debe encontrarse vacío.");
     }
-    
+
+  }
+
+  /**
+   * La linea(producto) es obligatoria, deberá comprobarse que existe el
+   * producto en la tabla 'producto'
+   *
+   * @param listaProductos la lista de productos actualmente existentes en la BD
+   * @throws java.lang.Exception Si el {@code String} que contiene al campo a
+   * validar se encuentra vacío.
+   */
+  public void validarIdProducto(List<Producto> listaProductos) throws Exception {
+    String p = filaActual.getTipoCredito();
+
+    if (p != null && !p.isEmpty()) {
+      for (Producto producto : listaProductos) {
+        if (p.equals(producto.getNombre())) {
+          filaActual.setProductoDTO(producto);
+          return;
+        }
+      }
+    } else {
+      throw new Exception("El campo \"producto\" no debe encontrarse vacío.");
+    }
+
+    throw new Exception("No se encontró el producto: " + p + ". " + "Agréguelo o corrija el archivo.");
+
   }
 
   /**
@@ -215,16 +243,41 @@ public class FilaBean implements Serializable {
    */
   public void validarIdSubproducto() throws Exception {
     String s = filaActual.getLinea();
-    if(s != null && !s.isEmpty()) {
+    if (s != null && !s.isEmpty()) {
       subproducto = subproductoDao.buscar(s);
-      if(subproducto == null)
-        throw new Exception("No se encontró el subproducto: " + s 
+      if (subproducto == null) {
+        throw new Exception("No se encontró el subproducto: " + s
                 + ", asociado al producto: " + filaActual.getTipoCredito()
                 + ". Agréguelo o corrija el archivo.");
-      else
+      } else {
         filaActual.setIdSubproducto(subproducto.getIdSubproducto());
+      }
     }
 
+  }
+
+  /**
+   * El tipoCredito(subproducto) deberá existir en la tabla 'subproducto', es un
+   * id entero, sin embargo este campo no es obligatorio.
+   *
+   * @param listaSubproductos La lista de subproductos actualmente existentes en
+   * la BD
+   * @throws java.lang.Exception
+   */
+  public void validarIdSubproducto(List<Subproducto> listaSubproductos) throws Exception {
+    String s = filaActual.getLinea();
+
+    if (s != null && !s.isEmpty()) {
+      for (Subproducto subproducto : listaSubproductos) {
+        if (s.equals(subproducto.getNombre())) {
+          filaActual.setSubproductoDTO(subproducto);
+          return;
+        }
+      }
+      throw new Exception("No se encontró el subproducto: " + s
+              + ", asociado al producto: " + filaActual.getTipoCredito()
+              + ". Agréguelo o corrija el archivo.");
+    }
   }
 
   /**
@@ -502,48 +555,6 @@ public class FilaBean implements Serializable {
   }
 
   /**
-   * Comprueba que el año sea válido segun la especificación de excel, que el
-   * mes sea un mes del año y que el monto sea un float no negativo. Así como
-   * que exista el mismo numero de valores en año, mes y monto, para evitar
-   * registros incompletos.
-   *
-   * @throws java.lang.Exception
-   */
-  public void validarFacs() throws Exception {
-    int maxIndex = Math.max(this.filaActual.getAnio().size(), this.filaActual.getMes().size());
-    maxIndex = Math.max(maxIndex, this.filaActual.getMonto().size());
-    int i;
-    for (i = 0; i < maxIndex; i++) {
-      try {
-        if ((Integer.parseInt(this.filaActual.getAnio().get(i)) < Constantes.LIM_INF_ANIO_EXCEL)
-                || (Integer.parseInt(this.filaActual.getAnio().get(i)) > Constantes.LIM_SUP_ANIO_EXCEL)) {
-          throw new Exception("Error en el campo \"AÑO\" en el fac No." + (i + 1) + "." + Errores.ANIO_FUERA_DE_RANGO_EXCEL);
-        }
-      } catch (NumberFormatException nfe) {
-        throw new Exception("Error en el campo \"AÑO\" en el fac No." + (i + 1) + "." + Errores.CAMPO_ENTERO_REQUERIDO, nfe);
-      } catch (IndexOutOfBoundsException iobe) {
-        throw new Exception("Error en el campo \"AÑO\" en el fac No." + (i + 1) + ". " + Errores.FILA_CON_CELDAS_VACIAS, iobe);
-      }
-      try {
-        if (Arrays.binarySearch(Constantes.MESES_DEL_ANIO, this.filaActual.getFacMes().get(i).toLowerCase()) < 0) {
-          throw new Exception("Error en el campo \"MES\" en el fac No." + (i + 1) + ". Se esperaba un mes del año escrito con palabra.");
-        }
-      } catch (IndexOutOfBoundsException iobe) {
-        throw new Exception("Error en el campo \"MES\" en el fac No." + (i + 1) + ". " + Errores.FILA_CON_CELDAS_VACIAS, iobe);
-      }
-      try {
-        if (Float.valueOf(this.filaActual.getMonto().get(i)) < 0f) {
-          throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + ". Se esperaba un valor de monto no negativo.");
-        }
-      } catch (IndexOutOfBoundsException iobe) {
-        throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + ". " + Errores.FILA_CON_CELDAS_VACIAS, iobe);
-      } catch (NumberFormatException nfe) {
-        throw new Exception("Error en el campo \"MONTO\" en el fac No." + (i + 1) + "." + Errores.CAMPO_FLOAT_REQUERIDO, nfe);
-      }
-    }
-  }
-
-  /**
    *
    * @throws Exception
    */
@@ -573,20 +584,21 @@ public class FilaBean implements Serializable {
     }
     return false;
   }
-  
+
   public void validarDespacho() throws Exception {
     String d = filaActual.getDespacho();
     if (d != null && !d.isEmpty()) {
       despacho = despachoDao.buscar(d);
-      if(despacho == null)
-        throw new Exception("No se encontró el despacho: " + d + ". " + "Agréguelo o corrija el archivo" );
-      else
+      if (despacho == null) {
+        throw new Exception("No se encontró el despacho: " + d + ". " + "Agréguelo o corrija el archivo");
+      } else {
         filaActual.setIdDespacho(despacho.getIdDespacho());
+      }
     } else {
       throw new Exception("El campo \"despacho\" no debe encontrarse vacío.");
     }
   }
-  
+
   public void validarDireccion() {
     filaActual = Direccionador.obtenerDireccion(filaActual);
   }

@@ -7,7 +7,9 @@ package impl;
 
 import dao.DespachoDAO;
 import dto.Despacho;
+import java.util.List;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
@@ -36,6 +38,28 @@ public class DespachoIMPL implements DespachoDAO {
     }
     return despacho;
   }
+
+  @Override
+  public List<Despacho> getAll() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    List<Despacho> listaDeudors;
+    String hql = "from Despacho";
+
+    try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
+      Query query = sesion.createQuery(hql);
+      listaDeudors = (List<Despacho>) query.list();
+    } catch (HibernateException he) {
+      listaDeudors = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+
+    return listaDeudors;
+  }
+  
+  
   
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {

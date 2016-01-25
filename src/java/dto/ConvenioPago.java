@@ -1,5 +1,5 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 25/01/2016 12:05:14 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -18,6 +18,7 @@ public class ConvenioPago  implements java.io.Serializable {
      private int estatus;
      private float saldoNegociado;
      private int pagosRealizados;
+     private Set promesaPagos = new HashSet(0);
      private Set pagos = new HashSet(0);
 
     public ConvenioPago() {
@@ -31,12 +32,13 @@ public class ConvenioPago  implements java.io.Serializable {
         this.saldoNegociado = saldoNegociado;
         this.pagosRealizados = pagosRealizados;
     }
-    public ConvenioPago(Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosRealizados, Set pagos) {
+    public ConvenioPago(Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosRealizados, Set promesaPagos, Set pagos) {
        this.credito = credito;
        this.fecha = fecha;
        this.estatus = estatus;
        this.saldoNegociado = saldoNegociado;
        this.pagosRealizados = pagosRealizados;
+       this.promesaPagos = promesaPagos;
        this.pagos = pagos;
     }
    
@@ -81,6 +83,13 @@ public class ConvenioPago  implements java.io.Serializable {
     
     public void setPagosRealizados(int pagosRealizados) {
         this.pagosRealizados = pagosRealizados;
+    }
+    public Set getPromesaPagos() {
+        return this.promesaPagos;
+    }
+    
+    public void setPromesaPagos(Set promesaPagos) {
+        this.promesaPagos = promesaPagos;
     }
     public Set getPagos() {
         return this.pagos;

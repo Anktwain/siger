@@ -11,6 +11,8 @@ import util.constantes.Patrones;
  */
 public class Fila implements Serializable, Comparable<Fila> {
 
+  /* Guarda los IDs correspondientes a los objetos utilizados, en el archivo de
+   Excel estos datos no aparecen como claves, sino como cadenas de texto. */
   private int idDespacho;
   private int idProducto;
   private int idSubproducto;
@@ -20,56 +22,68 @@ public class Fila implements Serializable, Comparable<Fila> {
   private int idGestor;
   private int idSujeto;
   private int idDeudor;
+  
+  /* Objetos que contiene un Credito */
+  private Institucion institucionDTO; // Institución que otorgó el crédito
+  private Producto productoDTO; // Producto crédito
+  private Subproducto subproductoDTO; // Subproducto crédito
+  private Deudor deudorDTO; // Deudor asociado al crédito
+  private Gestor gestorDTO; // Gestor al cual será asignado el crédito
+  private Despacho despachoDTO; // Despacho que gestionará
 
-  private String credito;
-  private String nombre;
-  private String refCobro;
-  private String linea;
-  private String tipoCredito;
-  private String estatus;
-  private String mesesVencidos;
-  private String despacho;
-  private String fechaInicioCredito;
-  private String fechaVencimientoCred;
-  private String disposicion;
-  private String mensualidad;
-  private String saldoInsoluto;
-  private String saldoVencido;
-  private String tasa;
-  private String cuenta;
-  private String fechaUltimoPago;
-  private String fechaUltimoVencimientoPagado;
-  private String idCliente;
-  private String rfc;
-  private String calle;
-  private String colonia;
-  private String estado;
-  private String municipio;
-  private String cp;
-  private String numeroInterior;
-  private String numeroExterior;
+  /* Datos que se toman del archivo Excel */
+  private String credito; // Número de crédito.
+  private String nombre; // Nombre o razón social del deudor.
+  private String refCobro; // Referencia de cobro: una línea telefónica asociada a crédito.
+  private String linea; // La línea de crédito. Esta dato lo maneja el banco.
+  private String tipoCredito; // El tipo de crédito.
+  private String estatus; // Estatus del crédito, puede ser MV, VV, etc.
+  private String mesesVencidos; // Número de meses vencidos que presenta el crédito.
+  private String despacho; // Despacho al cual se ha asignado el crédito para su gestión.
+  private String fechaInicioCredito; // Fecha de inicio del crédito.
+  private String fechaVencimientoCred; // Fecha de vencimiento de crédito.
+  private String disposicion; // Monto o disposición de crédito.
+  private String mensualidad; // Mensualidad.
+  private String saldoInsoluto; // Saldo insoluto que presenta el crédito.
+  private String saldoVencido; // Saldo vencido.
+  private String tasa; // Tasa de interés
+  private String cuenta; // Número de cuenta a la cual se hacen depósitos.
+  private String fechaUltimoPago; // Fecha de último pago.
+  private String fechaUltimoVencimientoPagado; // Fecha del último vencimiento pagado.
+  private String idCliente; // ID o número de deudor.
+  private String rfc; // RFC del deudor.
+  private String calle; // Calle en donde se encuentra el domicilio del deudor.
+  private String colonia; // Colonia en donde se encuentra el domicilio del deudor.
+  private String estado; // Estado en donde se encuentra el domicilio del deudor.
+  private String municipio; // Municipio en donde se encuentra el domicilio del deudor.
+  private String cp; // El código postal.
+  private String numeroInterior; // Número unterior.
+  private String numeroExterior; // Número exterior.
+  private String fechaQuebranto; // La fecha de quebranto.
 
-  private ArrayList<String> anio;
-  private ArrayList<String> mes;
-  private ArrayList<String> facMes;
-  private ArrayList<String> monto;
-
+  // Conjunto de los "Facs" que se incluyen en el archivo de carga mensual
   private ArrayList<carga.Fac> facs;
 
-  private ArrayList<String> refsAdicionales;
+  // Los siguientes datos también son conjuntos da datos de contacto del deudor.
+  private ArrayList<String> refsAdicionales; // Referencias adicionales.
+  private ArrayList<String> correos; // Correos adicionales.
+  private ArrayList<String> telsAdicionales; // Teléfonos adicionales.
+  private ArrayList<String> direcsAdicionales; // Direcciones adicionales.
 
-  private ArrayList<String> correos;
-
-  private ArrayList<String> telsAdicionales;
-
-  private ArrayList<String> direcsAdicionales;
-
+  /* El marcaje del crédito es un dato que se maneja internamente para conocer
+   la situación de un crédito. */
   private String marcaje;
-  private String fechaQuebranto;
 
+  /* Objeto auxiliar que sirve para hacer correcciones de fechas. */
   private Fecha fecha = new Fecha();
+
+  /* En caso de ocurrir algún error con alguna fila, el error y sus detalles se
+   guardan en las siguientes variables. */
   private String error;
   private String detalleError;
+
+  /* Asigna un valor entero a una Fila de acuerdo a la clasificación del crédito:
+   NUEVO CRÉDITO, NUEVO TOTAL, EN LA FIESTA o ESTABA EN LA FIESTA. */
   private int clasificacion;
 
   public Fila() {
@@ -82,6 +96,18 @@ public class Fila implements Serializable, Comparable<Fila> {
     clasificacion = 0;
   }
 
+  /**
+   * Método que hace conversiones de fecha. En muchos casos se dan problemas
+   * debido a los diversos formatos de fecha que usan las herramientas de
+   * desarrollo y los procesadores de hojas de cálculo. Este problema se
+   * resuelve haciendo un procesamiento de este tipo de datos.
+   *
+   * @param fecha La fecha tomada del archivo. Esta fecha en el archivo Excel
+   * deberá hallarse de manera que apareca como un entero. Luego se hace el
+   * procesamiento adecuado.
+   *
+   * @return La fecha, en forma de String, ya procesada y arreglado el problema.
+   */
   private String corregirFecha(String fecha) {
     if (fecha == null || fecha.equals("-") || fecha.equals("")) {
       return "";
@@ -90,36 +116,15 @@ public class Fila implements Serializable, Comparable<Fila> {
     }
   }
 
-  // METODO QUE CREA LA CONSULTA SQL CON LOS PARAMETROS DEL DTO
-  public String crearSQL() {
-    // CREAMOS LA CADENA QUE GUARDARA LA CONSULTA
-    String consulta;
-    // PRIMERO CREAMOS EL SUJETO  ***EL SUJETO YA EXISTE...
-    consulta = "INSERT INTO sujeto (nombre_razon_social, rfc, eliminado) VALUES ('" + nombre + "', '" + rfc + "', 1);\n";
-    // GUARDAMOS EL ID DEL SUJETO INSERTADO
-    consulta = consulta + "SET @idSujeto = (SELECT LAST_INSERT_ID());\n";
-    // CREAMOS AL CLIENTE QUE SERA DUEÑO DEL CREDITO
-    consulta = consulta + "INSERT INTO cliente (numero_cliente, sujetos_id_sujeto) VALUES ('" + idCliente + "', @idSujeto);\n";
-    // BUSCAMOS AL CLIENTE
-    consulta = consulta + "SET @idCliente = (SELECT id_cliente FROM cliente WHERE sujetos_id_sujeto = @idSujeto);\n";
-    // BUSCAMOS A LA EMPRESA
-    consulta = consulta + "SET @idEmpresa = (SELECT id_empresa FROM empresa WHERE id_empresa = 1);\n";
-    // BUSCAMOS EL PRODUCTO
-    consulta = consulta + "SET @idProducto = (SELECT id_producto FROM producto WHERE id_producto = 1);\n";
-    // BUSCAMOS EL SUBPRODUCTO
-    consulta = consulta + "SET @idSubproducto = (SELECT id_subproducto FROM subproducto WHERE id_subproducto = 1);\n";
-    // CREAMOS EL CREDITO
-    consulta = consulta + "INSERT INTO credito (numero_credito, fecha_inicio, fecha_fin, fecha_quebranto, monto, mensualidad, tasa_interes, dias_mora, numero_cuenta, tipo_credito, empresas_id_empresa, productos_id_producto, subproductos_id_subproducto, clientes_id_cliente, gestores_id_gestor) VALUES ('" + credito + "', '" + fechaInicioCredito + "', '" + fechaVencimientoCred + "', '" + fechaQuebranto + "', " + disposicion + ", " + mensualidad + ", " + tasa + ", 0, " + cuenta + ", 1, @idEmpresa, @idProducto, @idSubproducto, @idCliente, 7);\n";
-    // CREAMOS LA DIRECCION DE ESTE DEUDOR
-    consulta = consulta + "INSERT INTO direccion (calle, sujetos_id_sujeto, municipio_id_municipio, estado_republica_id_estado, colonia_id_colonia) VALUES ('" + calle + "', @idSujeto, " + municipio + ", " + estado + ", " + colonia + ");\n";
-    // CREAMOS EL TELEFONO PARA EL DEUDOR
-    consulta = consulta + "INSERT INTO telefono (numero, tipo, sujetos_id_sujeto) VALUES ('" + refCobro + "', 'Referencia', @idSujeto);\n";
-    // CREAMOS EL CORREO ELECTRONICO DEL DEUDOR
-    //consulta = consulta + "INSERT INTO email (direccion, tipo, sujetos_id_sujeto) VALUES ('" + correos.get(0) + "', 'Referencia', @idSujeto);";
-
-    return consulta;
-  }
-
+  /**
+   * Compara saldos vencidos. La comparación de los saldos vencidos permite
+   * ordenar los créditos de acuerdo con este criterio.
+   *
+   * @param o El objeto Fila con el cual se comparará el objeto actual.
+   *
+   * @return Número positivo si la cadena dada es menor, número negativo si la
+   * cadena actual es menor, 0 si son iguales.
+   */
   @Override
   public int compareTo(Fila o) {
     Float miSaldoVencido = new Float(this.saldoVencido);
@@ -175,6 +180,7 @@ public class Fila implements Serializable, Comparable<Fila> {
     return null;
   }
 
+  /* Setters y Getters */
   /**
    * @return {@code credito} Número de crédito. Este número debe ser único ya
    * que funciona como identificador del crédito.
@@ -310,7 +316,7 @@ public class Fila implements Serializable, Comparable<Fila> {
     this.disposicion = disposicion;
   }
 
-    /**
+  /**
    * @return {@code disposicion} Disposición o monto. Dato recuperado como tipo
    * Float.
    */
@@ -374,8 +380,9 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code cuenta} Cuenta. Es una cadena de texto formada por dígitos que
-   * representa un número de cuenta? en donde el deudor deposita su pago.   */
+   * @return {@code cuenta} Cuenta. Es una cadena de texto formada por dígitos
+   * que representa un número de cuenta? en donde el deudor deposita su pago.
+   */
   public String getCuenta() {
     return cuenta;
   }
@@ -385,8 +392,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code fechaUltimoPago} La fecha en que el deudor hizo el último pago
-   * de su crédito.
+   * @return {@code fechaUltimoPago} La fecha en que el deudor hizo el último
+   * pago de su crédito.
    */
   public String getFechaUltimoPago() {
     return fechaUltimoPago;
@@ -411,8 +418,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code idCliente} Una cadena única, generalmente compuesta de dígitos,
-   * que representa el identificador para un deudor.
+   * @return {@code idCliente} Una cadena única, generalmente compuesta de
+   * dígitos, que representa el identificador para un deudor.
    */
   public String getIdCliente() {
     return idCliente;
@@ -489,97 +496,6 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code anio} Año. Conjunto de años que forman parte de un objeto Fac.
-   */
-  public ArrayList<String> getAnio() {
-    return anio;
-  }
-
-  public void setAnio(ArrayList<String> anio) {
-    this.anio = anio;
-  }
-
-  /**
-   * @return {@code mes} Meses. Conjunto de meses que forman parte de un objeto Fac.
-   */
-  public ArrayList<String> getMes() {
-    return mes;
-  }
-
-  public void setMes(ArrayList<String> mes) {
-    this.mes = mes;
-  }
-
-  /**
-   * @return {@code facMes} Fac Mes. Conjunto de Fac mes que forman parte de un objeto Fac.
-   */
-  public ArrayList<String> getFacMes() {
-    return facMes;
-  }
-
-  public void setFacMes(ArrayList<String> facMes) {
-    this.facMes = facMes;
-  }
-
-  /**
-   * @return {@code facMes} Montos. Conjunto de montos que forman parte de un objeto Fac.
-   */
-  public ArrayList<String> getMonto() {
-    return monto;
-  }
-
-  public void setMonto(ArrayList<String> monto) {
-    this.monto = monto;
-  }
-
-  /**
-   * @return {@code refsAdicionales} Conjunto de referencias adicionales asociadas
-   * a un crédito.
-   */
-  public ArrayList<String> getRefsAdicionales() {
-    return refsAdicionales;
-  }
-
-  public void setRefsAdicionales(ArrayList<String> refsAdicionales) {
-    this.refsAdicionales = refsAdicionales;
-  }
-
-  /**
-   * @return {@code correos} Conjunto de correos electrónicos del deudor.
-   */
-  public ArrayList<String> getCorreos() {
-    return correos;
-  }
-
-  public void setCorreos(ArrayList<String> correos) {
-    this.correos = correos;
-  }
-
-  /**
-   * @return {@code telsAdicionales} Teléfonos adicionales proporcionados por el
-   * deudor para hacer contacto con él.
-   */
-  public ArrayList<String> getTelsAdicionales() {
-    return telsAdicionales;
-  }
-
-  public void setTelsAdicionales(ArrayList<String> telsAdicionales) {
-    this.telsAdicionales = telsAdicionales;
-  }
-
-  /**
-   * @return {@code correos} Direcciones adicionales proporcionados por el deudor
-   * para visitas domiciliarias.
-   */
-  public ArrayList<String> getDirecsAdicionales() {
-    return direcsAdicionales;
-  }
-
-  public void setDirecsAdicionales(ArrayList<String> direcsAdicionales) {
-    this.direcsAdicionales = direcsAdicionales;
-  }
-
-  /**
    * @return {@code marcaje} Marcaje. Es un dato interno que sirve para conocer
    * la situación de un crédito respecto a su gestión. Por default los créditos
    * no tienen marcaje "Sin Marcaje".
@@ -593,7 +509,8 @@ public class Fila implements Serializable, Comparable<Fila> {
   }
 
   /**
-   * @return {@code fechaQuebranto} Fecha de quebranto del crédito. Si es el caso.
+   * @return {@code fechaQuebranto} Fecha de quebranto del crédito. Si es el
+   * caso.
    */
   public String getFechaQuebranto() {
     return fechaQuebranto;
@@ -760,4 +677,85 @@ public class Fila implements Serializable, Comparable<Fila> {
     this.idDeudor = idDeudor;
   }
 
+  public ArrayList<String> getRefsAdicionales() {
+    return refsAdicionales;
+  }
+
+  public void setRefsAdicionales(ArrayList<String> refsAdicionales) {
+    this.refsAdicionales = refsAdicionales;
+  }
+
+  public ArrayList<String> getCorreos() {
+    return correos;
+  }
+
+  public void setCorreos(ArrayList<String> correos) {
+    this.correos = correos;
+  }
+
+  public ArrayList<String> getTelsAdicionales() {
+    return telsAdicionales;
+  }
+
+  public void setTelsAdicionales(ArrayList<String> telsAdicionales) {
+    this.telsAdicionales = telsAdicionales;
+  }
+
+  public ArrayList<String> getDirecsAdicionales() {
+    return direcsAdicionales;
+  }
+
+  public void setDirecsAdicionales(ArrayList<String> direcsAdicionales) {
+    this.direcsAdicionales = direcsAdicionales;
+  }
+
+  public Institucion getInstitucionDTO() {
+    return institucionDTO;
+  }
+
+  public void setInstitucionDTO(Institucion institucionDTO) {
+    this.institucionDTO = institucionDTO;
+  }
+
+  public Producto getProductoDTO() {
+    return productoDTO;
+  }
+
+  public void setProductoDTO(Producto productoDTO) {
+    this.productoDTO = productoDTO;
+  }
+
+  public Subproducto getSubproductoDTO() {
+    return subproductoDTO;
+  }
+
+  public void setSubproductoDTO(Subproducto subproductoDTO) {
+    this.subproductoDTO = subproductoDTO;
+  }
+
+  public Deudor getDeudorDTO() {
+    return deudorDTO;
+  }
+
+  public void setDeudorDTO(Deudor deudorDTO) {
+    this.deudorDTO = deudorDTO;
+  }
+
+  public Gestor getGestorDTO() {
+    return gestorDTO;
+  }
+
+  public void setGestorDTO(Gestor gestorDTO) {
+    this.gestorDTO = gestorDTO;
+  }
+
+  public Despacho getDespachoDTO() {
+    return despachoDTO;
+  }
+
+  public void setDespachoDTO(Despacho despachoDTO) {
+    this.despachoDTO = despachoDTO;
+  }
+
+  
 }

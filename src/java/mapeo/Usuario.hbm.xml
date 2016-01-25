@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 11/12/2015 11:59:29 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 25/01/2016 12:05:16 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
     <class name="dto.Usuario" table="usuario" catalog="sigerbd" optimistic-lock="version">
         <id name="idUsuario" type="java.lang.Integer">
@@ -41,17 +41,17 @@
             </key>
             <one-to-many class="dto.Administrativo" />
         </set>
-        <set name="gestors" table="gestor" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_usuario" not-null="true" />
-            </key>
-            <one-to-many class="dto.Gestor" />
-        </set>
         <set name="gestions" table="gestion" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_usuario" not-null="true" />
             </key>
             <one-to-many class="dto.Gestion" />
+        </set>
+        <set name="gestors" table="gestor" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_usuario" not-null="true" />
+            </key>
+            <one-to-many class="dto.Gestor" />
         </set>
     </class>
 </hibernate-mapping>

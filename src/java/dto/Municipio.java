@@ -1,5 +1,5 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 25/01/2016 12:05:14 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -14,8 +14,8 @@ public class Municipio  implements java.io.Serializable {
      private Integer idMunicipio;
      private EstadoRepublica estadoRepublica;
      private String nombre;
-     private Set colonias = new HashSet(0);
      private Set direccions = new HashSet(0);
+     private Set colonias = new HashSet(0);
      private Set regions = new HashSet(0);
 
     public Municipio() {
@@ -26,11 +26,11 @@ public class Municipio  implements java.io.Serializable {
         this.estadoRepublica = estadoRepublica;
         this.nombre = nombre;
     }
-    public Municipio(EstadoRepublica estadoRepublica, String nombre, Set colonias, Set direccions, Set regions) {
+    public Municipio(EstadoRepublica estadoRepublica, String nombre, Set direccions, Set colonias, Set regions) {
        this.estadoRepublica = estadoRepublica;
        this.nombre = nombre;
-       this.colonias = colonias;
        this.direccions = direccions;
+       this.colonias = colonias;
        this.regions = regions;
     }
    
@@ -55,19 +55,19 @@ public class Municipio  implements java.io.Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public Set getColonias() {
-        return this.colonias;
-    }
-    
-    public void setColonias(Set colonias) {
-        this.colonias = colonias;
-    }
     public Set getDireccions() {
         return this.direccions;
     }
     
     public void setDireccions(Set direccions) {
         this.direccions = direccions;
+    }
+    public Set getColonias() {
+        return this.colonias;
+    }
+    
+    public void setColonias(Set colonias) {
+        this.colonias = colonias;
     }
     public Set getRegions() {
         return this.regions;
@@ -77,9 +77,9 @@ public class Municipio  implements java.io.Serializable {
         this.regions = regions;
     }
 
-  @Override
-  public String toString() {
-    return nombre;
-  }
-    
+
+
+
 }
+
+

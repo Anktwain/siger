@@ -39,9 +39,8 @@ public class Clasificador {
    *
    * @param filas La lista de objetos Fila cuyos elementos van a ser
    * clasificados.
-   * @return Arreglo de objetos Fila ya clasificados.
    */
-  public static List<Fila> clasificar(List<Fila> filas) {
+  public static void clasificar(List<Fila> filas) {
     /* Objetos credito y deudor. El crédito y el deudor representados por un objeto
      Fila en un momento determinado. */
     Credito credito;
@@ -72,9 +71,11 @@ public class Clasificador {
         } else {
           f.setClasificacion(ESTABA_EN_LA_FIESTA);
         }
-      } /* Si no encuentra ese número de crédito en la Base de Datos, entonces la
+      } else {
+        /* Si no encuentra ese número de crédito en la Base de Datos, entonces la
        clasificación puede caer en cualquiera de estos dos casos: "Nuevo crédito"
-       o "Nuevo total". */ else {
+       o "Nuevo total". */ 
+        
         deudor = deudorDao.buscar(f.getIdCliente()); /* Ahora busca el deudor en la Base de Datos */
         /* Si el deudor sí se encuentra en la base de datos, entonces se trata de un
          nuevo crédito. */
@@ -88,7 +89,6 @@ public class Clasificador {
       }
     }
 
-    return filas;
   }
 
 }

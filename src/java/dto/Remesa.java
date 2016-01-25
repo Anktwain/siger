@@ -1,5 +1,5 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 25/01/2016 12:05:14 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -19,21 +19,23 @@ public class Remesa  implements java.io.Serializable {
      private Date fechaUltimoPago;
      private Date fechaUltimoVencimientoPagado;
      private Date vigencia;
-     private Set creditoRemesas = new HashSet(0);
      private Set facs = new HashSet(0);
+     private Set creditoRemesas = new HashSet(0);
+     private Set actualizacions = new HashSet(0);
 
     public Remesa() {
     }
 
-    public Remesa(Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Date fechaUltimoVencimientoPagado, Date vigencia, Set creditoRemesas, Set facs) {
+    public Remesa(Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Date fechaUltimoVencimientoPagado, Date vigencia, Set facs, Set creditoRemesas, Set actualizacions) {
        this.mesesVencidos = mesesVencidos;
        this.saldoVencido = saldoVencido;
        this.estatus = estatus;
        this.fechaUltimoPago = fechaUltimoPago;
        this.fechaUltimoVencimientoPagado = fechaUltimoVencimientoPagado;
        this.vigencia = vigencia;
-       this.creditoRemesas = creditoRemesas;
        this.facs = facs;
+       this.creditoRemesas = creditoRemesas;
+       this.actualizacions = actualizacions;
     }
    
     public Integer getIdRemesa() {
@@ -85,6 +87,13 @@ public class Remesa  implements java.io.Serializable {
     public void setVigencia(Date vigencia) {
         this.vigencia = vigencia;
     }
+    public Set getFacs() {
+        return this.facs;
+    }
+    
+    public void setFacs(Set facs) {
+        this.facs = facs;
+    }
     public Set getCreditoRemesas() {
         return this.creditoRemesas;
     }
@@ -92,12 +101,12 @@ public class Remesa  implements java.io.Serializable {
     public void setCreditoRemesas(Set creditoRemesas) {
         this.creditoRemesas = creditoRemesas;
     }
-    public Set getFacs() {
-        return this.facs;
+    public Set getActualizacions() {
+        return this.actualizacions;
     }
     
-    public void setFacs(Set facs) {
-        this.facs = facs;
+    public void setActualizacions(Set actualizacions) {
+        this.actualizacions = actualizacions;
     }
 
 

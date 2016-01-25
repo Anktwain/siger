@@ -202,14 +202,14 @@ public class CreditoIMPL implements CreditoDAO {
     }
     return resultados;
   }
-  
+
   @Override
   public List<String> barraBusquedaGestor(String valor, int idUsuario) {
     System.out.println("BARRA BUSQUEDA GESTOR");
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<String> resultados = new ArrayList();
     List<Object[]> c;
-    String consulta = "SELECT c.numero_credito, s.nombre_razon_social FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN gestor g WHERE d.id_sujeto = s.id_sujeto AND g.id_gestor = c.id_gestor AND g.id_gestor = (SELECT gx.id_gestor FROM gestor gx WHERE id_usuario = " + idUsuario + ") AND d.id_deudor = c.id_deudor AND c.id_gestor = 2 AND (c.numero_credito LIKE '%" + valor +"%' OR s.nombre_razon_social LIKE '%" + valor +"%');";
+    String consulta = "SELECT c.numero_credito, s.nombre_razon_social FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN gestor g WHERE d.id_sujeto = s.id_sujeto AND g.id_gestor = c.id_gestor AND g.id_gestor = (SELECT gx.id_gestor FROM gestor gx WHERE id_usuario = " + idUsuario + ") AND d.id_deudor = c.id_deudor AND c.id_gestor = 2 AND (c.numero_credito LIKE '%" + valor + "%' OR s.nombre_razon_social LIKE '%" + valor + "%');";
     try {
       c = sesion.createSQLQuery(consulta).list();
       for (Object[] row : c) {
@@ -231,7 +231,7 @@ public class CreditoIMPL implements CreditoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Credito credito;
-    
+
     try {
       credito = (Credito) sesion.createSQLQuery("select * from credito where numero_credito = '" + numeroCredito + "';").addEntity(Credito.class).uniqueResult();
     } catch (HibernateException he) {
@@ -242,7 +242,29 @@ public class CreditoIMPL implements CreditoDAO {
     }
     return credito;
   }
-  
+
+  @Override
+  public Credito insertar(Credito credito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+
+    try {
+      sesion.save(credito);
+      tx.commit();
+      Logs.log.info("Se insertó un nuevo Credito");
+    } catch (HibernateException he) {
+      credito = null;
+      if (tx != null) {
+        tx.rollback();
+      }
+      Logs.log.error("No se pudo insertar Credito:");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return credito;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

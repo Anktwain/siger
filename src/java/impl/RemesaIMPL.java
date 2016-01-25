@@ -36,6 +36,28 @@ public class RemesaIMPL implements RemesaDao {
     return r;
   }
 
+  @Override
+  public Remesa insertar(Remesa remesa) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+
+    try {
+      sesion.save(remesa);
+      tx.commit();
+      Logs.log.info("Se insertó Remesa ");
+    } catch (HibernateException he) {
+      remesa = null;
+      if (tx != null) {
+        tx.rollback();
+      }
+      Logs.log.error("No se pudo insertar Remesa:");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return remesa;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();
