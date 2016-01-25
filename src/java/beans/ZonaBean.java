@@ -2,6 +2,7 @@ package beans;
 
 import dto.Colonia;
 import dto.EstadoRepublica;
+import dto.Gestor;
 import dto.Municipio;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,11 +45,14 @@ public class ZonaBean implements Serializable {
    * municipios.
    */
   private List<Colonia> coloniasSeleccionadas;
+  
+  private Gestor gestorAsignado;
 
   public ZonaBean() {
     edosRepSeleccionados = new ArrayList<>();
     mpiosSeleccionados = new ArrayList<>();
     coloniasSeleccionadas = new ArrayList<>();
+    gestorAsignado = new Gestor();
   }
 
   public String getNombre() {
@@ -83,4 +87,13 @@ public class ZonaBean implements Serializable {
     this.coloniasSeleccionadas = coloniasSeleccionadas;
   }
 
+  public Gestor getGestorAsignado() {
+    return gestorAsignado;
+  }
+
+  public void setGestorAsignado(Gestor gestorAsignado) {
+    this.gestorAsignado = gestorAsignado;
+  }
+
+  
 }

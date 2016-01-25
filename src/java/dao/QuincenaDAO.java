@@ -3,13 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util.constantes;
+package dao;
+
+import dto.Quincena;
 
 /**
  *
  * @author Eduardo
  */
-public interface TipoCreditos {
+public interface QuincenaDAO {
   
-  public static final int LINEA_TELEFONICA = 1;
+  public Quincena obtenerQuincenaActual();
+  
 }

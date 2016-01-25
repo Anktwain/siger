@@ -12,12 +12,16 @@ import impl.GestorIMPL;
 import impl.MunicipioIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
 import util.constantes.Constantes;
 
 /**
@@ -82,15 +86,12 @@ public class ZonasVistaBean implements Serializable {
    * estado que actualmente se despliega en la vista.
    */
   private int idEdoVisible;
-  
-  EstadoRepublicaDAO estadoRepDao;
 
   private List<Colonia> coloniasDelEstadoRepSelec;
 
   private boolean mpiosDeshabilitados;
   private boolean coloniasDeshabilitadas;
 
-  private Gestor gestorAsignado;
   private List<Gestor> gestores;
 
   private int acPanColoniasActiveIndex;
@@ -102,12 +103,20 @@ public class ZonasVistaBean implements Serializable {
 
   private final String gestorSinSeleccion;
 
+  private ZonaService zonaService;
+
+  private String encabezadoMpiosBase;
+  private String tituloMpiosCompleto;
+  private String tituloMpiosSeleccion;
+
   public ZonasVistaBean() {
     zona = new ZonaBean();
-    EstadoRepublicaDAO estadoRepDao = new EstadoRepublicaIMPL();
+
+    zonaService = (ZonaService) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("zonaService");
+
     mpioDao = new MunicipioIMPL();
 
-    estadosRep = estadoRepDao.buscarTodo();
+    estadosRep = zonaService.getEstadosRep();
 
     coloniasVisibles = new ArrayList<>();
 
@@ -130,6 +139,9 @@ public class ZonasVistaBean implements Serializable {
     tituloDialogo = "Si se despliega este título, algo anda mal...";  // linea de prueba
 
     gestorSinSeleccion = Constantes.GESTOR_SIN_SELECCION;
+
+    tituloMpiosSeleccion = "Seleccione los municipios";
+    encabezadoMpiosBase = tituloMpiosSeleccion;
   }
 
   /**
@@ -137,20 +149,26 @@ public class ZonasVistaBean implements Serializable {
    * seleccionar) con base en el estado seleccionado en la vista.
    */
   public void onEstadosChange() {
-    System.out.println("\n|---------------------onEstadosChange().-----------------------------¬");
-    System.out.println("Por seleccionar datos del estado:"
-            + "\nthis.edoRepVisible.getNombre() = " + this.edoRepVisible.getNombre()
-            + "\nthis.edoRepVisible.getIdEstado() = " + this.edoRepVisible.getIdEstado());
-    System.out.println("L_____________________________________________________________________");
 
-    if (this.edoRepVisible.getNombre().equals(this.lugarSinSeleccion)) {
-      this.mpiosVisibles.clear();
-    } else {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    if (this.idEdoVisible != -1) {
+      this.edoRepVisible = this.zonaService.getEdoRep(idEdoVisible);
       this.mpiosVisibles = this.mpioDao.buscarMunicipiosPorEstado(this.edoRepVisible.getIdEstado());
+      this.acPanMpiosActiveIndex = 0;
+      this.mpiosDeshabilitados = false;
+      this.tituloMpiosCompleto = this.seleccionCompleta + "(" + mpiosVisibles.size() + ")";
+      this.encabezadoMpiosBase = this.tituloMpiosCompleto;
+    } else {
+      this.mpiosVisibles.clear();
     }
 
-    this.acPanColoniasActiveIndex = -1;
+//    this.acPanColoniasActiveIndex = -1;
     this.coloniasDeshabilitadas = true;
+
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "onEstadosChange()",
+            "Terminó ejecución de onEstadosChange()."));
   }
 
   public List<EstadoRepublica> getEstadosRep() {
@@ -225,7 +243,7 @@ public class ZonasVistaBean implements Serializable {
 
     } else {
       this.mpiosDeshabilitados = false;
-      
+
       if (this.mpiosVisibles.isEmpty()) {
         onEstadosChange();
       }
@@ -248,7 +266,7 @@ public class ZonasVistaBean implements Serializable {
     } else {
       this.coloniasDeshabilitadas = false;
     }
-    System.out.println("onMostrarColoniasChange(" + evento + "). - colonias " 
+    System.out.println("onMostrarColoniasChange(" + evento + "). - colonias "
             + (coloniasDeshabilitadas == true ? "DEShabilitados" : "Habilitadas."));
 
   }
@@ -267,18 +285,6 @@ public class ZonasVistaBean implements Serializable {
 
   public void setColoniasDeshabilitadas(boolean coloniasDeshabilitadas) {
     this.coloniasDeshabilitadas = coloniasDeshabilitadas;
-  }
-
-  public void onGestorAsignadoChange() {
-    System.out.println("onGestorAsignadoChange().");
-  }
-
-  public Gestor getGestorAsignado() {
-    return gestorAsignado;
-  }
-
-  public void setGestorAsignado(Gestor gestorAsignado) {
-    this.gestorAsignado = gestorAsignado;
   }
 
   public List<Gestor> getGestores() {
@@ -314,8 +320,7 @@ public class ZonasVistaBean implements Serializable {
   }
 
   public void onAceptar() {
-//    FacesContext context = FacesContext.getCurrentInstance();
-//    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Botón aceptar", "Probando la acción del botón aceptar"));
+
   }
 
   public Municipio getMpioPorNombre(String nombre) {
@@ -327,16 +332,14 @@ public class ZonasVistaBean implements Serializable {
     return null;
   }
 
-  public void onEventOccurs(String tipoEvento) {
+  public void onEventOccurs(TabChangeEvent event) {
     FacesContext context = FacesContext.getCurrentInstance();
 
-    switch (tipoEvento) {
-      default:
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Evento <" + tipoEvento + ">",
-                "Se hizo una llamada con un tipo de evento NO válido."));
-        break;
-    }
+    
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                "Evento <" + event.toString() + ">",
+                "Se hizo una llamada con un tipo de evento en prueba."));
+    
 
   }
 
@@ -353,11 +356,6 @@ public class ZonasVistaBean implements Serializable {
 
         break;
     }
-
-    FacesContext context = FacesContext.getCurrentInstance();
-    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-            "actionListener onZonasDisplay()",
-            "Por definir este comportamiento al desplegar el form de Zonas :P"));
   }
 
   public String getLugarSinSeleccion() {
@@ -378,6 +376,44 @@ public class ZonasVistaBean implements Serializable {
 
   public String getGestorSinSeleccion() {
     return gestorSinSeleccion;
+  }
+
+  public void onChange(String origen) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "onChange()",
+            "Terminó ejecución de onChange() en " + origen));
+
+    RequestContext.getCurrentInstance().update("growl");
+  }
+
+  public void valueChangeListener(String origen) {
+    FacesContext context = FacesContext.getCurrentInstance();
+
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "valueChangeListener()",
+            "Terminó ejecución de valueChangeListener() en " + origen));
+
+    RequestContext.getCurrentInstance().update("growl");
+  }
+
+  public void monitorear() {
+    FacesContext context = FacesContext.getCurrentInstance();
+    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+            "Monitoreo",
+            "Gestor asignado: " + this.zona.getGestorAsignado()
+            + "<br/>Estado seleccionado: " + this.edoRepVisible
+            + "<br/>id Estado visible: " + this.idEdoVisible));
+    System.out.println("\nid Estado visible: " + this.idEdoVisible);
+  }
+
+  public String getEncabezadoMpiosBase() {
+    return encabezadoMpiosBase;
+  }
+
+  public void setEncabezadoMpiosBase(String encabezadoMpiosBase) {
+    this.encabezadoMpiosBase = encabezadoMpiosBase;
   }
 
 }

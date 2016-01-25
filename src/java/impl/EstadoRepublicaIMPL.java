@@ -15,13 +15,17 @@ import util.log.Logs;
  */
 public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
 
+  /**
+   * Devuelve un {@code List<>} con todos los EstadoRepublica que se encuentren
+   * dados de alta en el sistema.
+   */
   @Override
   public List<EstadoRepublica> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<EstadoRepublica> estados;
     try {
-      estados = sesion.createSQLQuery("select * from estado_republica order by nombre asc;").addEntity(EstadoRepublica.class).list();
+      estados = sesion.createSQLQuery("select * from estado_republica;").addEntity(EstadoRepublica.class).list();
     } catch (HibernateException he) {
       estados = null;
       Logs.log.error("No se pudo obtener lista: EstadoRepublica");
@@ -58,7 +62,7 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
     EstadoRepublica estado;
 
     try {
-      estado = (EstadoRepublica) sesion.createSQLQuery("SELECT * from estado_republica WHERE nombre LIKE '%"+cadena+"%';").addEntity(EstadoRepublica.class).uniqueResult();
+      estado = (EstadoRepublica) sesion.createSQLQuery("SELECT * from estado_republica WHERE nombre LIKE '%" + cadena + "%';").addEntity(EstadoRepublica.class).uniqueResult();
     } catch (HibernateException he) {
       estado = null;
       Logs.log.error("No se pudo obtener: EstadoRepublica");
@@ -69,7 +73,6 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
 
     return estado;
   }
-
 
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {

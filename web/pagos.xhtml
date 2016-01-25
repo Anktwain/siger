@@ -10,20 +10,115 @@
     <title>SigerWeb - Pagos</title>
   </h:head> 
   <body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
     <div id="overlay" class="transparent" style="display: none"></div>
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-      <h1>
-        M&oacute;dulo de pagos
-      </h1>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
-    </div><!-- /main-container -->
-    <!-- Footer ================================================== -->
-    <ui:include src="barraInferior.xhtml" />
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Pagos
+          </li>
+        </ul>
+      </div>
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Pagos</h3>
+          <span>Consulte informaci&oacute;n de los pagos que han cargado los gestores al sistema.</span>
+          <span>Apruebe pagos para que los montos se apliquen a los creditos o rechaze pagos que no cumplan los requisitos.</span>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-tab clearfix">
+          <ul class="tab-bar">
+            <li><a href="#pestanaRevisionPagos" data-toggle="tab" title="Click aqui si desea ver los creditos retirados por el banco"><h2><i class="fa fa-check"></i> Revision de pagos</h2></a></li>
+            &nbsp;
+            <li><a href="#pestanaTodosPagos" data-toggle="tab" title="Click aqui si desea ver los creditos pendientes de devolucion"><h2><i class="fa fa-usd"></i> Consulta de pagos</h2></a></li>
+          </ul>
+        </div>
+        <div class="panel-body">
+          <div class="tab-content">
+            <!-- AQUI VA LA TABLA QUE MUESTRA LOS PAGOS POR APROBAR -->
+            <div class="tab-pane fade" id="pestanaRevisionPagos">
+              <h:form id="formRevisionPagos">
+                <p:contextMenu for="revisionPagos" style="width:230px;">
+                  <p:menuitem value="Visualizar comprobante" icon="ui-icon-search" actionListener="#{pagosBean.visualizar()}" oncomplete="PF('detallePagoDialog').show();" />
+                  <p:menuitem value="Aprobar pago" icon="ui-icon-check" actionListener="#{pagosBean.aprobarPago()}" update="growl, revisionPagos, formTodosPagos:todosPagos" />
+                  <p:menuitem value="Rechazar pago" icon="ui-icon-cancel" actionListener="#{pagosBean.rechazarPago()}" update="growl, revisionPagos, formTodosPagos:todosPagos" />
+                </p:contextMenu>
+                <p:dataTable id="revisionPagos" var="rev" value="#{pagosBean.pagosPorRevisar}" rowKey="#{rev.idPago}" selection="#{pagosBean.revisionSeleccionados}" selectionMode="multiple" emptyMessage="No existen pagos por revisar."  paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 900px;">
+                  <p:column headerText="Fecha deposito" style="width:100px;"> 
+                    <h:outputText value="#{rev.fechaDeposito}" />
+                  </p:column>
+                  <p:column headerText="Monto" style="width:70px;"> 
+                    <h:outputText value="#{rev.monto}" >
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </p:column>
+                  <p:column headerText="Credito" style="width:200px;">
+                    <h:outputText value="#{rev.convenioPago.credito.numeroCredito}" />
+                    <br />
+                    <h:outputText value="#{rev.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
+                  </p:column>
+                  <p:column headerText="Gestor" style="width:70px;" > 
+                    <h:outputText value="#{rev.gestor.usuario.nombreLogin}" />
+                  </p:column>
+                  <p:column headerText="Observaciones" style="width:150px;" > 
+                    <h:outputText value="#{rev.observaciones}"/>
+                  </p:column>
+                </p:dataTable>
+              </h:form>
+            </div>
+            <!-- AQUI VA LA TABLA QUE MUESTRA TODOS LOS PAGOS DEL SISTEMA -->
+            <div class="tab-pane fade" id="pestanaTodosPagos">
+              <h:form id="formTodosPagos">
+                <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos revisados."  paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1300px;">
+                  <p:column headerText="Fecha deposito" style="width:100px;"> 
+                    <h:outputText value="#{p.fechaDeposito}" />
+                  </p:column>
+                  <p:column headerText="Estatus" style="width:100px;" > 
+                    <h:outputText value="#{pagosBean.etiquetarEstatus(p.estatus)}" />
+                  </p:column>
+                  <p:column headerText="Fecha revision" style="width:100px;"> 
+                    <h:outputText value="#{p.fechaRegistro}" />
+                  </p:column>
+                  <p:column headerText="Revisor" style="width:100px;" > 
+                    <h:outputText value="#{p.revisor}" />
+                  </p:column>
+                  <p:column headerText="Monto" style="width:100px;"> 
+                    <h:outputText value="#{p.monto}" >
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </p:column>
+                  <p:column headerText="Credito" style="width:100px;"> 
+                    <h:outputText value="#{p.convenioPago.credito.numeroCredito}" />
+                  </p:column>
+                  <p:column headerText="Deudor" style="width:250px;"> 
+                    <h:outputText value="#{p.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
+                  </p:column>
+                  <p:column headerText="Gestor" style="width:100px;" > 
+                    <h:outputText value="#{p.gestor.usuario.nombreLogin}" />
+                  </p:column>
+                  <p:column headerText="Observaciones" style="width:200px;" >
+                    <h:outputText value="#{p.observaciones}"/>
+                  </p:column>
+                </p:dataTable>
+              </h:form>
+            </div>
+          </div>
+        </div>
+        <p:dialog id="dlgRevisionPago" widgetVar="detallePagoDialog" position="right top" resizable="false" width="500" height="800" header="Revisar pago">
+          <h:form id="formVisorPago">
+          </h:form>
+        </p:dialog>
+      </div>
+    </div>
   </body>
 </html>

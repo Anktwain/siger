@@ -19,4 +19,5 @@ public interface ConvenioPagoDAO {
   public List<ConvenioPago> buscarConveniosPorCredito(int idCredito);
   public List<ConvenioPago> buscarConveniosEnCursoCredito(int idCredito);
   public List<ConvenioPago> buscarConveniosFinalizadosCredito(int idCredito);
+  public Number calcularSaldoPendiente(int idConvenio);
 }

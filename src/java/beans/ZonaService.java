@@ -21,16 +21,16 @@ import util.constantes.Constantes;
 public class ZonaService {
 
   private final String lugarSinSeleccion;
-  private final List<EstadoRepublica> estadosRep;
+  private List<EstadoRepublica> estadosRep;
   private List<Gestor> gestoresDespachoActual;
   private final String gestorSinSeleccion;
+  private EstadoRepublicaDAO estadoRepublicaDao;
 
   public ZonaService() {
-    EstadoRepublicaDAO estadoRepDao = new EstadoRepublicaIMPL();
+    EstadoRepublicaDAO estadoRepublicaDao = new EstadoRepublicaIMPL();
     GestorDAO gestorDao = new GestorIMPL();
-
     this.lugarSinSeleccion = Constantes.LUGAR_SIN_SELECCION;
-    estadosRep = estadoRepDao.buscarTodo();
+    estadosRep = estadoRepublicaDao.buscarTodo();
     System.out.println("............................ Estados Listados en ZonaService ..........................");
     for (EstadoRepublica estadoIterador : estadosRep) {
       System.out.println(estadoIterador);
@@ -47,7 +47,7 @@ public class ZonaService {
 
   }
 
-  public EstadoRepublica getEdoRepPorNombre(String nombre) {
+  public EstadoRepublica getEdoRep(String nombre) {
     EstadoRepublica edoEncontrado = null;
     if (nombre.equals(this.lugarSinSeleccion)) {
       edoEncontrado = new EstadoRepublica(nombre);   // Revisar esta línea
@@ -62,7 +62,7 @@ public class ZonaService {
     return edoEncontrado;
   }
 
-  public Gestor getGestorPorNombre(String nombre) {
+  public Gestor getGestor(String nombre) {
     Gestor gestorEncontrado = null;
     if (nombre.equals(this.gestorSinSeleccion)) {
       gestorEncontrado = new Gestor(new Usuario()); // Revisar esta línea
@@ -75,6 +75,33 @@ public class ZonaService {
     }
     System.out.println(" ..................... Se encontró: <" + gestorEncontrado + ">");
     return gestorEncontrado;
+  }
+
+  public Gestor getGestor(int id) {
+    Gestor gestorEncontrado = null;
+    for (int i = 0; i < this.gestoresDespachoActual.size(); i++) {
+      if (this.gestoresDespachoActual.get(i).getIdGestor() == id) {
+        gestorEncontrado = this.gestoresDespachoActual.get(i);
+        i = this.gestoresDespachoActual.size();
+      }
+    }
+    System.out.println(" ..................... Se encontró: <" + gestorEncontrado + ">");
+    return gestorEncontrado;
+  }
+
+  public List<EstadoRepublica> getEstadosRep() {
+    return estadosRep;
+  }
+
+  public EstadoRepublica getEdoRep(int id) {
+    EstadoRepublica edoEncontrado = null;
+
+    for (int i = 0; edoEncontrado == null; i++) {
+      if (this.estadosRep.get(i).getIdEstado().equals(id)) {
+        edoEncontrado = this.estadosRep.get(i);
+      }
+    }
+    return edoEncontrado;
   }
 
 }
