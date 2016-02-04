@@ -51,8 +51,8 @@ public class GestionBean implements Serializable {
   private String sujetoSeleccionado;
   private EstatusInformativo estatusSeleccionado;
   private String gestion;
-  private GestionDAO gestionDao;
-  private EstatusInformativoDAO estatusInformativoDao;
+  private final GestionDAO gestionDao;
+  private final EstatusInformativoDAO estatusInformativoDao;
 
   // CONSTRUCTOR
   public GestionBean() {
@@ -141,7 +141,7 @@ public class GestionBean implements Serializable {
     nueva.setCredito(vistaCreditoBean.getCreditoActual());
     Date fecha = new Date();
     nueva.setFecha(fecha);
-    nueva.setUsuario(vistaCreditoBean.cuentasVistaBean.getIndexBean().getUsuario());
+    nueva.setUsuario(vistaCreditoBean.cuentasBean.indexBean.getUsuario());
     boolean ok = gestionDao.insertarGestion(nueva);
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {
@@ -264,44 +264,12 @@ public class GestionBean implements Serializable {
     this.estatusSeleccionado = estatusSeleccionado;
   }
 
-  public ELContext getElContext() {
-    return elContext;
-  }
-
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
-  }
-
-  public VistaCreditoBean getVistaCreditoBean() {
-    return vistaCreditoBean;
-  }
-
-  public void setVistaCreditoBean(VistaCreditoBean vistaCreditoBean) {
-    this.vistaCreditoBean = vistaCreditoBean;
-  }
-
   public String getGestion() {
     return gestion;
   }
 
   public void setGestion(String gestion) {
     this.gestion = gestion;
-  }
-
-  public GestionDAO getGestionDao() {
-    return gestionDao;
-  }
-
-  public void setGestionDao(GestionDAO gestionDao) {
-    this.gestionDao = gestionDao;
-  }
-
-  public EstatusInformativoDAO getEstatusInformativoDao() {
-    return estatusInformativoDao;
-  }
-
-  public void setEstatusInformativoDao(EstatusInformativoDAO estatusInformativoDao) {
-    this.estatusInformativoDao = estatusInformativoDao;
   }
 
 }

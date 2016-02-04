@@ -33,7 +33,7 @@ public class ContactoBean implements Serializable {
   private Sujeto sujeto;
 
   // Acceso a la BD
-  private ContactoDAO contactoDao;
+  private final ContactoDAO contactoDao;
 
   // Otros beans
   @ManagedProperty(value = "#{sujetoBean}")

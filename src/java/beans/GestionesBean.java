@@ -14,7 +14,6 @@ import dto.Gestion;
 import dto.Gestor;
 import dto.Institucion;
 import dto.Producto;
-import dto.Usuario;
 import impl.GestionIMPL;
 import impl.GestorIMPL;
 import impl.InstitucionIMPL;
@@ -55,25 +54,23 @@ public class GestionesBean implements Serializable {
   private Date fechaFin;
   private Producto productoSeleccionado;
   private Institucion institucionSeleccionada;
-  private Usuario usuario;
   private List<String> listaTipos;
   private List<Gestor> listaGestores;
   private List<Gestion> listaGestiones;
   private List<Producto> listaProductos;
   private List<Institucion> listaInstituciones;
-  private GestorDAO gestorDao;
-  private GestionDAO gestionDao;
-  private ProductoDAO productoDao;
-  private InstitucionDAO institucionDao;
-  private UsuarioDAO usuarioDao;
+  private final GestorDAO gestorDao;
+  private final GestionDAO gestionDao;
+  private final ProductoDAO productoDao;
+  private final InstitucionDAO institucionDao;
+  private final UsuarioDAO usuarioDao;
 
   public GestionesBean() {
-    permitirExport = false;
+    permitirExport = true;
     idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
     gestorSeleccionado = new Gestor();
     productoSeleccionado = new Producto();
     institucionSeleccionada = new Institucion();
-    usuario = new Usuario();
     listaGestiones = new ArrayList();
     listaTipos = new ArrayList();
     listaGestores = new ArrayList();
@@ -99,51 +96,65 @@ public class GestionesBean implements Serializable {
     int idGestor = gestorSeleccionado.getIdGestor();
     int idInstitucion = institucionSeleccionada.getIdInstitucion();
     int idProducto = productoSeleccionado.getIdProducto();
+    if(tipoSeleccionado == null){
+      tipoSeleccionado = "";
+    }
     String tipoGestion = tipoSeleccionado;
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String f1 = df.format(fechaInicio);
     String f2 = df.format(fechaFin);
-    if ((idGestor == 0) && (tipoGestion.isEmpty()) && (idInstitucion == 0) && (idProducto == 0)) {
+    if ((idGestor == 0) && (tipoGestion.equals("")) && (idInstitucion == 0) && (idProducto == 0)) {
+      System.out.println("CASO 1");
       listaGestiones = gestionDao.buscarGestionesPorDespacho(idDespacho, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-TodosGestores-TodosTipos-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
     }
-    if ((idGestor != 0) && (tipoGestion.isEmpty()) && (idInstitucion == 0) && (idProducto == 0)) {
+    if ((idGestor != 0) && (tipoGestion.equals("")) && (idInstitucion == 0) && (idProducto == 0)) {
+      System.out.println("CASO 2");
       listaGestiones = gestionDao.buscarGestionesPorGestor(idDespacho, idGestor, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-TodosTipos-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
     }
-    if ((idGestor == 0) && (!tipoGestion.isEmpty()) && (idInstitucion == 0) && (idProducto == 0)) {
+    if ((idGestor == 0) && (!tipoGestion.equals("")) && (idInstitucion == 0) && (idProducto == 0)) {
+      System.out.println("CASO 3");
       listaGestiones = gestionDao.buscarGestionesPorTipo(idDespacho, tipoGestion, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-TodosGestores-" + tipoGestion + "-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
     }
-    if ((idGestor == 0) && (tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto == 0)) {
+    if ((idGestor == 0) && (tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto == 0)) {
+      System.out.println("CASO 4");
       listaGestiones = gestionDao.buscarGestionesPorInstitucion(idDespacho, idInstitucion, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-TodosGestores-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-TodosProductos-" + f1 + "-" + f2;
     }
-    if ((idGestor == 0) && (tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto != 0)) {
+    if ((idGestor == 0) && (tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto != 0)) {
+      System.out.println("CASO 5");
       listaGestiones = gestionDao.buscarGestionesPorInstitucionProducto(idDespacho, idInstitucion, idProducto, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-TodosGestores-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
     }
-    if ((idGestor != 0) && (!tipoGestion.isEmpty()) && (idInstitucion == 0) && (idProducto == 0)) {
+    if ((idGestor != 0) && (!tipoGestion.equals("")) && (idInstitucion == 0) && (idProducto == 0)) {
+      System.out.println("CASO 6");
       listaGestiones = gestionDao.buscarGestionesPorGestorTipo(idDespacho, idGestor, tipoGestion, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-" + tipoGestion + "-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
     }
-    if ((idGestor != 0) && (tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto == 0)) {
+    if ((idGestor != 0) && (tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto == 0)) {
+      System.out.println("CASO 7");
       listaGestiones = gestionDao.buscarGestionesPorGestorInstitucion(idDespacho, idGestor, idInstitucion, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-TodosProductos-" + f1 + "-" + f2;
     }
-    if ((idGestor != 0) && (tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto != 0)) {
+    if ((idGestor != 0) && (tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto != 0)) {
+      System.out.println("CASO 8");
       listaGestiones = gestionDao.buscarGestionesPorGestorInstitucionProducto(idDespacho, idGestor, idInstitucion, idProducto, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
     }
-    if ((idGestor == 0) && (!tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto == 0)) {
+    if ((idGestor == 0) && (!tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto == 0)) {
+      System.out.println("CASO 9");
       listaGestiones = gestionDao.buscarGestionesPorTipoInstitucion(idDespacho, tipoGestion, idInstitucion, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-TodosGestores-" + tipoGestion + "-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-TodosProductos-" + f1 + "-" + f2;
     }
-    if ((idGestor == 0) && (!tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto != 0)) {
+    if ((idGestor == 0) && (!tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto != 0)) {
+      System.out.println("CASO 10");
       listaGestiones = gestionDao.buscarGestionesPorTipoInstitucionProducto(idDespacho, tipoGestion, idInstitucion, idProducto, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-TodosGestores-" + tipoGestion + "-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
     }
-    if ((idGestor != 0) && (!tipoGestion.isEmpty()) && (idInstitucion != 0) && (idProducto != 0)) {
+    if ((idGestor != 0) && (!tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto != 0)) {
+      System.out.println("CASO 11");
       listaGestiones = gestionDao.buscarGestionesPorGestorTipoInstitucionProducto(idDespacho, idGestor, tipoGestion, idInstitucion, idProducto, fechaInicio, fechaFin);
       nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-" + tipoGestion + "-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
     }
@@ -186,14 +197,6 @@ public class GestionesBean implements Serializable {
     this.gestorSeleccionado = gestorSeleccionado;
   }
 
-  public GestorDAO getGestorDao() {
-    return gestorDao;
-  }
-
-  public void setGestorDao(GestorDAO gestorDao) {
-    this.gestorDao = gestorDao;
-  }
-
   public List<Gestion> getListaGestiones() {
     return listaGestiones;
   }
@@ -216,14 +219,6 @@ public class GestionesBean implements Serializable {
 
   public void setFechaFin(Date fechaFin) {
     this.fechaFin = fechaFin;
-  }
-
-  public GestionDAO getGestionDao() {
-    return gestionDao;
-  }
-
-  public void setGestionDao(GestionDAO gestionDao) {
-    this.gestionDao = gestionDao;
   }
 
   public String getNombreArchivo() {
@@ -258,22 +253,6 @@ public class GestionesBean implements Serializable {
     this.listaProductos = listaProductos;
   }
 
-  public ELContext getElContext() {
-    return elContext;
-  }
-
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
-  }
-
-  public IndexBean getIndexBean() {
-    return indexBean;
-  }
-
-  public void setIndexBean(IndexBean indexBean) {
-    this.indexBean = indexBean;
-  }
-
   public Institucion getInstitucionSeleccionada() {
     return institucionSeleccionada;
   }
@@ -288,30 +267,6 @@ public class GestionesBean implements Serializable {
 
   public void setListaInstituciones(List<Institucion> listaInstituciones) {
     this.listaInstituciones = listaInstituciones;
-  }
-
-  public ProductoDAO getProductoDao() {
-    return productoDao;
-  }
-
-  public void setProductoDao(ProductoDAO productoDao) {
-    this.productoDao = productoDao;
-  }
-
-  public InstitucionDAO getInstitucionDao() {
-    return institucionDao;
-  }
-
-  public void setInstitucionDao(InstitucionDAO institucionDao) {
-    this.institucionDao = institucionDao;
-  }
-
-  public UsuarioDAO getUsuarioDao() {
-    return usuarioDao;
-  }
-
-  public void setUsuarioDao(UsuarioDAO usuarioDao) {
-    this.usuarioDao = usuarioDao;
   }
 
 }

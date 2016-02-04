@@ -157,7 +157,7 @@
             <p:inputText value="#{conveniosBean.observacionesPago}" />
             <br />
             <br />
-            <p:fileUpload fileUploadListener="#{conveniosBean.eventoDeCarga}" mode="advanced" auto="true" label="Seleccionar archivo" style="width: 200px;" required="true" sizeLimit="3000000" fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png|pdf)$/" update="growl" />
+            <p:fileUpload fileUploadListener="#{conveniosBean.eventoDeCarga}" mode="advanced" auto="true" label="Seleccionar archivo" style="width: 200px;" required="true" sizeLimit="3000000" fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png|pdf)$/" update=":growl" />
             <br />
             <p:commandButton id="botonEnviarPago" value="Enviar" actionListener="#{conveniosBean.agregarPago()}" update="growl, formConvenios:saldoPendienteText, formConvenios:pagosConvenioEnCurso, @([id$=revisionPagos])" />
           </h:form>

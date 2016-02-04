@@ -39,17 +39,20 @@ public class PagosBean implements Serializable {
   // VARIABLES DE CLASE
   private final int idDespacho;
   private String nombreImagen;
-  private String revisor;
+  private String urlImagen;
+  private final String ruta;
+  private final String revisor;
   private Pago pagoSeleccionado;
-  private PagoDAO pagoDao;
-  private CreditoDAO creditoDao;
-  private ConvenioPagoDAO convenioPagoDao;
+  private final PagoDAO pagoDao;
+  private final CreditoDAO creditoDao;
+  private final ConvenioPagoDAO convenioPagoDao;
   private List<Pago> pagosPorRevisar;
   private List<Pago> revisionSeleccionados;
   private List<Pago> listaPagos;
 
   // CONSTRUCTOR
   public PagosBean() {
+    ruta = "C:\\Users\\Eduardo.CORPDELRIO\\Documents\\NetBeansProjects\\SigerWeb\\SigerWeb\\web\\resources\\img\\comprobantes\\";
     idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
     revisor = indexBean.getUsuario().getNombreLogin();
     pagoDao = new PagoIMPL();
@@ -71,7 +74,7 @@ public class PagosBean implements Serializable {
   public void visualizar() {
     pagoSeleccionado = revisionSeleccionados.get(0);
     nombreImagen = pagoSeleccionado.getNombreComprobante();
-    System.out.println("COMPROBANTE SELECCIONADO: " + nombreImagen);
+    urlImagen = ruta + nombreImagen;
   }
 
 // METODO QUE APRUEBA UN PAGO
@@ -131,14 +134,7 @@ public class PagosBean implements Serializable {
 // ***********************************************************************************************************************
 // ***********************************************************************************************************************
 // GETTERS & SETTERS
-  public PagoDAO getPagoDao() {
-    return pagoDao;
-  }
-
-  public void setPagoDao(PagoDAO pagoDao) {
-    this.pagoDao = pagoDao;
-  }
-
+  
   public List<Pago> getPagosPorRevisar() {
     return pagosPorRevisar;
   }
@@ -155,36 +151,12 @@ public class PagosBean implements Serializable {
     this.revisionSeleccionados = revisionSeleccionados;
   }
 
-  public ELContext getElContext() {
-    return elContext;
-  }
-
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
-  }
-
-  public IndexBean getIndexBean() {
-    return indexBean;
-  }
-
-  public void setIndexBean(IndexBean indexBean) {
-    this.indexBean = indexBean;
-  }
-
   public List<Pago> getListaPagos() {
     return listaPagos;
   }
 
   public void setListaPagos(List<Pago> listaPagos) {
     this.listaPagos = listaPagos;
-  }
-
-  public CreditoDAO getCreditoDao() {
-    return creditoDao;
-  }
-
-  public void setCreditoDao(CreditoDAO creditoDao) {
-    this.creditoDao = creditoDao;
   }
 
   public Pago getPagoSeleccionado() {
@@ -202,4 +174,13 @@ public class PagosBean implements Serializable {
   public void setNombreImagen(String nombreImagen) {
     this.nombreImagen = nombreImagen;
   }
+
+  public String getUrlImagen() {
+    return urlImagen;
+  }
+
+  public void setUrlImagen(String urlImagen) {
+    this.urlImagen = urlImagen;
+  }
+  
 }

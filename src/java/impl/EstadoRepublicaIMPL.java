@@ -5,7 +5,6 @@ import dto.EstadoRepublica;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import util.HibernateUtil;
 import util.log.Logs;
 
@@ -77,6 +76,22 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
       cerrar(sesion);
     }
 
+    return estado;
+  }
+
+  @Override
+  public EstadoRepublica buscarPorId(int idEstado) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    EstadoRepublica estado;
+    try {
+      estado = (EstadoRepublica) sesion.get(EstadoRepublica.class, idEstado);
+    } catch (HibernateException he) {
+      estado = null;
+      Logs.log.error("No se pudo obtener: EstadoRepublica");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
     return estado;
   }
 

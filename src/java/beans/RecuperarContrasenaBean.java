@@ -35,7 +35,7 @@ public class RecuperarContrasenaBean implements Serializable {
     private String usuarioLogin;
     private String correo;
     Usuario usuario;
-    UsuarioDAO usuarioDao;
+    private final UsuarioDAO usuarioDao;
 
     /**
      *

@@ -33,7 +33,7 @@ public class EmailBean implements Serializable {
   private String tipo;
   
   // Acceso a la BD
-  private EmailDAO emailDao;
+  private final EmailDAO emailDao;
   
   // Construyendo...
   public EmailBean() {

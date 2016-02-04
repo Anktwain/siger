@@ -99,9 +99,26 @@ public class CreditoIMPL implements CreditoDAO {
   public List<Credito> creditosEnGestionPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Credito> creditos = new ArrayList<>();
-    String consulta = "SELECT c.*  FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN institucion i JOIN producto p JOIN gestor g JOIN usuario u WHERE d.id_sujeto = s.id_sujeto AND u.id_usuario = g.id_usuario AND g.id_gestor = c.id_gestor AND p.id_producto = c.id_producto AND d.id_deudor = c.id_deudor AND i.id_institucion = c.id_institucion AND id_credito NOT IN (SELECT id_credito FROM devolucion) AND c.id_despacho = des.id_despacho AND des.id_despacho = " + idDespacho + " ORDER BY numero_credito ASC;";
+    String consulta = "SELECT c.* FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN institucion i JOIN producto p JOIN gestor g JOIN usuario u WHERE d.id_sujeto = s.id_sujeto AND u.id_usuario = g.id_usuario AND g.id_gestor = c.id_gestor AND p.id_producto = c.id_producto AND d.id_deudor = c.id_deudor AND i.id_institucion = c.id_institucion AND id_credito NOT IN (SELECT id_credito FROM devolucion) AND c.id_despacho = des.id_despacho AND des.id_despacho = " + idDespacho + " ORDER BY numero_credito ASC;";
     try {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      creditos = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+
+  @Override
+  public List<Credito> tablaCreditosEnGestionPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos = new ArrayList<>();
+    String consulta = "SELECT c.* FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN institucion i JOIN producto p JOIN gestor g JOIN usuario u WHERE d.id_sujeto = s.id_sujeto AND u.id_usuario = g.id_usuario AND g.id_gestor = c.id_gestor AND p.id_producto = c.id_producto AND d.id_deudor = c.id_deudor AND i.id_institucion = c.id_institucion AND id_credito NOT IN (SELECT id_credito FROM devolucion) AND c.id_despacho = des.id_despacho AND des.id_despacho = " + idDespacho + " ORDER BY numero_credito ASC;";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();      
       Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       creditos = null;
@@ -189,14 +206,14 @@ public class CreditoIMPL implements CreditoDAO {
     }
     return resultados;
   }
-  
+
   @Override
   public List<String> barraBusquedaGestor(String valor, int idUsuario) {
     System.out.println("BARRA BUSQUEDA GESTOR");
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<String> resultados = new ArrayList();
     List<Object[]> c;
-    String consulta = "SELECT c.numero_credito, s.nombre_razon_social FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN gestor g WHERE d.id_sujeto = s.id_sujeto AND g.id_gestor = c.id_gestor AND g.id_gestor = (SELECT gx.id_gestor FROM gestor gx WHERE id_usuario = " + idUsuario + ") AND d.id_deudor = c.id_deudor AND c.id_gestor = 2 AND (c.numero_credito LIKE '%" + valor +"%' OR s.nombre_razon_social LIKE '%" + valor +"%');";
+    String consulta = "SELECT c.numero_credito, s.nombre_razon_social FROM credito c JOIN deudor d JOIN sujeto s JOIN despacho des JOIN gestor g WHERE d.id_sujeto = s.id_sujeto AND g.id_gestor = c.id_gestor AND g.id_gestor = (SELECT gx.id_gestor FROM gestor gx WHERE id_usuario = " + idUsuario + ") AND d.id_deudor = c.id_deudor AND c.id_gestor = 2 AND (c.numero_credito LIKE '%" + valor + "%' OR s.nombre_razon_social LIKE '%" + valor + "%');";
     try {
       c = sesion.createSQLQuery(consulta).list();
       for (Object[] row : c) {
@@ -218,7 +235,7 @@ public class CreditoIMPL implements CreditoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Credito credito;
-    
+
     try {
       credito = (Credito) sesion.createSQLQuery("select * from credito where numero_credito = '" + numeroCredito + "';").addEntity(Credito.class).uniqueResult();
     } catch (HibernateException he) {
@@ -229,7 +246,7 @@ public class CreditoIMPL implements CreditoDAO {
     }
     return credito;
   }
-  
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

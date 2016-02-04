@@ -29,11 +29,11 @@ import util.log.Logs;
 
 public class BarraProgresoAdminBean implements Serializable {
 
-  private CreditoDAO creditoDao;
-  private GestionDAO gestionDao;
-  private SujetoDAO sujetoDao;
-  private InstitucionDAO institucionDao;
-  private int idDespacho;
+  private final CreditoDAO creditoDao;
+  private final GestionDAO gestionDao;
+  private final SujetoDAO sujetoDao;
+  private final InstitucionDAO institucionDao;
+  private final int idDespacho;
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -73,38 +73,6 @@ public class BarraProgresoAdminBean implements Serializable {
     String recuperacion = total.toString();
     Logs.log.info("Se ha recuperado un %" + total + " del saldo a recuperar");
     return (recuperacion + " %");
-  }
-
-  public CreditoDAO getCreditoDao() {
-    return creditoDao;
-  }
-
-  public void setCreditoDao(CreditoDAO creditoDao) {
-    this.creditoDao = creditoDao;
-  }
-
-  public GestionDAO getGestionDao() {
-    return gestionDao;
-  }
-
-  public void setGestionDao(GestionDAO gestionDao) {
-    this.gestionDao = gestionDao;
-  }
-
-  public SujetoDAO getSujetoDao() {
-    return sujetoDao;
-  }
-
-  public void setSujetoDao(SujetoDAO sujetoDao) {
-    this.sujetoDao = sujetoDao;
-  }
-
-  public InstitucionDAO getInstitucionDao() {
-    return institucionDao;
-  }
-
-  public void setInstitucionDao(InstitucionDAO institucionDao) {
-    this.institucionDao = institucionDao;
   }
 
 }

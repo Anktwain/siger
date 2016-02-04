@@ -114,8 +114,12 @@
             </div>
           </div>
         </div>
-        <p:dialog id="dlgRevisionPago" widgetVar="detallePagoDialog" position="right top" resizable="false" width="500" height="800" header="Revisar pago">
+        <p:dialog id="dlgRevisionPago" widgetVar="detallePagoDialog" position="right top" resizable="false" width="500" height="850" header="Revisar pago">
           <h:form id="formVisorPago">
+            <h:outputText value="#{pagosBean.nombreImagen}" />
+            <br />
+            <br />
+            <h:graphicImage url="#{pagosBean.urlImagen}" height="790" width="490"/>
           </h:form>
         </p:dialog>
       </div>

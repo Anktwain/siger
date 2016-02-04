@@ -21,19 +21,19 @@ import javax.faces.context.FacesContext;
 @ManagedBean
 @SessionScoped
 public class PanelAdministrativoBean implements Serializable {
-//    @ManagedProperty(value = "indexBean")
-//    private IndexBean indexBean;
-
+  
+  // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
+  // VARIABLES DE CLASE
   private String nombreUsuario;
   private String imagenDePerfil;
   private String nombre;
   private String correo;
   private String despacho;
   private Sujeto sujeto;
-  private SujetoDAO sujetoDao;
+  private final SujetoDAO sujetoDao;
 
   /**
    *
@@ -123,24 +123,6 @@ public class PanelAdministrativoBean implements Serializable {
     this.correo = correo;
   }
 
-  /**
-   *
-   *
-   * @return
-   */
-  public IndexBean getIndexBean() {
-    return indexBean;
-  }
-
-  /**
-   *
-   *
-   * @param indexBean
-   */
-  public void setIndexBean(IndexBean indexBean) {
-    this.indexBean = indexBean;
-  }
-
   public String getDespacho() {
     return despacho;
   }
@@ -155,22 +137,6 @@ public class PanelAdministrativoBean implements Serializable {
 
   public void setSujeto(Sujeto sujeto) {
     this.sujeto = sujeto;
-  }
-
-  public SujetoDAO getSujetoDao() {
-    return sujetoDao;
-  }
-
-  public void setSujetoDao(SujetoDAO sujetoDao) {
-    this.sujetoDao = sujetoDao;
-  }
-
-  public ELContext getElContext() {
-    return elContext;
-  }
-
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
   }
 
 }

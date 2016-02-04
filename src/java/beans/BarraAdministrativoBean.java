@@ -7,7 +7,6 @@ import dao.UsuarioDAO;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import util.log.Logs;
 
 /**
  * La clase {@code BarraAdministrativoBean} permite ... y es el bean
@@ -23,7 +22,7 @@ import util.log.Logs;
 
 public class BarraAdministrativoBean implements Serializable {
 
-  private UsuarioDAO usuarioDao;
+  private final UsuarioDAO usuarioDao;
   private List<Usuario> sinConfirmar;
 
   /**
@@ -43,8 +42,6 @@ public class BarraAdministrativoBean implements Serializable {
     sinConfirmar = usuarioDao.buscarUsuariosNoConfirmados();
     int cuenta = sinConfirmar.size();
     String total = Integer.toString(cuenta);
-    Logs.log.debug("************ CONSOLA SIGERWEB ****************");
-    Logs.log.debug("Existen " + total + " gestores no confirmados en el sistema");
     return total;
   }
 

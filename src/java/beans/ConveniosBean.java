@@ -67,12 +67,12 @@ public class ConveniosBean implements Serializable {
   private String ruta;
   private String nombrePago;
   private Credito creditoActual;
-  private EstatusInformativoDAO estatusInformativoDao;
-  private GestionDAO gestionDao;
-  private QuincenaDAO quincenaDao;
-  private PagoDAO pagoDao;
-  private GestorDAO gestorDao;
-  private ConvenioPagoDAO convenioPagoDao;
+  private final EstatusInformativoDAO estatusInformativoDao;
+  private final GestionDAO gestionDao;
+  private final QuincenaDAO quincenaDao;
+  private final PagoDAO pagoDao;
+  private final GestorDAO gestorDao;
+  private final ConvenioPagoDAO convenioPagoDao;
   private List<ConvenioPago> listaConvenios;
   private List<ConvenioPago> convenioSeleccionado;
   private List<ConvenioPago> listaHistorialConvenios;
@@ -82,7 +82,7 @@ public class ConveniosBean implements Serializable {
 
   // CONSTRUCTOR
   public ConveniosBean() {
-    ruta = "C:\\Comprobantes\\";
+    ruta = "C:\\Users\\Eduardo.CORPDELRIO\\Documents\\NetBeansProjects\\SigerWeb\\SigerWeb\\web\\resources\\img\\comprobantes\\";
     creditoActual = vistaCreditoBean.getCreditoActual();
     saldoMaximo = creditoActual.getMonto();
     convenioPagoDao = new ConvenioPagoIMPL();
@@ -178,12 +178,11 @@ public class ConveniosBean implements Serializable {
     byte[] bytes;
     String ok;
     try {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
       Date f = new Date();
       String fecha = dateFormat.format(f);
       String nombre = indexBean.getUsuario().getNombreLogin() + "-" + fecha + archivo.getFileName().substring(archivo.getFileName().indexOf("."));
       nombre = nombre.replace(" ", "");
-      nombre = nombre.replace(":", "_");
       nombrePago = nombre;
       nombre = ruta + nombre;
       bytes = archivo.getContents();
@@ -259,36 +258,12 @@ public class ConveniosBean implements Serializable {
     this.convenioSeleccionado = convenioSeleccionado;
   }
 
-  public ConvenioPagoDAO getConvenioPagoDao() {
-    return convenioPagoDao;
-  }
-
-  public void setConvenioPagoDao(ConvenioPagoDAO convenioPagoDao) {
-    this.convenioPagoDao = convenioPagoDao;
-  }
-
   public List<ConvenioPago> getListaConvenios() {
     return listaConvenios;
   }
 
   public void setListaConvenios(List<ConvenioPago> listaConvenios) {
     this.listaConvenios = listaConvenios;
-  }
-
-  public ELContext getElContext() {
-    return elContext;
-  }
-
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
-  }
-
-  public VistaCreditoBean getVistaCreditoBean() {
-    return vistaCreditoBean;
-  }
-
-  public void setVistaCreditoBean(VistaCreditoBean vistaCreditoBean) {
-    this.vistaCreditoBean = vistaCreditoBean;
   }
 
   public List<ConvenioPago> getListaHistorialConvenios() {
@@ -321,30 +296,6 @@ public class ConveniosBean implements Serializable {
 
   public void setHabilitaConvenios(boolean habilitaConvenios) {
     this.habilitaConvenios = habilitaConvenios;
-  }
-
-  public EstatusInformativoDAO getEstatusInformativoDao() {
-    return estatusInformativoDao;
-  }
-
-  public void setEstatusInformativoDao(EstatusInformativoDAO estatusInformativoDao) {
-    this.estatusInformativoDao = estatusInformativoDao;
-  }
-
-  public GestionDAO getGestionDao() {
-    return gestionDao;
-  }
-
-  public void setGestionDao(GestionDAO gestionDao) {
-    this.gestionDao = gestionDao;
-  }
-
-  public IndexBean getIndexBean() {
-    return indexBean;
-  }
-
-  public void setIndexBean(IndexBean indexBean) {
-    this.indexBean = indexBean;
   }
 
   public float getSaldoMaximo() {
@@ -401,30 +352,6 @@ public class ConveniosBean implements Serializable {
 
   public void setSaldoPendiente(Number saldoPendiente) {
     this.saldoPendiente = saldoPendiente;
-  }
-
-  public QuincenaDAO getQuincenaDao() {
-    return quincenaDao;
-  }
-
-  public void setQuincenaDao(QuincenaDAO quincenaDao) {
-    this.quincenaDao = quincenaDao;
-  }
-
-  public PagoDAO getPagoDao() {
-    return pagoDao;
-  }
-
-  public void setPagoDao(PagoDAO pagoDao) {
-    this.pagoDao = pagoDao;
-  }
-
-  public GestorDAO getGestorDao() {
-    return gestorDao;
-  }
-
-  public void setGestorDao(GestorDAO gestorDao) {
-    this.gestorDao = gestorDao;
   }
 
   public List<Pago> getListaPagosConvenioActivo() {

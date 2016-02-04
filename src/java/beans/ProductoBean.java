@@ -33,7 +33,7 @@ public class ProductoBean implements Serializable{
   private List listaProductos;
   
   // objeto dao para acceder a la base de datos
-  private ProductoDAO productoDao;
+  private final ProductoDAO productoDao;
   
   // constructor
   public ProductoBean(){

@@ -57,8 +57,8 @@ public class InstitucionesBean implements Serializable {
   private String descripcionSubproducto;
   private SujetoDAO sujetoDao;
   private InstitucionDAO institucionDao;
-  private ProductoDAO productoDao;
-  private SubproductoDAO subproductoDao;
+  private final ProductoDAO productoDao;
+  private final SubproductoDAO subproductoDao;
   private List<Institucion> listaInstituciones;
   private List<Institucion> institucionSeleccionada;
   private List<Producto> listaProductos;
@@ -203,10 +203,10 @@ public class InstitucionesBean implements Serializable {
   public void editarSubproducto() {
     FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok;
-    ok = productoDao.editar(seleccionado);
+    ok = subproductoDao.editar(subSeleccionado);
     if (ok) {
-      listaProductos = productoDao.buscarProductosPorInstitucion(seleccionada.getIdInstitucion());
-      RequestContext.getCurrentInstance().update("editarProductosEmpresaForm");
+      listaSubproductos = subproductoDao.buscarSubproductosPorProducto(seleccionado.getIdProducto());
+      RequestContext.getCurrentInstance().update("editarSubproductosProductoForm");
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se modifico el subproducto."));
       RequestContext.getCurrentInstance().execute("PF('dlgEditarProducto').hide();");
     } else {
@@ -257,6 +257,7 @@ public class InstitucionesBean implements Serializable {
   // METODO DE CONTROL DE DIALOGOS
   public void controlDialogosEditarSubproducto() {
     subSeleccionado = subproductoSeleccionado.get(0);
+    RequestContext.getCurrentInstance().update("editarSubproductoForm");
     RequestContext.getCurrentInstance().execute("PF('dlgEditarSubproductosProducto').hide();");
     RequestContext.getCurrentInstance().execute("PF('dlgEditarSubproducto').show();");
   }
@@ -335,22 +336,6 @@ public class InstitucionesBean implements Serializable {
     this.institucionDao = institucionDao;
   }
 
-  public ELContext getElContext() {
-    return elContext;
-  }
-
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
-  }
-
-  public IndexBean getIndexBean() {
-    return indexBean;
-  }
-
-  public void setIndexBean(IndexBean indexBean) {
-    this.indexBean = indexBean;
-  }
-
   public List<Institucion> getListaInstituciones() {
     return listaInstituciones;
   }
@@ -373,14 +358,6 @@ public class InstitucionesBean implements Serializable {
 
   public void setSeleccionada(Institucion seleccionada) {
     this.seleccionada = seleccionada;
-  }
-
-  public ProductoDAO getProductoDao() {
-    return productoDao;
-  }
-
-  public void setProductoDao(ProductoDAO productoDao) {
-    this.productoDao = productoDao;
   }
 
   public List<Producto> getListaProductos() {
@@ -429,14 +406,6 @@ public class InstitucionesBean implements Serializable {
 
   public void setSubSeleccionado(Subproducto subSeleccionado) {
     this.subSeleccionado = subSeleccionado;
-  }
-
-  public SubproductoDAO getSubproductoDao() {
-    return subproductoDao;
-  }
-
-  public void setSubproductoDao(SubproductoDAO subproductoDao) {
-    this.subproductoDao = subproductoDao;
   }
 
   public List<Subproducto> getListaSubproductos() {

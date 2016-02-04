@@ -13,7 +13,6 @@ import javax.faces.context.FacesContext;
 import util.MD5;
 import java.util.Calendar;
 import java.util.Date;
-import javax.faces.bean.ViewScoped;
 import org.primefaces.context.RequestContext;
 import util.constantes.Perfiles;
 import util.log.Logs;
@@ -29,7 +28,6 @@ import util.log.Logs;
  */
 @ManagedBean(name = "indexBean")
 @SessionScoped
-
 public class IndexBean implements Serializable {
 
   /**
@@ -41,7 +39,7 @@ public class IndexBean implements Serializable {
    */
   private String password;
   private Usuario usuario;
-  private UsuarioDAO usuarioDao;
+  private final UsuarioDAO usuarioDao;
   /**
    * Información de la sesión
    */

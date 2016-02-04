@@ -13,9 +13,11 @@ import impl.CreditoIMPL;
 import impl.InstitucionIMPL;
 import impl.GestionIMPL;
 import impl.SujetoIMPL;
+import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import util.log.Logs;
 
 /**
@@ -27,21 +29,23 @@ import util.log.Logs;
 
 public class BarraProgresoGestorBean {
 
-  private CreditoDAO creditoDao;
-  private GestionDAO gestionDao;
-  private SujetoDAO sujetoDao;
-  private InstitucionDAO empresaDao;
+  // LLAMADA A OTROS BEANS
+  ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+  IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
+  // VARIABLES DE CLASE
+  private final CreditoDAO creditoDao;
+  private final GestionDAO gestionDao;
+  private final SujetoDAO sujetoDao;
+  private final InstitucionDAO empresaDao;
+
+  // CONSTRUCTOR
   public BarraProgresoGestorBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     sujetoDao = new SujetoIMPL();
     empresaDao = new InstitucionIMPL();
   }
-
-  // llamada a otros beans
-  @ManagedProperty(value = "#{indexBean}")
-  private IndexBean indexBean;
 
   public String calcularCuentasActivas() {
     Number total = creditoDao.contarCreditosActivosPorGestor(indexBean.getUsuario().getIdUsuario());
@@ -70,46 +74,6 @@ public class BarraProgresoGestorBean {
     String pagos = total.toString();
     Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " ha recuperado $" + total + " este mes");
     return pagos;
-  }
-
-  public CreditoDAO getCreditoDao() {
-    return creditoDao;
-  }
-
-  public void setCreditoDao(CreditoDAO creditoDao) {
-    this.creditoDao = creditoDao;
-  }
-
-  public GestionDAO getGestionDao() {
-    return gestionDao;
-  }
-
-  public void setGestionDao(GestionDAO gestionDao) {
-    this.gestionDao = gestionDao;
-  }
-
-  public SujetoDAO getSujetoDao() {
-    return sujetoDao;
-  }
-
-  public void setSujetoDao(SujetoDAO sujetoDao) {
-    this.sujetoDao = sujetoDao;
-  }
-
-  public InstitucionDAO getEmpresaDao() {
-    return empresaDao;
-  }
-
-  public void setEmpresaDao(InstitucionDAO empresaDao) {
-    this.empresaDao = empresaDao;
-  }
-
-  public IndexBean getIndexBean() {
-    return indexBean;
-  }
-
-  public void setIndexBean(IndexBean indexBean) {
-    this.indexBean = indexBean;
   }
 
 }

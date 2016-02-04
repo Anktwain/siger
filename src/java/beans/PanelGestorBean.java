@@ -1,8 +1,6 @@
 package beans;
 
-import dao.SujetoDAO;
 import dto.Sujeto;
-import impl.SujetoIMPL;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
@@ -21,19 +19,18 @@ import javax.faces.context.FacesContext;
 @ManagedBean
 @SessionScoped
 public class PanelGestorBean implements Serializable {
-//    @ManagedProperty(value = "indexBean")
-//    private IndexBean indexBean;
 
+  // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
+  // VARIABLES DE CLASE
   private String nombreUsuario;
   private String imagenDePerfil;
   private String nombre;
   private String correo;
   private String despacho;
   private Sujeto sujeto;
-  private SujetoDAO sujetoDao;
 
   /**
    *
@@ -43,8 +40,6 @@ public class PanelGestorBean implements Serializable {
     nombreUsuario = indexBean.getUsuario().getNombreLogin();
     imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
     correo = indexBean.getUsuario().getCorreo();
-    sujeto = new Sujeto();
-    sujetoDao = new SujetoIMPL();
     despacho = indexBean.getUsuario().getDespacho().getSujeto().getNombreRazonSocial();
   }
 
@@ -120,24 +115,6 @@ public class PanelGestorBean implements Serializable {
     this.correo = correo;
   }
 
-  /**
-   *
-   *
-   * @return
-   */
-  public IndexBean getIndexBean() {
-    return indexBean;
-  }
-
-  /**
-   *
-   *
-   * @param indexBean
-   */
-  public void setIndexBean(IndexBean indexBean) {
-    this.indexBean = indexBean;
-  }
-
   public String getDespacho() {
     return despacho;
   }
@@ -152,22 +129,6 @@ public class PanelGestorBean implements Serializable {
 
   public void setSujeto(Sujeto sujeto) {
     this.sujeto = sujeto;
-  }
-
-  public SujetoDAO getSujetoDao() {
-    return sujetoDao;
-  }
-
-  public void setSujetoDao(SujetoDAO sujetoDao) {
-    this.sujetoDao = sujetoDao;
-  }
-
-  public ELContext getElContext() {
-    return elContext;
-  }
-
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
   }
 
 }

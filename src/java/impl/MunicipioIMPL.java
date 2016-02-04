@@ -26,10 +26,8 @@ public class MunicipioIMPL implements MunicipioDAO {
     Transaction tx = sesion.beginTransaction();
     List<Municipio> municipios;
     String consulta = "select * from municipio where id_estado = " + idEstado + " order by nombre asc;";
-    System.out.println(consulta);
     try {
       municipios = sesion.createSQLQuery(consulta).addEntity(Municipio.class).list();
-      System.out.println(consulta);
 
     } catch (HibernateException he) {
       municipios = null;
@@ -92,6 +90,22 @@ public class MunicipioIMPL implements MunicipioDAO {
       cerrar(sesion);
     }
 
+    return municipio;
+  }
+
+  @Override
+  public Municipio buscarPorId(int idMunicipio) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Municipio municipio;
+    try {
+      municipio = (Municipio) sesion.get(Municipio.class, idMunicipio);
+    } catch (HibernateException he) {
+      municipio = null;
+      Logs.log.error("No se pudo ontener lista de objetos: Municipio");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
     return municipio;
   }
 

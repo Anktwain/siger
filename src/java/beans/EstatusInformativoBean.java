@@ -28,7 +28,7 @@ public class EstatusInformativoBean implements Serializable {
   // VARIABLES DE CLASE
   private String nuevoEstatus;
   private List<EstatusInformativo> listaEstatus;
-  private EstatusInformativoDAO estatusInformativoDAO;
+  private final EstatusInformativoDAO estatusInformativoDAO;
 
   public EstatusInformativoBean() {
     listaEstatus = new ArrayList();
@@ -37,7 +37,7 @@ public class EstatusInformativoBean implements Serializable {
   }
 
   // METODO  QUE CARGA LA LISTA DE ESTATUS INFORMATIVO
-  public void cargarEstatus() {
+  public final void cargarEstatus() {
     listaEstatus = estatusInformativoDAO.buscarTodos();
   }
 
@@ -71,14 +71,6 @@ public class EstatusInformativoBean implements Serializable {
 
   public void setListaEstatus(List<EstatusInformativo> listaEstatus) {
     this.listaEstatus = listaEstatus;
-  }
-
-  public EstatusInformativoDAO getEstatusInformativoDAO() {
-    return estatusInformativoDAO;
-  }
-
-  public void setEstatusInformativoDAO(EstatusInformativoDAO estatusInformativoDAO) {
-    this.estatusInformativoDAO = estatusInformativoDAO;
   }
 
   public String getNuevoEstatus() {

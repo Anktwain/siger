@@ -42,7 +42,7 @@ public class AltaGestorBean implements Serializable {
 
   private Usuario usuario;
 
-  private UsuarioDAO usuarioDao;
+  private final UsuarioDAO usuarioDao;
 
   /**
    *
