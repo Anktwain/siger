@@ -140,6 +140,9 @@ public class ZonasBean implements Serializable {
 
   // METODO QUE CREA LA ZONA
   public void crearZona() {
+    for (int i = 0; i <(municipiosSeleccionados.size()); i++) {
+      System.out.println(municipiosSeleccionados.get(i));
+    }
     FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok = true;
     ok = ok & (validarNombreZona());

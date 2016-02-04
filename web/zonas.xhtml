@@ -126,7 +126,7 @@
             <br />
             <br />
             <p:selectManyMenu value="#{zonasBean.municipiosSeleccionados}" filter="true" filterMatchMode="contains" showCheckbox="true" disabled="#{zonasBean.habilitaMunicipios}" style="width: 280px; height: 250px;">
-              <f:selectItems value="#{zonasBean.listaMunicipios}" var="mun" itemLabel="#{mun.nombre}" itemValue="#{mun.idMunicipio.toString()}" />
+              <f:selectItems value="#{zonasBean.listaMunicipios}" var="mun" itemLabel="#{mun.nombre}" itemValue="#{mun.idMunicipio}" />
             </p:selectManyMenu>
             <br />
             <p:commandButton value="Agregar municipios" actionListener="#{zonasBean.verificaMunicipios()}" disabled="#{zonasBean.habilitaMunicipios}" update=":growl" />
