@@ -1,5 +1,5 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,8 +16,8 @@ public class Colonia  implements java.io.Serializable {
      private String tipo;
      private String nombre;
      private String codigoPostal;
-     private Set regions = new HashSet(0);
      private Set direccions = new HashSet(0);
+     private Set regions = new HashSet(0);
 
     public Colonia() {
     }
@@ -28,13 +28,13 @@ public class Colonia  implements java.io.Serializable {
         this.nombre = nombre;
         this.codigoPostal = codigoPostal;
     }
-    public Colonia(Municipio municipio, String tipo, String nombre, String codigoPostal, Set regions, Set direccions) {
+    public Colonia(Municipio municipio, String tipo, String nombre, String codigoPostal, Set direccions, Set regions) {
        this.municipio = municipio;
        this.tipo = tipo;
        this.nombre = nombre;
        this.codigoPostal = codigoPostal;
-       this.regions = regions;
        this.direccions = direccions;
+       this.regions = regions;
     }
    
     public Integer getIdColonia() {
@@ -72,13 +72,6 @@ public class Colonia  implements java.io.Serializable {
     public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
-    public Set getRegions() {
-        return this.regions;
-    }
-    
-    public void setRegions(Set regions) {
-        this.regions = regions;
-    }
     public Set getDireccions() {
         return this.direccions;
     }
@@ -86,10 +79,17 @@ public class Colonia  implements java.io.Serializable {
     public void setDireccions(Set direccions) {
         this.direccions = direccions;
     }
+    public Set getRegions() {
+        return this.regions;
+    }
+    
+    public void setRegions(Set regions) {
+        this.regions = regions;
+    }
 
-  @Override
-  public String toString() {
-    return nombre;
-  }
+
+
 
 }
+
+

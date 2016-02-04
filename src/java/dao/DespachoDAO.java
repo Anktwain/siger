@@ -1,6 +1,7 @@
 package dao;
 
 import dto.Despacho;
+import java.util.List;
 
 /**
  *
@@ -8,4 +9,5 @@ import dto.Despacho;
  */
 public interface DespachoDAO {
   public Despacho buscar(String nombreCorto);
+  public List<Despacho> getAll();
 }

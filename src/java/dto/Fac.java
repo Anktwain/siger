@@ -1,5 +1,8 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
+
+import dto.Actualizacion;
+
 
 
 
@@ -10,7 +13,7 @@ public class Fac  implements java.io.Serializable {
 
 
      private Integer idFac;
-     private Remesa remesa;
+     private Actualizacion actualizacion;
      private Integer mes;
      private Integer anio;
      private Float facPor;
@@ -20,11 +23,11 @@ public class Fac  implements java.io.Serializable {
     }
 
 	
-    public Fac(Remesa remesa) {
-        this.remesa = remesa;
+    public Fac(Actualizacion actualizacion) {
+        this.actualizacion = actualizacion;
     }
-    public Fac(Remesa remesa, Integer mes, Integer anio, Float facPor, String facMes) {
-       this.remesa = remesa;
+    public Fac(Actualizacion actualizacion, Integer mes, Integer anio, Float facPor, String facMes) {
+       this.actualizacion = actualizacion;
        this.mes = mes;
        this.anio = anio;
        this.facPor = facPor;
@@ -38,12 +41,12 @@ public class Fac  implements java.io.Serializable {
     public void setIdFac(Integer idFac) {
         this.idFac = idFac;
     }
-    public Remesa getRemesa() {
-        return this.remesa;
+    public Actualizacion getActualizacion() {
+        return this.actualizacion;
     }
     
-    public void setRemesa(Remesa remesa) {
-        this.remesa = remesa;
+    public void setActualizacion(Actualizacion actualizacion) {
+        this.actualizacion = actualizacion;
     }
     public Integer getMes() {
         return this.mes;

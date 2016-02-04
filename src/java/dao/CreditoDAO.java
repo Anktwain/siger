@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dao;
 
 import dto.Credito;
@@ -26,4 +21,5 @@ public interface CreditoDAO {
   public List<String> barraBusquedaAdmin(String valor, int idDespacho);
   public List<String> barraBusquedaGestor(String valor, int idUsuario);
   public Credito buscar(String numeroCredito);
+  public Credito insertar(Credito credito);
 }

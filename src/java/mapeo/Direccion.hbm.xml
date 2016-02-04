@@ -1,30 +1,29 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 11/12/2015 11:59:29 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Direccion" table="direccion" catalog="sigerbd" optimistic-lock="version">
-        <id name="idDireccion" type="java.lang.Integer">
-            <column name="id_direccion" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="colonia" class="dto.Colonia" fetch="select">
-            <column name="id_colonia" not-null="true" />
-        </many-to-one>
-        <many-to-one name="estadoRepublica" class="dto.EstadoRepublica" fetch="select">
-            <column name="id_estado" not-null="true" />
-        </many-to-one>
-        <many-to-one name="municipio" class="dto.Municipio" fetch="select">
-            <column name="id_municipio" not-null="true" />
-        </many-to-one>
-        <many-to-one name="sujeto" class="dto.Sujeto" fetch="select">
-            <column name="id_sujeto" not-null="true" />
-        </many-to-one>
-        <property name="calle" type="string">
-            <column name="calle" length="150" not-null="true" />
-        </property>
-        <property name="tipo" type="string">
-            <column name="tipo" length="45" />
-        </property>
-    </class>
+  <class catalog="sigerbd" name="dto.Direccion" optimistic-lock="version" table="direccion">
+    <id name="idDireccion" type="java.lang.Integer">
+      <column name="id_direccion"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Colonia" fetch="select" name="colonia">
+      <column name="id_colonia" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.EstadoRepublica" fetch="select" name="estadoRepublica">
+      <column name="id_estado" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Municipio" fetch="select" name="municipio">
+      <column name="id_municipio" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Sujeto" fetch="select" name="sujeto">
+      <column name="id_sujeto" not-null="true"/>
+    </many-to-one>
+    <property name="calle" type="string">
+      <column length="150" name="calle" not-null="true"/>
+    </property>
+    <property name="tipo" type="string">
+      <column length="45" name="tipo"/>
+    </property>
+  </class>
 </hibernate-mapping>

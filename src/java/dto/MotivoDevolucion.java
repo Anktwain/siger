@@ -1,5 +1,8 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
+
+import dto.ConceptoDevolucion;
+
 
 
 
@@ -52,9 +55,9 @@ public class MotivoDevolucion  implements java.io.Serializable {
         this.descripcion = descripcion;
     }
 
-  @Override
-  public String toString() {
-    return motivo;
-  }
+
+
 
 }
+
+

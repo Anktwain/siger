@@ -2,14 +2,18 @@ package beans;
 
 import carga.Asignador;
 import carga.Balanceador;
+import carga.Carajeador;
 import carga.Cargador;
 import carga.Clasificador;
 import carga.Confirmador;
 import carga.CreadorSQL;
 import carga.Validador;
+import dao.DespachoDAO;
 import dto.Asignacion;
+import dto.Despacho;
 import dto.Fila;
 import dto.Gestor;
+import impl.DespachoIMPL;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -20,9 +24,14 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import jxl.read.biff.BiffException;
+import nuevaImplementacionDAO.GestorDAO;
+import nuevaImplementacionIMPL.GestorIMPL;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
+import util.HibernateUtil;
 
 /**
  *
@@ -101,13 +110,24 @@ public class VistaCarga implements Serializable {
   /* Nombre del archivo sql que va a contener el script que se ejecutará para realizar la carga. */
   private String archivoSql;
 
+  /* Mes al cual corresponde la carga */
+  private int mesCarga;
+
+  /* Despacho encargado de la gestión*/
+  private List<Despacho> despachos;
+  private int idDespacho;
+
+  /* Para interactuar con la BD */
+  private Session session;
+  private Transaction transaction;
+
   /**
    * Método que inicializa a las variables de instancia para dar comienzo a la
    * carga.
    *
    */
   public void iniciarCarga() {
-    cargador = new Cargador();
+    cargador = new Cargador(mesCarga);
     tabView.setActiveIndex(INICIO); // Comienza mostrando el primer tab
     enLaFiesta = new ArrayList<>();
     estabanEnLaFiesta = new ArrayList<>();
@@ -116,6 +136,8 @@ public class VistaCarga implements Serializable {
     gestoresSeleccionados = new ArrayList<>();
     asignaciones = new ArrayList<>();
     criterioDeAsignacion = "";
+
+    System.out.println(FacesContext.class.getPackage().getImplementationVersion());
   } // Fin del método inicarCarga.
 
   public void reiniciarCarga() {
@@ -129,6 +151,8 @@ public class VistaCarga implements Serializable {
    */
   public void subirArchivo(FileUploadEvent evento) throws IOException, BiffException {
     FacesContext context = FacesContext.getCurrentInstance();
+
+    // Guarda el nombre original del archivo en el String archivoSubido.
     String archivoSubido = cargador.subirArchivo(evento);
 
     if (archivoSubido != null) {
@@ -183,39 +207,84 @@ public class VistaCarga implements Serializable {
   public void validarDatos() {
     FacesContext context = FacesContext.getCurrentInstance();
 
-    /* Variable que determina si se encontró algún error en la validación. */
-    boolean continuar = true;
-
-    /* La validación de las filas se realiza sólo si "filas" contiene al menos
-     un elemento. */
-    if (filas.size() > 0) {
-
-      /* Validación de las filas. */
-      for (Fila f : filas) {
-        Validador.validarFila(f); /* Valida la fila actual */
-
-        if (!f.getError().equals("NO")) { // Ocurrió un error
-          context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                  f.getError(), f.getDetalleError()));
-          /* Puesto que ocurrió un error, entonces ya no continuar con la
-           ejecución del ciclo. */
-          continuar = false;
-          break; /* Rompe ciclo for.*/
-
-        }
-      }
-
-      /* Si no ocurrió ningún error, se informa al usuario que la operación fue
-       exitosa. */
-      if (continuar) {
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Se han validado los datos: ",
-                "todos los datos son correctos"));
-        paso3 = true;
-        tabView.setActiveIndex(VALIDAR_DATOS); // Muestra siguiente tab.
-      }
+    Fila fila = Validador.validarFilas(filas);
+    if (fila != null) {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, fila.getError(), fila.getDetalleError()));
+    } else {
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+              "Se han validado los datos: ",
+              "todos los datos son correctos"));
+      paso3 = true;
+      tabView.setActiveIndex(VALIDAR_DATOS); // Muestra siguiente tab.
     }
+//
+//    /* Variable que determina si se encontró algún error en la validación. */
+//    boolean continuar = true;
+//    /* La validación de las filas se realiza sólo si "filas" contiene al menos
+//     un elemento. */
+//    if (filas.size() > 0) {
+//
+//      /* Validación de las filas. */
+//      for (Fila f : filas) {
+//        Validador.validarFila(f); /* Valida la fila actual */
+//
+//        if (!f.getError().equals("NO")) { // Ocurrió un error
+//          context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+//                  f.getError(), f.getDetalleError()));
+//          /* Puesto que ocurrió un error, entonces ya no continuar con la
+//           ejecución del ciclo. */
+//          continuar = false;
+//          break; /* Rompe ciclo for.*/
+//
+//        }
+//      }
+//
+//      /* Si no ocurrió ningún error, se informa al usuario que la operación fue
+//       exitosa. */
+//      if (continuar) {
+//        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+//                "Se han validado los datos: ",
+//                "todos los datos son correctos"));
+//        paso3 = true;
+//        tabView.setActiveIndex(VALIDAR_DATOS); // Muestra siguiente tab.
+//      }
+//    }
+
   } // Fin del método validarDatos.
+
+  /**
+   * Método que agrega objetos necesarios a cada objeto Fila, haciendo una mejor
+   * implementación del patrón de diseño DAO. Para efectos de emplear de mejor
+   * manera este patrón, se crearon los paquetes nuevaImplementacionIMPL y
+   * nuevaImplementacionDAO, cuyas clases e interfaces son usadas en este
+   * método.
+   *
+   */
+  private void agregarObjetos() {
+    this.session = null;
+    this.transaction = null;
+    try {
+      nuevaImplementacionDAO.DespachoDAO despachoDao = new nuevaImplementacionIMPL.DespachoIMPL();
+      GestorDAO gestorDao = new GestorIMPL();
+
+      this.session = HibernateUtil.getSessionFactory().openSession();
+      this.transaction = session.beginTransaction();
+
+      // Obteniendo objetos...
+      Despacho despacho = despachoDao.getById(session, idDespacho);
+
+      // Agregando objetos
+      for (Fila f : filas) {
+        f.setDespachoDTO(despacho);
+        f.setGestorDTO(gestorDao.getById(session, f.getIdGestor()));
+      }
+
+    } catch (Exception ex) {
+
+    } finally {
+
+    }
+  }
 
   /**
    * Método que clasifica los créditos de acuerdo a su inclusión o no en la Base
@@ -227,7 +296,7 @@ public class VistaCarga implements Serializable {
     FacesContext context = FacesContext.getCurrentInstance();
 
     /* Clasifica los créditos contenidos en "filas". */
-    filas = Clasificador.clasificar(filas);
+    Clasificador.clasificar(filas);
 
     /* Una vez clasificados los créditos mediante el objeto Clasificar, divide la
      lista "filas" en listas más pequeñas que almacenarán los créditos de acuerdo
@@ -240,7 +309,7 @@ public class VistaCarga implements Serializable {
             "Se han clasificado todos los créditos.", "La tabla muestra más detalle"));
 
     /* Busca a los gestores del Corp correspondiente. */
-    gestores = Asignador.getGestores(2);
+    gestores = Asignador.getGestores(idDespacho);
 
   } // Fin del método clasificarCreditos
 
@@ -312,17 +381,24 @@ public class VistaCarga implements Serializable {
    */
   public void reasignar() {
     FacesContext context = FacesContext.getCurrentInstance();
-    
+
     /* Reasigna valiéndose del objeto Balanceador. */
     Balanceador.reasignar(creditoActual, gestorAReasignar, asignaciones, asignacionActual);
     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
             "Reasignación Exitosa", "Se Reasignó crédito: " + creditoActual.getCredito()));
   } // Fin del método reasignar.
 
+  public void mandarAlCarajo() {
+    paso6 = true;
+    tabView.setActiveIndex(BALANCE_CARGA);
+
+    Carajeador.carajear(idDespacho, nuevosTotales);
+  }
+
   /**
    * Método que crea un archivo sql que contiene las sentencias sql a ejecutar
-   * para realizar la carga. El archivo se guarda en el servidor para posteriormente
-   * ser ejecutado y consumar la carga.
+   * para realizar la carga. El archivo se guarda en el servidor para
+   * posteriormente ser ejecutado y consumar la carga.
    *
    */
   public void crearSQL() {
@@ -330,7 +406,7 @@ public class VistaCarga implements Serializable {
     tabView.setActiveIndex(BALANCE_CARGA); // Muestra siguiente tab.
 
     /* En primer lugar crea los objetos Sujeto que servirán para ser asociados a
-    los deudores contenidos en los objetos Fila. */
+     los deudores contenidos en los objetos Fila. */
     CreadorSQL.crearSujetos(nuevosTotales);
     archivoSql = CreadorSQL.crearSQL(nuevosTotales);
   } // Fin del método crearSQL.
@@ -406,7 +482,7 @@ public class VistaCarga implements Serializable {
   }
 
   public int getTotalCreditos() {
-    return filas.size();
+    return (filas != null) ? filas.size() : 0;
   }
 
   public List<Fila> getEnLaFiesta() {
@@ -426,19 +502,19 @@ public class VistaCarga implements Serializable {
   }
 
   public int getTotalEnLaFiesta() {
-    return enLaFiesta.size();
+    return (enLaFiesta != null) ? enLaFiesta.size() : 0;
   }
 
   public int getTotalEstabanEnLaFiesta() {
-    return estabanEnLaFiesta.size();
+    return (estabanEnLaFiesta != null) ? estabanEnLaFiesta.size() : 0;
   }
 
   public int getTotalNuevosTotales() {
-    return nuevosTotales.size();
+    return (nuevosTotales != null) ? nuevosTotales.size() : 0;
   }
 
   public int getTotalNuevosCreditos() {
-    return nuevosCreditos.size();
+    return (nuevosCreditos != null) ? nuevosCreditos.size() : 0;
   }
 
   public List<Gestor> getGestores() {
@@ -483,6 +559,36 @@ public class VistaCarga implements Serializable {
 
   public void setGestorAReasignar(int gestorAReasignar) {
     this.gestorAReasignar = gestorAReasignar;
+  }
+
+  public int getGestorAReasignar() {
+    return gestorAReasignar;
+  }
+
+  public int getMesCarga() {
+    return mesCarga;
+  }
+
+  public void setMesCarga(int mesCarga) {
+    this.mesCarga = mesCarga;
+  }
+
+  public int getIdDespacho() {
+    return idDespacho;
+  }
+
+  public void setIdDespacho(int idDespacho) {
+    this.idDespacho = idDespacho;
+  }
+
+  public List<Despacho> getDespachos() {
+    DespachoDAO despachoDao = new DespachoIMPL();
+    despachos = despachoDao.getAll();
+    return despachos;
+  }
+
+  public void setDespachos(List<Despacho> despachos) {
+    this.despachos = despachos;
   }
 
 }

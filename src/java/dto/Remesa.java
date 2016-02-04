@@ -1,5 +1,5 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -13,27 +13,25 @@ public class Remesa  implements java.io.Serializable {
 
 
      private Integer idRemesa;
-     private Integer mesesVencidos;
-     private Float saldoVencido;
-     private String estatus;
-     private Date fechaUltimoPago;
-     private Date fechaUltimoVencimientoPagado;
-     private Date vigencia;
-     private Set creditoRemesas = new HashSet(0);
-     private Set facs = new HashSet(0);
+     private Integer mes;
+     private Integer anio;
+     private Integer totalCreditos;
+     private Float totalSaldoVencido;
+     private Date fechaCarga;
+     private Integer quienCarga;
+     private Set actualizacions = new HashSet(0);
 
     public Remesa() {
     }
 
-    public Remesa(Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Date fechaUltimoVencimientoPagado, Date vigencia, Set creditoRemesas, Set facs) {
-       this.mesesVencidos = mesesVencidos;
-       this.saldoVencido = saldoVencido;
-       this.estatus = estatus;
-       this.fechaUltimoPago = fechaUltimoPago;
-       this.fechaUltimoVencimientoPagado = fechaUltimoVencimientoPagado;
-       this.vigencia = vigencia;
-       this.creditoRemesas = creditoRemesas;
-       this.facs = facs;
+    public Remesa(Integer mes, Integer anio, Integer totalCreditos, Float totalSaldoVencido, Date fechaCarga, Integer quienCarga, Set actualizacions) {
+       this.mes = mes;
+       this.anio = anio;
+       this.totalCreditos = totalCreditos;
+       this.totalSaldoVencido = totalSaldoVencido;
+       this.fechaCarga = fechaCarga;
+       this.quienCarga = quienCarga;
+       this.actualizacions = actualizacions;
     }
    
     public Integer getIdRemesa() {
@@ -43,61 +41,54 @@ public class Remesa  implements java.io.Serializable {
     public void setIdRemesa(Integer idRemesa) {
         this.idRemesa = idRemesa;
     }
-    public Integer getMesesVencidos() {
-        return this.mesesVencidos;
+    public Integer getMes() {
+        return this.mes;
     }
     
-    public void setMesesVencidos(Integer mesesVencidos) {
-        this.mesesVencidos = mesesVencidos;
+    public void setMes(Integer mes) {
+        this.mes = mes;
     }
-    public Float getSaldoVencido() {
-        return this.saldoVencido;
-    }
-    
-    public void setSaldoVencido(Float saldoVencido) {
-        this.saldoVencido = saldoVencido;
-    }
-    public String getEstatus() {
-        return this.estatus;
+    public Integer getAnio() {
+        return this.anio;
     }
     
-    public void setEstatus(String estatus) {
-        this.estatus = estatus;
+    public void setAnio(Integer anio) {
+        this.anio = anio;
     }
-    public Date getFechaUltimoPago() {
-        return this.fechaUltimoPago;
-    }
-    
-    public void setFechaUltimoPago(Date fechaUltimoPago) {
-        this.fechaUltimoPago = fechaUltimoPago;
-    }
-    public Date getFechaUltimoVencimientoPagado() {
-        return this.fechaUltimoVencimientoPagado;
+    public Integer getTotalCreditos() {
+        return this.totalCreditos;
     }
     
-    public void setFechaUltimoVencimientoPagado(Date fechaUltimoVencimientoPagado) {
-        this.fechaUltimoVencimientoPagado = fechaUltimoVencimientoPagado;
+    public void setTotalCreditos(Integer totalCreditos) {
+        this.totalCreditos = totalCreditos;
     }
-    public Date getVigencia() {
-        return this.vigencia;
-    }
-    
-    public void setVigencia(Date vigencia) {
-        this.vigencia = vigencia;
-    }
-    public Set getCreditoRemesas() {
-        return this.creditoRemesas;
+    public Float getTotalSaldoVencido() {
+        return this.totalSaldoVencido;
     }
     
-    public void setCreditoRemesas(Set creditoRemesas) {
-        this.creditoRemesas = creditoRemesas;
+    public void setTotalSaldoVencido(Float totalSaldoVencido) {
+        this.totalSaldoVencido = totalSaldoVencido;
     }
-    public Set getFacs() {
-        return this.facs;
+    public Date getFechaCarga() {
+        return this.fechaCarga;
     }
     
-    public void setFacs(Set facs) {
-        this.facs = facs;
+    public void setFechaCarga(Date fechaCarga) {
+        this.fechaCarga = fechaCarga;
+    }
+    public Integer getQuienCarga() {
+        return this.quienCarga;
+    }
+    
+    public void setQuienCarga(Integer quienCarga) {
+        this.quienCarga = quienCarga;
+    }
+    public Set getActualizacions() {
+        return this.actualizacions;
+    }
+    
+    public void setActualizacions(Set actualizacions) {
+        this.actualizacions = actualizacions;
     }
 
 

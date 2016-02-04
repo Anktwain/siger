@@ -1,24 +1,23 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 11/12/2015 11:59:29 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Institucion" table="institucion" catalog="sigerbd" optimistic-lock="version">
-        <id name="idInstitucion" type="java.lang.Integer">
-            <column name="id_institucion" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="sujeto" class="dto.Sujeto" fetch="select">
-            <column name="id_sujeto" not-null="true" />
-        </many-to-one>
-        <property name="nombreCorto" type="string">
-            <column name="nombre_corto" length="30" not-null="true" />
-        </property>
-        <set name="productos" table="producto" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_institucion" not-null="true" />
-            </key>
-            <one-to-many class="dto.Producto" />
-        </set>
-    </class>
+  <class catalog="sigerbd" name="dto.Institucion" optimistic-lock="version" table="institucion">
+    <id name="idInstitucion" type="java.lang.Integer">
+      <column name="id_institucion"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Sujeto" fetch="select" name="sujeto">
+      <column name="id_sujeto" not-null="true"/>
+    </many-to-one>
+    <property name="nombreCorto" type="string">
+      <column length="30" name="nombre_corto" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="productos" table="producto">
+      <key>
+        <column name="id_institucion" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Producto"/>
+    </set>
+  </class>
 </hibernate-mapping>

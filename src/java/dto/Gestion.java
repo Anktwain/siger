@@ -1,7 +1,8 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
 
 
+import dto.Credito;
 import java.util.Date;
 
 /**
@@ -26,19 +27,6 @@ public class Gestion  implements java.io.Serializable {
     public Gestion() {
     }
 
-	
-    public Gestion(Credito credito, EstatusInformativo estatusInformativo, Usuario usuario, Date fecha, String tipoGestion, String lugarGestion, String asuntoGestion, String descripcionGestion, String tipoSujetoGestion, String gestion) {
-        this.credito = credito;
-        this.estatusInformativo = estatusInformativo;
-        this.usuario = usuario;
-        this.fecha = fecha;
-        this.tipoGestion = tipoGestion;
-        this.lugarGestion = lugarGestion;
-        this.asuntoGestion = asuntoGestion;
-        this.descripcionGestion = descripcionGestion;
-        this.tipoSujetoGestion = tipoSujetoGestion;
-        this.gestion = gestion;
-    }
     public Gestion(Credito credito, EstatusInformativo estatusInformativo, Usuario usuario, Date fecha, String tipoGestion, String lugarGestion, String asuntoGestion, String descripcionGestion, String tipoSujetoGestion, String sujetoGestion, String gestion) {
        this.credito = credito;
        this.estatusInformativo = estatusInformativo;

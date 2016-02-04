@@ -1,5 +1,5 @@
 package dto;
-// Generated 11/12/2015 11:59:28 AM by Hibernate Tools 4.3.1
+// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -14,9 +14,9 @@ public class Despacho  implements java.io.Serializable {
      private Integer idDespacho;
      private Sujeto sujeto;
      private String nombreCorto;
-     private Set zonas = new HashSet(0);
-     private Set usuarios = new HashSet(0);
      private Set creditos = new HashSet(0);
+     private Set usuarios = new HashSet(0);
+     private Set zonas = new HashSet(0);
 
     public Despacho() {
     }
@@ -25,12 +25,12 @@ public class Despacho  implements java.io.Serializable {
     public Despacho(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public Despacho(Sujeto sujeto, String nombreCorto, Set zonas, Set usuarios, Set creditos) {
+    public Despacho(Sujeto sujeto, String nombreCorto, Set creditos, Set usuarios, Set zonas) {
        this.sujeto = sujeto;
        this.nombreCorto = nombreCorto;
-       this.zonas = zonas;
-       this.usuarios = usuarios;
        this.creditos = creditos;
+       this.usuarios = usuarios;
+       this.zonas = zonas;
     }
    
     public Integer getIdDespacho() {
@@ -54,12 +54,12 @@ public class Despacho  implements java.io.Serializable {
     public void setNombreCorto(String nombreCorto) {
         this.nombreCorto = nombreCorto;
     }
-    public Set getZonas() {
-        return this.zonas;
+    public Set getCreditos() {
+        return this.creditos;
     }
     
-    public void setZonas(Set zonas) {
-        this.zonas = zonas;
+    public void setCreditos(Set creditos) {
+        this.creditos = creditos;
     }
     public Set getUsuarios() {
         return this.usuarios;
@@ -68,12 +68,12 @@ public class Despacho  implements java.io.Serializable {
     public void setUsuarios(Set usuarios) {
         this.usuarios = usuarios;
     }
-    public Set getCreditos() {
-        return this.creditos;
+    public Set getZonas() {
+        return this.zonas;
     }
     
-    public void setCreditos(Set creditos) {
-        this.creditos = creditos;
+    public void setZonas(Set zonas) {
+        this.zonas = zonas;
     }
 
 

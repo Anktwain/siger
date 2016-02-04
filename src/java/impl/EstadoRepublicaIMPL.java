@@ -16,16 +16,7 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
 
   /**
    * Devuelve un {@code List<>} con todos los EstadoRepublica que se encuentren
-   * dados de alta en el sistema. <br/>
-   * Nota: <strong>Es sumamente importante que
-   * los estados que se devuelvan en el {@code List<>} se encuentren ordenados
-   * alfabéticamente ascendentemente.</strong> Para ello debe hacerse un query
-   * manual donde se especifique tal ordenamiento en la sentencia select, de
-   * este modo:    
-   * <code>
-   * select * from estado_republica order by nombre asc;
-   * </code>
-   * @return 
+   * dados de alta en el sistema.
    */
   @Override
   public List<EstadoRepublica> buscarTodo() {

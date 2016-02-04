@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Actualizacion" optimistic-lock="version" table="actualizacion">
+    <id name="idActualizacion" type="java.lang.Integer">
+      <column name="id_actualizacion"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Credito" fetch="select" name="credito">
+      <column name="id_credito" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Remesa" fetch="select" name="remesa">
+      <column name="id_remesa" not-null="true"/>
+    </many-to-one>
+    <property name="mesesVencidos" type="java.lang.Integer">
+      <column name="meses_vencidos"/>
+    </property>
+    <property name="saldoVencido" type="java.lang.Float">
+      <column name="saldo_vencido" precision="12" scale="0"/>
+    </property>
+    <property name="estatus" type="string">
+      <column length="10" name="estatus"/>
+    </property>
+    <property name="fechaUltimoPago" type="date">
+      <column length="10" name="fecha_ultimo_pago"/>
+    </property>
+    <property name="fechaUltimoVencimientoPagado" type="date">
+      <column length="10" name="fecha_ultimo_vencimiento_pagado"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="facs" table="fac">
+      <key>
+        <column name="id_actualizacion" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Fac"/>
+    </set>
+  </class>
+</hibernate-mapping>

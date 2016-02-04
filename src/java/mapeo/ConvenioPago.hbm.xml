@@ -1,33 +1,32 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 11/12/2015 11:59:29 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.ConvenioPago" table="convenio_pago" catalog="sigerbd" optimistic-lock="version">
-        <id name="idConvenioPago" type="java.lang.Integer">
-            <column name="id_convenio_pago" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="credito" class="dto.Credito" fetch="select">
-            <column name="id_credito" not-null="true" />
-        </many-to-one>
-        <property name="fecha" type="date">
-            <column name="fecha" length="10" not-null="true" />
-        </property>
-        <property name="estatus" type="int">
-            <column name="estatus" not-null="true" />
-        </property>
-        <property name="saldoNegociado" type="float">
-            <column name="saldo_negociado" precision="12" scale="0" not-null="true" />
-        </property>
-        <property name="pagosRealizados" type="int">
-            <column name="pagos_realizados" not-null="true" />
-        </property>
-        <set name="pagos" table="pago" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_convenio_pago" not-null="true" />
-            </key>
-            <one-to-many class="dto.Pago" />
-        </set>
-    </class>
+  <class catalog="sigerbd" name="dto.ConvenioPago" optimistic-lock="version" table="convenio_pago">
+    <id name="idConvenioPago" type="int">
+      <column name="id_convenio_pago"/>
+      <generator class="assigned"/>
+    </id>
+    <many-to-one class="dto.Credito" fetch="select" name="credito">
+      <column name="id_credito" not-null="true"/>
+    </many-to-one>
+    <property name="fecha" type="date">
+      <column length="10" name="fecha" not-null="true"/>
+    </property>
+    <property name="estatus" type="int">
+      <column name="estatus" not-null="true"/>
+    </property>
+    <property name="saldoNegociado" type="float">
+      <column name="saldo_negociado" not-null="true" precision="12" scale="0"/>
+    </property>
+    <property name="pagosRealizados" type="int">
+      <column name="pagos_realizados" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="pagos" table="pago">
+      <key>
+        <column name="id_convenio_pago" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Pago"/>
+    </set>
+  </class>
 </hibernate-mapping>

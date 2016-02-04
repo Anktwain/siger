@@ -247,6 +247,28 @@ public class CreditoIMPL implements CreditoDAO {
     return credito;
   }
 
+  @Override
+  public Credito insertar(Credito credito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+
+    try {
+      sesion.save(credito);
+      tx.commit();
+      Logs.log.info("Se insertó un nuevo Credito");
+    } catch (HibernateException he) {
+      credito = null;
+      if (tx != null) {
+        tx.rollback();
+      }
+      Logs.log.error("No se pudo insertar Credito:");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return credito;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

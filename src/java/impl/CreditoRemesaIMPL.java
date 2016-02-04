@@ -21,7 +21,7 @@ public class CreditoRemesaIMPL implements CreditoRemesaDAO {
     CreditoRemesa creditoRemesa;
     int r = 0;
     String query = "select * from credito_remesa where id_remesa "
-            + "= (select max(id_remesa) from credito_remesa) and id_credito = '"
+            + "= (select max(id_remesa) from remesa) and id_credito = '"
             + credito + "'";
 
     try {

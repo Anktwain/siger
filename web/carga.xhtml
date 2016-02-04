@@ -54,7 +54,11 @@
       <div class="row">
         <div class="col-sm-1"></div>
         <div class="col-sm-10" id="divMensajes">
-          <p:messages id="mensajes" showDetail="true" autoUpdate="true"/>  
+          <h:form id="frmMensajeMesDeCarga">
+            <p:outputLabel
+              value="Cargando la remesa correspondiente al mes de: #{vistaCarga.mesCarga}, para el despacho: #{vistaCarga.idDespacho}..." />
+          </h:form>
+          <p:messages id="mensajes" showDetail="true" autoUpdate="true"/>
         </div>
         <div class="col-sm-1"></div>
       </div>
@@ -71,7 +75,9 @@
                       <div class="col-sm-7 col-md-4">
                         <div class="panel-stat3 bg-success" >
                           <h3 class="m-top-none">Iniciar Carga</h3>
-                          <h:commandButton value="Iniciar Carga" class="btn btn-success" actionListener="#{vistaCarga.iniciarCarga()}"/>
+                          <h:commandButton id="btnIniciarCarga" value="Iniciar Carga" class="btn btn-success">
+                            <p:ajax oncomplete="PF('dlgDatosDeCarga').show()" />
+                          </h:commandButton>
                           <div class="stat-icon">
                             <i class="fa fa-cloud-upload fa-2x" />
                           </div>
@@ -116,7 +122,7 @@
                           </div>
                           Presione el bot&oacute;n para leer el archivo.
                         </div>
-                        <h:commandButton value="Leer archivo" class="btn btn-success" >
+                        <h:commandButton id="btnLeerArchivo" value="Leer archivo" class="btn btn-success" >
                           <p:ajax listener="#{vistaCarga.leerArchivo()}" update="frmActividades:paso2, tabView"/>
                         </h:commandButton>
                       </div>
@@ -303,7 +309,7 @@
                     <div class="col-sm-10 col-md-8"></div>
                     <h:form>
                       <h:commandButton value="Terminar" class="btn btn-success">
-                        <p:ajax listener="#{vistaCarga.crearSQL()}" update="frmActividades:paso6, tabView"/>
+                        <p:ajax listener="#{vistaCarga.mandarAlCarajo()}" update="frmActividades:paso6, tabView"/>
                       </h:commandButton>
                     </h:form>
                   </div>
@@ -403,6 +409,41 @@
     </div> <!-- main-container -->
     <ui:include src="barraInferior.xhtml"/>
 
+    <p:dialog widgetVar="dlgDatosDeCarga" header="Ingrese los datos de carga" showEffect="size"
+              hideEffect="size" resizable="true" id="dlgDatosDeCarga">
+      <h:form id="frmDatosDeCarga">
+        <h:panelGrid id="gridDlgDatosDeCarga" columns="2">
+          <h:outputText value="Mes:" />
+          <p:selectOneMenu value="#{vistaCarga.mesCarga}">
+            <f:selectItem itemLabel="" itemValue="0" />
+            <f:selectItem itemLabel="Enero" itemValue="1" />
+            <f:selectItem itemLabel="Febrero" itemValue="2" />
+            <f:selectItem itemLabel="Marzo" itemValue="3" />
+            <f:selectItem itemLabel="Abril" itemValue="4" />
+            <f:selectItem itemLabel="Mayo" itemValue="5" />
+            <f:selectItem itemLabel="Junio" itemValue="6" />
+            <f:selectItem itemLabel="Julio" itemValue="7" />
+            <f:selectItem itemLabel="Agosto" itemValue="8" />
+            <f:selectItem itemLabel="Septiembre" itemValue="9" />
+            <f:selectItem itemLabel="Octubre" itemValue="10" />
+            <f:selectItem itemLabel="Noviembre" itemValue="11" />
+            <f:selectItem itemLabel="Diciembre" itemValue="12" />
+          </p:selectOneMenu>
+
+          <h:outputText value="Despacho:" />
+          <p:selectOneMenu value="#{vistaCarga.idDespacho}">
+            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItems value="#{vistaCarga.despachos}" var="despacho" itemLabel="#{despacho.nombreCorto}"
+                           itemValue="#{despacho.idDespacho}" />
+          </p:selectOneMenu>
+
+          <p:commandButton id="btnDatosDeCarga" value="Aceptar" actionListener="#{vistaCarga.iniciarCarga()}"
+                           oncomplete="PF('dlgDatosDeCarga').hide()"
+                           update="frmActividades:paso1, tabView, frmMensajeMesDeCarga"/>
+        </h:panelGrid>
+      </h:form>
+    </p:dialog>
+
     <p:dialog widgetVar="dlgReasignar" header="Reasignar Cr&eacute;dito" showEffect="size"
               hideEffect="size" resizable="true" id="dlgReasignar">
       <h:form id="frmDlgReasignar">
@@ -435,6 +476,7 @@
         </p:panelGrid>
       </h:form>
     </p:dialog>
+
   </h:body>
 
 

@@ -1,45 +1,47 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 11/12/2015 11:59:29 AM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Pago" table="pago" catalog="sigerbd" optimistic-lock="version">
-        <id name="idPago" type="java.lang.Integer">
-            <column name="id_pago" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="convenioPago" class="dto.ConvenioPago" fetch="select">
-            <column name="id_convenio_pago" not-null="true" />
-        </many-to-one>
-        <many-to-one name="gestor" class="dto.Gestor" fetch="select">
-            <column name="id_gestor" not-null="true" />
-        </many-to-one>
-        <many-to-one name="quincena" class="dto.Quincena" fetch="select">
-            <column name="id_quincena" not-null="true" />
-        </many-to-one>
-        <property name="fechaDeposito" type="date">
-            <column name="fecha_deposito" length="10" not-null="true" />
-        </property>
-        <property name="fechaRegistro" type="date">
-            <column name="fecha_registro" length="10" not-null="true" />
-        </property>
-        <property name="estatus" type="int">
-            <column name="estatus" not-null="true" />
-        </property>
-        <property name="monto" type="float">
-            <column name="monto" precision="12" scale="0" not-null="true" />
-        </property>
-        <property name="numeroCuenta" type="string">
-            <column name="numero_cuenta" length="50" not-null="true" />
-        </property>
-        <property name="nombreComprobante" type="string">
-            <column name="nombre_comprobante" length="200" not-null="true" unique="true" />
-        </property>
-        <property name="revisor" type="string">
-            <column name="revisor" length="50" />
-        </property>
-        <property name="observaciones" type="string">
-            <column name="observaciones" length="200" />
-        </property>
-    </class>
+  <class catalog="sigerbd" name="dto.Pago" optimistic-lock="version" table="pago">
+    <id name="idPago" type="int">
+      <column name="id_pago"/>
+      <generator class="assigned"/>
+    </id>
+    <many-to-one class="dto.ConvenioPago" fetch="select" name="convenioPago">
+      <column name="id_convenio_pago" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Gestor" fetch="select" name="gestor">
+      <column name="id_gestor" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Quincena" fetch="select" name="quincena">
+      <column name="id_quincena" not-null="true"/>
+    </many-to-one>
+    <property name="idPromesaPago" type="int">
+      <column name="id_promesa_pago" not-null="true"/>
+    </property>
+    <property name="fechaDeposito" type="date">
+      <column length="10" name="fecha_deposito" not-null="true"/>
+    </property>
+    <property name="fechaRegistro" type="date">
+      <column length="10" name="fecha_registro" not-null="true"/>
+    </property>
+    <property name="estatus" type="int">
+      <column name="estatus" not-null="true"/>
+    </property>
+    <property name="monto" type="float">
+      <column name="monto" not-null="true" precision="12" scale="0"/>
+    </property>
+    <property name="numeroCuenta" type="string">
+      <column length="50" name="numero_cuenta" not-null="true"/>
+    </property>
+    <property name="nombreComprobante" type="string">
+      <column length="200" name="nombre_comprobante" not-null="true" unique="true"/>
+    </property>
+    <property name="revisor" type="string">
+      <column length="50" name="revisor"/>
+    </property>
+    <property name="observaciones" type="string">
+      <column length="200" name="observaciones"/>
+    </property>
+  </class>
 </hibernate-mapping>
