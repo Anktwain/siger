@@ -13,5 +13,6 @@ public interface CreditoDAO {
   public Credito getById(Session session, int idCredito) throws Exception;
   public Credito getByNumeroCredito(Session session, String credito) throws Exception;
   public List<Credito> getAll(Session session) throws Exception;
+  public List<String> getAllNoCredito(Session session) throws Exception;
   public boolean update(Session session, Credito credito) throws Exception;
 }

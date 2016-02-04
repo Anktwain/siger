@@ -45,6 +45,17 @@ public class DeudorIMPL implements DeudorDAO {
   }
 
   @Override
+  public List<String> getAllNoDeudor(Session session) throws Exception {
+    String hql = "select numeroDeudor from Deudor";
+    Query query = session.createQuery(hql);
+    
+    List<String> listaDeNumerosDeDeudor = (List<String>) query.list();
+    return listaDeNumerosDeDeudor;
+  }
+  
+  
+
+  @Override
   public boolean update(Session session, Deudor deudor) throws Exception {
     session.update(deudor);
     

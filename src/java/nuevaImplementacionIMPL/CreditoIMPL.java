@@ -45,6 +45,17 @@ public class CreditoIMPL implements CreditoDAO {
   }
 
   @Override
+  public List<String> getAllNoCredito(Session session) throws Exception {
+    String hql = "select numeroCredito from Credito";
+    Query query = session.createQuery(hql);
+    
+    List<String> listaNumerosDeCredito = (List<String>) query.list();
+    return listaNumerosDeCredito;
+  }
+  
+  
+
+  @Override
   public boolean update(Session session, Credito credito) throws Exception {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }

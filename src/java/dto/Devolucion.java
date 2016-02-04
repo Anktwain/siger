@@ -1,7 +1,9 @@
 package dto;
-// Generated 25/01/2016 12:05:14 PM by Hibernate Tools 4.3.1
+// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
 
 
+import dto.ConceptoDevolucion;
+import dto.Credito;
 import java.util.Date;
 
 /**

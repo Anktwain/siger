@@ -1,33 +1,32 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 25/01/2016 12:05:16 PM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Devolucion" table="devolucion" catalog="sigerbd" optimistic-lock="version">
-        <id name="idDevolucion" type="java.lang.Integer">
-            <column name="id_devolucion" />
-            <generator class="identity" />
-        </id>
-        <many-to-one name="conceptoDevolucion" class="dto.ConceptoDevolucion" fetch="select">
-            <column name="id_concepto_devolucion" not-null="true" />
-        </many-to-one>
-        <many-to-one name="credito" class="dto.Credito" fetch="select">
-            <column name="id_credito" not-null="true" />
-        </many-to-one>
-        <property name="fecha" type="timestamp">
-            <column name="fecha" length="19" not-null="true" />
-        </property>
-        <property name="observaciones" type="string">
-            <column name="observaciones" length="100" />
-        </property>
-        <property name="solicitante" type="string">
-            <column name="solicitante" length="50" not-null="true" />
-        </property>
-        <property name="revisor" type="string">
-            <column name="revisor" length="50" />
-        </property>
-        <property name="estatus" type="int">
-            <column name="estatus" not-null="true" />
-        </property>
-    </class>
+  <class catalog="sigerbd" name="dto.Devolucion" optimistic-lock="version" table="devolucion">
+    <id name="idDevolucion" type="java.lang.Integer">
+      <column name="id_devolucion"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.ConceptoDevolucion" fetch="select" name="conceptoDevolucion">
+      <column name="id_concepto_devolucion" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.Credito" fetch="select" name="credito">
+      <column name="id_credito" not-null="true"/>
+    </many-to-one>
+    <property name="fecha" type="timestamp">
+      <column length="19" name="fecha" not-null="true"/>
+    </property>
+    <property name="observaciones" type="string">
+      <column length="100" name="observaciones"/>
+    </property>
+    <property name="solicitante" type="string">
+      <column length="50" name="solicitante" not-null="true"/>
+    </property>
+    <property name="revisor" type="string">
+      <column length="50" name="revisor"/>
+    </property>
+    <property name="estatus" type="int">
+      <column name="estatus" not-null="true"/>
+    </property>
+  </class>
 </hibernate-mapping>

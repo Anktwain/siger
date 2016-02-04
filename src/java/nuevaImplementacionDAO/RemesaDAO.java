@@ -11,6 +11,7 @@ import org.hibernate.Session;
 public interface RemesaDAO {
   public boolean insert(Session session, Remesa remesa) throws Exception;
   public Remesa getById(Session session, int idRemesa) throws Exception;
+  public Remesa getUltimaRemesa(Session session) throws Exception;
   public List<Remesa> getAll(Session session) throws Exception;
   public boolean update(Session session, Remesa remesa) throws Exception;
 }

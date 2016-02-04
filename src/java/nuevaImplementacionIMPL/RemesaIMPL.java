@@ -24,6 +24,16 @@ public class RemesaIMPL implements RemesaDAO {
   }
 
   @Override
+  public Remesa getUltimaRemesa(Session session) throws Exception {
+    String hql = "select max(idRemesa) from Remesa";
+    Query query = session.createQuery(hql);
+    
+    int ultimoID = (int) query.uniqueResult();
+    
+    return getById(session, ultimoID);
+  }
+
+  @Override
   public List<Remesa> getAll(Session session) throws Exception {
     String hql = "from Remesa";
     Query query = session.createQuery(hql);

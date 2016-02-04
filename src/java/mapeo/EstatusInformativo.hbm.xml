@@ -1,21 +1,20 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 25/01/2016 12:05:16 PM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.EstatusInformativo" table="estatus_informativo" catalog="sigerbd" optimistic-lock="version">
-        <id name="idEstatusInformativo" type="java.lang.Integer">
-            <column name="id_estatus_informativo" />
-            <generator class="identity" />
-        </id>
-        <property name="estatus" type="string">
-            <column name="estatus" length="100" not-null="true" />
-        </property>
-        <set name="gestions" table="gestion" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_estatus_informativo" not-null="true" />
-            </key>
-            <one-to-many class="dto.Gestion" />
-        </set>
-    </class>
+  <class catalog="sigerbd" name="dto.EstatusInformativo" optimistic-lock="version" table="estatus_informativo">
+    <id name="idEstatusInformativo" type="java.lang.Integer">
+      <column name="id_estatus_informativo"/>
+      <generator class="identity"/>
+    </id>
+    <property name="estatus" type="string">
+      <column length="100" name="estatus" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="gestions" table="gestion">
+      <key>
+        <column name="id_estatus_informativo" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Gestion"/>
+    </set>
+  </class>
 </hibernate-mapping>

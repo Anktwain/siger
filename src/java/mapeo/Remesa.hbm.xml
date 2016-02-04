@@ -1,48 +1,35 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 25/01/2016 12:05:16 PM by Hibernate Tools 4.3.1 -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
-    <class name="dto.Remesa" table="remesa" catalog="sigerbd" optimistic-lock="version">
-        <id name="idRemesa" type="java.lang.Integer">
-            <column name="id_remesa" />
-            <generator class="identity" />
-        </id>
-        <property name="mesesVencidos" type="java.lang.Integer">
-            <column name="meses_vencidos" />
-        </property>
-        <property name="saldoVencido" type="java.lang.Float">
-            <column name="saldo_vencido" precision="12" scale="0" />
-        </property>
-        <property name="estatus" type="string">
-            <column name="estatus" length="10" />
-        </property>
-        <property name="fechaUltimoPago" type="date">
-            <column name="fecha_ultimo_pago" length="10" />
-        </property>
-        <property name="fechaUltimoVencimientoPagado" type="date">
-            <column name="fecha_ultimo_vencimiento_pagado" length="10" />
-        </property>
-        <property name="vigencia" type="date">
-            <column name="vigencia" length="10" />
-        </property>
-        <set name="facs" table="fac" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_remesa" not-null="true" />
-            </key>
-            <one-to-many class="dto.Fac" />
-        </set>
-        <set name="creditoRemesas" table="credito_remesa" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_remesa" not-null="true" />
-            </key>
-            <one-to-many class="dto.CreditoRemesa" />
-        </set>
-        <set name="actualizacions" table="actualizacion" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="id_remesa" not-null="true" />
-            </key>
-            <one-to-many class="dto.Actualizacion" />
-        </set>
-    </class>
+  <class catalog="sigerbd" name="dto.Remesa" optimistic-lock="version" table="remesa">
+    <id name="idRemesa" type="java.lang.Integer">
+      <column name="id_remesa"/>
+      <generator class="identity"/>
+    </id>
+    <property name="mes" type="java.lang.Integer">
+      <column name="mes"/>
+    </property>
+    <property name="anio" type="java.lang.Integer">
+      <column name="anio"/>
+    </property>
+    <property name="totalCreditos" type="java.lang.Integer">
+      <column name="total_creditos"/>
+    </property>
+    <property name="totalSaldoVencido" type="java.lang.Float">
+      <column name="total_saldo_vencido" precision="12" scale="0"/>
+    </property>
+    <property name="fechaCarga" type="timestamp">
+      <column length="19" name="fecha_carga"/>
+    </property>
+    <property name="quienCarga" type="java.lang.Integer">
+      <column name="quien_carga"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="actualizacions" table="actualizacion">
+      <key>
+        <column name="id_remesa" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Actualizacion"/>
+    </set>
+  </class>
 </hibernate-mapping>

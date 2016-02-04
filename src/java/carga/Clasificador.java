@@ -1,17 +1,20 @@
 package carga;
 
-import dao.CreditoDAO;
-import dao.CreditoRemesaDAO;
-import dao.DeudorDAO;
-import dao.RemesaDao;
 import dto.Credito;
 import dto.Deudor;
 import dto.Fila;
-import impl.CreditoIMPL;
-import impl.CreditoRemesaIMPL;
-import impl.DeudorIMPL;
-import impl.RemesaIMPL;
+import dto.Remesa;
+
 import java.util.List;
+import nuevaImplementacionDAO.CreditoDAO;
+import nuevaImplementacionDAO.DeudorDAO;
+import nuevaImplementacionDAO.RemesaDAO;
+import nuevaImplementacionIMPL.CreditoIMPL;
+import nuevaImplementacionIMPL.DeudorIMPL;
+import nuevaImplementacionIMPL.RemesaIMPL;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import util.HibernateUtil;
 
 /**
  *
@@ -41,54 +44,98 @@ public class Clasificador {
    * clasificados.
    */
   public static void clasificar(List<Fila> filas) {
+    Session session = null;
+    Transaction transaction = null;
+
+    /* Lista de Créditos y deudores existentes en la BD, respectivamente */
+    List<String> creditosEnBD = null;
+    List<String> deudoresEnBD = null;
+
     /* Objetos credito y deudor. El crédito y el deudor representados por un objeto
      Fila en un momento determinado. */
     Credito credito;
     Deudor deudor;
+    Remesa remesaActual;
 
-    /* Objetos de acceso a la Base de Datos */
+    /* Objetos de acceso a la BD. */
     CreditoDAO creditoDao = new CreditoIMPL();
     DeudorDAO deudorDao = new DeudorIMPL();
-    RemesaDao remesaDao = new RemesaIMPL();
-    CreditoRemesaDAO creditoRemesaDao = new CreditoRemesaIMPL();
+    RemesaDAO remesaDao = new RemesaIMPL();
 
-    int remesaActual, remesaActualCredito;
-    remesaActual = remesaDao.buscarRemesaActual();
+    /* Acceso a la BD para obtener lista de numeros de credito e ID de deudores */
+    try {
+      session = HibernateUtil.getSessionFactory().openSession();
+      transaction = session.beginTransaction();
 
-    /* Recorre todos los elementos Fila contenidos en "filas" */
-    for (Fila f : filas) {
-      /* En primer lugar, toma el número de crédito de la fila actual y lo busca
-       en la Base de Datos. */
-      credito = creditoDao.buscar(f.getCredito());
+      creditosEnBD = creditoDao.getAllNoCredito(session);
+      deudoresEnBD = deudorDao.getAllNoDeudor(session);
 
-      /* Si encuentra ese número de crédito en la Base de Datos, entonces la
-       clasificación puede caer en cualquiera de estos dos casos: "En la fiesta"
-       o "Estaba en la fiesta". */
-      if (credito != null) {
-        remesaActualCredito = creditoRemesaDao.buscarRemesaActual(credito.getNumeroCredito());
-        if (remesaActualCredito == remesaActual) {
-          f.setClasificacion(EN_LA_FIESTA);
-        } else {
-          f.setClasificacion(ESTABA_EN_LA_FIESTA);
-        }
-      } else {
-        /* Si no encuentra ese número de crédito en la Base de Datos, entonces la
-       clasificación puede caer en cualquiera de estos dos casos: "Nuevo crédito"
-       o "Nuevo total". */ 
-        
-        deudor = deudorDao.buscar(f.getIdCliente()); /* Ahora busca el deudor en la Base de Datos */
-        /* Si el deudor sí se encuentra en la base de datos, entonces se trata de un
-         nuevo crédito. */
+      remesaActual = remesaDao.getUltimaRemesa(session);
 
-        if (deudor != null) {
-          f.setClasificacion(NUEVO_CREDITO); // No encuentra crédito ni cliente
-        } /* Si el deudor no se encuentra en la base de datos, entonces se trata de un
-         nuevo total. */ else {
-          f.setClasificacion(NUEVO_TOTAL); // No encuentra crédito, sí cliente
-        }
+      transaction.commit();
+    } catch (Exception ex) {
+      if (transaction != null) {
+        transaction.rollback();
+      }
+    } finally {
+      if (session.isOpen()) {
+        session.close();
       }
     }
 
+    int remesaActualCredito;
+    String numeroDeCredito;
+
+    /* Recorre todos los elementos Fila contenidos en "filas" */
+    try {
+      for (Fila f : filas) {
+        if (creditosEnBD.contains(f.getCredito())) {
+          f.setClasificacion(ESTABA_EN_LA_FIESTA);
+          // CONTINUAR AQUÍ.........................
+        } else {
+          if (deudoresEnBD.contains(f.getIdCliente())) {
+            f.setClasificacion(NUEVO_CREDITO);
+          } else {
+            f.setClasificacion(NUEVO_TOTAL);
+          }
+        }
+      }
+    } catch (NullPointerException npe) {
+      System.out.println("Nullpointer...");
+    }
+
+//      
+//      /* En primer lugar, toma el número de crédito de la fila actual y lo busca
+//       en la Base de Datos. */
+//      credito = creditoDao.buscar(f.getCredito());
+//
+//      /* Si encuentra ese número de crédito en la Base de Datos, entonces la
+//       clasificación puede caer en cualquiera de estos dos casos: "En la fiesta"
+//       o "Estaba en la fiesta". */
+//      if (credito != null) {
+//        remesaActualCredito = creditoRemesaDao.buscarRemesaActual(credito.getNumeroCredito());
+//        if (remesaActualCredito == remesaActual) {
+//          f.setClasificacion(EN_LA_FIESTA);
+//        } else {
+//          f.setClasificacion(ESTABA_EN_LA_FIESTA);
+//        }
+//      } else {
+//        /* Si no encuentra ese número de crédito en la Base de Datos, entonces la
+//         clasificación puede caer en cualquiera de estos dos casos: "Nuevo crédito"
+//         o "Nuevo total". */
+//
+//        deudor = deudorDao.buscar(f.getIdCliente()); /* Ahora busca el deudor en la Base de Datos */
+//        /* Si el deudor sí se encuentra en la base de datos, entonces se trata de un
+//         nuevo crédito. */
+//
+//        if (deudor != null) {
+//          f.setClasificacion(NUEVO_CREDITO); // No encuentra crédito ni cliente
+//        } /* Si el deudor no se encuentra en la base de datos, entonces se trata de un
+//         nuevo total. */ else {
+//          f.setClasificacion(NUEVO_TOTAL); // No encuentra crédito, sí cliente
+//        }
+//      }
+    //}
   }
 
 }
