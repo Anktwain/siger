@@ -115,7 +115,7 @@
             Estados:
             <br />
             <br />
-            <p:selectManyMenu value="#{zonasBean.estadosSeleccionados}" filter="true" filterMatchMode="contains" showCheckbox="true" disabled="#{zonasBean.habilitaEstados}" style="width: 280px; height: 250px;">
+            <p:selectManyMenu value="#{zonasBean.estadosSeleccionados}" filter="true" filterMatchMode="contains" showCheckbox="true" style="width: 280px; height: 250px;">
               <f:selectItems value="#{zonasBean.listaEstados}" var="e" itemLabel="#{e.nombre}" itemValue="#{e.idEstado}" />
             </p:selectManyMenu>
             <br />
@@ -130,8 +130,6 @@
             </p:selectManyMenu>
             <br />
             <p:commandButton value="Agregar municipios" actionListener="#{zonasBean.verificaMunicipios()}" disabled="#{zonasBean.habilitaMunicipios}" update=":growl" />
-            &nbsp;&nbsp;&nbsp;
-            <p:commandButton value="Agregar todos" actionListener="#{zonasBean.agregarTodosMunicipios()}" update=":growl" disabled="true" />
           </p:layoutUnit>
         </p:layout>
         <br />
