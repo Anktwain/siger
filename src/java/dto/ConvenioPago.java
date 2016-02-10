@@ -1,5 +1,5 @@
 package dto;
-// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
+// Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -17,28 +17,30 @@ public class ConvenioPago  implements java.io.Serializable {
      private Date fecha;
      private int estatus;
      private float saldoNegociado;
-     private int pagosRealizados;
+     private int pagosNegociados;
+     private Set promesaPagos = new HashSet(0);
      private Set pagos = new HashSet(0);
 
     public ConvenioPago() {
     }
 
 	
-    public ConvenioPago(int idConvenioPago, Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosRealizados) {
+    public ConvenioPago(int idConvenioPago, Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosNegociados) {
         this.idConvenioPago = idConvenioPago;
         this.credito = credito;
         this.fecha = fecha;
         this.estatus = estatus;
         this.saldoNegociado = saldoNegociado;
-        this.pagosRealizados = pagosRealizados;
+        this.pagosNegociados = pagosNegociados;
     }
-    public ConvenioPago(int idConvenioPago, Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosRealizados, Set pagos) {
+    public ConvenioPago(int idConvenioPago, Credito credito, Date fecha, int estatus, float saldoNegociado, int pagosNegociados, Set promesaPagos, Set pagos) {
        this.idConvenioPago = idConvenioPago;
        this.credito = credito;
        this.fecha = fecha;
        this.estatus = estatus;
        this.saldoNegociado = saldoNegociado;
-       this.pagosRealizados = pagosRealizados;
+       this.pagosNegociados = pagosNegociados;
+       this.promesaPagos = promesaPagos;
        this.pagos = pagos;
     }
    
@@ -77,12 +79,19 @@ public class ConvenioPago  implements java.io.Serializable {
     public void setSaldoNegociado(float saldoNegociado) {
         this.saldoNegociado = saldoNegociado;
     }
-    public int getPagosRealizados() {
-        return this.pagosRealizados;
+    public int getPagosNegociados() {
+        return this.pagosNegociados;
     }
     
-    public void setPagosRealizados(int pagosRealizados) {
-        this.pagosRealizados = pagosRealizados;
+    public void setPagosNegociados(int pagosNegociados) {
+        this.pagosNegociados = pagosNegociados;
+    }
+    public Set getPromesaPagos() {
+        return this.promesaPagos;
+    }
+    
+    public void setPromesaPagos(Set promesaPagos) {
+        this.promesaPagos = promesaPagos;
     }
     public Set getPagos() {
         return this.pagos;

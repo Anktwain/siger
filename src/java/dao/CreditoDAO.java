@@ -1,7 +1,6 @@
 package dao;
 
 import dto.Credito;
-import dto.vistaTablas.CreditoTablas;
 import java.util.List;
 
 /**

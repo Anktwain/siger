@@ -46,6 +46,7 @@
             </h5>
           </div>
         </div>
+        <br />
         <div class="clearfix">
           <div class="pull-left">
             <strong>
@@ -81,29 +82,29 @@
               Gestor actual:
               &nbsp;
               <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px" rendered="#{vistaCreditoBean.reasignarVisible}">
-                <f:selectItem itemValue="#{vistaCreditoBean.gestorActual.idGestor}" itemLabel="#{vistaCreditoBean.gestorActual.toString()}" />
-                <f:selectItems value="#{vistaCreditoBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
+                <f:selectItem itemValue="#{vistaCreditoBean.gestorActual.idGestor}" itemLabel="#{vistaCreditoBean.gestorActual.usuario.nombreLogin}" />
+                <f:selectItems value="#{vistaCreditoBean.listaGestores}" var="g" itemLabel="#{g.usuario.nombreLogin}" itemValue="#{g.idGestor}" />
                 <p:ajax listener="#{vistaCreditoBean.confirmar()}" />
               </p:selectOneMenu>
             </h:form>
           </div>
           <div class="pull-right text-right">
             <h:form>
-              Fecha de inicio: <h:outputText value="#{vistaCreditoBean.fechaInicio}" />
+              <strong>Fecha de inicio:</strong> <h:outputText value="#{vistaCreditoBean.fechaInicio}" />
               <br />
-              Fecha Ultimo Pago: <h:outputText value="#{vistaCreditoBean.fup}" />
+              <strong>Fecha Ultimo Pago:</strong> <h:outputText value="#{vistaCreditoBean.fup}" />
               <br />
-              Fecha Ultimo Vencimiento Pagado: <h:outputText value="#{vistaCreditoBean.fvp}" />
+              <strong>Fecha Ultimo Vencimiento Pagado:</strong> <h:outputText value="#{vistaCreditoBean.fvp}" />
               <br />
-              Fecha Fin del credito: <h:outputText value="#{vistaCreditoBean.fechaFin}" />
+              <strong>Fecha Fin del credito:</strong> <h:outputText value="#{vistaCreditoBean.fechaFin}" />
               <br />
-              Mensualidad:
+              <strong>Mensualidad:</strong>
               &nbsp;
               <h:outputText value="#{vistaCreditoBean.mensualidad}">
                 <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
               </h:outputText>
               <br />
-              Saldo vencido:
+              <strong>Saldo vencido:</strong>
               &nbsp;
               <h:outputText value="#{vistaCreditoBean.saldoVencido}">
                 <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
@@ -126,17 +127,17 @@
                     </f:facet>
                     <h:outputText value="#{g.fecha}"/>
                   </p:column>
-                  <p:column style="width: 150px;">
+                  <p:column style="width: 200px;">
                     <f:facet name="header">
                       <h:outputText value="Tipo Gestion" />
                     </f:facet>
-                    <h:outputText value="#{g.tipoGestion}"/>
+                    <h:outputText value="#{g.tipoGestion.nombre}"/>
                   </p:column>
-                  <p:column  style="width: 150px;">
+                  <p:column  style="width: 200px;">
                     <f:facet name="header">
                       <h:outputText value="Asunto" />
                     </f:facet>
-                    <h:outputText value="#{g.asuntoGestion}"/>
+                    <h:outputText value="#{g.asuntoGestion.tipoAsuntoGestion.asunto}"/>
                   </p:column>
                   <p:column>
                     <f:facet name="header">

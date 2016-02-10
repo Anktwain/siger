@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Sujeto" optimistic-lock="version" table="sujeto">
     <id name="idSujeto" type="java.lang.Integer">
@@ -16,17 +16,23 @@
     <property name="eliminado" type="int">
       <column name="eliminado" not-null="true"/>
     </property>
+    <set fetch="select" inverse="true" lazy="true" name="telefonos" table="telefono">
+      <key>
+        <column name="id_sujeto" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Telefono"/>
+    </set>
     <set fetch="select" inverse="true" lazy="true" name="direccions" table="direccion">
       <key>
         <column name="id_sujeto" not-null="true"/>
       </key>
       <one-to-many class="dto.Direccion"/>
     </set>
-    <set fetch="select" inverse="true" lazy="true" name="emails" table="email">
+    <set fetch="select" inverse="true" lazy="true" name="contactos" table="contacto">
       <key>
         <column name="id_sujeto" not-null="true"/>
       </key>
-      <one-to-many class="dto.Email"/>
+      <one-to-many class="dto.Contacto"/>
     </set>
     <set fetch="select" inverse="true" lazy="true" name="institucions" table="institucion">
       <key>
@@ -46,17 +52,11 @@
       </key>
       <one-to-many class="dto.Deudor"/>
     </set>
-    <set fetch="select" inverse="true" lazy="true" name="telefonos" table="telefono">
+    <set fetch="select" inverse="true" lazy="true" name="emails" table="email">
       <key>
         <column name="id_sujeto" not-null="true"/>
       </key>
-      <one-to-many class="dto.Telefono"/>
-    </set>
-    <set fetch="select" inverse="true" lazy="true" name="contactos" table="contacto">
-      <key>
-        <column name="id_sujeto" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Contacto"/>
+      <one-to-many class="dto.Email"/>
     </set>
   </class>
 </hibernate-mapping>

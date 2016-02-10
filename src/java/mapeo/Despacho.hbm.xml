@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Despacho" optimistic-lock="version" table="despacho">
     <id name="idDespacho" type="java.lang.Integer">
@@ -13,11 +13,11 @@
     <property name="nombreCorto" type="string">
       <column length="100" name="nombre_corto"/>
     </property>
-    <set fetch="select" inverse="true" lazy="true" name="creditos" table="credito">
+    <set fetch="select" inverse="true" lazy="true" name="zonas" table="zona">
       <key>
         <column name="id_despacho" not-null="true"/>
       </key>
-      <one-to-many class="dto.Credito"/>
+      <one-to-many class="dto.Zona"/>
     </set>
     <set fetch="select" inverse="true" lazy="true" name="usuarios" table="usuario">
       <key>
@@ -25,11 +25,11 @@
       </key>
       <one-to-many class="dto.Usuario"/>
     </set>
-    <set fetch="select" inverse="true" lazy="true" name="zonas" table="zona">
+    <set fetch="select" inverse="true" lazy="true" name="creditos" table="credito">
       <key>
         <column name="id_despacho" not-null="true"/>
       </key>
-      <one-to-many class="dto.Zona"/>
+      <one-to-many class="dto.Credito"/>
     </set>
   </class>
 </hibernate-mapping>

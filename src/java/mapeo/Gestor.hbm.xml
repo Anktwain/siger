@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Gestor" optimistic-lock="version" table="gestor">
     <id name="idGestor" type="java.lang.Integer">
@@ -13,17 +13,17 @@
     <property name="extension" type="string">
       <column length="15" name="extension"/>
     </property>
-    <set fetch="select" inverse="true" lazy="true" name="creditos" table="credito">
-      <key>
-        <column name="id_gestor" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Credito"/>
-    </set>
     <set fetch="select" inverse="true" lazy="true" name="zonas" table="zona">
       <key>
         <column name="id_gestor" not-null="true"/>
       </key>
       <one-to-many class="dto.Zona"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="creditos" table="credito">
+      <key>
+        <column name="id_gestor" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Credito"/>
     </set>
     <set fetch="select" inverse="true" lazy="true" name="pagos" table="pago">
       <key>

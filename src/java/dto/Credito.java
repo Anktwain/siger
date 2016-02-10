@@ -1,5 +1,5 @@
 package dto;
-// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
+// Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -13,6 +13,7 @@ public class Credito  implements java.io.Serializable {
 
 
      private Integer idCredito;
+     private Campana campana;
      private Despacho despacho;
      private Deudor deudor;
      private Gestor gestor;
@@ -28,27 +29,31 @@ public class Credito  implements java.io.Serializable {
      private Integer diasMora;
      private String numeroCuenta;
      private int tipoCredito;
-     private Set historials = new HashSet(0);
-     private Set lineas = new HashSet(0);
-     private Set convenioPagos = new HashSet(0);
+     private int marcaje;
      private Set devolucions = new HashSet(0);
+     private Set historials = new HashSet(0);
      private Set gestions = new HashSet(0);
      private Set actualizacions = new HashSet(0);
      private Set autos = new HashSet(0);
+     private Set convenioPagos = new HashSet(0);
+     private Set lineas = new HashSet(0);
 
     public Credito() {
     }
 
 	
-    public Credito(Despacho despacho, Deudor deudor, Gestor gestor, Producto producto, String numeroCredito, int tipoCredito) {
+    public Credito(Campana campana, Despacho despacho, Deudor deudor, Gestor gestor, Producto producto, String numeroCredito, int tipoCredito, int marcaje) {
+        this.campana = campana;
         this.despacho = despacho;
         this.deudor = deudor;
         this.gestor = gestor;
         this.producto = producto;
         this.numeroCredito = numeroCredito;
         this.tipoCredito = tipoCredito;
+        this.marcaje = marcaje;
     }
-    public Credito(Despacho despacho, Deudor deudor, Gestor gestor, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set historials, Set lineas, Set convenioPagos, Set devolucions, Set gestions, Set actualizacions, Set autos) {
+    public Credito(Campana campana, Despacho despacho, Deudor deudor, Gestor gestor, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, int marcaje, Set devolucions, Set historials, Set gestions, Set actualizacions, Set autos, Set convenioPagos, Set lineas) {
+       this.campana = campana;
        this.despacho = despacho;
        this.deudor = deudor;
        this.gestor = gestor;
@@ -64,13 +69,14 @@ public class Credito  implements java.io.Serializable {
        this.diasMora = diasMora;
        this.numeroCuenta = numeroCuenta;
        this.tipoCredito = tipoCredito;
-       this.historials = historials;
-       this.lineas = lineas;
-       this.convenioPagos = convenioPagos;
+       this.marcaje = marcaje;
        this.devolucions = devolucions;
+       this.historials = historials;
        this.gestions = gestions;
        this.actualizacions = actualizacions;
        this.autos = autos;
+       this.convenioPagos = convenioPagos;
+       this.lineas = lineas;
     }
    
     public Integer getIdCredito() {
@@ -79,6 +85,13 @@ public class Credito  implements java.io.Serializable {
     
     public void setIdCredito(Integer idCredito) {
         this.idCredito = idCredito;
+    }
+    public Campana getCampana() {
+        return this.campana;
+    }
+    
+    public void setCampana(Campana campana) {
+        this.campana = campana;
     }
     public Despacho getDespacho() {
         return this.despacho;
@@ -185,26 +198,12 @@ public class Credito  implements java.io.Serializable {
     public void setTipoCredito(int tipoCredito) {
         this.tipoCredito = tipoCredito;
     }
-    public Set getHistorials() {
-        return this.historials;
+    public int getMarcaje() {
+        return this.marcaje;
     }
     
-    public void setHistorials(Set historials) {
-        this.historials = historials;
-    }
-    public Set getLineas() {
-        return this.lineas;
-    }
-    
-    public void setLineas(Set lineas) {
-        this.lineas = lineas;
-    }
-    public Set getConvenioPagos() {
-        return this.convenioPagos;
-    }
-    
-    public void setConvenioPagos(Set convenioPagos) {
-        this.convenioPagos = convenioPagos;
+    public void setMarcaje(int marcaje) {
+        this.marcaje = marcaje;
     }
     public Set getDevolucions() {
         return this.devolucions;
@@ -212,6 +211,13 @@ public class Credito  implements java.io.Serializable {
     
     public void setDevolucions(Set devolucions) {
         this.devolucions = devolucions;
+    }
+    public Set getHistorials() {
+        return this.historials;
+    }
+    
+    public void setHistorials(Set historials) {
+        this.historials = historials;
     }
     public Set getGestions() {
         return this.gestions;
@@ -233,6 +239,20 @@ public class Credito  implements java.io.Serializable {
     
     public void setAutos(Set autos) {
         this.autos = autos;
+    }
+    public Set getConvenioPagos() {
+        return this.convenioPagos;
+    }
+    
+    public void setConvenioPagos(Set convenioPagos) {
+        this.convenioPagos = convenioPagos;
+    }
+    public Set getLineas() {
+        return this.lineas;
+    }
+    
+    public void setLineas(Set lineas) {
+        this.lineas = lineas;
     }
 
 

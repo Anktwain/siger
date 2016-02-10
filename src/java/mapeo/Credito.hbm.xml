@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Credito" optimistic-lock="version" table="credito">
     <id name="idCredito" type="java.lang.Integer">
       <column name="id_credito"/>
       <generator class="identity"/>
     </id>
+    <many-to-one class="dto.Campana" fetch="select" name="campana">
+      <column name="id_campana" not-null="true"/>
+    </many-to-one>
     <many-to-one class="dto.Despacho" fetch="select" name="despacho">
       <column name="id_despacho" not-null="true"/>
     </many-to-one>
@@ -52,29 +55,20 @@
     <property name="tipoCredito" type="int">
       <column name="tipo_credito" not-null="true"/>
     </property>
-    <set fetch="select" inverse="true" lazy="true" name="historials" table="historial">
-      <key>
-        <column name="id_credito" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Historial"/>
-    </set>
-    <set fetch="select" inverse="true" lazy="true" name="lineas" table="linea">
-      <key>
-        <column name="id_credito" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Linea"/>
-    </set>
-    <set fetch="select" inverse="true" lazy="true" name="convenioPagos" table="convenio_pago">
-      <key>
-        <column name="id_credito" not-null="true"/>
-      </key>
-      <one-to-many class="dto.ConvenioPago"/>
-    </set>
+    <property name="marcaje" type="int">
+      <column name="marcaje" not-null="true"/>
+    </property>
     <set fetch="select" inverse="true" lazy="true" name="devolucions" table="devolucion">
       <key>
         <column name="id_credito" not-null="true"/>
       </key>
       <one-to-many class="dto.Devolucion"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="historials" table="historial">
+      <key>
+        <column name="id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Historial"/>
     </set>
     <set fetch="select" inverse="true" lazy="true" name="gestions" table="gestion">
       <key>
@@ -93,6 +87,18 @@
         <column name="id_credito" not-null="true"/>
       </key>
       <one-to-many class="dto.Auto"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="convenioPagos" table="convenio_pago">
+      <key>
+        <column name="id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.ConvenioPago"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="lineas" table="linea">
+      <key>
+        <column name="id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Linea"/>
     </set>
   </class>
 </hibernate-mapping>

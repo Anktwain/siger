@@ -3,7 +3,6 @@
 <html xmlns:f="http://xmlns.jcp.org/jsf/core" 
       xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
@@ -17,44 +16,57 @@
           <strong>
             Tipo de gestion:
           </strong>
-          <p:selectOneMenu id="tipoGestion" value="#{gestionBean.tipoSeleccionado}" style="width:200px">
+          <p:selectOneMenu id="tipoGestion" value="#{gestionBean.tipoSeleccionado.idTipoGestion}" style="width:200px">
             <f:selectItem itemLabel="" itemValue="" />
-            <f:selectItems value="#{gestionBean.listaTipos}" />
-            <p:ajax listener="#{gestionBean.preparaDonde()}" />
+            <f:selectItems value="#{gestionBean.listaTipos}" var="tipos" itemLabel="#{tipos.nombre}" itemValue="#{tipos.idTipoGestion}" />
+            <p:ajax update="dondeGestion" listener="#{gestionBean.preparaDonde()}" />
           </p:selectOneMenu>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <strong>
             Donde:
           </strong>
-          <p:selectOneMenu id="dondeGestion" value="#{gestionBean.lugarSeleccionado}" style="width:250px">
+          <p:selectOneMenu id="dondeGestion" value="#{gestionBean.dondeSeleccionado.idDondeGestion}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
-            <f:selectItems value="#{gestionBean.listaDonde}" />
-            <p:ajax listener="#{gestionBean.preparaAsunto()}" />
+            <f:selectItems value="#{gestionBean.listaDonde}" var="dondes" itemLabel="#{dondes.nombre}" itemValue="#{dondes.idDondeGestion}" />
+            <p:ajax update="asuntoGestion" listener="#{gestionBean.preparaAsunto()}" />
           </p:selectOneMenu>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <strong>
             Asunto:
           </strong>
-          <p:selectOneMenu id="asuntoGestion" value="#{gestionBean.asuntoSeleccionado}" style="width:250px">
+          <p:selectOneMenu id="asuntoGestion" value="#{gestionBean.asuntoSeleccionado.idAsuntoGestion}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
-            <f:selectItems value="#{gestionBean.listaAsuntos}" />
-            <p:ajax listener="#{gestionBean.preparaTipoSujeto()}" />
+            <f:selectItems value="#{gestionBean.listaAsuntos}" var="asuntos" itemLabel="#{asuntos.tipoAsuntoGestion.asunto}" itemValue="#{asuntos.idAsuntoGestion}" />
+            <p:ajax update="descripcionGestion" listener="#{gestionBean.preparaDescripcion()}" />
           </p:selectOneMenu>
           <br />
           <br />
           <strong>
-            Se realiza la cobranza de la cuenta con:
+            Descripcion Gestion:
           </strong>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:selectOneMenu id="tipoSujetoGestion" value="#{gestionBean.tipoSujetoSeleccionado}" style="width:250px">
+          <p:selectOneMenu id="descripcionGestion" value="#{gestionBean.descripcionSeleccionada.idDescripcionGestion}" style="width:800px">
             <f:selectItem itemLabel="" itemValue="" />
-            <f:selectItems value="#{gestionBean.listaTipoSujetos}" />
-            <p:ajax listener="#{gestionBean.preparaSujetos()}" />
+            <f:selectItems value="#{gestionBean.listaDescripciones}" var="descripciones" itemLabel="#{descripciones.textoGestion}" itemValue="#{descripciones.idDescripcionGestion}" />
+            <p:ajax update="tipoSujetoGestion" listener="#{gestionBean.preparaTipoSujeto()}" />
+          </p:selectOneMenu>
+          <br />
+          <br />
+          <strong>
+            Tipo de sujeto:
+          </strong>
+          <p:selectOneMenu id="tipoSujetoGestion" value="#{gestionBean.tipoSujetoSeleccionado.idTipoQuienGestion}" style="width:250px">
+            <f:selectItem itemLabel="" itemValue="" />
+            <f:selectItems value="#{gestionBean.listaTipoSujetos}" var="tipoSujetos" itemLabel="#{tipoSujetos.descripcion}" itemValue="#{tipoSujetos.idTipoQuienGestion}" />
+            <p:ajax update="sujetoGestion" listener="#{gestionBean.preparaSujetos()}"/>
           </p:selectOneMenu>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:selectOneMenu id="sujetoGestion" value="#{gestionBean.sujetoSeleccionado}" style="width:250px">
+          <strong>
+            Sujeto gestion:
+          </strong>
+          <p:selectOneMenu id="sujetoGestion" value="#{gestionBean.sujetoSeleccionado.idQuienGestion}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
-            <f:selectItems value="#{gestionBean.listaSujetos}" />
+            <f:selectItems value="#{gestionBean.listaSujetos}" var="sujetos" itemLabel="#{sujetos.quien}" itemValue="#{sujetos.idQuienGestion}" />
+            <p:ajax update="estatusInformativoGestion" listener="#{gestionBean.preparaEstatus()}" />
           </p:selectOneMenu>
           <br />
           <br />
@@ -63,8 +75,9 @@
           </strong>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:selectOneMenu id="estatusInformativoGestion" value="#{gestionBean.estatusSeleccionado.idEstatusInformativo}" style="width:250px">
-            <f:selectItem itemLabel="" itemValue="0" />
+            <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaEstatus}"  var="e" itemLabel="#{e.estatus}" itemValue="#{e.idEstatusInformativo}"  />
+            <p:ajax listener="#{gestionBean.crearOracion()}"/>
           </p:selectOneMenu>
           <br />
           <br />
@@ -73,8 +86,16 @@
           </strong>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:inputTextarea rows="2" cols="100" id="gestion" value="#{gestionBean.gestion}" >
-            <p:ajax event="keyup"/>
-          </p:inputTextarea>
+            <p:ajax event="keyup" />
+          </p:inputTextarea><br />
+          <br />
+          <strong>
+            Gestion completa:
+          </strong>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <div style="width: 1000px;">
+            <h:outputText id="gestionCompleta" value="#{gestionBean.oracionCompleta}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+          </div>
           <br />
           <br />
           <p:commandButton value="Enviar gestion" actionListener="#{gestionBean.crearNuevaGestion()}" update="growl" />

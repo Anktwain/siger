@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.TipoGestion" optimistic-lock="version" table="tipo_gestion">
+    <id name="idTipoGestion" type="java.lang.Integer">
+      <column name="id_tipo_gestion"/>
+      <generator class="identity"/>
+    </id>
+    <property name="nombre" type="string">
+      <column length="100" name="nombre" not-null="true"/>
+    </property>
+    <property name="abreviatura" type="string">
+      <column length="20" name="abreviatura"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="asuntoGestions" table="asunto_gestion">
+      <key>
+        <column name="id_tipo_gestion" not-null="true"/>
+      </key>
+      <one-to-many class="dto.AsuntoGestion"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="dondeGestions" table="donde_gestion">
+      <key>
+        <column name="id_tipo_gestion" not-null="true"/>
+      </key>
+      <one-to-many class="dto.DondeGestion"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="gestions" table="gestion">
+      <key>
+        <column name="id_tipo_gestion" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Gestion"/>
+    </set>
+  </class>
+</hibernate-mapping>

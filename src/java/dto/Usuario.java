@@ -1,8 +1,7 @@
 package dto;
-// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
+// Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1
 
 
-import dto.Despacho;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,8 +22,8 @@ public class Usuario  implements java.io.Serializable {
      private String correo;
      private String imagenPerfil;
      private Set administrativos = new HashSet(0);
-     private Set gestions = new HashSet(0);
      private Set gestors = new HashSet(0);
+     private Set gestions = new HashSet(0);
 
     public Usuario() {
     }
@@ -39,7 +38,7 @@ public class Usuario  implements java.io.Serializable {
         this.perfil = perfil;
         this.correo = correo;
     }
-    public Usuario(Despacho despacho, String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagenPerfil, Set administrativos, Set gestions, Set gestors) {
+    public Usuario(Despacho despacho, String nombre, String paterno, String materno, String nombreLogin, String password, int perfil, String correo, String imagenPerfil, Set administrativos, Set gestors, Set gestions) {
        this.despacho = despacho;
        this.nombre = nombre;
        this.paterno = paterno;
@@ -50,8 +49,8 @@ public class Usuario  implements java.io.Serializable {
        this.correo = correo;
        this.imagenPerfil = imagenPerfil;
        this.administrativos = administrativos;
-       this.gestions = gestions;
        this.gestors = gestors;
+       this.gestions = gestions;
     }
    
     public Integer getIdUsuario() {
@@ -131,19 +130,19 @@ public class Usuario  implements java.io.Serializable {
     public void setAdministrativos(Set administrativos) {
         this.administrativos = administrativos;
     }
-    public Set getGestions() {
-        return this.gestions;
-    }
-    
-    public void setGestions(Set gestions) {
-        this.gestions = gestions;
-    }
     public Set getGestors() {
         return this.gestors;
     }
     
     public void setGestors(Set gestors) {
         this.gestors = gestors;
+    }
+    public Set getGestions() {
+        return this.gestions;
+    }
+    
+    public void setGestions(Set gestions) {
+        this.gestions = gestions;
     }
 
 

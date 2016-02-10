@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.PromesaPago" optimistic-lock="version" table="promesa_pago">
+    <id name="idPromesaPago" type="java.lang.Integer">
+      <column name="id_promesa_pago"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.ConvenioPago" fetch="select" name="convenioPago">
+      <column name="id_convenio_pago" not-null="true"/>
+    </many-to-one>
+    <property name="fechaPrometida" type="date">
+      <column length="10" name="fecha_prometida" not-null="true"/>
+    </property>
+    <property name="cantidadPrometida" type="float">
+      <column name="cantidad_prometida" not-null="true" precision="12" scale="0"/>
+    </property>
+  </class>
+</hibernate-mapping>
