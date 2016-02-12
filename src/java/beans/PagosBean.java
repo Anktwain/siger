@@ -89,8 +89,8 @@ public class PagosBean implements Serializable {
     pagoSeleccionado.setRevisor(revisor);
     ok = ok & (pagoDao.editar(pagoSeleccionado));
     ConvenioPago co = pagoSeleccionado.getConvenioPago();
-    int numPagos = co.getPagosRealizados() + 1;
-    co.setPagosRealizados(numPagos);
+    //int numPagos = co.getPagosRealizados() + 1;
+    //co.setPagosRealizados(numPagos);
     ok = ok & (convenioPagoDao.editar(co));
     if (ok) {
       cargarListas();

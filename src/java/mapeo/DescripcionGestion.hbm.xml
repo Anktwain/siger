@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.DescripcionGestion" optimistic-lock="version" table="descripcion_gestion">
+    <id name="idDescripcionGestion" type="java.lang.Integer">
+      <column name="id_descripcion_gestion"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.AsuntoGestion" fetch="select" name="asuntoGestion">
+      <column name="id_asunto_gestion" not-null="true"/>
+    </many-to-one>
+    <property name="abreviatura" type="string">
+      <column length="20" name="abreviatura"/>
+    </property>
+    <property name="textoGestion" type="string">
+      <column length="500" name="texto_gestion" not-null="true"/>
+    </property>
+    <property name="calificacion" type="java.lang.Integer">
+      <column name="calificacion"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="gestions" table="gestion">
+      <key>
+        <column name="id_descripcion_gestion" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Gestion"/>
+    </set>
+  </class>
+</hibernate-mapping>

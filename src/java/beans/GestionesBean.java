@@ -5,20 +5,9 @@
  */
 package beans;
 
-import dao.GestionDAO;
-import dao.GestorDAO;
-import dao.InstitucionDAO;
-import dao.ProductoDAO;
-import dao.UsuarioDAO;
-import dto.Gestion;
-import dto.Gestor;
-import dto.Institucion;
-import dto.Producto;
-import impl.GestionIMPL;
-import impl.GestorIMPL;
-import impl.InstitucionIMPL;
-import impl.ProductoIMPL;
-import impl.UsuarioIMPL;
+import dao.*;
+import dto.*;
+import impl.*;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,7 +19,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
-import util.constantes.Gestiones;
 
 /**
  *
@@ -82,7 +70,7 @@ public class GestionesBean implements Serializable {
     institucionDao = new InstitucionIMPL();
     usuarioDao = new UsuarioIMPL();
     listaGestores = gestorDao.buscarPorDespacho(idDespacho);
-    listaTipos = Gestiones.TIPO_GESTION;
+    //listaTipos = tipoGestionDao.;
     listaInstituciones = institucionDao.buscarInstitucionesPorDespacho(idDespacho);
   }
 

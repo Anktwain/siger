@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.ConvenioPago" optimistic-lock="version" table="convenio_pago">
     <id name="idConvenioPago" type="int">
@@ -19,9 +19,15 @@
     <property name="saldoNegociado" type="float">
       <column name="saldo_negociado" not-null="true" precision="12" scale="0"/>
     </property>
-    <property name="pagosRealizados" type="int">
-      <column name="pagos_realizados" not-null="true"/>
+    <property name="pagosNegociados" type="int">
+      <column name="pagos_negociados" not-null="true"/>
     </property>
+    <set fetch="select" inverse="true" lazy="true" name="promesaPagos" table="promesa_pago">
+      <key>
+        <column name="id_convenio_pago" not-null="true"/>
+      </key>
+      <one-to-many class="dto.PromesaPago"/>
+    </set>
     <set fetch="select" inverse="true" lazy="true" name="pagos" table="pago">
       <key>
         <column name="id_convenio_pago" not-null="true"/>

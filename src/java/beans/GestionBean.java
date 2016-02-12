@@ -5,12 +5,9 @@
  */
 package beans;
 
-import dao.EstatusInformativoDAO;
-import dao.GestionDAO;
-import dto.EstatusInformativo;
-import dto.Gestion;
-import impl.EstatusInformativoIMPL;
-import impl.GestionIMPL;
+import dao.*;
+import dto.*;
+import impl.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +18,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
-import util.constantes.Gestiones;
 
 /**
  *
@@ -37,22 +33,30 @@ public class GestionBean implements Serializable {
   VistaCreditoBean vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
 
   // VARIABLES DE CLASE
-  private List<String> listaTipos;
-  private List<String> listaDonde;
-  private List<String> listaAsuntos;
-  private List<String> listaTipoSujetos;
-  private List<String> listaSujetos;
+  private List<TipoGestion> listaTipos;
+  private List<DondeGestion> listaDonde;
+  private List<AsuntoGestion> listaAsuntos;
+  private List<DescripcionGestion> listaDescripciones;
+  private List<TipoQuienGestion> listaTipoSujetos;
+  private List<QuienGestion> listaSujetos;
   private List<EstatusInformativo> listaEstatus;
-  private final List<String> listaVacia;
-  private String tipoSeleccionado;
-  private String lugarSeleccionado;
-  private String asuntoSeleccionado;
-  private String tipoSujetoSeleccionado;
-  private String sujetoSeleccionado;
+  private TipoGestion tipoSeleccionado;
+  private DondeGestion dondeSeleccionado;
+  private AsuntoGestion asuntoSeleccionado;
+  private DescripcionGestion descripcionSeleccionada;
+  private TipoQuienGestion tipoSujetoSeleccionado;
+  private QuienGestion sujetoSeleccionado;
   private EstatusInformativo estatusSeleccionado;
   private String gestion;
+  private String oracionCompleta;
   private final GestionDAO gestionDao;
   private final EstatusInformativoDAO estatusInformativoDao;
+  private final TipoGestionDAO tipoGestionDao;
+  private final DondeGestionDAO dondeGestionDao;
+  private final AsuntoGestionDAO asuntoGestionDao;
+  private final TipoQuienGestionDAO tipoQuienGestionDao;
+  private final QuienGestionDAO quienGestionDao;
+  private final DescripcionGestionDAO descripcionGestionDao;
 
   // CONSTRUCTOR
   public GestionBean() {
@@ -62,82 +66,66 @@ public class GestionBean implements Serializable {
     listaTipoSujetos = new ArrayList();
     listaSujetos = new ArrayList();
     listaEstatus = new ArrayList();
-    listaVacia = new ArrayList();
+    listaDescripciones = new ArrayList();
     gestionDao = new GestionIMPL();
-    estatusSeleccionado = new EstatusInformativo();
     estatusInformativoDao = new EstatusInformativoIMPL();
-    listaTipos = Gestiones.TIPO_GESTION;
-    listaEstatus = estatusInformativoDao.buscarTodos();
+    tipoGestionDao = new TipoGestionIMPL();
+    dondeGestionDao = new DondeGestionIMPL();
+    asuntoGestionDao = new AsuntoGestionIMPL();
+    descripcionGestionDao = new DescripcionGestionIMPL();
+    tipoQuienGestionDao = new TipoQuienGestionIMPL();
+    quienGestionDao = new QuienGestionIMPL();
+    tipoSeleccionado = new TipoGestion();
+    dondeSeleccionado = new DondeGestion();
+    asuntoSeleccionado = new AsuntoGestion();
+    tipoSujetoSeleccionado = new TipoQuienGestion();
+    sujetoSeleccionado = new QuienGestion();
+    estatusSeleccionado = new EstatusInformativo();
+    descripcionSeleccionada = new DescripcionGestion();
+    listaTipos = tipoGestionDao.buscarTodo();
   }
 
   public void preparaDonde() {
-    System.out.println("PREPARA DONDE!!!");
-    switch (tipoSeleccionado) {
-      case "VISITA DOMICILIARIA":
-        listaDonde = Gestiones.DONDE_VISITA;
-        break;
-      case "TELEFONIA":
-        listaDonde = Gestiones.DONDE_TELEFONIA;
-        break;
-      case "CORPORATIVO":
-        listaDonde = Gestiones.DONDE_CORPORATIVO;
-        break;
-    }
-  RequestContext.getCurrentInstance().update("formNuevaGestion:dondeGestion");
+    tipoSeleccionado = tipoGestionDao.buscarPorId(tipoSeleccionado.getIdTipoGestion());
+    listaDonde = dondeGestionDao.buscarPorTipoGestion(tipoSeleccionado.getIdTipoGestion());
   }
 
   public void preparaAsunto() {
-    if (tipoSeleccionado.equals("CORPORATIVO")) {
-      listaAsuntos = Gestiones.ASUNTO_CORPORATIVO;
-    } else {
-      listaAsuntos = Gestiones.ASUNTO;
-    }
-    RequestContext.getCurrentInstance().update("formNuevaGestion:asuntoGestion");
+    dondeSeleccionado = dondeGestionDao.buscarPorId(dondeSeleccionado.getIdDondeGestion());
+    listaAsuntos = asuntoGestionDao.buscarPorTipoGestion(tipoSeleccionado.getIdTipoGestion());
+  }
+
+  public void preparaDescripcion() {
+    asuntoSeleccionado = asuntoGestionDao.buscarPorId(asuntoSeleccionado.getIdAsuntoGestion());
+    listaDescripciones = descripcionGestionDao.buscarPorAsuntoTipo(tipoSeleccionado.getIdTipoGestion(), asuntoSeleccionado.getIdAsuntoGestion());
   }
 
   public void preparaTipoSujeto() {
-    listaTipoSujetos = Gestiones.TIPO_SUJETOS;
-    RequestContext.getCurrentInstance().update("formNuevaGestion:tipoSujetoGestion");
+    descripcionSeleccionada = descripcionGestionDao.buscarPorId(descripcionSeleccionada.getIdDescripcionGestion());
+    listaTipoSujetos = tipoQuienGestionDao.buscarPorAsuntoDescripcion(asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto(), descripcionSeleccionada.getAbreviatura());
   }
 
   public void preparaSujetos() {
-    switch (tipoSujetoSeleccionado) {
-      case "TITULAR":
-        listaSujetos = listaVacia;
-        break;
-      case "DIRECTOS":
-        listaSujetos = Gestiones.SUJETOS_DIRECTOS;
-        break;
-      case "LATERALES":
-        listaSujetos = Gestiones.SUJETOS_LATERALES;
-        break;
-      case "LEGALES":
-        listaSujetos = Gestiones.SUJETOS_LEGALES;
-        break;
-      case "AMISTADES":
-        listaSujetos = Gestiones.SUJETOS_AMISTADES;
-        break;
-      case "LABORALES":
-        listaSujetos = Gestiones.SUJETOS_LABORALES;
-        break;
-      case "REFERENCIAS":
-        listaSujetos = Gestiones.SUJETOS_REFERENCIAS;
-        break;
-    }
-    RequestContext.getCurrentInstance().update("formNuevaGestion:sujetoGestion");
+    tipoSujetoSeleccionado = tipoQuienGestionDao.buscarPorId(tipoSujetoSeleccionado.getIdTipoQuienGestion());
+    listaSujetos = quienGestionDao.buscarPorTipoQuien(tipoSujetoSeleccionado.getIdTipoQuienGestion());
+  }
+
+  public void preparaEstatus() {
+    sujetoSeleccionado = quienGestionDao.buscarPorId(sujetoSeleccionado.getIdQuienGestion());
+    listaEstatus = estatusInformativoDao.buscarTodos();
   }
 
   public void crearNuevaGestion() {
     Gestion nueva = new Gestion();
     nueva.setTipoGestion(tipoSeleccionado);
-    nueva.setLugarGestion(lugarSeleccionado);
+    nueva.setDondeGestion(dondeSeleccionado);
     nueva.setAsuntoGestion(asuntoSeleccionado);
-    nueva.setDescripcionGestion("SE REALIZA COBRANZA DE LA CUENTA CON");
-    nueva.setTipoSujetoGestion(tipoSujetoSeleccionado);
-    nueva.setSujetoGestion(sujetoSeleccionado);
+    nueva.setDescripcionGestion(descripcionSeleccionada);
+    nueva.setTipoQuienGestion(tipoSujetoSeleccionado);
+    nueva.setQuienGestion(sujetoSeleccionado);
     EstatusInformativo est = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
     nueva.setEstatusInformativo(est);
-    nueva.setGestion(gestion);
+    nueva.setGestion(gestion.toUpperCase());
     nueva.setCredito(vistaCreditoBean.getCreditoActual());
     Date fecha = new Date();
     nueva.setFecha(fecha);
@@ -152,15 +140,28 @@ public class GestionBean implements Serializable {
     }
   }
 
+  public void crearOracion() {
+    estatusSeleccionado = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
+    if(tipoSujetoSeleccionado.getDescripcion().equals("NO APLICA")){
+    oracionCompleta = tipoSeleccionado.getNombre() + ". " + dondeSeleccionado.getNombre() + ", " + asuntoSeleccionado.getTipoAsuntoGestion().getAsunto() + ": " + descripcionSeleccionada.getTextoGestion() + ". " + estatusSeleccionado.getEstatus() + ".";
+    }
+    else{
+    oracionCompleta = tipoSeleccionado.getNombre() + ". " + dondeSeleccionado.getNombre() + ", " + asuntoSeleccionado.getTipoAsuntoGestion().getAsunto() + ": " + descripcionSeleccionada.getTextoGestion() + " " + tipoSujetoSeleccionado.getDescripcion() + ": " + sujetoSeleccionado.getQuien() + ". " + estatusSeleccionado.getEstatus() + ".";
+    }
+    RequestContext.getCurrentInstance().update("formNuevaGestion");
+  }
+
   public void limpiarCampos() {
     listaTipos = null;
     listaDonde = null;
     listaAsuntos = null;
     listaTipoSujetos = null;
+    listaDescripciones = null;
     listaSujetos = null;
     listaEstatus = null;
     gestion = null;
-    listaTipos = Gestiones.TIPO_GESTION;
+    oracionCompleta = null;
+    listaTipos = tipoGestionDao.buscarTodo();
     RequestContext.getCurrentInstance().update("formNuevaGestion");
   }
 
@@ -168,84 +169,44 @@ public class GestionBean implements Serializable {
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-  public List<String> getListaTipos() {
+  public List<TipoGestion> getListaTipos() {
     return listaTipos;
   }
 
-  public void setListaTipos(List<String> listaTipos) {
+  public void setListaTipos(List<TipoGestion> listaTipos) {
     this.listaTipos = listaTipos;
   }
 
-  public String getTipoSeleccionado() {
-    return tipoSeleccionado;
-  }
-
-  public void setTipoSeleccionado(String tipoSeleccionado) {
-    this.tipoSeleccionado = tipoSeleccionado;
-  }
-
-  public List<String> getListaDonde() {
+  public List<DondeGestion> getListaDonde() {
     return listaDonde;
   }
 
-  public void setListaDonde(List<String> listaDonde) {
+  public void setListaDonde(List<DondeGestion> listaDonde) {
     this.listaDonde = listaDonde;
   }
 
-  public String getLugarSeleccionado() {
-    return lugarSeleccionado;
-  }
-
-  public void setLugarSeleccionado(String lugarSeleccionado) {
-    this.lugarSeleccionado = lugarSeleccionado;
-  }
-
-  public List<String> getListaAsuntos() {
+  public List<AsuntoGestion> getListaAsuntos() {
     return listaAsuntos;
   }
 
-  public void setListaAsuntos(List<String> listaAsuntos) {
+  public void setListaAsuntos(List<AsuntoGestion> listaAsuntos) {
     this.listaAsuntos = listaAsuntos;
   }
 
-  public String getAsuntoSeleccionado() {
-    return asuntoSeleccionado;
-  }
-
-  public void setAsuntoSeleccionado(String asuntoSeleccionado) {
-    this.asuntoSeleccionado = asuntoSeleccionado;
-  }
-
-  public List<String> getListaTipoSujetos() {
+  public List<TipoQuienGestion> getListaTipoSujetos() {
     return listaTipoSujetos;
   }
 
-  public void setListaTipoSujetos(List<String> listaTipoSujetos) {
+  public void setListaTipoSujetos(List<TipoQuienGestion> listaTipoSujetos) {
     this.listaTipoSujetos = listaTipoSujetos;
   }
 
-  public List<String> getListaSujetos() {
+  public List<QuienGestion> getListaSujetos() {
     return listaSujetos;
   }
 
-  public void setListaSujetos(List<String> listaSujetos) {
+  public void setListaSujetos(List<QuienGestion> listaSujetos) {
     this.listaSujetos = listaSujetos;
-  }
-
-  public String getTipoSujetoSeleccionado() {
-    return tipoSujetoSeleccionado;
-  }
-
-  public void setTipoSujetoSeleccionado(String tipoSujetoSeleccionado) {
-    this.tipoSujetoSeleccionado = tipoSujetoSeleccionado;
-  }
-
-  public String getSujetoSeleccionado() {
-    return sujetoSeleccionado;
-  }
-
-  public void setSujetoSeleccionado(String sujetoSeleccionado) {
-    this.sujetoSeleccionado = sujetoSeleccionado;
   }
 
   public List<EstatusInformativo> getListaEstatus() {
@@ -254,6 +215,46 @@ public class GestionBean implements Serializable {
 
   public void setListaEstatus(List<EstatusInformativo> listaEstatus) {
     this.listaEstatus = listaEstatus;
+  }
+
+  public TipoGestion getTipoSeleccionado() {
+    return tipoSeleccionado;
+  }
+
+  public void setTipoSeleccionado(TipoGestion tipoSeleccionado) {
+    this.tipoSeleccionado = tipoSeleccionado;
+  }
+
+  public DondeGestion getDondeSeleccionado() {
+    return dondeSeleccionado;
+  }
+
+  public void setDondeSeleccionado(DondeGestion dondeSeleccionado) {
+    this.dondeSeleccionado = dondeSeleccionado;
+  }
+
+  public AsuntoGestion getAsuntoSeleccionado() {
+    return asuntoSeleccionado;
+  }
+
+  public void setAsuntoSeleccionado(AsuntoGestion asuntoSeleccionado) {
+    this.asuntoSeleccionado = asuntoSeleccionado;
+  }
+
+  public TipoQuienGestion getTipoSujetoSeleccionado() {
+    return tipoSujetoSeleccionado;
+  }
+
+  public void setTipoSujetoSeleccionado(TipoQuienGestion tipoSujetoSeleccionado) {
+    this.tipoSujetoSeleccionado = tipoSujetoSeleccionado;
+  }
+
+  public QuienGestion getSujetoSeleccionado() {
+    return sujetoSeleccionado;
+  }
+
+  public void setSujetoSeleccionado(QuienGestion sujetoSeleccionado) {
+    this.sujetoSeleccionado = sujetoSeleccionado;
   }
 
   public EstatusInformativo getEstatusSeleccionado() {
@@ -270,6 +271,30 @@ public class GestionBean implements Serializable {
 
   public void setGestion(String gestion) {
     this.gestion = gestion;
+  }
+
+  public String getOracionCompleta() {
+    return oracionCompleta;
+  }
+
+  public void setOracionCompleta(String oracionCompleta) {
+    this.oracionCompleta = oracionCompleta;
+  }
+
+  public List<DescripcionGestion> getListaDescripciones() {
+    return listaDescripciones;
+  }
+
+  public void setListaDescripciones(List<DescripcionGestion> listaDescripciones) {
+    this.listaDescripciones = listaDescripciones;
+  }
+
+  public DescripcionGestion getDescripcionSeleccionada() {
+    return descripcionSeleccionada;
+  }
+
+  public void setDescripcionSeleccionada(DescripcionGestion descripcionSeleccionada) {
+    this.descripcionSeleccionada = descripcionSeleccionada;
   }
 
 }

@@ -149,11 +149,7 @@ public class UsuarioIMPL implements UsuarioDAO {
     Transaction tx = sesion.beginTransaction();
     Usuario usuario;
     try {
-      usuario = (Usuario) sesion.createQuery("from Usuario u where "
-              + "u.perfil != " + Perfiles.ELIMINADO + " and u.perfil != "
-              + Perfiles.GESTOR_NO_CONFIRMADO + " and u.nombreLogin = '"
-              + nombreLogin + "' and u.password = '"
-              + password + "'").uniqueResult();
+      usuario = (Usuario) sesion.createSQLQuery("SELECT * FROM usuario u WHERE u.perfil != " + Perfiles.ELIMINADO + " and u.perfil != " + Perfiles.GESTOR_NO_CONFIRMADO + " and u.nombre_login = '" + nombreLogin + "' and u.password = '" + password + "';").addEntity(Usuario.class).uniqueResult();
     } catch (HibernateException he) {
       usuario = null;
       he.printStackTrace();

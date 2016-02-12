@@ -1,8 +1,7 @@
 package dto;
-// Generated 4/02/2016 12:05:50 PM by Hibernate Tools 4.3.1
+// Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1
 
 
-import dto.Credito;
 import java.util.Date;
 
 /**
@@ -12,32 +11,32 @@ public class Gestion  implements java.io.Serializable {
 
 
      private Integer idGestion;
+     private AsuntoGestion asuntoGestion;
      private Credito credito;
+     private DescripcionGestion descripcionGestion;
+     private DondeGestion dondeGestion;
      private EstatusInformativo estatusInformativo;
+     private QuienGestion quienGestion;
+     private TipoGestion tipoGestion;
+     private TipoQuienGestion tipoQuienGestion;
      private Usuario usuario;
      private Date fecha;
-     private String tipoGestion;
-     private String lugarGestion;
-     private String asuntoGestion;
-     private String descripcionGestion;
-     private String tipoSujetoGestion;
-     private String sujetoGestion;
      private String gestion;
 
     public Gestion() {
     }
 
-    public Gestion(Credito credito, EstatusInformativo estatusInformativo, Usuario usuario, Date fecha, String tipoGestion, String lugarGestion, String asuntoGestion, String descripcionGestion, String tipoSujetoGestion, String sujetoGestion, String gestion) {
+    public Gestion(AsuntoGestion asuntoGestion, Credito credito, DescripcionGestion descripcionGestion, DondeGestion dondeGestion, EstatusInformativo estatusInformativo, QuienGestion quienGestion, TipoGestion tipoGestion, TipoQuienGestion tipoQuienGestion, Usuario usuario, Date fecha, String gestion) {
+       this.asuntoGestion = asuntoGestion;
        this.credito = credito;
+       this.descripcionGestion = descripcionGestion;
+       this.dondeGestion = dondeGestion;
        this.estatusInformativo = estatusInformativo;
+       this.quienGestion = quienGestion;
+       this.tipoGestion = tipoGestion;
+       this.tipoQuienGestion = tipoQuienGestion;
        this.usuario = usuario;
        this.fecha = fecha;
-       this.tipoGestion = tipoGestion;
-       this.lugarGestion = lugarGestion;
-       this.asuntoGestion = asuntoGestion;
-       this.descripcionGestion = descripcionGestion;
-       this.tipoSujetoGestion = tipoSujetoGestion;
-       this.sujetoGestion = sujetoGestion;
        this.gestion = gestion;
     }
    
@@ -48,6 +47,13 @@ public class Gestion  implements java.io.Serializable {
     public void setIdGestion(Integer idGestion) {
         this.idGestion = idGestion;
     }
+    public AsuntoGestion getAsuntoGestion() {
+        return this.asuntoGestion;
+    }
+    
+    public void setAsuntoGestion(AsuntoGestion asuntoGestion) {
+        this.asuntoGestion = asuntoGestion;
+    }
     public Credito getCredito() {
         return this.credito;
     }
@@ -55,12 +61,47 @@ public class Gestion  implements java.io.Serializable {
     public void setCredito(Credito credito) {
         this.credito = credito;
     }
+    public DescripcionGestion getDescripcionGestion() {
+        return this.descripcionGestion;
+    }
+    
+    public void setDescripcionGestion(DescripcionGestion descripcionGestion) {
+        this.descripcionGestion = descripcionGestion;
+    }
+    public DondeGestion getDondeGestion() {
+        return this.dondeGestion;
+    }
+    
+    public void setDondeGestion(DondeGestion dondeGestion) {
+        this.dondeGestion = dondeGestion;
+    }
     public EstatusInformativo getEstatusInformativo() {
         return this.estatusInformativo;
     }
     
     public void setEstatusInformativo(EstatusInformativo estatusInformativo) {
         this.estatusInformativo = estatusInformativo;
+    }
+    public QuienGestion getQuienGestion() {
+        return this.quienGestion;
+    }
+    
+    public void setQuienGestion(QuienGestion quienGestion) {
+        this.quienGestion = quienGestion;
+    }
+    public TipoGestion getTipoGestion() {
+        return this.tipoGestion;
+    }
+    
+    public void setTipoGestion(TipoGestion tipoGestion) {
+        this.tipoGestion = tipoGestion;
+    }
+    public TipoQuienGestion getTipoQuienGestion() {
+        return this.tipoQuienGestion;
+    }
+    
+    public void setTipoQuienGestion(TipoQuienGestion tipoQuienGestion) {
+        this.tipoQuienGestion = tipoQuienGestion;
     }
     public Usuario getUsuario() {
         return this.usuario;
@@ -75,48 +116,6 @@ public class Gestion  implements java.io.Serializable {
     
     public void setFecha(Date fecha) {
         this.fecha = fecha;
-    }
-    public String getTipoGestion() {
-        return this.tipoGestion;
-    }
-    
-    public void setTipoGestion(String tipoGestion) {
-        this.tipoGestion = tipoGestion;
-    }
-    public String getLugarGestion() {
-        return this.lugarGestion;
-    }
-    
-    public void setLugarGestion(String lugarGestion) {
-        this.lugarGestion = lugarGestion;
-    }
-    public String getAsuntoGestion() {
-        return this.asuntoGestion;
-    }
-    
-    public void setAsuntoGestion(String asuntoGestion) {
-        this.asuntoGestion = asuntoGestion;
-    }
-    public String getDescripcionGestion() {
-        return this.descripcionGestion;
-    }
-    
-    public void setDescripcionGestion(String descripcionGestion) {
-        this.descripcionGestion = descripcionGestion;
-    }
-    public String getTipoSujetoGestion() {
-        return this.tipoSujetoGestion;
-    }
-    
-    public void setTipoSujetoGestion(String tipoSujetoGestion) {
-        this.tipoSujetoGestion = tipoSujetoGestion;
-    }
-    public String getSujetoGestion() {
-        return this.sujetoGestion;
-    }
-    
-    public void setSujetoGestion(String sujetoGestion) {
-        this.sujetoGestion = sujetoGestion;
     }
     public String getGestion() {
         return this.gestion;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 4/02/2016 12:05:51 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.EstadoRepublica" optimistic-lock="version" table="estado_republica">
     <id name="idEstado" type="java.lang.Integer">
@@ -10,6 +10,12 @@
     <property name="nombre" type="string">
       <column length="50" name="nombre" not-null="true"/>
     </property>
+    <set fetch="select" inverse="true" lazy="true" name="municipios" table="municipio">
+      <key>
+        <column name="id_estado" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Municipio"/>
+    </set>
     <set fetch="select" inverse="true" lazy="true" name="regions" table="region">
       <key>
         <column name="id_estado"/>
@@ -21,12 +27,6 @@
         <column name="id_estado" not-null="true"/>
       </key>
       <one-to-many class="dto.Direccion"/>
-    </set>
-    <set fetch="select" inverse="true" lazy="true" name="municipios" table="municipio">
-      <key>
-        <column name="id_estado" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Municipio"/>
     </set>
   </class>
 </hibernate-mapping>

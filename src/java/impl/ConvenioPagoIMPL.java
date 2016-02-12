@@ -83,7 +83,7 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<ConvenioPago> convenios;
     try {
-      convenios = sesion.createSQLQuery("SELECT * FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus = " + Convenios.EN_CURSO + ";").addEntity(ConvenioPago.class).list();
+      convenios = sesion.createSQLQuery("SELECT * FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus != " + Convenios.FINALIZADO + ";").addEntity(ConvenioPago.class).list();
     } catch (HibernateException he) {
       convenios = null;
       Logs.log.error(he.getMessage());

@@ -5,25 +5,9 @@
  */
 package beans;
 
-import dao.ConvenioPagoDAO;
-import dao.EstatusInformativoDAO;
-import dao.GestionDAO;
-import dao.GestorDAO;
-import dao.PagoDAO;
-import dao.QuincenaDAO;
-import dto.ConvenioPago;
-import dto.Credito;
-import dto.EstatusInformativo;
-import dto.Gestion;
-import dto.Gestor;
-import dto.Pago;
-import dto.Quincena;
-import impl.ConvenioPagoIMPL;
-import impl.EstatusInformativoIMPL;
-import impl.GestionIMPL;
-import impl.GestorIMPL;
-import impl.PagoIMPL;
-import impl.QuincenaIMPL;
+import dao.*;
+import dto.*;
+import impl.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,7 +22,6 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import util.constantes.Convenios;
-import util.constantes.Gestiones;
 import util.constantes.Pagos;
 import util.log.Logs;
 
@@ -124,10 +107,10 @@ public class ConveniosBean implements Serializable {
     } else {
       ConvenioPago convenio = new ConvenioPago();
       convenio.setCredito(creditoActual);
-      convenio.setEstatus(Convenios.EN_CURSO);
+      //convenio.setEstatus(Convenios.EN_CURSO);
       Date fecha = new Date();
       convenio.setFecha(fecha);
-      convenio.setPagosRealizados(0);
+      //convenio.setPagosRealizados(0);
       convenio.setSaldoNegociado(saldoNuevoConvenio);
       boolean ok = convenioPagoDao.insertar(convenio);
       if (ok) {
@@ -135,11 +118,11 @@ public class ConveniosBean implements Serializable {
         g.setCredito(creditoActual);
         g.setFecha(fecha);
         g.setUsuario(indexBean.getUsuario());
-        g.setTipoGestion(Gestiones.TIPO_GESTION.get(2));
-        g.setLugarGestion(Gestiones.DONDE_CORPORATIVO.get(0));
-        g.setAsuntoGestion(Gestiones.ASUNTO.get(6));
-        g.setDescripcionGestion("SE REALIZA CONVENIO DE PAGO CON ");
-        g.setTipoSujetoGestion(Gestiones.TIPO_SUJETOS.get(0));
+        //g.setTipoGestion(new DescripcionGestion());
+        //g.setLugarGestion("");
+        //g.setAsuntoGestion("");
+        //g.setDescripcionGestion("SE REALIZA CONVENIO DE PAGO CON ");
+        //g.setTipoSujetoGestion(Gestiones.TIPO_SUJETOS.get(0));
         EstatusInformativo e = estatusInformativoDao.buscar(2);
         g.setEstatusInformativo(e);
         g.setGestion("SALDO NEGOCIADO: " + saldoNuevoConvenio);
