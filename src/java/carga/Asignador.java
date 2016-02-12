@@ -135,4 +135,14 @@ public class Asignador {
     GestorDAO gestorDao = new GestorIMPL();
     return gestorDao.buscarPorDespacho(idDespacho);
   }
+  
+  public static float getTotalSaldoVencido(List<Fila> filas) {
+    float totalSaldoVencido = (float) 0.0;
+    
+    for(Fila fila : filas) {
+      totalSaldoVencido += Float.parseFloat(fila.getSaldoVencido());
+    }
+    
+    return totalSaldoVencido;
+  }
 }
