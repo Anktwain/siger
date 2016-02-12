@@ -9,6 +9,14 @@
     <property name="hibernate.connection.password">cofradiaDB</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="hibernate.enable_lazy_load_no_trans">true</property>
+    <mapping resource="mapeo/AsuntoGestion.hbm.xml"/>
+    <mapping resource="mapeo/DescripcionGestion.hbm.xml"/>
+    <mapping resource="mapeo/DondeGestion.hbm.xml"/>
+    <mapping resource="mapeo/QuienGestion.hbm.xml"/>
+    <mapping resource="mapeo/TipoAsuntoGestion.hbm.xml"/>
+    <mapping resource="mapeo/TipoGestion.hbm.xml"/>
+    <mapping resource="mapeo/TipoQuienGestion.hbm.xml"/>
+    <mapping resource="mapeo/Campana.hbm.xml"/>
     <mapping resource="mapeo/Administrativo.hbm.xml"/>
     <mapping resource="mapeo/Contacto.hbm.xml"/>
     <mapping resource="mapeo/Quincena.hbm.xml"/>
@@ -16,6 +24,7 @@
     <mapping resource="mapeo/Telefono.hbm.xml"/>
     <mapping resource="mapeo/Gestor.hbm.xml"/>
     <mapping resource="mapeo/Pago.hbm.xml"/>
+    <mapping resource="mapeo/PromesaPago.hbm.xml"/>
     <mapping resource="mapeo/Subproducto.hbm.xml"/>
     <mapping resource="mapeo/Auto.hbm.xml"/>
     <mapping resource="mapeo/Linea.hbm.xml"/>

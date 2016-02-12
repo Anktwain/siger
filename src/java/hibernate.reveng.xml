@@ -2,6 +2,14 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
 <hibernate-reverse-engineering>
   <schema-selection match-catalog="sigerbd"/>
+  <table-filter match-name="asunto_gestion"/>
+  <table-filter match-name="descripcion_gestion"/>
+  <table-filter match-name="donde_gestion"/>
+  <table-filter match-name="quien_gestion"/>
+  <table-filter match-name="tipo_asunto_gestion"/>
+  <table-filter match-name="tipo_gestion"/>
+  <table-filter match-name="tipo_quien_gestion"/>
+  <table-filter match-name="campana"/>
   <table-filter match-name="gestion"/>
   <table-filter match-name="concepto_devolucion"/>
   <table-filter match-name="institucion"/>
@@ -22,6 +30,7 @@
   <table-filter match-name="deudor"/>
   <table-filter match-name="zona"/>
   <table-filter match-name="pago"/>
+  <table-filter match-name="promesa_pago"/>
   <table-filter match-name="credito"/>
   <table-filter match-name="email"/>
   <table-filter match-name="usuario"/>

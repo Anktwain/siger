@@ -1,6 +1,7 @@
 package carga;
 
 import dto.Actualizacion;
+import dto.Campana;
 import dto.Credito;
 import dto.Despacho;
 import dto.Deudor;
@@ -27,6 +28,7 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import nuevaImplementacionDAO.ActualizacionDAO;
+import nuevaImplementacionDAO.CampanaDAO;
 import nuevaImplementacionDAO.CreditoDAO;
 import nuevaImplementacionDAO.DespachoDAO;
 import nuevaImplementacionDAO.DeudorDAO;
@@ -41,6 +43,7 @@ import nuevaImplementacionDAO.SubproductoDAO;
 import nuevaImplementacionDAO.SujetoDAO;
 import nuevaImplementacionDAO.TelefonoDAO;
 import nuevaImplementacionIMPL.ActualizacionIMPL;
+import nuevaImplementacionIMPL.CampanaIMPL;
 import nuevaImplementacionIMPL.CreditoIMPL;
 import nuevaImplementacionIMPL.DespachoIMPL;
 import nuevaImplementacionIMPL.DeudorIMPL;
@@ -77,11 +80,12 @@ public class Carajeador {
     String linea = null;
     String archivoSql = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("script", BautistaDeArchivos.PREFIJO, "sql");
     String archivoPlano = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("direccionar", BautistaDeArchivos.PREFIJO, "txt");
+    String creditoActual="";
 
     try {
       Fecha fecha = new Fecha();
       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      
+
       DespachoDAO despachoDao = new DespachoIMPL();
 
       SujetoDAO sujetoDao = new SujetoIMPL();
@@ -98,7 +102,7 @@ public class Carajeador {
 
       ProductoDAO productoDao = new ProductoIMPL();
       Producto producto;
-      
+
       LineaDAO lineaDao = new LineaIMPL();
 
       InstitucionDAO institucionDao = new InstitucionIMPL();
@@ -106,7 +110,7 @@ public class Carajeador {
 
       CreditoDAO creditoDao = new CreditoIMPL();
       Credito credito;
-      
+
       ActualizacionDAO actualizacionDao = new ActualizacionIMPL();
       Actualizacion actualizacion;
 
@@ -119,88 +123,99 @@ public class Carajeador {
 
       EmailDAO emailDao = new EmailIMPL();
 
+      CampanaDAO campanaDAO = new CampanaIMPL();
+
       session = HibernateUtil.getSessionFactory().openSession();
       transaction = session.beginTransaction();
 
+      /* Obtiene la campaña correspondiente a nueva remesa, siempre es la 1 */
+      Campana campana = campanaDAO.getById(session, 1);
+
       /* Despacho al cual se le cargarán los créditos de la remesa. */
       Despacho despacho = despachoDao.getById(session, idDespacho);
-      
+
       /* Objeto remesa */
       Remesa remesa = new Remesa(mes, Calendar.getInstance().get(Calendar.YEAR),
               totalCreditos, totalSaldoVencido, new Date(), 0, null);
 
       remesaDao.insert(session, remesa);
-      
+
       for (Fila f : filas) {
+        creditoActual = f.getCredito();
         /* Crea un nuevo sujeto */
         sujeto = sujetoDao.insert(session, new Sujeto(f.getNombre(), f.getRfc(), 0));
-        
+
         /* Nuevo deudor asociado al sujeto */
         deudor = deudorDao.insert(session, new Deudor(sujeto, f.getIdCliente(), null, null, null, null));
-        
+
         /* Asigna todos los emails encontrados para ese sujeto */
-        for(String email : f.getCorreos()) {
+        for (String email : f.getCorreos()) {
           emailDao.insert(session, new Email(sujeto, email, "Remesa"));
         }
 
         /* Asigna todos los teléfonos encontrados para ese sujeto */
-        for(String telefono : f.getTelsAdicionales()) {
+        for (String telefono : f.getTelsAdicionales()) {
           telefonoDao.insert(session, new Telefono(sujeto, telefono, "Remesa", null, null, "ND"));
         }
-        
+
         /* Gestor al cual se asignará el crédito */
         gestor = gestorDao.getById(session, f.getIdGestor());
-  
+
         /* Obtiene subproducto y producto, el primero no es obligatorio */
 //        subproducto = subproductoDao.getById(session, f.getIdSubproducto());
 //        producto = productoDao.getById(session, f.getIdProducto());
-        
         /* Crea un nuevo crédito */
-        credito = new Credito(despacho, deudor, gestor, f.getProductoDTO(), f.getSubproductoDTO(),
+        credito = new Credito(campana, despacho, deudor, gestor, f.getProductoDTO(), f.getSubproductoDTO(),
                 f.getCredito(), simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaInicioCredito())),
                 simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaVencimientoCred())), null,
-                f.getDisposicionFloat(), Float.parseFloat(f.getMensualidad()), (float)0.0,
-                0, f.getCuenta(), 1, null, null, null, null, null, null, null);
-        
+                f.getDisposicionFloat(), Float.parseFloat(f.getMensualidad()), (float) 0.0,
+                0, f.getCuenta(), 1, 0, null, null, null, null, null, null, null);
+
         creditoDao.insert(session, credito);
-        
+
         /* Crea objeto Linea para el crédito */
         // hacer las correcciones necesarias para que el id sea autonumérico
         //lineaDao.insert(session, new Linea(mes, credito, linea))
-        
         /* Crea la actualización */
-        System.out.println(credito);
-        System.out.println(remesa);
-        System.out.println(f.getMesesVencidos());
-        System.out.println(f.getSaldoVencido());
-        System.out.println(f.getEstatus());
-        System.out.println(f.getFechaUltimoPago());
-        System.out.println(f.getFechaUltimoVencimientoPagado());
+        Date fechaUP;
+        Date fechaUVP;
+        if(!f.getFechaUltimoPago().isEmpty()) {
+          fechaUP = simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaUltimoPago()));
+        } else {
+          fechaUP = null;
+        }
+        if(!f.getFechaUltimoVencimientoPagado().isEmpty()) {
+          fechaUVP = simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaUltimoVencimientoPagado()));
+        } else {
+          fechaUVP = null;
+        }
+        
         actualizacion = new Actualizacion(credito, remesa,
                 Integer.parseInt(f.getMesesVencidos()), Float.parseFloat(f.getSaldoVencido()),
-                f.getEstatus(), simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaUltimoPago())),
-                simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaUltimoVencimientoPagado())), null);
-        
+                f.getEstatus(), fechaUP,
+                fechaUVP, null);
+
         actualizacionDao.insert(session, actualizacion);
-        
-//        /* Crea los facs asociados a la actualización */
-//        for(Fac fac : f.getFacs()) {
-//          facDao.insert(session, new dto.Fac(actualizacion, fac.getMes(), fac.getAnio(),
-//                  Float.parseFloat(fac.getFacPor()), fac.getFacMes()));
-//        }
-//
-//        if (f.getIdColonia() != 0) {
-//          query += "INSERT INTO `sigerbd`.`direccion` (`calle`, `id_sujeto`, `id_municipio`, `id_estado`, `id_colonia`) "
-//                  + "VALUES ('" + f.getCalle() + "', '" + sujeto.getIdSujeto() + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "');\n";
-//          guardarQueryEnArchivo(query, archivoSql);
-//          query = "";
-//        } else {
-//          linea = sujeto.getIdSujeto() + ";" + f.getCredito() + ";" + f.getCalle() + ";" + f.getColonia()
-//                  + ";" + f.getMunicipio() + ";" + f.getEstado() + ";" + f.getCp() + "\n";
-//          guardarQueryEnArchivo(linea, archivoPlano);
-//          query = "";
-//        }
-        throw new Exception("Me voy al carajo!!!");
+
+        /* Crea los facs asociados a la actualización */
+        if (f.getFacs().size() > 0) {
+          for (Fac fac : f.getFacs()) {
+            facDao.insert(session, new dto.Fac(actualizacion, fac.getMes(), fac.getAnio(),
+                    Float.parseFloat(fac.getFacPor()), fac.getFacMes()));
+          }
+        }
+
+        if (f.getIdColonia() != 0) {
+          query += "INSERT INTO `sigerbd`.`direccion` (`calle`, `id_sujeto`, `id_municipio`, `id_estado`, `id_colonia`) "
+                  + "VALUES ('" + f.getCalle() + "', '" + sujeto.getIdSujeto() + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "');\n";
+          guardarQueryEnArchivo(query, archivoSql);
+          query = "";
+        } else {
+          linea = sujeto.getIdSujeto() + ";" + f.getCredito() + ";" + f.getCalle() + ";" + f.getColonia()
+                  + ";" + f.getMunicipio() + ";" + f.getEstado() + ";" + f.getCp() + "\n";
+          guardarQueryEnArchivo(linea, archivoPlano);
+          query = "";
+        }
 
       }
 
@@ -211,7 +226,7 @@ public class Carajeador {
         transaction.rollback();
       }
 
-      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error fatal:", "Por favor contacte con su administrador " + ex.getMessage()));
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error fatal:", "Por favor contacte con su administrador " + ex.getMessage() + " Estaba trabajando con el crédito " + creditoActual));
       Logs.log.error(ex.getMessage());
     } finally {
       if (session != null) {
