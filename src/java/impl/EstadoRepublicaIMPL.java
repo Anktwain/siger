@@ -5,7 +5,6 @@ import dto.EstadoRepublica;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import util.HibernateUtil;
 import util.log.Logs;
 
@@ -22,10 +21,9 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
   @Override
   public List<EstadoRepublica> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<EstadoRepublica> estados;
     try {
-      estados = sesion.createSQLQuery("select * from estado_republica;").addEntity(EstadoRepublica.class).list();
+      estados = sesion.createSQLQuery("SELECT * FROM estado_republica ORDER BY nombre ASC;").addEntity(EstadoRepublica.class).list();
     } catch (HibernateException he) {
       estados = null;
       Logs.log.error("No se pudo obtener lista: EstadoRepublica");
@@ -39,7 +37,6 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
   @Override
   public EstadoRepublica buscar(int idEstado) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     EstadoRepublica estado;
 
     try {
@@ -58,7 +55,6 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
   @Override
   public EstadoRepublica buscar(String cadena) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     EstadoRepublica estado;
 
     try {
@@ -71,6 +67,22 @@ public class EstadoRepublicaIMPL implements EstadoRepublicaDAO {
       cerrar(sesion);
     }
 
+    return estado;
+  }
+
+  @Override
+  public EstadoRepublica buscarPorId(int idEstado) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    EstadoRepublica estado;
+    try {
+      estado = (EstadoRepublica) sesion.get(EstadoRepublica.class, idEstado);
+    } catch (HibernateException he) {
+      estado = null;
+      Logs.log.error("No se pudo obtener: EstadoRepublica");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
     return estado;
   }
 

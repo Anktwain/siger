@@ -34,7 +34,7 @@ public class SujetoBean implements Serializable {
   private int eliminado;
 
   // DAO, para acceso a la BD
-  private SujetoDAO sujetoDao;
+  private final SujetoDAO sujetoDao;
 
   // Construyendo...
   public SujetoBean() {
@@ -122,13 +122,5 @@ public class SujetoBean implements Serializable {
   public void setSujeto(Sujeto sujeto) {
     this.sujeto = sujeto;
   }
-
-  public SujetoDAO getSujetoDao() {
-    return sujetoDao;
-  }
-
-  public void setSujetoDao(SujetoDAO sujetoDao) {
-    this.sujetoDao = sujetoDao;
-  }
-
+  
 }

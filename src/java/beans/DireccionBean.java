@@ -43,10 +43,10 @@ public class DireccionBean implements Serializable {
   private EstadoRepublica estado;
 
   // Acceso a la BD
-  private DireccionDAO direccionDao;
-  private ColoniaDAO coloniaDao;
-  private MunicipioDAO municipioDao;
-  private EstadoRepublicaDAO estadoDao;
+  private final DireccionDAO direccionDao;
+  private final ColoniaDAO coloniaDao;
+  private final MunicipioDAO municipioDao;
+  private final EstadoRepublicaDAO estadoDao;
 
   // Listas para construir direcciones
   private List<EstadoRepublica> estados;
@@ -188,38 +188,6 @@ public class DireccionBean implements Serializable {
 
   public void setColonias(List<Colonia> colonias) {
     this.colonias = colonias;
-  }
-
-  public DireccionDAO getDireccionDao() {
-    return direccionDao;
-  }
-
-  public void setDireccionDao(DireccionDAO direccionDao) {
-    this.direccionDao = direccionDao;
-  }
-
-  public ColoniaDAO getColoniaDao() {
-    return coloniaDao;
-  }
-
-  public void setColoniaDao(ColoniaDAO coloniaDao) {
-    this.coloniaDao = coloniaDao;
-  }
-
-  public MunicipioDAO getMunicipioDao() {
-    return municipioDao;
-  }
-
-  public void setMunicipioDao(MunicipioDAO municipioDao) {
-    this.municipioDao = municipioDao;
-  }
-
-  public EstadoRepublicaDAO getEstadoDao() {
-    return estadoDao;
-  }
-
-  public void setEstadoDao(EstadoRepublicaDAO estadoDao) {
-    this.estadoDao = estadoDao;
   }
 
 }

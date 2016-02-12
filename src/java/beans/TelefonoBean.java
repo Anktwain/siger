@@ -33,7 +33,7 @@ public class TelefonoBean implements Serializable {
   private String horario;
   
   // Acceso a la BD
-  private TelefonoDAO telefonoDao;
+  private final TelefonoDAO telefonoDao;
   
   // Construyendo...
   public TelefonoBean() {

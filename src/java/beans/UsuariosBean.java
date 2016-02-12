@@ -119,7 +119,7 @@ public class UsuariosBean implements Serializable {
     gestoresNoConfirmados = usuarioDao.buscarUsuariosNoConfirmados();
     todosUsuarios = usuarioDao.buscarTodo();
 //    usuarioSeleccionado = new Usuario();
-    imprimirUsuarios();
+    //imprimirUsuarios();
   }
 
   /**

@@ -89,13 +89,10 @@ public class GestionIMPL implements GestionDAO {
   }
 
   @Override
-  public List<Gestion> buscarGestionesPorGestor(int idGestor, Date fechaIni, Date fechaF, String tipoGestion, String institucion, String producto) {
-    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String f1 = df.format(fechaIni) + "00:00:00";
-    String f2 = df.format(fechaF) + "23:59:59";
+  public List<Gestion> buscarGestionesCreditoGestor(int idUsuario, int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Gestion> gestiones = new ArrayList();
-    String consulta = "SELECT * FROM gestion WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%' AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion IN (SELECT id_institucion FROM institucion WHERE nombre_corto LIKE '%" + institucion + "%') AND id_producto IN (SELECT id_producto FROM producto WHERE nombre LIKE '%" + producto + "%'));";
+    String consulta = "SELECT * FROM gestion WHERE id_usuario = " + idUsuario + " AND id_credito = " + idCredito + ";";
     try {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
       Logs.log.info("Se ejecutó query: " + consulta);
@@ -109,13 +106,10 @@ public class GestionIMPL implements GestionDAO {
   }
 
   @Override
-  public List<Gestion> buscarGestionesPorDespacho(int idDespacho, Date fechaIni, Date fechaF, String tipoGestion, String institucion, String producto) {
-    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String f1 = df.format(fechaIni) + "00:00:00";
-    String f2 = df.format(fechaF) + "23:59:59";
+  public List<Gestion> buscarGestionesCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Gestion> gestiones = new ArrayList();
-    String consulta = "SELECT * FROM gestion WHERE id_usuario IN (SELECT id_usuario FROM gestor) AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "' AND tipo_gestion LIKE '%" + tipoGestion + "%' AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion IN (SELECT id_institucion FROM institucion WHERE nombre_corto LIKE '%" + institucion + "%') AND id_producto IN (SELECT id_producto FROM producto WHERE nombre LIKE '%" + producto + "%') AND id_despacho = " + idDespacho + ");";
+    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + ";";
     try {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
       Logs.log.info("Se ejecutó query: " + consulta);
@@ -126,6 +120,190 @@ public class GestionIMPL implements GestionDAO {
       cerrar(sesion);
     }
     return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorDespacho(int idDespacho, Date fechaInicio, Date fechaFin) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaInicio) + " 00:00:00";
+    String f2 = df.format(fechaFin) + " 23:59:59";
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_credito in (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "';";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorGestor(int idDespacho, int idGestor, Date fechaInicio, Date fechaFin) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaInicio) + " 00:00:00";
+    String f2 = df.format(fechaFin) + " 23:59:59";
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_credito in (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "';";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorTipo(int idDespacho, String tipoGestion, Date fechaInicio, Date fechaFin) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaInicio) + " 00:00:00";
+    String f2 = df.format(fechaFin) + " 23:59:59";
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_credito in (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND tipo_gestion = '" + tipoGestion + "' AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "';";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorInstitucion(int idDespacho, int idInstitucion, Date fechaInicio, Date fechaFin) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaInicio) + " 00:00:00";
+    String f2 = df.format(fechaFin) + " 23:59:59";
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_credito in (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion = " + idInstitucion + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "';";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorInstitucionProducto(int idDespacho, int idInstitucion, int idProducto, Date fechaInicio, Date fechaFin) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaInicio) + " 00:00:00";
+    String f2 = df.format(fechaFin) + " 23:59:59";
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_credito in (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion = " + idInstitucion + ") AND  AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "';"; //TODO
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorGestorTipo(int idDespacho, int idGestor, String tipoGestion, Date fechaInicio, Date fechaFin) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaInicio) + " 00:00:00";
+    String f2 = df.format(fechaFin) + " 23:59:59";
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_credito in (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ") AND tipo_gestion = '" + tipoGestion + "' AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "';";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorGestorInstitucion(int idDespacho, int idGestor, int idInstitucion, Date fechaInicio, Date fechaFin) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaInicio) + " 00:00:00";
+    String f2 = df.format(fechaFin) + " 23:59:59";
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_credito in (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ") AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion = " + idInstitucion + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "';";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorGestorInstitucionProducto(int idDespacho, int idGestor, int idInstitucion, int idProducto, Date fechaInicio, Date fechaFin) {
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f1 = df.format(fechaInicio) + " 00:00:00";
+    String f2 = df.format(fechaFin) + " 23:59:59";
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    String consulta = "SELECT * FROM gestion WHERE id_credito in (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ") AND id_credito IN (SELECT id_credito FROM credito WHERE id_institucion = " + idInstitucion + ") AND fecha BETWEEN '" + f1 + "' AND '" + f2 + "';";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      gestiones = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorTipoInstitucion(int idDespacho, String tipoGestion, int idInstitucion, Date fechaInicio, Date fechaFin) {
+    throw new UnsupportedOperationException("Este metodo aun no ha sido implementado");
+    /*
+     To change body of generated methods, choose Tools | Templates | Java | Code Snippets | Generated Method body
+     */
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorTipoInstitucionProducto(int idDespacho, String tipoGestion, int idInstitucion, int idProducto, Date fechaInicio, Date fechaFin) {
+    throw new UnsupportedOperationException("Este metodo aun no ha sido implementado");
+    /*
+     To change body of generated methods, choose Tools | Templates | Java | Code Snippets | Generated Method body
+     */
+  }
+
+  @Override
+  public List<Gestion> buscarGestionesPorGestorTipoInstitucionProducto(int idDespacho, int idGestor, String tipoGestion, int idInstitucion, int idProducto, Date fechaInicio, Date fechaFin) {
+    throw new UnsupportedOperationException("Este metodo aun no ha sido implementado");
+    /*
+     To change body of generated methods, choose Tools | Templates | Java | Code Snippets | Generated Method body
+     */
   }
 
   private void calcularFechas() {
@@ -189,40 +367,6 @@ public class GestionIMPL implements GestionDAO {
         fechaFin = año + "-" + mes + "-31";
         break;
     }
-  }
-
-  @Override
-  public List<Gestion> buscarGestionesCreditoGestor(int idUsuario, int idCredito) {
-    Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Gestion> gestiones = new ArrayList();
-    String consulta = "SELECT * FROM gestion WHERE id_usuario = " + idUsuario + " AND id_credito = " + idCredito + ";";
-    try {
-      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
-    } catch (HibernateException he) {
-      gestiones = null;
-      Logs.log.error(he.getStackTrace());
-    } finally {
-      cerrar(sesion);
-    }
-    return gestiones;
-  }
-
-  @Override
-  public List<Gestion> buscarGestionesCredito(int idCredito) {
-    Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Gestion> gestiones = new ArrayList();
-    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + ";";
-    try {
-      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
-    } catch (HibernateException he) {
-      gestiones = null;
-      Logs.log.error(he.getStackTrace());
-    } finally {
-      cerrar(sesion);
-    }
-    return gestiones;
   }
 
   private void cerrar(Session sesion) {

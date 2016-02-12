@@ -59,7 +59,7 @@ public class VistaCreditoBean implements Serializable {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
-  CuentasVistaBean cuentasVistaBean = (CuentasVistaBean) elContext.getELResolver().getValue(elContext, null, "cuentasVistaBean");
+  CuentasBean cuentasBean = (CuentasBean) elContext.getELResolver().getValue(elContext, null, "cuentasBean");
 
   // VARIABLES DE CLASE
   private boolean reasignarVisible;
@@ -82,15 +82,15 @@ public class VistaCreditoBean implements Serializable {
   private Credito creditoActual;
   private Gestor gestorSeleccionado;
   private Gestor gestorActual;
-  private CreditoDAO creditoDao;
-  private DireccionDAO direccionDAO;
-  private TelefonoDAO telefonoDAO;
-  private EmailDAO emailDAO;
-  private ContactoDAO contactoDAO;
-  private HistorialDAO historialDao;
-  private GestionDAO gestionDao;
-  private GestorDAO gestorDao;
-  private ConvenioPagoDAO convenioPagoDao;
+  private final CreditoDAO creditoDao;
+  private final DireccionDAO direccionDAO;
+  private final TelefonoDAO telefonoDAO;
+  private final EmailDAO emailDAO;
+  private final ContactoDAO contactoDAO;
+  private final HistorialDAO historialDao;
+  private final GestionDAO gestionDao;
+  private final GestorDAO gestorDao;
+  private final ConvenioPagoDAO convenioPagoDao;
   private List<Gestion> listaGestiones;
   private List<Gestor> listaGestores;
   private List<Credito> creditosRelacionados;
@@ -121,7 +121,7 @@ public class VistaCreditoBean implements Serializable {
     historial = new ArrayList();
     listaGestiones = new ArrayList();
     listaGestores = new ArrayList();
-    creditoActualCred = cuentasVistaBean.getCreditoSeleccionado().get(0);
+    creditoActualCred = cuentasBean.getCreditoSeleccionado();
     obtenerDatos();
   }
   
@@ -257,20 +257,21 @@ public class VistaCreditoBean implements Serializable {
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-  public ELContext getElContext() {
-    return elContext;
+
+  public boolean isReasignarVisible() {
+    return reasignarVisible;
   }
 
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
+  public void setReasignarVisible(boolean reasignarVisible) {
+    this.reasignarVisible = reasignarVisible;
   }
 
-  public CuentasVistaBean getCuentasVistaBean() {
-    return cuentasVistaBean;
+  public boolean isConveniosVisible() {
+    return conveniosVisible;
   }
 
-  public void setCuentasVistaBean(CuentasVistaBean cuentasVistaBean) {
-    this.cuentasVistaBean = cuentasVistaBean;
+  public void setConveniosVisible(boolean conveniosVisible) {
+    this.conveniosVisible = conveniosVisible;
   }
 
   public String getNombreDeudor() {
@@ -289,28 +290,12 @@ public class VistaCreditoBean implements Serializable {
     this.numeroCredito = numeroCredito;
   }
 
-  public Credito getCreditoActualCred() {
-    return creditoActualCred;
+  public String getNumeroCreditos() {
+    return numeroCreditos;
   }
 
-  public void setCreditoActualCred(Credito creditoActualCred) {
-    this.creditoActualCred = creditoActualCred;
-  }
-
-  public Credito getCreditoActual() {
-    return creditoActual;
-  }
-
-  public void setCreditoActual(Credito creditoActual) {
-    this.creditoActual = creditoActual;
-  }
-
-  public CreditoDAO getCreditoDao() {
-    return creditoDao;
-  }
-
-  public void setCreditoDao(CreditoDAO creditoDao) {
-    this.creditoDao = creditoDao;
+  public void setNumeroCreditos(String numeroCreditos) {
+    this.numeroCreditos = numeroCreditos;
   }
 
   public String getCalleNumero() {
@@ -335,6 +320,22 @@ public class VistaCreditoBean implements Serializable {
 
   public void setEstadoCP(String estadoCP) {
     this.estadoCP = estadoCP;
+  }
+
+  public String getTelefono() {
+    return telefono;
+  }
+
+  public void setTelefono(String telefono) {
+    this.telefono = telefono;
+  }
+
+  public String getCorreo() {
+    return correo;
+  }
+
+  public void setCorreo(String correo) {
+    this.correo = correo;
   }
 
   public String getFechaInicio() {
@@ -385,52 +386,52 @@ public class VistaCreditoBean implements Serializable {
     this.saldoVencido = saldoVencido;
   }
 
-  public String getNumeroCreditos() {
-    return numeroCreditos;
+  public Credito getCreditoActualCred() {
+    return creditoActualCred;
   }
 
-  public void setNumeroCreditos(String numeroCreditos) {
-    this.numeroCreditos = numeroCreditos;
+  public void setCreditoActualCred(Credito creditoActualCred) {
+    this.creditoActualCred = creditoActualCred;
   }
 
-  public String getTelefono() {
-    return telefono;
+  public Credito getCreditoActual() {
+    return creditoActual;
   }
 
-  public void setTelefono(String telefono) {
-    this.telefono = telefono;
+  public void setCreditoActual(Credito creditoActual) {
+    this.creditoActual = creditoActual;
   }
 
-  public String getCorreo() {
-    return correo;
+  public Gestor getGestorSeleccionado() {
+    return gestorSeleccionado;
   }
 
-  public void setCorreo(String correo) {
-    this.correo = correo;
+  public void setGestorSeleccionado(Gestor gestorSeleccionado) {
+    this.gestorSeleccionado = gestorSeleccionado;
   }
 
-  public DireccionDAO getDireccionDAO() {
-    return direccionDAO;
+  public Gestor getGestorActual() {
+    return gestorActual;
   }
 
-  public void setDireccionDAO(DireccionDAO direccionDAO) {
-    this.direccionDAO = direccionDAO;
+  public void setGestorActual(Gestor gestorActual) {
+    this.gestorActual = gestorActual;
   }
 
-  public TelefonoDAO getTelefonoDAO() {
-    return telefonoDAO;
+  public List<Gestion> getListaGestiones() {
+    return listaGestiones;
   }
 
-  public void setTelefonoDAO(TelefonoDAO telefonoDAO) {
-    this.telefonoDAO = telefonoDAO;
+  public void setListaGestiones(List<Gestion> listaGestiones) {
+    this.listaGestiones = listaGestiones;
   }
 
-  public EmailDAO getEmailDAO() {
-    return emailDAO;
+  public List<Gestor> getListaGestores() {
+    return listaGestores;
   }
 
-  public void setEmailDAO(EmailDAO emailDAO) {
-    this.emailDAO = emailDAO;
+  public void setListaGestores(List<Gestor> listaGestores) {
+    this.listaGestores = listaGestores;
   }
 
   public List<Credito> getCreditosRelacionados() {
@@ -441,14 +442,6 @@ public class VistaCreditoBean implements Serializable {
     this.creditosRelacionados = creditosRelacionados;
   }
 
-  public List<Direccion> getListaDirecciones() {
-    return listaDirecciones;
-  }
-
-  public void setListaDirecciones(List<Direccion> listaDirecciones) {
-    this.listaDirecciones = listaDirecciones;
-  }
-
   public List<Credito> getCredsRelacionados() {
     return credsRelacionados;
   }
@@ -457,12 +450,12 @@ public class VistaCreditoBean implements Serializable {
     this.credsRelacionados = credsRelacionados;
   }
 
-  public ContactoDAO getContactoDAO() {
-    return contactoDAO;
+  public List<Direccion> getListaDirecciones() {
+    return listaDirecciones;
   }
 
-  public void setContactoDAO(ContactoDAO contactoDAO) {
-    this.contactoDAO = contactoDAO;
+  public void setListaDirecciones(List<Direccion> listaDirecciones) {
+    this.listaDirecciones = listaDirecciones;
   }
 
   public List<Telefono> getListaTelefonos() {
@@ -489,14 +482,6 @@ public class VistaCreditoBean implements Serializable {
     this.listaContactos = listaContactos;
   }
 
-  public HistorialDAO getHistorialDao() {
-    return historialDao;
-  }
-
-  public void setHistorialDao(HistorialDAO historialDao) {
-    this.historialDao = historialDao;
-  }
-
   public List<Historial> getHistorial() {
     return historial;
   }
@@ -504,77 +489,5 @@ public class VistaCreditoBean implements Serializable {
   public void setHistorial(List<Historial> historial) {
     this.historial = historial;
   }
-
-  public IndexBean getIndexBean() {
-    return indexBean;
-  }
-
-  public void setIndexBean(IndexBean indexBean) {
-    this.indexBean = indexBean;
-  }
-
-  public GestionDAO getGestionDao() {
-    return gestionDao;
-  }
-
-  public void setGestionDao(GestionDAO gestionDao) {
-    this.gestionDao = gestionDao;
-  }
-
-  public List<Gestion> getListaGestiones() {
-    return listaGestiones;
-  }
-
-  public void setListaGestiones(List<Gestion> listaGestiones) {
-    this.listaGestiones = listaGestiones;
-  }
-
-  public boolean isReasignarVisible() {
-    return reasignarVisible;
-  }
-
-  public void setReasignarVisible(boolean reasignarVisible) {
-    this.reasignarVisible = reasignarVisible;
-  }
-
-  public Gestor getGestorSeleccionado() {
-    return gestorSeleccionado;
-  }
-
-  public void setGestorSeleccionado(Gestor gestorSeleccionado) {
-    this.gestorSeleccionado = gestorSeleccionado;
-  }
-
-  public GestorDAO getGestorDao() {
-    return gestorDao;
-  }
-
-  public void setGestorDao(GestorDAO gestorDao) {
-    this.gestorDao = gestorDao;
-  }
-
-  public List<Gestor> getListaGestores() {
-    return listaGestores;
-  }
-
-  public void setListaGestores(List<Gestor> listaGestores) {
-    this.listaGestores = listaGestores;
-  }
-
-  public Gestor getGestorActual() {
-    return gestorActual;
-  }
-
-  public void setGestorActual(Gestor gestorActual) {
-    this.gestorActual = gestorActual;
-  }
-
-  public boolean isConveniosVisible() {
-    return conveniosVisible;
-  }
-
-  public void setConveniosVisible(boolean conveniosVisible) {
-    this.conveniosVisible = conveniosVisible;
-  }
-
+  
 }

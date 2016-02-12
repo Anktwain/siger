@@ -1,6 +1,6 @@
 package impl;
 
-import dao.RemesaDao;
+import dao.RemesaDAO;
 import dto.Remesa;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -12,7 +12,7 @@ import util.log.Logs;
  *
  * @author brionvega
  */
-public class RemesaIMPL implements RemesaDao {
+public class RemesaIMPL implements RemesaDAO {
 
   @Override
   public int buscarRemesaActual() {

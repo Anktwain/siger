@@ -5,7 +5,10 @@
  */
 package dao;
 
+import dto.EstadoRepublica;
+import dto.Municipio;
 import dto.Region;
+import java.util.List;
 
 /**
  *
@@ -13,4 +16,7 @@ import dto.Region;
  */
 public interface RegionDAO {
   public Region insertar(Region region);
+  public List<Integer> buscarMunicipiosRegion(int idDespacho);
+  public List<Municipio> buscarMunicipiosZona(int idZona);
+  public List<EstadoRepublica> buscarEstadosZona(int idZona);
 }

@@ -33,7 +33,7 @@ public class DevolucionBean implements Serializable {
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
   // VARIABLES DE CLASE
-  private DevolucionDAO devolucionDao;
+  private final DevolucionDAO devolucionDao;
   private final HistorialDAO historialDao;
   public List<Devolucion> retiradosSeleccionados;
   public List<Devolucion> bandejaSeleccionados;
@@ -183,30 +183,6 @@ public class DevolucionBean implements Serializable {
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-  public ELContext getElContext() {
-    return elContext;
-  }
-
-  public void setElContext(ELContext elContext) {
-    this.elContext = elContext;
-  }
-
-  public IndexBean getIndexBean() {
-    return indexBean;
-  }
-
-  public void setIndexBean(IndexBean indexBean) {
-    this.indexBean = indexBean;
-  }
-
-  public DevolucionDAO getDevolucionDao() {
-    return devolucionDao;
-  }
-
-  public void setDevolucionDao(DevolucionDAO devolucionDao) {
-    this.devolucionDao = devolucionDao;
-  }
-
   public List<Devolucion> getRetiradosSeleccionados() {
     return retiradosSeleccionados;
   }

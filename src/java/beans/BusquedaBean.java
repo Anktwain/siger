@@ -23,7 +23,7 @@ import javax.faces.context.FacesContext;
 public class BusquedaBean implements Serializable{
   
   // VARIABLES DE CLASE
-  private CreditoDAO creditoDAO;
+  private final CreditoDAO creditoDAO;
   
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -37,13 +37,5 @@ public class BusquedaBean implements Serializable{
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-  
-  public CreditoDAO getCreditoDAO() {
-    return creditoDAO;
-  }
-
-  public void setCreditoDAO(CreditoDAO creditoDAO) {
-    this.creditoDAO = creditoDAO;
-  }
   
 }

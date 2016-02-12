@@ -3,7 +3,6 @@ package impl;
 import dao.UsuarioDAO;
 import dto.Usuario;
 import java.util.List;
-//import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

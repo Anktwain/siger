@@ -30,7 +30,7 @@ public class DeudorBean implements Serializable {
   private Sujeto sujeto;
 
   // DAO, para acceso a la BD
-  private DeudorDAO deudorDao;
+  private final DeudorDAO deudorDao;
 
   // Otros beans
   @ManagedProperty(value = "#{sujetoBean}")

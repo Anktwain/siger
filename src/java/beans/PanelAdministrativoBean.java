@@ -21,121 +21,107 @@ import javax.faces.context.FacesContext;
 @ManagedBean
 @SessionScoped
 public class PanelAdministrativoBean implements Serializable {
-//    @ManagedProperty(value = "indexBean")
-//    private IndexBean indexBean;
+  
+  // LLAMADA A OTROS BEANS
+  ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+  IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
-    ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-    IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  // VARIABLES DE CLASE
+  private String nombreUsuario;
+  private String imagenDePerfil;
+  private String nombre;
+  private String correo;
+  private String despacho;
+  private Sujeto sujeto;
+  private final SujetoDAO sujetoDao;
 
-    private String nombreUsuario;
-    private String imagenDePerfil;
-    private String nombre;
-    private String correo;
-    private String despacho;
-    private Sujeto sujeto;
-    private SujetoDAO sujetoDao;
+  /**
+   *
+   *
+   *
+   */
+  public PanelAdministrativoBean() {
+    nombre = indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno();
+    nombreUsuario = indexBean.getUsuario().getNombreLogin();
+    imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
+    correo = indexBean.getUsuario().getCorreo();
+    sujeto = new Sujeto();
+    sujetoDao = new SujetoIMPL();
+    sujeto = sujetoDao.buscar(indexBean.getUsuario().getDespacho().getSujeto().getIdSujeto());
+    despacho = indexBean.getUsuario().getDespacho().getSujeto().getNombreRazonSocial();
+  }
 
-    /**
-     *
-     *
-     *
-     */
-    public PanelAdministrativoBean() {
-        nombre = indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno();
-        nombreUsuario = indexBean.getUsuario().getNombreLogin();
-        imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
-        correo = indexBean.getUsuario().getCorreo();
-        sujeto = new Sujeto();
-        sujetoDao = new SujetoIMPL();
-        sujeto = sujetoDao.buscar(indexBean.getUsuario().getDespacho().getSujeto().getIdSujeto());
-        despacho = sujeto.getNombreRazonSocial();
-    }
+  /**
+   *
+   *
+   * @return
+   */
+  public String getNombreUsuario() {
+    return nombreUsuario;
+  }
 
-    /**
-     *
-     *
-     * @return
-     */
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
+  /**
+   *
+   *
+   * @param nombreUsuario
+   */
+  public void setNombreUsuario(String nombreUsuario) {
+    this.nombreUsuario = nombreUsuario;
+  }
 
-    /**
-     *
-     *
-   * @param nombreUsuario */
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
+  /**
+   *
+   *
+   * @return
+   */
+  public String getImagenDePerfil() {
+    return imagenDePerfil;
+  }
 
-    /**
-     *
-     *
-     * @return
-     */
-    public String getImagenDePerfil() {
-        return imagenDePerfil;
-    }
-
-    /**
-     *
-     *
+  /**
+   *
+   *
    * @param imagenDePerfil
-     */
-    public void setImagenDePerfil(String imagenDePerfil) {
-        this.imagenDePerfil = imagenDePerfil;
-    }
+   */
+  public void setImagenDePerfil(String imagenDePerfil) {
+    this.imagenDePerfil = imagenDePerfil;
+  }
 
-    /**
-     *
-     *
-     * @return
-     */
-    public String getNombre() {
-        return nombre;
-    }
+  /**
+   *
+   *
+   * @return
+   */
+  public String getNombre() {
+    return nombre;
+  }
 
-    /**
-     *
-     *
-   * @param nombre     */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+  /**
+   *
+   *
+   * @param nombre
+   */
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
 
-    /**
-     *
-     *
-     * @return
-     */
-    public String getCorreo() {
-        return correo;
-    }
+  /**
+   *
+   *
+   * @return
+   */
+  public String getCorreo() {
+    return correo;
+  }
 
-    /**
-     *
-     *
-   * @param correo     */
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    /**
-     *
-     *
-     * @return
-     */
-    public IndexBean getIndexBean() {
-        return indexBean;
-    }
-
-    /**
-     *
-     *
-   * @param indexBean */
-    public void setIndexBean(IndexBean indexBean) {
-        this.indexBean = indexBean;
-    }
+  /**
+   *
+   *
+   * @param correo
+   */
+  public void setCorreo(String correo) {
+    this.correo = correo;
+  }
 
   public String getDespacho() {
     return despacho;
@@ -151,14 +137,6 @@ public class PanelAdministrativoBean implements Serializable {
 
   public void setSujeto(Sujeto sujeto) {
     this.sujeto = sujeto;
-  }
-
-  public SujetoDAO getSujetoDao() {
-    return sujetoDao;
-  }
-
-  public void setSujetoDao(SujetoDAO sujetoDao) {
-    this.sujetoDao = sujetoDao;
   }
 
 }

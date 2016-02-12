@@ -141,7 +141,7 @@ public class DevolucionIMPL implements DevolucionDAO {
     Transaction tx = sesion.beginTransaction();
     Devolucion dev;
     try {
-      dev = (Devolucion) sesion.createSQLQuery("SELECT * FROM devolucion WHERE id_credito = (SELECT id_credito FROM credito WHERE numero_credito = '" + numeroCredito + "');").addEntity(Devolucion.class).uniqueResult();
+      dev = (Devolucion) sesion.createSQLQuery("SELECT * FROM devolucion WHERE id_credito = (SELECT id_credito FROM credito WHERE numero_credito = '" + numeroCredito + "') AND estatus = " + Devoluciones.DEVUELTO + ";").addEntity(Devolucion.class).uniqueResult();
     } catch (HibernateException he) {
       dev = null;
       he.printStackTrace();
