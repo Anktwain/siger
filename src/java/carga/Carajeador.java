@@ -207,12 +207,12 @@ public class Carajeador {
 
         if (f.getIdColonia() != 0) {
           query += "INSERT INTO `sigerbd`.`direccion` (`calle`, `id_sujeto`, `id_municipio`, `id_estado`, `id_colonia`) "
-                  + "VALUES ('" + f.getCalle() + "', '" + sujeto.getIdSujeto() + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "');\n";
+                  + "VALUES ('" + f.getCalle() + "', '" + sujeto.getIdSujeto() + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "');";
           guardarQueryEnArchivo(query, archivoSql);
           query = "";
         } else {
           linea = sujeto.getIdSujeto() + ";" + f.getCredito() + ";" + f.getCalle() + ";" + f.getColonia()
-                  + ";" + f.getMunicipio() + ";" + f.getEstado() + ";" + f.getCp() + "\n";
+                  + ";" + f.getMunicipio() + ";" + f.getEstado() + ";" + f.getCp();
           guardarQueryEnArchivo(linea, archivoPlano);
           query = "";
         }
