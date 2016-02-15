@@ -31,6 +31,13 @@ public class Sujeto  implements java.io.Serializable {
         this.nombreRazonSocial = nombreRazonSocial;
         this.eliminado = eliminado;
     }
+    
+    public Sujeto(String nombreRazonSocial, String rfc, int eliminado) {
+        this.nombreRazonSocial = nombreRazonSocial;
+        this.rfc = rfc;
+        this.eliminado = eliminado;
+    }
+    
     public Sujeto(String nombreRazonSocial, String rfc, int eliminado, Set telefonos, Set direccions, Set contactos, Set institucions, Set despachos, Set deudors, Set emails) {
        this.nombreRazonSocial = nombreRazonSocial;
        this.rfc = rfc;

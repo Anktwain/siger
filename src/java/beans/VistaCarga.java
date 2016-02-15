@@ -392,7 +392,7 @@ public class VistaCarga implements Serializable {
     paso6 = true;
     tabView.setActiveIndex(BALANCE_CARGA);
 
-    Carajeador.carajear(idDespacho, nuevosTotales);
+    Carajeador.carajear(idDespacho, nuevosTotales, mesCarga, filas.size(), Asignador.getTotalSaldoVencido(filas));
   }
 
   /**

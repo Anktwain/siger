@@ -1,5 +1,7 @@
 package carga;
 
+import dto.Actualizacion;
+import dto.Campana;
 import dto.Credito;
 import dto.Despacho;
 import dto.Deudor;
@@ -7,6 +9,7 @@ import dto.Email;
 import dto.Fila;
 import dto.Gestor;
 import dto.Institucion;
+import dto.Linea;
 import dto.Producto;
 import dto.Remesa;
 import dto.Subproducto;
@@ -17,9 +20,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import nuevaImplementacionDAO.ActualizacionDAO;
+import nuevaImplementacionDAO.CampanaDAO;
 import nuevaImplementacionDAO.CreditoDAO;
 import nuevaImplementacionDAO.DespachoDAO;
 import nuevaImplementacionDAO.DeudorDAO;
@@ -27,11 +36,14 @@ import nuevaImplementacionDAO.EmailDAO;
 import nuevaImplementacionDAO.FacDAO;
 import nuevaImplementacionDAO.GestorDAO;
 import nuevaImplementacionDAO.InstitucionDAO;
+import nuevaImplementacionDAO.LineaDAO;
 import nuevaImplementacionDAO.ProductoDAO;
 import nuevaImplementacionDAO.RemesaDAO;
 import nuevaImplementacionDAO.SubproductoDAO;
 import nuevaImplementacionDAO.SujetoDAO;
 import nuevaImplementacionDAO.TelefonoDAO;
+import nuevaImplementacionIMPL.ActualizacionIMPL;
+import nuevaImplementacionIMPL.CampanaIMPL;
 import nuevaImplementacionIMPL.CreditoIMPL;
 import nuevaImplementacionIMPL.DespachoIMPL;
 import nuevaImplementacionIMPL.DeudorIMPL;
@@ -39,6 +51,7 @@ import nuevaImplementacionIMPL.EmailIMPL;
 import nuevaImplementacionIMPL.FacIMPL;
 import nuevaImplementacionIMPL.GestorIMPL;
 import nuevaImplementacionIMPL.InstitucionIMPL;
+import nuevaImplementacionIMPL.LineaIMPL;
 import nuevaImplementacionIMPL.ProductoIMPL;
 import nuevaImplementacionIMPL.RemesaIMPL;
 import nuevaImplementacionIMPL.SubproductoIMPL;
@@ -47,6 +60,7 @@ import nuevaImplementacionIMPL.TelefonoIMPL;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.BautistaDeArchivos;
+import util.Fecha;
 import util.HibernateUtil;
 import util.constantes.Directorios;
 import util.log.Logs;
@@ -60,13 +74,18 @@ public class Carajeador {
   private static Session session;
   private static Transaction transaction;
 
-  public static void carajear(int idDespacho, List<Fila> filas) {
+  public static void carajear(int idDespacho, List<Fila> filas,
+          int mes, int totalCreditos, float totalSaldoVencido) {
     String query = "";
     String linea = null;
     String archivoSql = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("script", BautistaDeArchivos.PREFIJO, "sql");
     String archivoPlano = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("direccionar", BautistaDeArchivos.PREFIJO, "txt");
+    String creditoActual="";
 
     try {
+      Fecha fecha = new Fecha();
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
       DespachoDAO despachoDao = new DespachoIMPL();
 
       SujetoDAO sujetoDao = new SujetoIMPL();
@@ -84,65 +103,116 @@ public class Carajeador {
       ProductoDAO productoDao = new ProductoIMPL();
       Producto producto;
 
+      LineaDAO lineaDao = new LineaIMPL();
+
       InstitucionDAO institucionDao = new InstitucionIMPL();
       Institucion institucion;
 
       CreditoDAO creditoDao = new CreditoIMPL();
       Credito credito;
 
+      ActualizacionDAO actualizacionDao = new ActualizacionIMPL();
+      Actualizacion actualizacion;
+
       FacDAO facDao = new FacIMPL();
 
       RemesaDAO remesaDao = new RemesaIMPL();
-      Remesa remesa;
+      // Remesa remesa;
 
       TelefonoDAO telefonoDao = new TelefonoIMPL();
 
       EmailDAO emailDao = new EmailIMPL();
 
+      CampanaDAO campanaDAO = new CampanaIMPL();
+
       session = HibernateUtil.getSessionFactory().openSession();
       transaction = session.beginTransaction();
 
+      /* Obtiene la campaña correspondiente a nueva remesa, siempre es la 1 */
+      Campana campana = campanaDAO.getById(session, 1);
+
+      /* Despacho al cual se le cargarán los créditos de la remesa. */
       Despacho despacho = despachoDao.getById(session, idDespacho);
 
+      /* Objeto remesa */
+      Remesa remesa = new Remesa(mes, Calendar.getInstance().get(Calendar.YEAR),
+              totalCreditos, totalSaldoVencido, new Date(), 0, null);
+
+      remesaDao.insert(session, remesa);
+
       for (Fila f : filas) {
+        creditoActual = f.getCredito();
+        /* Crea un nuevo sujeto */
         sujeto = sujetoDao.insert(session, new Sujeto(f.getNombre(), f.getRfc(), 0));
+
+        /* Nuevo deudor asociado al sujeto */
         deudor = deudorDao.insert(session, new Deudor(sujeto, f.getIdCliente(), null, null, null, null));
 
+        /* Asigna todos los emails encontrados para ese sujeto */
+        for (String email : f.getCorreos()) {
+          emailDao.insert(session, new Email(sujeto, email, "Remesa"));
+        }
+
+        /* Asigna todos los teléfonos encontrados para ese sujeto */
+        for (String telefono : f.getTelsAdicionales()) {
+          telefonoDao.insert(session, new Telefono(sujeto, telefono, "Remesa", null, null, "ND"));
+        }
+
+        /* Gestor al cual se asignará el crédito */
         gestor = gestorDao.getById(session, f.getIdGestor());
-        subproducto = subproductoDao.getById(session, f.getIdSubproducto());
-        producto = productoDao.getById(session, f.getIdProducto());
-        institucion = institucionDao.getById(session, producto.getInstitucion().getIdInstitucion());
 
-        credito = new Credito(); // CORREGIR!!!
-        
-        remesa = new Remesa(idDespacho, idDespacho, idDespacho, Float.NaN, null, idDespacho, null); // CORREGIR!!!
-
+        /* Obtiene subproducto y producto, el primero no es obligatorio */
+//        subproducto = subproductoDao.getById(session, f.getIdSubproducto());
+//        producto = productoDao.getById(session, f.getIdProducto());
+        /* Crea un nuevo crédito */
+        credito = new Credito(campana, despacho, deudor, gestor, f.getProductoDTO(), f.getSubproductoDTO(),
+                f.getCredito(), simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaInicioCredito())),
+                simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaVencimientoCred())), null,
+                f.getDisposicionFloat(), Float.parseFloat(f.getMensualidad()), (float) 0.0,
+                0, f.getCuenta(), 1, 0, null, null, null, null, null, null, null);
 
         creditoDao.insert(session, credito);
 
-        remesaDao.insert(session, remesa);
-
-        for (Fac fac : f.getFacs()) { // CORREGIR!!!
-//          facDao.insert(session, new dto.Fac(remesa, fac.getMes(), fac.getAnio(),
-//                  Float.parseFloat(numerador(fac.getFacPor())), fac.getFacMes()));
+        /* Crea objeto Linea para el crédito */
+        // hacer las correcciones necesarias para que el id sea autonumérico
+        //lineaDao.insert(session, new Linea(mes, credito, linea))
+        /* Crea la actualización */
+        Date fechaUP;
+        Date fechaUVP;
+        if(!f.getFechaUltimoPago().isEmpty()) {
+          fechaUP = simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaUltimoPago()));
+        } else {
+          fechaUP = null;
         }
-
-        for (String tel : f.getTelsAdicionales()) {
-          telefonoDao.insert(session, new Telefono(sujeto, tel));
+        if(!f.getFechaUltimoVencimientoPagado().isEmpty()) {
+          fechaUVP = simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaUltimoVencimientoPagado()));
+        } else {
+          fechaUVP = null;
         }
+        
+        actualizacion = new Actualizacion(credito, remesa,
+                Integer.parseInt(f.getMesesVencidos()), Float.parseFloat(f.getSaldoVencido()),
+                f.getEstatus(), fechaUP,
+                fechaUVP, null);
 
-        for (String mail : f.getCorreos()) {
-          emailDao.insert(session, new Email(sujeto, mail));
+        actualizacionDao.insert(session, actualizacion);
+
+        /* Crea los facs asociados a la actualización */
+        if (f.getFacs().size() > 0) {
+          for (Fac fac : f.getFacs()) {
+            facDao.insert(session, new dto.Fac(actualizacion, fac.getMes(), fac.getAnio(),
+                    Float.parseFloat(fac.getFacPor()), fac.getFacMes()));
+          }
         }
 
         if (f.getIdColonia() != 0) {
           query += "INSERT INTO `sigerbd`.`direccion` (`calle`, `id_sujeto`, `id_municipio`, `id_estado`, `id_colonia`) "
-                  + "VALUES ('" + f.getCalle() + "', '" + sujeto.getIdSujeto() + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "');\n";
+                  + "VALUES ('" + f.getCalle() + "', '" + sujeto.getIdSujeto() + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "');";
           guardarQueryEnArchivo(query, archivoSql);
           query = "";
         } else {
           linea = sujeto.getIdSujeto() + ";" + f.getCredito() + ";" + f.getCalle() + ";" + f.getColonia()
-                  + ";" + f.getMunicipio() + ";" + f.getEstado() + ";" + f.getCp() + "\n";
+                  + ";" + f.getMunicipio() + ";" + f.getEstado() + ";" + f.getCp();
           guardarQueryEnArchivo(linea, archivoPlano);
           query = "";
         }
@@ -156,7 +226,7 @@ public class Carajeador {
         transaction.rollback();
       }
 
-      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error fatal:", "Por favor contacte con su administrador " + ex.getMessage()));
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error fatal:", "Por favor contacte con su administrador " + ex.getMessage() + " Estaba trabajando con el crédito " + creditoActual));
       Logs.log.error(ex.getMessage());
     } finally {
       if (session != null) {

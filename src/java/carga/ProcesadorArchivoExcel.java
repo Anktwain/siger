@@ -38,7 +38,7 @@ public class ProcesadorArchivoExcel {
   /* Un arreglo de objetos de Tipo Sheet que guardará cada una de las hojas del
    libro Excel. */
   private Sheet hojas[];
-  
+
   /* El mes al cual corresponde la carga */
   private int mesCarga;
 
@@ -359,76 +359,124 @@ public class ProcesadorArchivoExcel {
                   fila.setDireccionAdicional(hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
                   break;
                 case "ENE-": // Crea objeto Fac correspondiente al mes de enero
-                  crearFac(fila, 1, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 1, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "FEB-": // Crea objeto Fac correspondiente al mes de febrero
-                  crearFac(fila, 2, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 2, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MAR-": // Crea objeto Fac correspondiente al mes de marzo
-                  crearFac(fila, 3, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 3, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "ABR-": // Crea objeto Fac correspondiente al mes de abril
-                  crearFac(fila, 4, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 4, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MAY-": // Crea objeto Fac correspondiente al mes de mayo
-                  crearFac(fila, 5, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 5, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "JUN-": // Crea objeto Fac correspondiente al mes de junio
-                  crearFac(fila, 6, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 6, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "JUL-": // Crea objeto Fac correspondiente al mes de julio
-                  crearFac(fila, 7, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 7, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "AGO-": // Crea objeto Fac correspondiente al mes de agosto
-                  crearFac(fila, 8, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 8, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "SEP-": // Crea objeto Fac correspondiente al mes de septiembre
-                  crearFac(fila, 9, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 9, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "OCT-": // Crea objeto Fac correspondiente al mes de octubre
-                  crearFac(fila, 10, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 10, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "NOV-": // Crea objeto Fac correspondiente al mes de noviembre
-                  crearFac(fila, 11, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 11, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "DIC-": // Crea objeto Fac correspondiente al mes de dicembre
-                  crearFac(fila, 12, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    crearFac(fila, 12, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-ENE": // Agrega el monto correspondiente al Fac de enero
-                  agregarFacPor(1, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(1, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-FEB": // Agrega el monto correspondiente al Fac de febrero
-                  agregarFacPor(2, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(2, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-MAR": // Agrega el monto correspondiente al Fac de marzo
-                  agregarFacPor(3, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(3, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-ABR": // Agrega el monto correspondiente al Fac de abril
-                  agregarFacPor(4, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(4, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-MAY": // Agrega el monto correspondiente al Fac de mayo
-                  agregarFacPor(5, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(5, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-JUN": // Agrega el monto correspondiente al Fac de junio
-                  agregarFacPor(6, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(6, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-JUL": // Agrega el monto correspondiente al Fac de julio
-                  agregarFacPor(7, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(7, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-AGO": // Agrega el monto correspondiente al Fac de agosto
-                  agregarFacPor(8, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(8, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-SEP": // Agrega el monto correspondiente al Fac de septiembre
-                  agregarFacPor(9, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(9, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-OCT": // Agrega el monto correspondiente al Fac de octubre
-                  agregarFacPor(10, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(10, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-NOV": // Agrega el monto correspondiente al Fac de noviembre
-                  agregarFacPor(11, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(11, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
                 case "MO-DIC": // Agrega el monto correspondiente al Fac de diciembre
-                  agregarFacPor(12, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  if (!hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents().isEmpty()) {
+                    agregarFacPor(12, fila, hoja.getCell(Integer.parseInt(splitClave[2]), numeroFila).getContents());
+                  }
                   break;
               } // fin de switch
             } // fin de if(coincide el nombre de la hoja)
@@ -494,17 +542,16 @@ public class ProcesadorArchivoExcel {
    */
   private void agregarFacPor(int mes, Fila fila, String facPor) {
     /* Busca el Fac asociado en el objeto Fila. La búsqueda la hace por mes dado
-    que en una remesa no debe aparecer un mes más de una vez */
+     que en una remesa no debe aparecer un mes más de una vez */
     Fac fac = fila.buscarFac(mes);
-    
+
     /* Agrega el monto, si encontró el Fac buscado */
     if (fac != null) {
       fac.setFacPor(facPor);
     }
   }
-  
-  /* Setters y Getters */
 
+  /* Setters y Getters */
   public Workbook getArchivo() {
     return archivo;
   }
