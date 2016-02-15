@@ -165,7 +165,6 @@ public class InstitucionIMPL implements InstitucionDAO {
     @Override
     public List<Sujeto> buscarInstituciones() {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
         List<Sujeto> listaSujeto;
         try { // Buscamos todas las Instituciones.
             //"select e.name, a.city from Employee e INNER JOIN e.address a"
@@ -192,10 +191,9 @@ public class InstitucionIMPL implements InstitucionDAO {
   @Override
   public List<Institucion> buscarInstitucionesPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-        Transaction tx = sesion.beginTransaction();
         List<Institucion> listaInstituciones;
         try { 
-            listaInstituciones = sesion.createSQLQuery("SELECT * FROM institucion i WHERE i.id_institucion IN (SELECT c.id_institucion FROM credito c WHERE c.id_despacho = " + idDespacho + ");").addEntity(Institucion.class).list();
+            listaInstituciones = sesion.createSQLQuery("SELECT * FROM institucion WHERE id_institucion IN (SELECT id_institucion FROM producto WHERE id_producto IN (SELECT id_producto FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion) AND id_despacho = 2));").addEntity(Institucion.class).list();
         } catch(HibernateException he) {
             listaInstituciones = null;
             he.printStackTrace();

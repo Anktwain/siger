@@ -35,14 +35,21 @@ public class GestionesBean implements Serializable {
   // VARIABLES DE CLASE
   private final int idDespacho;
   private boolean permitirExport;
-  private String tipoSeleccionado;
+  private boolean habilitaGestor;
+  private boolean habilitaTipoGestion;
+  private boolean habilitaInstitucion;
+  private boolean habilitaProducto;
+  private boolean habilitaTabla;
   private String nombreArchivo;
-  private Gestor gestorSeleccionado;
+  private String fi;
+  private String ff;
   private Date fechaInicio;
   private Date fechaFin;
+  private TipoGestion tipoSeleccionado;
+  private Gestor gestorSeleccionado;
   private Producto productoSeleccionado;
   private Institucion institucionSeleccionada;
-  private List<String> listaTipos;
+  private List<TipoGestion> listaTipos;
   private List<Gestor> listaGestores;
   private List<Gestion> listaGestiones;
   private List<Producto> listaProductos;
@@ -51,14 +58,20 @@ public class GestionesBean implements Serializable {
   private final GestionDAO gestionDao;
   private final ProductoDAO productoDao;
   private final InstitucionDAO institucionDao;
-  private final UsuarioDAO usuarioDao;
+  private final TipoGestionDAO tipoGestionDao;
 
   public GestionesBean() {
-    permitirExport = true;
+    permitirExport = false;
+    habilitaGestor = false;
+    habilitaTipoGestion = false;
+    habilitaInstitucion = false;
+    habilitaProducto = false;
+    habilitaTabla = false;
     idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
     gestorSeleccionado = new Gestor();
     productoSeleccionado = new Producto();
     institucionSeleccionada = new Institucion();
+    tipoSeleccionado = new TipoGestion();
     listaGestiones = new ArrayList();
     listaTipos = new ArrayList();
     listaGestores = new ArrayList();
@@ -68,83 +81,71 @@ public class GestionesBean implements Serializable {
     gestionDao = new GestionIMPL();
     productoDao = new ProductoIMPL();
     institucionDao = new InstitucionIMPL();
-    usuarioDao = new UsuarioIMPL();
+    tipoGestionDao = new TipoGestionIMPL();
+  }
+
+  // METODO QUE HABILITA LA LISTA DE GESTORES
+  public void habilitaGestores() {
     listaGestores = gestorDao.buscarPorDespacho(idDespacho);
-    //listaTipos = tipoGestionDao.;
+    RequestContext.getCurrentInstance().update("formGestionesAdmin");
+  }
+
+  // METODO QUE HABILITA LA LISTA DE TIPOS DE GESTION
+  public void habilitaTipoGestion() {
+    listaTipos = tipoGestionDao.buscarTodo();
+    RequestContext.getCurrentInstance().update("formGestionesAdmin");
+  }
+
+  // METODO QUE HABILITA LA LISTA DE INSTITUCIONES
+  public void habilitaInstituciones() {
     listaInstituciones = institucionDao.buscarInstitucionesPorDespacho(idDespacho);
+    RequestContext.getCurrentInstance().update("formGestionesAdmin");
   }
 
   // METODO QUE OBTIENE LA LISTA DE PRODUCTOS DE ACUERDO A LA INSTITUCION SELECCIONADA
-  public void obtenerProductos() {
+  public void habilitaProductos() {
     listaProductos = productoDao.buscarProductosPorInstitucion(institucionSeleccionada.getIdInstitucion());
+    RequestContext.getCurrentInstance().update("formGestionesAdmin");
   }
 
   // METODO QUE BUSCA TODAS LAS GESTIONES SEGUN PARAMETROS INGRESADOS
   public void buscar() {
-    int idGestor = gestorSeleccionado.getIdGestor();
-    int idInstitucion = institucionSeleccionada.getIdInstitucion();
-    int idProducto = productoSeleccionado.getIdProducto();
-    if(tipoSeleccionado == null){
-      tipoSeleccionado = "";
-    }
-    String tipoGestion = tipoSeleccionado;
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String f1 = df.format(fechaInicio);
-    String f2 = df.format(fechaFin);
-    if ((idGestor == 0) && (tipoGestion.equals("")) && (idInstitucion == 0) && (idProducto == 0)) {
-      System.out.println("CASO 1");
-      listaGestiones = gestionDao.buscarGestionesPorDespacho(idDespacho, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-TodosGestores-TodosTipos-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
+    fi = df.format(fechaInicio) + " 00:00:00";
+    ff = df.format(fechaFin) + " 23:59:59";
+    nombreArchivo = "GESTIONES_" + fi + "_" + ff.replace(":", "-");
+    String consulta = "SELECT * FROM gestion WHERE fecha BETWEEN '" + fi + "' AND '" + ff + "' ";
+    if (habilitaTipoGestion) {
+      tipoSeleccionado = tipoGestionDao.buscarPorId(tipoSeleccionado.getIdTipoGestion());
+      consulta = consulta + "AND id_tipo_gestion = " + tipoSeleccionado.getIdTipoGestion().toString() + " ";
+      nombreArchivo = nombreArchivo + "_" + tipoSeleccionado.getNombre();
     }
-    if ((idGestor != 0) && (tipoGestion.equals("")) && (idInstitucion == 0) && (idProducto == 0)) {
-      System.out.println("CASO 2");
-      listaGestiones = gestionDao.buscarGestionesPorGestor(idDespacho, idGestor, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-TodosTipos-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
+    if (habilitaGestor) {
+      gestorSeleccionado = gestorDao.buscar(gestorSeleccionado.getIdGestor());
+      consulta = consulta + "AND id_usuario = (SELECT id_usuario FROM usuario WHERE id_usuario = " + gestorSeleccionado.getUsuario().getIdUsuario().toString() + ") ";
+      nombreArchivo = nombreArchivo + "_" + gestorSeleccionado.getUsuario().getNombreLogin();
+    } else {
+      consulta = consulta + "AND id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + idDespacho + ") ";
+      nombreArchivo = nombreArchivo + "_Todos los usuarios";
     }
-    if ((idGestor == 0) && (!tipoGestion.equals("")) && (idInstitucion == 0) && (idProducto == 0)) {
-      System.out.println("CASO 3");
-      listaGestiones = gestionDao.buscarGestionesPorTipo(idDespacho, tipoGestion, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-TodosGestores-" + tipoGestion + "-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
+    if (habilitaInstitucion) {
+      institucionSeleccionada = institucionDao.buscar(institucionSeleccionada.getIdInstitucion());
+      consulta = consulta + "AND id_credito IN (SELECT id_credito FROM credito WHERE id_producto IN (SELECT id_producto FROM producto WHERE id_institucion = " + institucionSeleccionada.getIdInstitucion().toString() + " )) ";
+      nombreArchivo = nombreArchivo + "_" + institucionSeleccionada.getNombreCorto();
     }
-    if ((idGestor == 0) && (tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto == 0)) {
-      System.out.println("CASO 4");
-      listaGestiones = gestionDao.buscarGestionesPorInstitucion(idDespacho, idInstitucion, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-TodosGestores-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-TodosProductos-" + f1 + "-" + f2;
+    if (habilitaProducto) {
+      productoSeleccionado = productoDao.buscar(productoSeleccionado.getIdProducto());
+      consulta = consulta + "AND id_credito IN (SELECT id_credito FROM credito WHERE id_producto IN (SELECT id_producto FROM producto WHERE id_producto = " + productoSeleccionado.getIdProducto().toString() + ")) ";
+      nombreArchivo = nombreArchivo + "_" + productoSeleccionado.getNombre();
     }
-    if ((idGestor == 0) && (tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto != 0)) {
-      System.out.println("CASO 5");
-      listaGestiones = gestionDao.buscarGestionesPorInstitucionProducto(idDespacho, idInstitucion, idProducto, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-TodosGestores-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
-    }
-    if ((idGestor != 0) && (!tipoGestion.equals("")) && (idInstitucion == 0) && (idProducto == 0)) {
-      System.out.println("CASO 6");
-      listaGestiones = gestionDao.buscarGestionesPorGestorTipo(idDespacho, idGestor, tipoGestion, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-" + tipoGestion + "-TodasInstituciones-TodosProductos-" + f1 + "-" + f2;
-    }
-    if ((idGestor != 0) && (tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto == 0)) {
-      System.out.println("CASO 7");
-      listaGestiones = gestionDao.buscarGestionesPorGestorInstitucion(idDespacho, idGestor, idInstitucion, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-TodosProductos-" + f1 + "-" + f2;
-    }
-    if ((idGestor != 0) && (tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto != 0)) {
-      System.out.println("CASO 8");
-      listaGestiones = gestionDao.buscarGestionesPorGestorInstitucionProducto(idDespacho, idGestor, idInstitucion, idProducto, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-TodosTipos-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
-    }
-    if ((idGestor == 0) && (!tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto == 0)) {
-      System.out.println("CASO 9");
-      listaGestiones = gestionDao.buscarGestionesPorTipoInstitucion(idDespacho, tipoGestion, idInstitucion, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-TodosGestores-" + tipoGestion + "-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-TodosProductos-" + f1 + "-" + f2;
-    }
-    if ((idGestor == 0) && (!tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto != 0)) {
-      System.out.println("CASO 10");
-      listaGestiones = gestionDao.buscarGestionesPorTipoInstitucionProducto(idDespacho, tipoGestion, idInstitucion, idProducto, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-TodosGestores-" + tipoGestion + "-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
-    }
-    if ((idGestor != 0) && (!tipoGestion.equals("")) && (idInstitucion != 0) && (idProducto != 0)) {
-      System.out.println("CASO 11");
-      listaGestiones = gestionDao.buscarGestionesPorGestorTipoInstitucionProducto(idDespacho, idGestor, tipoGestion, idInstitucion, idProducto, fechaInicio, fechaFin);
-      nombreArchivo = "Gestiones-" + usuarioDao.buscarUsuarioPorIdGestor(idGestor).getNombreLogin() + "-" + tipoGestion + "-" + institucionSeleccionada.getSujeto().getNombreRazonSocial() + "-" + productoSeleccionado.getNombre() + "-" + f1 + "-" + f2;
+    consulta = consulta + ";";
+    System.out.println(consulta);
+    listaGestiones = gestionDao.busquedaReporteGestiones(consulta);
+    habilitaTabla = true;
+    if (listaGestiones.isEmpty()) {
+      permitirExport = false;
+    } else {
+      permitirExport = true;
     }
     RequestContext.getCurrentInstance().update("formGestionesAdmin");
   }
@@ -153,11 +154,11 @@ public class GestionesBean implements Serializable {
 // ***********************************************************************************************************************
 // ***********************************************************************************************************************
 // GETTERS & SETTERS
-  public List<String> getListaTipos() {
+  public List<TipoGestion> getListaTipos() {
     return listaTipos;
   }
 
-  public void setListaTipos(List<String> listaTipos) {
+  public void setListaTipos(List<TipoGestion> listaTipos) {
     this.listaTipos = listaTipos;
   }
 
@@ -169,11 +170,11 @@ public class GestionesBean implements Serializable {
     this.listaGestores = listaGestores;
   }
 
-  public String getTipoSeleccionado() {
+  public TipoGestion getTipoSeleccionado() {
     return tipoSeleccionado;
   }
 
-  public void setTipoSeleccionado(String tipoSeleccionado) {
+  public void setTipoSeleccionado(TipoGestion tipoSeleccionado) {
     this.tipoSeleccionado = tipoSeleccionado;
   }
 
@@ -255,6 +256,46 @@ public class GestionesBean implements Serializable {
 
   public void setListaInstituciones(List<Institucion> listaInstituciones) {
     this.listaInstituciones = listaInstituciones;
+  }
+
+  public boolean isHabilitaGestor() {
+    return habilitaGestor;
+  }
+
+  public void setHabilitaGestor(boolean habilitaGestor) {
+    this.habilitaGestor = habilitaGestor;
+  }
+
+  public boolean isHabilitaTipoGestion() {
+    return habilitaTipoGestion;
+  }
+
+  public void setHabilitaTipoGestion(boolean habilitaTipoGestion) {
+    this.habilitaTipoGestion = habilitaTipoGestion;
+  }
+
+  public boolean isHabilitaInstitucion() {
+    return habilitaInstitucion;
+  }
+
+  public void setHabilitaInstitucion(boolean habilitaInstitucion) {
+    this.habilitaInstitucion = habilitaInstitucion;
+  }
+
+  public boolean isHabilitaTabla() {
+    return habilitaTabla;
+  }
+
+  public void setHabilitaTabla(boolean habilitaTabla) {
+    this.habilitaTabla = habilitaTabla;
+  }
+
+  public boolean isHabilitaProducto() {
+    return habilitaProducto;
+  }
+
+  public void setHabilitaProducto(boolean habilitaProducto) {
+    this.habilitaProducto = habilitaProducto;
   }
 
 }

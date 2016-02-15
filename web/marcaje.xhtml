@@ -16,7 +16,7 @@
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-        <div id="breadcrumb">
+      <div id="breadcrumb">
         <ul class="breadcrumb">
           <li>
             <i class="fa fa-home">
@@ -28,13 +28,30 @@
           </li>
         </ul>
       </div>
-      <h1>
-        M&oacute;dulo de marcaje
-      </h1>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Marcaje</h3>
+          <span>Consulte informaci&oacute;n de las cuentas con marcaje.</span>
+          <span>Habilite la impresion de visitas domiciliarias.</span>
+        </div>
+      </div>
+      <p:accordionPanel multiple="true" activeIndex="-  1">
+        <p:tab title="Gestiones anteriores">
+          
+        </p:tab>
+        <p:tab title="Datos de contacto">
+          
+        </p:tab>
+        <p:tab title="Otros creditos con adeudos">
+
+        </p:tab>
+        <p:tab title="Actualizaciones de este adeudo">
+          
+        </p:tab>
+        <p:tab title="Historial de este credito">
+
+        </p:tab>
+      </p:accordionPanel>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />

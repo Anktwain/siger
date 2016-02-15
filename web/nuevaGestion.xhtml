@@ -76,8 +76,8 @@
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:selectOneMenu id="estatusInformativoGestion" value="#{gestionBean.estatusSeleccionado.idEstatusInformativo}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
+            <p:ajax listener="#{gestionBean.preparaoracion()}" update="gestionCompleta" />
             <f:selectItems value="#{gestionBean.listaEstatus}"  var="e" itemLabel="#{e.estatus}" itemValue="#{e.idEstatusInformativo}"  />
-            <p:ajax listener="#{gestionBean.crearOracion()}"/>
           </p:selectOneMenu>
           <br />
           <br />

@@ -40,74 +40,126 @@
         <h:form id="formGestionesAdmin">
           <table>
             <tr>
-              <td style="padding: 20px;">
-                <h4 class="no-margin">Gestor:</h4>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:selectOneMenu id="listaGestoresGestiones" value="#{gestionesBean.gestorSeleccionado.idGestor}" style="width:200px">
-                  <f:selectItem itemLabel="Todos" itemValue="0" />
-                  <f:selectItems value="#{gestionesBean.listaGestores}" var="g" itemValue="#{g.idGestor}" />
-                </p:selectOneMenu>
+              <td>
+                <h4 class="no-margin">Especificar gestor:</h4>
               </td>
-              <td style="padding: 20px;">
-                <h4 class="no-margin">Tipo de gestion:</h4>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:selectOneMenu id="tipoGestionGestiones" value="#{gestionesBean.tipoSeleccionado}" style="width:200px">
-                  <f:selectItem itemLabel="Todas" itemValue="" />
-                  <f:selectItems value="#{gestionesBean.listaTipos}" />
-                </p:selectOneMenu>
+              <td style="padding-left: 20px;">
+                <p:inputSwitch value="#{gestionesBean.habilitaGestor}" offLabel="No" onLabel="Si">
+                  <p:ajax listener="#{gestionesBean.habilitaGestores()}" update="seleccionarGestorGestionesCombobox" />
+                </p:inputSwitch>
               </td>
-              <td style="padding: 20px;">
-                <h4 class="no-margin">Institucion:</h4>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:selectOneMenu id="listaInstitucionesGestiones" value="#{gestionesBean.institucionSeleccionada.idInstitucion}" style="width:200px" required="#{not empty param[submit.idInstitucion]}" >
-                  <f:selectItem itemLabel="Todas" itemValue="0" />
-                  <f:selectItems value="#{gestionesBean.listaInstituciones}" var="i" itemLabel="#{i.nombreCorto}" itemValue="#{i.idInstitucion}" />
-                  <p:ajax update="listaProductosGestiones" listener="#{gestionesBean.obtenerProductos()}" />
+              <td style="padding-left: 20px;">
+                <p:selectOneMenu id="seleccionarGestorGestionesCombobox" value="#{gestionesBean.gestorSeleccionado.idGestor}" style="width:200px" disabled="#{!gestionesBean.habilitaGestor}">
+                  <f:selectItems value="#{gestionesBean.listaGestores}" var="g" itemLabel="#{g.usuario.nombreLogin}" itemValue="#{g.idGestor}" />
                 </p:selectOneMenu>
-              </td>
-              <td style="padding: 20px;">
-                <h4 class="no-margin">Producto:</h4>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:selectOneMenu id="listaProductosGestiones" value="#{gestionesBean.productoSeleccionado.idProducto}" style="width:300px">
-                  <f:selectItem itemLabel="Todos" itemValue="0" />
-                  <f:selectItems value="#{gestionesBean.listaProductos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idProducto}" />
-                </p:selectOneMenu>
-              </td>
-              <td style="padding: 20px;">
-                <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{gestionesBean.buscar()}" update="growl, tablaGestiones" />
               </td>
             </tr>
             <tr>
-              <td style="padding: 20px;">
+              <td style="padding-top: 20px"></td>
+            </tr>
+            <tr>
+              <td>
+                <h4 class="no-margin">Especificar tipo de gestion:</h4>
+              </td>
+              <td style="padding-left: 20px;">
+                <p:inputSwitch value="#{gestionesBean.habilitaTipoGestion}" offLabel="No" onLabel="Si">
+                  <p:ajax listener="#{gestionesBean.habilitaTipoGestion()}" update="seleccionarTipoGestionGestionesCombobox" />
+                </p:inputSwitch>
+              </td>
+              <td style="padding-left: 20px;">
+                <p:selectOneMenu id="seleccionarTipoGestionGestionesCombobox" value="#{gestionesBean.tipoSeleccionado.idTipoGestion}" style="width:200px" disabled="#{!gestionesBean.habilitaTipoGestion}">
+                  <f:selectItems value="#{gestionesBean.listaTipos}" var="t" itemLabel="#{t.nombre}" itemValue="#{t.idTipoGestion}" />
+                </p:selectOneMenu>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top: 20px"></td>
+            </tr>
+            <tr>
+              <td>
+                <h4 class="no-margin">Especificar Institucion:</h4>
+              </td>
+              <td style="padding-left: 20px;">
+                <p:inputSwitch value="#{gestionesBean.habilitaInstitucion}" offLabel="No" onLabel="Si">
+                  <p:ajax listener="#{gestionesBean.habilitaInstituciones()}" update="seleccionarInstitucionGestionesCombobox" />
+                </p:inputSwitch>
+              </td>
+              <td style="padding-left: 20px;">
+                <p:selectOneMenu id="seleccionarInstitucionGestionesCombobox" value="#{gestionesBean.institucionSeleccionada.idInstitucion}" style="width:200px" disabled="#{!gestionesBean.habilitaInstitucion}">
+                  <f:selectItems value="#{gestionesBean.listaInstituciones}" var="i" itemLabel="#{i.nombreCorto}" itemValue="#{i.idInstitucion}" />
+                  <p:ajax update="seleccionarProductosGestionesCombobox" />
+                </p:selectOneMenu>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top: 20px"></td>
+            </tr>
+            <tr>
+              <td>
+                <h4 class="no-margin">Especificar Producto:</h4>
+              </td>
+              <td style="padding-left: 20px;">
+                <p:inputSwitch value="#{gestionesBean.habilitaProducto}" offLabel="No" onLabel="Si" disabled="#{!gestionesBean.habilitaInstitucion}">
+                  <p:ajax listener="#{gestionesBean.habilitaProductos()}" update="seleccionarProductosGestionesCombobox" />
+                </p:inputSwitch>
+              </td>
+              <td style="padding-left: 20px;">
+                <p:selectOneMenu id="seleccionarProductosGestionesCombobox" value="#{gestionesBean.productoSeleccionado.idProducto}" style="width:300px" disabled="#{!gestionesBean.habilitaProducto}">
+                  <f:selectItems value="#{gestionesBean.listaProductos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idProducto}" />
+                </p:selectOneMenu>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top: 20px"></td>
+            </tr>
+            <tr>
+              <td>
                 <h4 class="no-margin">Fecha inicio:</h4>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                <br />
                 <p:calendar id="startDate" value="#{gestionesBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial.">
                   <p:ajax event="dateSelect" update="endDate" />
                 </p:calendar>
               </td>
-              <td style="padding: 20px;">
+              <td style="padding-left: 20px;"></td>
+              <td style="padding-left: 20px;">
                 <h4 class="no-margin">Fecha fin:</h4>
-                &nbsp;&nbsp;&nbsp;&nbsp;
+                <br />
                 <p:calendar id="endDate" value="#{gestionesBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top: 20px"></td>
+            </tr>
+            <tr>
+              <td style="padding-top: 20px"></td>
+            </tr>
+            <tr>
+              <td>
+                <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{gestionesBean.buscar()}" update="growl, tablaGestiones" />
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:button value="Limpiar" icon="ui-icon-refresh" outcome="gestiones" />
               </td>
             </tr>
           </table>
           <hr />
-          <p:dataTable id="tablaGestiones" var="g" value="#{gestionesBean.listaGestiones}" emptyMessage="No existen gestiones." paginator="true" rows="10" paginatorPosition="bottom">
+          <p:dataTable id="tablaGestiones" var="g" value="#{gestionesBean.listaGestiones}" emptyMessage="No existen gestiones." paginator="true" rows="10" paginatorPosition="bottom" rendered="#{gestionesBean.habilitaTabla}">
             <p:column headerText="Fecha" style="width: 100px;">
               <h:outputText value="#{g.fecha}"/>
             </p:column>
-            <p:column headerText="Tipo Gestion" style="width: 200px;">
-              <h:outputText value="#{g.tipoGestion}"/>
+            <p:column headerText="Credito" style="width: 100px;">
+              <h:outputText value="#{g.credito.numeroCredito}" />
             </p:column>
-            <p:column headerText="Asunto" style="width: 200px;">
-              <h:outputText value="#{g.asuntoGestion}"/>
+            <p:column headerText="Deudor" style="width: 300px;">
+              <h:outputText value="#{g.credito.deudor.sujeto.nombreRazonSocial}" />
+            </p:column>
+            <p:column headerText="Producto" style="width: 120px;">
+              <h:outputText value="#{g.credito.producto.nombre}" />
             </p:column>
             <p:column headerText="Gestion">
-              <h:outputText value="#{g.gestion}"/>
+              <h:outputText value="#{obtenerOracionCompletaGestionBean.obtenerOracion(g)}" />
             </p:column>
-            <p:column headerText="Gestor" style="width: 150px;">
-              <h:outputText value="#{g.usuario.nombreLogin}" />
+            <p:column headerText="Estatus banco" style="width: 150px;">
+              <h:outputText value="#{g.estatusInformativo.estatus}" />
             </p:column>
             <f:facet name="footer">
               <div align="right">

@@ -18,4 +18,5 @@ public interface MunicipioDAO {
     public Municipio buscar(int idMunicipio);
     public Municipio buscar(String cadena);
     public Municipio buscarPorId(int idMunicipio);
+    public Municipio buscarPorNombresMunicipioEstado(String nombreMunicipio, String nombreEstado);
 }

@@ -5,21 +5,9 @@
  */
 package beans;
 
-import dao.EstadoRepublicaDAO;
-import dao.GestorDAO;
-import dao.MunicipioDAO;
-import dao.RegionDAO;
-import dao.ZonaDAO;
-import dto.EstadoRepublica;
-import dto.Gestor;
-import dto.Municipio;
-import dto.Region;
-import dto.Zona;
-import impl.EstadoRepublicaIMPL;
-import impl.GestorIMPL;
-import impl.MunicipioIMPL;
-import impl.RegionIMPL;
-import impl.ZonaIMPL;
+import dao.*;
+import dto.*;
+import impl.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +37,17 @@ public class ZonasBean implements Serializable {
 
   // VARIBALES DE CLASE
   private boolean habilitaEstados;
-  private boolean habilitaMunicipios;
+  private boolean habilitaCreacion;
   private final int idDespacho;
   private String nombreZona;
   private List<Zonas> listaZonas;
-  private List<EstadoRepublica> listaEstados;
-  private List<Municipio> listaMunicipios;
+  private List<String> listaEstados;
+  private List<String> listaMunicipios;
   private List<Gestor> listaGestores;
-  private List<String> estadosSeleccionados;
-  private List<String> municipiosSeleccionados;
+  private List<EstadoRepublica> estadosSeleccionados;
+  private List<String> estadosSeleccionadosString;
+  private List<String> municipiosSeleccionadosString;
+  private List<Municipio> municipiosSeleccionados;
   private final EstadoRepublicaDAO estadoRepublicaDao;
   private final MunicipioDAO municipioDao;
   private final RegionDAO regionDao;
@@ -69,13 +59,15 @@ public class ZonasBean implements Serializable {
   // CONSTRUCTOR
   public ZonasBean() {
     habilitaEstados = false;
-    habilitaMunicipios = true;
+    habilitaCreacion = true;
     listaZonas = new ArrayList();
     listaEstados = new ArrayList();
     listaMunicipios = new ArrayList();
     listaGestores = new ArrayList();
     estadosSeleccionados = new ArrayList();
     municipiosSeleccionados = new ArrayList();
+    estadosSeleccionadosString = new ArrayList();
+    municipiosSeleccionadosString = new ArrayList();
     estadoRepublicaDao = new EstadoRepublicaIMPL();
     municipioDao = new MunicipioIMPL();
     regionDao = new RegionIMPL();
@@ -83,9 +75,17 @@ public class ZonasBean implements Serializable {
     gestorDao = new GestorIMPL();
     gestorSeleccionado = new Gestor();
     zonaSeleccionada = new Zonas();
-    listaEstados = estadoRepublicaDao.buscarTodo();
+    obtenerEstados();
     idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
     listaGestores = gestorDao.buscarPorDespacho(idDespacho);
+  }
+
+  //  METODO QUE CARGA LA LISTA DE ESTADOS
+  private void obtenerEstados() {
+    List<EstadoRepublica> lista = estadoRepublicaDao.buscarTodo();
+    for (int i = 0; i < (lista.size()); i++) {
+      listaEstados.add(lista.get(i).getNombre());
+    }
   }
 
   // METODO QUE ACTUALIZARA LA VISTA
@@ -96,12 +96,13 @@ public class ZonasBean implements Serializable {
 
   // METODO QUE VERIFICA QUE LA LISTA DE ESTADOS NO ESTE VACIA
   public void verificaEstados() {
-    if (estadosSeleccionados.isEmpty()) {
+    if (estadosSeleccionadosString.isEmpty()) {
       FacesContext contexto = FacesContext.getCurrentInstance();
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar al menos un estado."));
     } else {
-      if (!listaMunicipios.isEmpty()) {
-        listaMunicipios.clear();
+      for (int i = 0; i < (estadosSeleccionadosString.size()); i++) {
+        EstadoRepublica e = estadoRepublicaDao.buscar(estadosSeleccionadosString.get(i));
+        estadosSeleccionados.add(e);
       }
       cargarMunicipios();
       actualizaVista();
@@ -111,91 +112,78 @@ public class ZonasBean implements Serializable {
   // METODO QUE CARGA LOS MUNICIPIOS PARA LOS ESTADOS SELECCIONADOS
   public void cargarMunicipios() {
     for (int i = 0; i < (estadosSeleccionados.size()); i++) {
-      int id = Integer.parseInt(estadosSeleccionados.get(i));
-      List<Municipio> municipios = municipioDao.buscarMunicipiosPorEstado(id);
+      List<Municipio> municipios = municipioDao.buscarMunicipiosPorEstado(estadosSeleccionados.get(i).getIdEstado());
       for (int j = 0; j < (municipios.size()); j++) {
-        listaMunicipios.add(municipios.get(j));
+        String cadena = municipios.get(j).getNombre() + " [" + municipios.get(j).getEstadoRepublica().getNombre() + "]";
+        listaMunicipios.add(cadena);
       }
     }
     habilitaEstados = true;
-    habilitaMunicipios = false;
+    habilitaCreacion = false;
     actualizaVista();
   }
 
-  // METODO QUE VERIFICA QUE LA LISTA DE MUNICIPIOS NO ESTE VACIA
+  // METODO QUE VERIFICA QUE SE HAYAN SELECCIONADO MUNICIPIOS
   public void verificaMunicipios() {
-    System.out.println("ENTRO AL METODO");
-    FacesContext contexto = FacesContext.getCurrentInstance();
-    if (municipiosSeleccionados.isEmpty()) {
+    if (municipiosSeleccionadosString.isEmpty()) {
+      FacesContext contexto = FacesContext.getCurrentInstance();
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar al menos un municipio."));
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agregaron correctamente los municipios."));
+      for (int i = 0; i < (municipiosSeleccionadosString.size()); i++) {
+        System.out.println(listaMunicipios.get(i));
+      }
     }
   }
-
-  // METODO QUE SELECCIONA TODOS LOS MUNICIPIOS
-  public void agregarTodosMunicipios() {
-    // TODO: AGREGAR FUNCIONALIDAD
-  }
-
+  
   // METODO QUE CREA LA ZONA
   public void crearZona() {
-    System.out.println("IMPRIMIENDO MUNICIPIOS:");
-    for (int i = 0; i <(municipiosSeleccionados.size()); i++) {
-    System.out.println(municipiosSeleccionados.get(i));
-    }
+    verificaMunicipios();
     FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok = true;
-    ok = ok & (validarNombreZona());
-    if (!ok) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El nombre de la zona ya existe para este despacho."));
+    if (!validarNombreZona()) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Ya existe una zona con el nombre propuesto."));
+    } else if (!validarGestorZona()) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El gestor seleccionado ya tiene asignada una zona."));
+    } else if (!validarMunicipiosEnZona()) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Uno o varios de los municipios ya pertenecen a una zona."));
     } else {
-      ok = ok & (validarGestorZona());
-      if (!ok) {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El gestor seleccionado ya tiene asignada una zona."));
-      } else {
-        ok = ok & (validarMunicipiosEnZona());
-        if (!ok) {
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Uno o varios de los municipios ya tienen asignada una zona."));
-        } else {
-          Zona z = new Zona();
-          z.setDespacho(indexBean.getUsuario().getDespacho());
-          z.setGestor(gestorDao.buscar(gestorSeleccionado.getIdGestor()));
-          z.setNombre(nombreZona);
-          z = zonaDao.insertar(z);
-          if (z != null) {
-            for (int i = 0; i < (municipiosSeleccionados.size()); i++) {
-              Municipio m = municipioDao.buscarPorId(Integer.parseInt(municipiosSeleccionados.get(i)));
-              Region r = new Region();
-              r.setEstadoRepublica(m.getEstadoRepublica());
-              r.setMunicipio(m);
-              r.setZona(z);
-              r = regionDao.insertar(r);
-              if (r != null) {
-                ok = true;
-                break;
-              } else {
-                ok = false;
-              }
-            }
-            if (ok) {
-              contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego la zona al sistema."));
-              cancelar();
-            } else {
-              contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la zona. Contacte al equipo de sistemas"));
-            }
+      Zona z = new Zona();
+      z.setDespacho(indexBean.getUsuario().getDespacho());
+      z.setGestor(gestorDao.buscar(gestorSeleccionado.getIdGestor()));
+      z.setNombre(nombreZona);
+      z = zonaDao.insertar(z);
+      if (z != null) {
+        for (int i = 0; i < (municipiosSeleccionados.size()); i++) {
+          Municipio m = municipioDao.buscarPorId(municipiosSeleccionados.get(i).getIdMunicipio());
+          Region r = new Region();
+          r.setEstadoRepublica(m.getEstadoRepublica());
+          r.setMunicipio(m);
+          r.setZona(z);
+          r = regionDao.insertar(r);
+          if (r != null) {
+            ok = true;
+            break;
           } else {
-            contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la zona. Contacte al equipo de sistemas"));
+            ok = false;
           }
         }
+        if (ok) {
+          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego la zona al sistema."));
+          cancelar();
+        } else {
+          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la zona. Contacte al equipo de sistemas"));
+        }
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la zona. Contacte al equipo de sistemas"));
       }
     }
   }
 
-  // METODO QUE LIMPIA TODOS LOS CONTROLES
+// METODO QUE LIMPIA TODOS LOS CONTROLES
   public void cancelar() {
     listaMunicipios.clear();
     estadosSeleccionados.clear();
+    estadosSeleccionadosString.clear();
     municipiosSeleccionados.clear();
     nombreZona = "";
     actualizaVista();
@@ -233,7 +221,7 @@ public class ZonasBean implements Serializable {
     List<Integer> ids = regionDao.buscarMunicipiosRegion(idDespacho);
     for (int i = 0; i < (ids.size()); i++) {
       for (int j = 0; j < (municipiosSeleccionados.size()); j++) {
-        if ((Integer.parseInt(municipiosSeleccionados.get(j))) == (ids.get(i))) {
+        if ((municipiosSeleccionados.get(i).getIdMunicipio()) == (ids.get(i).intValue())) {
           ok = false;
           break;
         }
@@ -245,8 +233,8 @@ public class ZonasBean implements Serializable {
   // METODO QUE CARGA UNA LISTA DE ZONAS DE ESTE DESPACHO
   public void cargarZonas() {
     List<Zona> zonas = zonaDao.buscarPorDespacho(idDespacho);
-    Zonas z = new Zonas();
     for (int i = 0; i < (zonas.size()); i++) {
+      Zonas z = new Zonas();
       z.setIdZona(zonas.get(i).getIdZona());
       z.setNombre(zonas.get(i).getNombre());
       List<EstadoRepublica> edos = regionDao.buscarEstadosZona(zonas.get(i).getIdZona());
@@ -254,13 +242,13 @@ public class ZonasBean implements Serializable {
       for (int j = 0; j < (edos.size()); j++) {
         a = a + edos.get(j).getNombre() + ", ";
       }
-      z.setEstadosZona(a.substring(0, a.length() - 2));
+      z.setEstadosZona(a.substring(0, (a.length() - 2)));
       List<Municipio> muns = regionDao.buscarMunicipiosZona(zonas.get(i).getIdZona());
       String b = "";
       for (int j = 0; j < (muns.size()); j++) {
         b = b + muns.get(j).getNombre() + ", ";
       }
-      z.setMunicipiosZona(b.substring(0, b.length() - 2));
+      z.setMunicipiosZona(b.substring(0, (b.length() - 2)));
       listaZonas.add(z);
     }
     actualizaVista();
@@ -268,36 +256,12 @@ public class ZonasBean implements Serializable {
   }
 
   // GETTERS & SETTERS
-  public List<EstadoRepublica> getListaEstados() {
-    return listaEstados;
-  }
-
-  public void setListaEstados(List<EstadoRepublica> listaEstados) {
-    this.listaEstados = listaEstados;
-  }
-
-  public List<Municipio> getListaMunicipios() {
-    return listaMunicipios;
-  }
-
-  public void setListaMunicipios(List<Municipio> listaMunicipios) {
-    this.listaMunicipios = listaMunicipios;
-  }
-
-  public List<String> getEstadosSeleccionados() {
+  public List<EstadoRepublica> getEstadosSeleccionados() {
     return estadosSeleccionados;
   }
 
-  public void setEstadosSeleccionados(List<String> estadosSeleccionados) {
+  public void setEstadosSeleccionados(List<EstadoRepublica> estadosSeleccionados) {
     this.estadosSeleccionados = estadosSeleccionados;
-  }
-
-  public List<String> getMunicipiosSeleccionados() {
-    return municipiosSeleccionados;
-  }
-
-  public void setMunicipiosSeleccionados(List<String> municipiosSeleccionados) {
-    this.municipiosSeleccionados = municipiosSeleccionados;
   }
 
   public String getNombreZona() {
@@ -348,12 +312,53 @@ public class ZonasBean implements Serializable {
     this.habilitaEstados = habilitaEstados;
   }
 
-  public boolean isHabilitaMunicipios() {
-    return habilitaMunicipios;
+  public List<String> getListaEstados() {
+    return listaEstados;
   }
 
-  public void setHabilitaMunicipios(boolean habilitaMunicipios) {
-    this.habilitaMunicipios = habilitaMunicipios;
+  public void setListaEstados(List<String> listaEstados) {
+    this.listaEstados = listaEstados;
+  }
+
+  public List<String> getEstadosSeleccionadosString() {
+    return estadosSeleccionadosString;
+  }
+
+  public void setEstadosSeleccionadosString(List<String> estadosSeleccionadosString) {
+    this.estadosSeleccionadosString = estadosSeleccionadosString;
+
+  }
+
+  public boolean isHabilitaCreacion() {
+    return habilitaCreacion;
+  }
+
+  public void setHabilitaCreacion(boolean habilitaCreacion) {
+    this.habilitaCreacion = habilitaCreacion;
+  }
+
+  public List<String> getListaMunicipios() {
+    return listaMunicipios;
+  }
+
+  public void setListaMunicipios(List<String> listaMunicipios) {
+    this.listaMunicipios = listaMunicipios;
+  }
+
+  public List<String> getMunicipiosSeleccionadosString() {
+    return municipiosSeleccionadosString;
+  }
+
+  public void setMunicipiosSeleccionadosString(List<String> municipiosSeleccionadosString) {
+    this.municipiosSeleccionadosString = municipiosSeleccionadosString;
+  }
+
+  public List<Municipio> getMunicipiosSeleccionados() {
+    return municipiosSeleccionados;
+  }
+
+  public void setMunicipiosSeleccionados(List<Municipio> municipiosSeleccionados) {
+    this.municipiosSeleccionados = municipiosSeleccionados;
   }
 
   // CLASE INTERNA MIEMBRO PARA GUARDAR LA LISTA DE ESTADOS Y MUNICIPIOS DE UNA ZONA

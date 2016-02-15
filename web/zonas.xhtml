@@ -110,26 +110,24 @@
     <!-- DIALOGO PARA CREAR LAS ZONAS -->
     <p:dialog id="nuevaZonaDialog" widgetVar="dlgNuevaZona" header="Agregar una zona" modal="true" resizable="false">
       <h:form id="nuevaZonaForm">
-        <p:layout id="nuevaZonaLayout" style="width: 600px; height: 350px;">
-          <p:layoutUnit position="west" size="300">
+        <p:layout id="nuevaZonaLayout" style="width: 700px; height: 350px;">
+          <p:layoutUnit position="west" size="275">
             Estados:
             <br />
             <br />
-            <p:selectManyMenu value="#{zonasBean.estadosSeleccionados}" filter="true" filterMatchMode="contains" showCheckbox="true" style="width: 280px; height: 250px;">
-              <f:selectItems value="#{zonasBean.listaEstados}" var="e" itemLabel="#{e.nombre}" itemValue="#{e.idEstado}" />
+            <p:selectManyMenu value="#{zonasBean.estadosSeleccionadosString}" filter="true" filterMatchMode="contains" showCheckbox="true" style="width: 265px; height: 250px;">
+              <f:selectItems value="#{zonasBean.listaEstados}" var="e" itemLabel="#{e}" itemValue="#{e}" />
             </p:selectManyMenu>
             <br />
             <p:commandButton value="Agregar estados" actionListener="#{zonasBean.verificaEstados()}" disabled="#{zonasBean.habilitaEstados}" update=":growl" />
           </p:layoutUnit>
-          <p:layoutUnit position="center" size="300">
+          <p:layoutUnit position="center" size="410">
             Municipios:
             <br />
             <br />
-            <p:selectManyMenu value="#{zonasBean.municipiosSeleccionados}" filter="true" filterMatchMode="contains" showCheckbox="true" disabled="#{zonasBean.habilitaMunicipios}" style="width: 280px; height: 250px;">
-              <f:selectItems value="#{zonasBean.listaMunicipios}" var="mun" itemLabel="#{mun.nombre}" itemValue="#{mun.idMunicipio}" />
+            <p:selectManyMenu value="#{zonasBean.municipiosSeleccionadosString}" filter="true" filterMatchMode="contains" showCheckbox="true" style="width: 400px; height: 250px;">
+              <f:selectItems value="#{zonasBean.listaMunicipios}" var="mun" itemLabel="#{mun}" itemValue="#{mun}" />
             </p:selectManyMenu>
-            <br />
-            <p:commandButton value="Agregar municipios" actionListener="#{zonasBean.verificaMunicipios()}" disabled="#{zonasBean.habilitaMunicipios}" update=":growl" />
           </p:layoutUnit>
         </p:layout>
         <br />
@@ -142,11 +140,11 @@
         Gestor asignado para esta zona:
         &nbsp;&nbsp;
         <p:selectOneMenu value="#{zonasBean.gestorSeleccionado.idGestor}" style="width:200px">
-          <f:selectItems value="#{zonasBean.listaGestores}" var="g" itemValue="#{g.idGestor}" itemLabel="#{g.toString()}" />
+          <f:selectItems value="#{zonasBean.listaGestores}" var="g" itemValue="#{g.idGestor}" itemLabel="#{g.usuario.nombreLogin}" />
         </p:selectOneMenu>
         <br />
         <br />
-        <p:commandButton value="Crear zona" actionListener="#{zonasBean.crearZona()}" update=":growl" />
+        <p:commandButton value="Crear zona" actionListener="#{zonasBean.verificaMunicipios()}" update=":growl" disabled="#{zonasBean.habilitaCreacion}" />
         &nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" actionListener="#{zonasBean.cancelar()}" />
       </h:form>

@@ -31,6 +31,7 @@ public class GestionBean implements Serializable {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   VistaCreditoBean vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
+  ObtenerOracionCompletaGestionBean obtenerOracionCompletaGestionBean = (ObtenerOracionCompletaGestionBean) elContext.getELResolver().getValue(elContext, null, "obtenerOracionCompletaBean");
 
   // VARIABLES DE CLASE
   private List<TipoGestion> listaTipos;
@@ -40,6 +41,7 @@ public class GestionBean implements Serializable {
   private List<TipoQuienGestion> listaTipoSujetos;
   private List<QuienGestion> listaSujetos;
   private List<EstatusInformativo> listaEstatus;
+  private Gestion nueva;
   private TipoGestion tipoSeleccionado;
   private DondeGestion dondeSeleccionado;
   private AsuntoGestion asuntoSeleccionado;
@@ -114,22 +116,26 @@ public class GestionBean implements Serializable {
     sujetoSeleccionado = quienGestionDao.buscarPorId(sujetoSeleccionado.getIdQuienGestion());
     listaEstatus = estatusInformativoDao.buscarTodos();
   }
-
-  public void crearNuevaGestion() {
-    Gestion nueva = new Gestion();
+  
+  // METODO QUE MUESTRA LA ORACION COMPLETA
+  public void preparaOracion(){
+    estatusSeleccionado = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
     nueva.setTipoGestion(tipoSeleccionado);
     nueva.setDondeGestion(dondeSeleccionado);
     nueva.setAsuntoGestion(asuntoSeleccionado);
     nueva.setDescripcionGestion(descripcionSeleccionada);
     nueva.setTipoQuienGestion(tipoSujetoSeleccionado);
     nueva.setQuienGestion(sujetoSeleccionado);
-    EstatusInformativo est = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
-    nueva.setEstatusInformativo(est);
+    nueva.setEstatusInformativo(estatusSeleccionado);
     nueva.setGestion(gestion.toUpperCase());
     nueva.setCredito(vistaCreditoBean.getCreditoActual());
     Date fecha = new Date();
     nueva.setFecha(fecha);
     nueva.setUsuario(vistaCreditoBean.cuentasBean.indexBean.getUsuario());
+    
+  }
+
+  public void crearNuevaGestion() {
     boolean ok = gestionDao.insertarGestion(nueva);
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {
@@ -141,14 +147,7 @@ public class GestionBean implements Serializable {
   }
 
   public void crearOracion() {
-    estatusSeleccionado = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
-    if(tipoSujetoSeleccionado.getDescripcion().equals("NO APLICA")){
-    oracionCompleta = tipoSeleccionado.getNombre() + ". " + dondeSeleccionado.getNombre() + ", " + asuntoSeleccionado.getTipoAsuntoGestion().getAsunto() + ": " + descripcionSeleccionada.getTextoGestion() + ". " + estatusSeleccionado.getEstatus() + ".";
-    }
-    else{
-    oracionCompleta = tipoSeleccionado.getNombre() + ". " + dondeSeleccionado.getNombre() + ", " + asuntoSeleccionado.getTipoAsuntoGestion().getAsunto() + ": " + descripcionSeleccionada.getTextoGestion() + " " + tipoSujetoSeleccionado.getDescripcion() + ": " + sujetoSeleccionado.getQuien() + ". " + estatusSeleccionado.getEstatus() + ".";
-    }
-    RequestContext.getCurrentInstance().update("formNuevaGestion");
+    
   }
 
   public void limpiarCampos() {

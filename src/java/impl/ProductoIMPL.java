@@ -2,6 +2,7 @@ package impl;
 
 import dao.ProductoDAO;
 import dto.Producto;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -113,7 +114,6 @@ public class ProductoIMPL implements ProductoDAO {
   @Override
   public Producto buscar(int idProducto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Producto producto;
     try {
       producto = (Producto) sesion.createSQLQuery("select * from producto where id_producto = " + idProducto + ";").addEntity(Producto.class).uniqueResult();
@@ -129,10 +129,9 @@ public class ProductoIMPL implements ProductoDAO {
   @Override
   public List<Producto> buscarProductosPorInstitucion(int idInstitucion) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
-    List<Producto> productos;
+    List<Producto> productos = new ArrayList();
     try {
-      productos = sesion.createSQLQuery("select * from producto where id_institucion = " + idInstitucion + ";").addEntity(Producto.class).list();
+      productos = sesion.createSQLQuery("SELECT * FROM producto WHERE id_institucion = " + idInstitucion + ";").addEntity(Producto.class).list();
     } catch (HibernateException he) {
       productos = null;
       he.printStackTrace();

@@ -10,7 +10,6 @@ import dto.Municipio;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import util.HibernateUtil;
 import util.log.Logs;
 
@@ -23,7 +22,6 @@ public class MunicipioIMPL implements MunicipioDAO {
   @Override
   public List<Municipio> buscarMunicipiosPorEstado(int idEstado) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Municipio> municipios;
     String consulta = "select * from municipio where id_estado = " + idEstado + " order by nombre asc;";
     try {
@@ -41,7 +39,6 @@ public class MunicipioIMPL implements MunicipioDAO {
   @Override
   public List<Municipio> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Municipio> municipios;
     try {
       // LA CONSULTA NO ES ASI, ESTA ES UNA CONSULTA DE PRUEBA
@@ -60,7 +57,6 @@ public class MunicipioIMPL implements MunicipioDAO {
   @Override
   public Municipio buscar(int idMunicipio) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Municipio municipio;
     try {
       municipio = (Municipio) sesion.get(Municipio.class, idMunicipio);
@@ -77,9 +73,7 @@ public class MunicipioIMPL implements MunicipioDAO {
   @Override
   public Municipio buscar(String cadena) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Municipio municipio;
-
     try {
       municipio = (Municipio) sesion.createSQLQuery("SELECT * from municipio WHERE nombre LIKE '%" + cadena + "%';").addEntity(Municipio.class).uniqueResult();
     } catch (HibernateException he) {
@@ -89,7 +83,6 @@ public class MunicipioIMPL implements MunicipioDAO {
     } finally {
       cerrar(sesion);
     }
-
     return municipio;
   }
 
@@ -102,6 +95,22 @@ public class MunicipioIMPL implements MunicipioDAO {
     } catch (HibernateException he) {
       municipio = null;
       Logs.log.error("No se pudo ontener lista de objetos: Municipio");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return municipio;
+  }
+
+  @Override
+  public Municipio buscarPorNombresMunicipioEstado(String nombreMunicipio, String nombreEstado) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Municipio municipio;
+    try {
+      municipio = (Municipio) sesion.createSQLQuery("SELECT * from municipio WHERE nombre = '" + nombreMunicipio + "' AND id_estado = (SELECT nombre FROM estado_republica WHERE nombre = '" + nombreEstado + "');").addEntity(Municipio.class).uniqueResult();
+    } catch (HibernateException he) {
+      municipio = null;
+      Logs.log.error("No se pudo obtener objeto: Municipio");
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
