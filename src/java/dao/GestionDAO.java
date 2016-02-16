@@ -22,4 +22,6 @@ public interface GestionDAO {
   public List<Gestion> buscarGestionesCreditoGestor(int idUsuario, int idCredito);
 
   public List<Gestion> buscarGestionesCredito(int idCredito);
+  
+  public Gestion obtenerGestionAutomaticaPorAbreviatura(String abreviatura);
 }

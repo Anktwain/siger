@@ -21,4 +21,5 @@ public interface CreditoDAO {
   public List<String> barraBusquedaGestor(String valor, int idUsuario);
   public Credito buscar(String numeroCredito);
   public Credito insertar(Credito credito);
+  public List<Credito> buscarPorMarcaje(int idMarcaje);
 }

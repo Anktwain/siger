@@ -23,6 +23,7 @@ import dto.Gestion;
 import dto.Gestor;
 import dto.Historial;
 import dto.Telefono;
+import dto.Usuario;
 import impl.ContactoIMPL;
 import impl.ConvenioPagoIMPL;
 import impl.CreditoIMPL;
@@ -124,7 +125,7 @@ public class VistaCreditoBean implements Serializable {
     creditoActualCred = cuentasBean.getCreditoSeleccionado();
     obtenerDatos();
   }
-  
+
   // METODO QUE OBTENDRA TODOS LOS DATOS PRIMARIOS SEGUN EL CREDITO SELECCIONADO EN LA VISTA cuentas.xhtml
   private void obtenerDatos() {
     // OBTIENE LA CADENA CON EL NUMERO DE CREDITO
@@ -139,11 +140,11 @@ public class VistaCreditoBean implements Serializable {
     nombreDeudor = creditoActualCred.getDeudor().getSujeto().getNombreRazonSocial();
     // OBTENER LA PRIMER DIRECCION DEL DEUDOR
     Direccion d;
-    try{
-    d = direccionDAO.buscarPorSujeto(idSujeto).get(0);
-    calleNumero = d.getCalle() + ",";
-    coloniaMunicipio = d.getColonia().getNombre() + ",  " + d.getMunicipio().getNombre() + ",";
-    estadoCP = d.getEstadoRepublica().getNombre() + ",  C.P. " + d.getColonia().getCodigoPostal();
+    try {
+      d = direccionDAO.buscarPorSujeto(idSujeto).get(0);
+      calleNumero = d.getCalle() + ",";
+      coloniaMunicipio = d.getColonia().getNombre() + ",  " + d.getMunicipio().getNombre() + ",";
+      estadoCP = d.getEstadoRepublica().getNombre() + ",  C.P. " + d.getColonia().getCodigoPostal();
     } catch (Exception e) {
     }
     // OBTENEMOS EL NUMERO DE CREDITOS PARA ESTE CLIENTE
@@ -153,7 +154,8 @@ public class VistaCreditoBean implements Serializable {
       // OBTENER EL PRIMER TELEFONO DEL DEUDOR
       Telefono tel;
       tel = telefonoDAO.buscarPorSujeto(idSujeto).get(0);
-      telefono = "(" + tel.getLada() + ") " + tel.getNumero();
+      String fon = tel.getNumero();
+      telefono = "(" + fon.substring(0, (fon.length()) - 7) + ") - " + fon.substring((fon.length()) - 7, fon.length() - 4) + " - " + fon.substring(fon.length() - 4, fon.length());
       // OBTENER EL PRIMER CORREO DEL DEUDOR
       Email mail;
       mail = emailDAO.buscarPorSujeto(idSujeto).get(0);
@@ -168,18 +170,14 @@ public class VistaCreditoBean implements Serializable {
     mensualidad = creditoActual.getMensualidad().toString();
     saldoVencido = "";
     // OBTENEMOS LA LISTA DE GESTIONES PREVIAS
-    int idCredito = creditoActual.getIdCredito();
+    obtenerGestionesAnteriores();
     // LOS ADMINISTRADORES NO PUEDEN REALIZAR CONVENIOS DE PAGO
     // LOS GESTORES NO PUEDEN REASIGNAR CREDITOS
-    if(indexBean.getUsuario().getPerfil() == Perfiles.GESTOR){
-      int idUsuario = indexBean.getUsuario().getIdUsuario();
-      listaGestiones = gestionDao.buscarGestionesCreditoGestor(idUsuario, idCredito);
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
       // NO SE VISUALIZA LA REASIGNACION DE GESTOR
       reasignarVisible = false;
       conveniosVisible = true;
-    }
-    else{
-      listaGestiones = gestionDao.buscarGestionesCredito(idCredito);
+    } else {
       listaGestores = gestorDao.buscarPorDespachoExceptoEste(indexBean.getUsuario().getDespacho().getIdDespacho(), gestorActual.getIdGestor());
       reasignarVisible = true;
       conveniosVisible = false;
@@ -197,21 +195,21 @@ public class VistaCreditoBean implements Serializable {
     // OBTENEMOS EL HISTORIAL DEL CREDITO
     historial = historialDao.buscarHistorialPorIdCredito(creditoActual.getIdCredito());
   }
-  
+
   // METODO PARA ABRIR EL DIALOGO
-  public void confirmar(){
+  public void confirmar() {
     RequestContext.getCurrentInstance().execute("PF('confirmacionDialog2').show();");
   }
-  
+
   // METODO PARA CERRAR EL DIALOGO
-  public void cerrar(){
+  public void cerrar() {
     gestorSeleccionado = gestorActual;
     RequestContext.getCurrentInstance().update("barraDetalleCreditoForm:listaGestoresVistaCredito");
     RequestContext.getCurrentInstance().execute("PF('confirmacionDialog2').hide();");
   }
 
   // METODO QUE REASIGNARA AL GESTOR
-  public void reasignarGestor(){
+  public void reasignarGestor() {
     FacesContext contexto = FacesContext.getCurrentInstance();
     // FINALIZAMOS LOS CONVENIOS EN CURSO DEL GESTOR ACTUAL PARA ESTE CREDITO
     List<ConvenioPago> convenios = convenioPagoDao.buscarConveniosEnCursoCredito(creditoActual.getIdCredito());
@@ -234,16 +232,15 @@ public class VistaCreditoBean implements Serializable {
     String evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + gestorActual.getUsuario().getNombreLogin() + " al gestor " + nuevoGestor.getUsuario().getNombreLogin();
     h.setEvento(evento);
     ok = ok & (historialDao.insertarHistorial(creditoActual.getIdCredito(), evento));
-    if(ok){
+    if (ok) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
       gestorActual = nuevoGestor;
-    }
-    else{
+    } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
     }
     cerrar();
   }
-  
+
   // METODO QUE LE DA UNA ETIQUETA A LOS VALORES NUMERICOS DEL TIPO DE CREDITO
   public String etiquetarTipoCredito(int tipoCredito) {
     String tipo = null;
@@ -252,12 +249,20 @@ public class VistaCreditoBean implements Serializable {
     }
     return tipo;
   }
-  
+
+  // METODO QUE OBTIENE LA LISTA DE GESTIONES
+  public void obtenerGestionesAnteriores() {
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      listaGestiones = gestionDao.buscarGestionesCreditoGestor(creditoActual.getIdCredito(), indexBean.getUsuario().getIdUsuario());
+    } else {
+      listaGestiones = gestionDao.buscarGestionesCredito(creditoActual.getIdCredito());
+    }
+  }
+
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-
   public boolean isReasignarVisible() {
     return reasignarVisible;
   }
@@ -489,5 +494,5 @@ public class VistaCreditoBean implements Serializable {
   public void setHistorial(List<Historial> historial) {
     this.historial = historial;
   }
-  
+
 }

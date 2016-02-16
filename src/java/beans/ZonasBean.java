@@ -42,7 +42,7 @@ public class ZonasBean implements Serializable {
   private String nombreZona;
   private List<Zonas> listaZonas;
   private List<String> listaEstados;
-  private List<String> listaMunicipios;
+  private List<Municipio> listaMunicipios;
   private List<Gestor> listaGestores;
   private List<EstadoRepublica> estadosSeleccionados;
   private List<String> estadosSeleccionadosString;
@@ -55,9 +55,11 @@ public class ZonasBean implements Serializable {
   private final GestorDAO gestorDao;
   private Gestor gestorSeleccionado;
   private Zonas zonaSeleccionada;
+  private final FacesContext contexto;
 
   // CONSTRUCTOR
   public ZonasBean() {
+    contexto = FacesContext.getCurrentInstance();
     habilitaEstados = false;
     habilitaCreacion = true;
     listaZonas = new ArrayList();
@@ -97,7 +99,6 @@ public class ZonasBean implements Serializable {
   // METODO QUE VERIFICA QUE LA LISTA DE ESTADOS NO ESTE VACIA
   public void verificaEstados() {
     if (estadosSeleccionadosString.isEmpty()) {
-      FacesContext contexto = FacesContext.getCurrentInstance();
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar al menos un estado."));
     } else {
       for (int i = 0; i < (estadosSeleccionadosString.size()); i++) {
@@ -114,8 +115,7 @@ public class ZonasBean implements Serializable {
     for (int i = 0; i < (estadosSeleccionados.size()); i++) {
       List<Municipio> municipios = municipioDao.buscarMunicipiosPorEstado(estadosSeleccionados.get(i).getIdEstado());
       for (int j = 0; j < (municipios.size()); j++) {
-        String cadena = municipios.get(j).getNombre() + " [" + municipios.get(j).getEstadoRepublica().getNombre() + "]";
-        listaMunicipios.add(cadena);
+        listaMunicipios.add(municipios.get(j));
       }
     }
     habilitaEstados = true;
@@ -126,7 +126,6 @@ public class ZonasBean implements Serializable {
   // METODO QUE VERIFICA QUE SE HAYAN SELECCIONADO MUNICIPIOS
   public void verificaMunicipios() {
     if (municipiosSeleccionadosString.isEmpty()) {
-      FacesContext contexto = FacesContext.getCurrentInstance();
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar al menos un municipio."));
     } else {
       for (int i = 0; i < (municipiosSeleccionadosString.size()); i++) {
@@ -137,7 +136,8 @@ public class ZonasBean implements Serializable {
   
   // METODO QUE CREA LA ZONA
   public void crearZona() {
-    verificaMunicipios();
+    System.out.println("SI TIENE LA INTENCION DE CREARLA");
+    /*
     FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok = true;
     if (!validarNombreZona()) {
@@ -177,6 +177,7 @@ public class ZonasBean implements Serializable {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la zona. Contacte al equipo de sistemas"));
       }
     }
+    */
   }
 
 // METODO QUE LIMPIA TODOS LOS CONTROLES
@@ -337,11 +338,11 @@ public class ZonasBean implements Serializable {
     this.habilitaCreacion = habilitaCreacion;
   }
 
-  public List<String> getListaMunicipios() {
+  public List<Municipio> getListaMunicipios() {
     return listaMunicipios;
   }
 
-  public void setListaMunicipios(List<String> listaMunicipios) {
+  public void setListaMunicipios(List<Municipio> listaMunicipios) {
     this.listaMunicipios = listaMunicipios;
   }
 

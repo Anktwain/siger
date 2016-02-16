@@ -76,7 +76,6 @@
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:selectOneMenu id="estatusInformativoGestion" value="#{gestionBean.estatusSeleccionado.idEstatusInformativo}" style="width:250px">
             <f:selectItem itemLabel="" itemValue="" />
-            <p:ajax listener="#{gestionBean.preparaoracion()}" update="gestionCompleta" />
             <f:selectItems value="#{gestionBean.listaEstatus}"  var="e" itemLabel="#{e.estatus}" itemValue="#{e.idEstatusInformativo}"  />
           </p:selectOneMenu>
           <br />
@@ -87,20 +86,10 @@
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:inputTextarea rows="2" cols="100" id="gestion" value="#{gestionBean.gestion}" >
             <p:ajax event="keyup" />
-          </p:inputTextarea><br />
-          <br />
-          <strong>
-            Gestion completa:
-          </strong>
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <div style="width: 1000px;">
-            <h:outputText id="gestionCompleta" value="#{gestionBean.oracionCompleta}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-          </div>
+          </p:inputTextarea>
           <br />
           <br />
           <p:commandButton value="Enviar gestion" actionListener="#{gestionBean.crearNuevaGestion()}" update="growl" />
-          &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:commandButton value="Limpiar campos" actionListener="#{gestionBean.limpiarCampos()}" />
         </h:form>
       </div>
     </div>

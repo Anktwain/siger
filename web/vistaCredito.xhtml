@@ -41,7 +41,7 @@
           <div class="pull-right">
             <h5>
               <strong>
-                Numero de credito: <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" />
+                Numero de credito: <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" style="font-size: 24px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               </strong>
             </h5>
           </div>
@@ -77,7 +77,7 @@
               <!-- <p:button value="Convenios de pago" outcome="vistaConvenio" rendered="#{vistaCreditoBean.conveniosVisible}" /> -->
               <p:button value="Convenios de pago" outcome="vistaConvenio" />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:button value="Visita domiciliaria" outcome="vistaVisitas"  />
+              <p:button value="Impresion de visitas" outcome="vistaVisitas"  />
               &nbsp;&nbsp;&nbsp;&nbsp;
               Gestor actual:
               &nbsp;
@@ -90,17 +90,17 @@
           </div>
           <div class="pull-right text-right">
             <h:form>
-              <strong>Fecha de inicio:</strong> <h:outputText value="#{vistaCreditoBean.fechaInicio}" />
+              <strong>Fecha de inicio:</strong> <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
-              <strong>Fecha Ultimo Pago:</strong> <h:outputText value="#{vistaCreditoBean.fup}" />
+              <strong>Fecha Ultimo Pago:</strong> <p:outputLabel value="#{vistaCreditoBean.fup}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
-              <strong>Fecha Ultimo Vencimiento Pagado:</strong> <h:outputText value="#{vistaCreditoBean.fvp}" />
+              <strong>Fecha Ultimo Vencimiento Pagado:</strong> <p:outputLabel value="#{vistaCreditoBean.fvp}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
-              <strong>Fecha Fin del credito:</strong> <h:outputText value="#{vistaCreditoBean.fechaFin}" />
+              <strong>Fecha Fin del credito:</strong> <p:outputLabel value="#{vistaCreditoBean.fechaFin}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
               <strong>Mensualidad:</strong>
               &nbsp;
-              <h:outputText value="#{vistaCreditoBean.mensualidad}">
+              <h:outputText value="#{vistaCreditoBean.mensualidad}"   style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" >
                 <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
               </h:outputText>
               <br />
@@ -121,29 +121,11 @@
             <p:accordionPanel multiple="true" activeIndex="-  1">
               <p:tab title="Gestiones anteriores">
                 <p:dataTable id="tablaGestionesAnteriores" var="g" value="#{vistaCreditoBean.listaGestiones}" emptyMessage="No existen gestiones anteriores." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
-                  <p:column style="width: 200px;">
-                    <f:facet name="header">
-                      <h:outputText value="Fecha" />
-                    </f:facet>
+                  <p:column headerText="Fecha" style="width: 200px;">
                     <h:outputText value="#{g.fecha}"/>
                   </p:column>
-                  <p:column style="width: 200px;">
-                    <f:facet name="header">
-                      <h:outputText value="Tipo Gestion" />
-                    </f:facet>
-                    <h:outputText value="#{g.tipoGestion.nombre}"/>
-                  </p:column>
-                  <p:column  style="width: 200px;">
-                    <f:facet name="header">
-                      <h:outputText value="Asunto" />
-                    </f:facet>
-                    <h:outputText value="#{g.asuntoGestion.tipoAsuntoGestion.asunto}"/>
-                  </p:column>
-                  <p:column>
-                    <f:facet name="header">
-                      <h:outputText value="Gestion" />
-                    </f:facet>
-                    <h:outputText value="#{g.gestion}"/>
+                  <p:column headerText="Gestion">
+                    <h:outputText value="#{obtenerOracionCompletaGestionBean.obtenerOracion(g)}"/>
                   </p:column>
                 </p:dataTable>
               </p:tab>

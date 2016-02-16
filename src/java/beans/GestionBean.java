@@ -50,7 +50,6 @@ public class GestionBean implements Serializable {
   private QuienGestion sujetoSeleccionado;
   private EstatusInformativo estatusSeleccionado;
   private String gestion;
-  private String oracionCompleta;
   private final GestionDAO gestionDao;
   private final EstatusInformativoDAO estatusInformativoDao;
   private final TipoGestionDAO tipoGestionDao;
@@ -84,6 +83,7 @@ public class GestionBean implements Serializable {
     sujetoSeleccionado = new QuienGestion();
     estatusSeleccionado = new EstatusInformativo();
     descripcionSeleccionada = new DescripcionGestion();
+    nueva = new Gestion();
     listaTipos = tipoGestionDao.buscarTodo();
   }
 
@@ -116,9 +116,23 @@ public class GestionBean implements Serializable {
     sujetoSeleccionado = quienGestionDao.buscarPorId(sujetoSeleccionado.getIdQuienGestion());
     listaEstatus = estatusInformativoDao.buscarTodos();
   }
+
+  public void crearNuevaGestion() {
+    preparaGestion();
+    boolean ok = gestionDao.insertarGestion(nueva);
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    if (ok) {
+      limpiarCampos();
+      vistaCreditoBean.obtenerGestionesAnteriores();
+      RequestContext.getCurrentInstance().update("DetalleCredito");
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se guardo la gestion: "));
+    } else {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se guardo la gestion. Contacte al equipo de sistemas."));
+    }
+  }
   
   // METODO QUE MUESTRA LA ORACION COMPLETA
-  public void preparaOracion(){
+  public void preparaGestion(){
     estatusSeleccionado = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
     nueva.setTipoGestion(tipoSeleccionado);
     nueva.setDondeGestion(dondeSeleccionado);
@@ -126,40 +140,23 @@ public class GestionBean implements Serializable {
     nueva.setDescripcionGestion(descripcionSeleccionada);
     nueva.setTipoQuienGestion(tipoSujetoSeleccionado);
     nueva.setQuienGestion(sujetoSeleccionado);
-    nueva.setEstatusInformativo(estatusSeleccionado);
     nueva.setGestion(gestion.toUpperCase());
+    nueva.setEstatusInformativo(estatusSeleccionado);
     nueva.setCredito(vistaCreditoBean.getCreditoActual());
     Date fecha = new Date();
     nueva.setFecha(fecha);
     nueva.setUsuario(vistaCreditoBean.cuentasBean.indexBean.getUsuario());
-    
-  }
-
-  public void crearNuevaGestion() {
-    boolean ok = gestionDao.insertarGestion(nueva);
-    FacesContext contexto = FacesContext.getCurrentInstance();
-    if (ok) {
-      limpiarCampos();
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se guardo la gestion."));
-    } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se guardo la gestion. Contacte al equipo de sistemas."));
-    }
-  }
-
-  public void crearOracion() {
-    
   }
 
   public void limpiarCampos() {
-    listaTipos = null;
-    listaDonde = null;
-    listaAsuntos = null;
-    listaTipoSujetos = null;
-    listaDescripciones = null;
-    listaSujetos = null;
-    listaEstatus = null;
-    gestion = null;
-    oracionCompleta = null;
+    listaTipos = new ArrayList();
+    listaDonde = new ArrayList();
+    listaAsuntos = new ArrayList();
+    listaTipoSujetos = new ArrayList();
+    listaDescripciones = new ArrayList();
+    listaSujetos = new ArrayList();
+    listaEstatus = new ArrayList();
+    gestion = "";
     listaTipos = tipoGestionDao.buscarTodo();
     RequestContext.getCurrentInstance().update("formNuevaGestion");
   }
@@ -271,15 +268,7 @@ public class GestionBean implements Serializable {
   public void setGestion(String gestion) {
     this.gestion = gestion;
   }
-
-  public String getOracionCompleta() {
-    return oracionCompleta;
-  }
-
-  public void setOracionCompleta(String oracionCompleta) {
-    this.oracionCompleta = oracionCompleta;
-  }
-
+  
   public List<DescripcionGestion> getListaDescripciones() {
     return listaDescripciones;
   }
@@ -295,5 +284,5 @@ public class GestionBean implements Serializable {
   public void setDescripcionSeleccionada(DescripcionGestion descripcionSeleccionada) {
     this.descripcionSeleccionada = descripcionSeleccionada;
   }
-
+  
 }

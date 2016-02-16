@@ -5,12 +5,8 @@
  */
 package impl;
 
-import dao.GestionDAO;
-import dto.Gestion;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import dao.*;
+import dto.*;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -127,6 +123,35 @@ public class GestionIMPL implements GestionDAO {
     }
     return gestiones;
   }
+
+  @Override
+  public Gestion obtenerGestionAutomaticaPorAbreviatura(String abreviatura) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Gestion gestion = new Gestion();
+    DescripcionGestion desc;
+    try {
+      desc = (DescripcionGestion) sesion.createSQLQuery("SELECT * FROM descripcion_gestion WHERE abreviatura = '" + abreviatura + "';").addEntity(DescripcionGestion.class).uniqueResult();
+      gestion.setDescripcionGestion(desc);
+      gestion.setTipoGestion(desc.getAsuntoGestion().getTipoGestion());
+      gestion.setAsuntoGestion(desc.getAsuntoGestion());
+      DondeGestionDAO dondeGestionDao = new DondeGestionIMPL();
+      TipoQuienGestionDAO tipoQuienGestionDao = new TipoQuienGestionIMPL();
+      QuienGestionDAO quienGestionDao = new QuienGestionIMPL();
+      gestion.setDondeGestion(dondeGestionDao.buscarPorId(51));
+      gestion.setTipoQuienGestion(tipoQuienGestionDao.buscarPorId(12));
+      gestion.setQuienGestion(quienGestionDao.buscarPorId(89));
+      Date fecha = new Date();
+      gestion.setFecha(fecha);
+    } catch (HibernateException he) {
+      gestion = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestion;
+  }
+  
+  
 
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {

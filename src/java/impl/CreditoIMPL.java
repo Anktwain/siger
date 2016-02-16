@@ -118,7 +118,7 @@ public class CreditoIMPL implements CreditoDAO {
     List<Credito> creditos = new ArrayList<>();
     String consulta = "SELECT c.* FROM credito c WHERE id_credito NOT IN (SELECT id_credito FROM devolucion) AND c.id_despacho = " + idDespacho + " ORDER BY numero_credito ASC;";
     try {
-      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();      
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
       Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       creditos = null;
@@ -267,6 +267,23 @@ public class CreditoIMPL implements CreditoDAO {
       cerrar(sesion);
     }
     return credito;
+  }
+
+  @Override
+  public List<Credito> buscarPorMarcaje(int marcaje) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos;
+    String consulta = "SELECT * FROM credito WHERE marcaje = " + marcaje + ";";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      creditos = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
   }
 
   private void cerrar(Session sesion) {

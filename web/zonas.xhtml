@@ -37,15 +37,6 @@
         });
         tonyCoords.setMap(map);
         coords = [{lat: 19.795728, lng: -99.089333}, {lat: 19.686450, lng: -99.050424}, {lat: 19.503135, lng: -99.133484}, {lat: 19.795728, lng: -99.089333}];
-        var seaCoords = new google.maps.Polygon({
-          paths: coords,
-          strokeColor: '#00994C',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
-          fillColor: '#00994C',
-          fillOpacity: 0.35
-        });
-        seaCoords.setMap(map);
       }
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
@@ -121,13 +112,18 @@
             <br />
             <p:commandButton value="Agregar estados" actionListener="#{zonasBean.verificaEstados()}" disabled="#{zonasBean.habilitaEstados}" update=":growl" />
           </p:layoutUnit>
-          <p:layoutUnit position="center" size="410">
+          <p:layoutUnit position="center" size="420">
             Municipios:
             <br />
             <br />
-            <p:selectManyMenu value="#{zonasBean.municipiosSeleccionadosString}" filter="true" filterMatchMode="contains" showCheckbox="true" style="width: 400px; height: 250px;">
-              <f:selectItems value="#{zonasBean.listaMunicipios}" var="mun" itemLabel="#{mun}" itemValue="#{mun}" />
-            </p:selectManyMenu>
+            <p:dataTable id="tablaMunicipiosEstado" var="m" value="#{zonasBean.listaMunicipios}" rowKey="#{m.idMunicipio}" selection="#{zonasBean.municipiosSeleccionados}" selectionMode="multiple" emptyMessage="No hay municipios disponibles."  scrollable="true" scrollHeight="180" style="width: 410px;">
+              <p:column headerText="Municipio" style="width:200px;" > 
+                <h:outputText value="#{m.nombre}"/>
+              </p:column>
+              <p:column headerText="Estado al que pertenece" style="width:200px;" > 
+                <h:outputText value="#{m.estadoRepublica.nombre}"/>
+              </p:column>
+            </p:dataTable>
           </p:layoutUnit>
         </p:layout>
         <br />
@@ -144,7 +140,7 @@
         </p:selectOneMenu>
         <br />
         <br />
-        <p:commandButton value="Crear zona" actionListener="#{zonasBean.verificaMunicipios()}" update=":growl" disabled="#{zonasBean.habilitaCreacion}" />
+        <p:commandButton value="Crear zona" actionListener="#{zonasBean.crearZona()}" update=":growl" disabled="#{zonasBean.habilitaCreacion}" />
         &nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" actionListener="#{zonasBean.cancelar()}" />
       </h:form>
