@@ -86,7 +86,7 @@
                 <div class="panel-stat3 bg-info">
                   <h3 class="m-top-none">Visualizar zonas</h3>
                   <div id="botonazo">
-                    <p:commandButton value="Visualizar" actionListener="#{zonasBean.cargarZonas()}" />
+                    <p:commandButton value="Visualizar" oncomplete="PF('dlgZonas').show();" />
                   </div>
                   <div class="stat-icon">
                     <i class="fa fa-globe fa-2x" />
@@ -99,68 +99,67 @@
       </div>
     </div><!-- /main-container -->
     <!-- DIALOGO PARA CREAR LAS ZONAS -->
-    <p:dialog id="nuevaZonaDialog" widgetVar="dlgNuevaZona" header="Agregar una zona" modal="true" resizable="false">
+    <p:dialog id="nuevaZonaDialog" widgetVar="dlgNuevaZona" header="Agregar una zona" modal="true" resizable="false" style="width: 600px;">
       <h:form id="nuevaZonaForm">
-        <p:layout id="nuevaZonaLayout" style="width: 700px; height: 350px;">
-          <p:layoutUnit position="west" size="275">
-            Estados:
-            <br />
-            <br />
-            <p:selectManyMenu value="#{zonasBean.estadosSeleccionadosString}" filter="true" filterMatchMode="contains" showCheckbox="true" style="width: 265px; height: 250px;">
-              <f:selectItems value="#{zonasBean.listaEstados}" var="e" itemLabel="#{e}" itemValue="#{e}" />
-            </p:selectManyMenu>
-            <br />
-            <p:commandButton value="Agregar estados" actionListener="#{zonasBean.verificaEstados()}" disabled="#{zonasBean.habilitaEstados}" update=":growl" />
-          </p:layoutUnit>
-          <p:layoutUnit position="center" size="420">
-            Municipios:
-            <br />
-            <br />
-            <p:dataTable id="tablaMunicipiosEstado" var="m" value="#{zonasBean.listaMunicipios}" rowKey="#{m.idMunicipio}" selection="#{zonasBean.municipiosSeleccionados}" selectionMode="multiple" emptyMessage="No hay municipios disponibles."  scrollable="true" scrollHeight="180" style="width: 410px;">
-              <p:column headerText="Municipio" style="width:200px;" > 
-                <h:outputText value="#{m.nombre}"/>
-              </p:column>
-              <p:column headerText="Estado al que pertenece" style="width:200px;" > 
-                <h:outputText value="#{m.estadoRepublica.nombre}"/>
-              </p:column>
-            </p:dataTable>
-          </p:layoutUnit>
-        </p:layout>
+        <p:dataTable var="m" value="#{zonasBean.listaMunicipios}" selection="#{zonasBean.municipiosSeleccionados}" rowKey="#{m.idMunicipio}" emptyMessage="No existen municipios disponibles." scrollable="true" scrollHeight="220" style="width: 550px;">
+          <p:column selectionMode="multiple" style="width: 35px;"/>
+          <p:column headerText="Estado" filterBy="#{m.estadoRepublica.nombre}" filterMatchMode="startsWith" style="width: 250px;" filterStyle="width: 150px;" >
+            <h:outputText value="#{m.estadoRepublica.nombre}" />
+          </p:column>
+          <p:column headerText="Municipio" filterBy="#{m.nombre}" filterMatchMode="contains" style="width: 250px;" filterStyle="width: 150px;">
+            <h:outputText value="#{m.nombre}" />
+          </p:column>
+        </p:dataTable>
         <br />
         <br />
         Nombre para la zona:
-        &nbsp;&nbsp;
+        <br />
         <p:inputText value="#{zonasBean.nombreZona}" size="20" />
         <br />
         <br />
         Gestor asignado para esta zona:
-        &nbsp;&nbsp;
+        <br />
         <p:selectOneMenu value="#{zonasBean.gestorSeleccionado.idGestor}" style="width:200px">
           <f:selectItems value="#{zonasBean.listaGestores}" var="g" itemValue="#{g.idGestor}" itemLabel="#{g.usuario.nombreLogin}" />
         </p:selectOneMenu>
         <br />
         <br />
-        <p:commandButton value="Crear zona" actionListener="#{zonasBean.crearZona()}" update=":growl" disabled="#{zonasBean.habilitaCreacion}" />
+        <p:commandButton value="Crear zona" actionListener="#{zonasBean.crearZona()}" update=":growl" />
         &nbsp;&nbsp;&nbsp;
-        <p:commandButton value="Cancelar" actionListener="#{zonasBean.cancelar()}" />
+        <p:commandButton value="Cancelar" immediate="true" actionListener="#{zonasBean.cancelar()}" />
       </h:form>
     </p:dialog>
     <p:dialog widgetVar="dlgZonas" header="Zonas disponibles actualmente" modal="true" resizable="false">
       <h:form id="listaZonasForm" >
         <p:contextMenu for="zonas" style="width:200px;">
-          <p:menuitem value="Eliminar zona" icon="ui-icon-close" />
-          <p:menuitem value="Reasignar gestor" icon="ui-icon-alert" />
+          <p:menuitem value="Detalle zona" icon="ui-icon-search" actionListener="#{zonasBean.abrirDetalleZona(zonasBean.zonaSeleccionada)}" />
+          <p:menuitem value="Eliminar zona" icon="ui-icon-close" actionListener="#{zonasBean.eliminarZona(zonasBean.zonaSeleccionada)}" update=":growl" />
         </p:contextMenu>
-        <p:dataTable id="zonas" var="z" value="#{zonasBean.listaZonas}" emptyMessage="No existen zonas designadas en este despacho." rowKey="#{z.idZona}" selection="#{zonasBean.zonaSeleccionada}" selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 800px;">
-          <p:column headerText="Nombre de la zona" style="width:250px;">
+        <p:dataTable id="zonas" var="z" value="#{zonasBean.listaZonas}" emptyMessage="No existen zonas designadas en este despacho." rowKey="#{z.idZona}" selection="#{zonasBean.zonaSeleccionada}" selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 360px;">
+          <p:column headerText="Nombre de la zona" style="width:200px;">
             <h:outputText value="#{z.nombre}" />
           </p:column>
-          <p:column headerText="Estados en esta zona" style="width:250px;">
-            <h:outputText value="#{z.estadosZona}" />
+          <p:column headerText="Gestor asignado" style="width:150px;">
+            <h:outputText value="#{z.gestor.usuario.nombreLogin}" />
           </p:column>
-          <p:column headerText="Municipios en esta zona" style="width:250px;">
-            <h:outputText value="#{z.municipiosZona}" />
+          <f:facet name="footer">
+            <p:commandButton value="Aceptar" oncomplete="PF('dlgZonas').hide();" />
+          </f:facet>
+        </p:dataTable>
+      </h:form>
+    </p:dialog>
+    <p:dialog widgetVar="detalleZonaDialog" header="Detalle zona" modal="true" resizable="false">
+      <h:form id="detalleZonaForm" >
+        <p:dataTable id="detalleZona" var="d" value="#{zonasBean.detalleZona}" emptyMessage="No existen municipios en esta zona." scrollable="true" scrollRows="10" style="width: 410px;">
+          <p:column headerText="Municipios en la zona" style="width:200px;">
+            <h:outputText value="#{d.nombre}" />
           </p:column>
+          <p:column headerText="Estado" style="width:200px;">
+            <h:outputText value="#{d.estadoRepublica.nombre}" />
+          </p:column>
+          <f:facet name="footer">
+            <p:commandButton value="Aceptar" oncomplete="PF('detalleZonaDialog').hide();" />
+          </f:facet>
         </p:dataTable>
       </h:form>
     </p:dialog>

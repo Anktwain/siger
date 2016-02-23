@@ -38,6 +38,9 @@
       <div class="padding-md">
         <div class="col-lg-10">
           <h:form id="marcajeForm">
+            <p:commandButton value="Habilitar periodo de impresion" oncomplete="PF('dlgPeriodoImpresion').show();"/>
+            <br />
+            <br />
             <p:accordionPanel multiple="false" activeIndex="-  1">
               <p:tab title="Correo ordinario">
                 <p:contextMenu for="tablaMarcajeSepomex" style="width:200px;">
@@ -138,6 +141,22 @@
                   </p:column>
                 </p:dataTable>
               </p:tab>
+              <p:tab title="Cobro en celular">
+                <p:dataTable id="tablaMarcajeCelular" var="ccel" value="#{marcajeBean.listaCobroCelular}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom">
+                  <p:column headerText="Credito" style="width:100px;"> 
+                    <h:outputText value="#{ccel.numeroCredito}"/>
+                  </p:column>
+                  <p:column headerText="Deudor"> 
+                    <h:outputText value="#{ccel.deudor.sujeto.nombreRazonSocial}"/>
+                  </p:column>
+                  <p:column headerText="Saldo vencido" style="width:150px;"> 
+                    <h:outputText value="#{ccel.monto}"/>
+                  </p:column>
+                  <p:column headerText="Gestor actual"> 
+                    <h:outputText value="#{ccel.gestor.usuario.nombreLogin}"/>
+                  </p:column>
+                </p:dataTable>
+              </p:tab>
               <p:tab title="Whatsapp">
                 <p:dataTable id="tablaMarcajeWhatsapp" var="cw" value="#{marcajeBean.listaWhatsapp}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom">
                   <p:column headerText="Credito" style="width:100px;"> 
@@ -158,7 +177,7 @@
           </h:form>
         </div>
       </div>
-        <p:dialog widgetVar="dlgConfirmarDevolucionSepomex" header="Confirmar devolucion" modal="true" width="350">
+      <p:dialog widgetVar="dlgConfirmarDevolucionSepomex" header="Confirmar devolucion" modal="true" width="350">
         <h:form id="confirmarDevolucionSepomexForm">
           Esta seguro que desea confirmar la devolucion?
           <br />
@@ -169,6 +188,26 @@
           <p:commandButton value="Confirmar" icon="ui-icon-check" actionListener="#{marcajeBean.quitarMarcaje()}" update=":growl" oncomplete="PF('dlgConfirmarDevolucionSepomex').hide();" />
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dlgConfirmarDevolucionSepomex').hide();" />
+        </h:form>
+      </p:dialog>
+      <p:dialog widgetVar="dlgPeriodoImpresion" header="Establecer periodo" modal="true" width="370">
+        <h:form id="periodoImpresionForm">
+          Indique el periodo de impresion:
+          <br />
+          <br />
+          Fecha inicio:
+          &nbsp;
+          <p:calendar value="#{marcajeBean.fechaInicioImpresiones}" showOn="button" required="true" requiredMessage="Debe indicar una fecha de inicio." style="width: 100px;" />
+          <br />
+          <br />
+          Fecha fin:
+          &nbsp;
+          <p:calendar value="#{marcajeBean.fechaFinImpresiones}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." style="width: 100px;" />
+          <br />
+          <br />
+          <p:commandButton value="Confirmar" icon="ui-icon-check" actionListener="#{marcajeBean.establecerPeriodo()}" update=":growl" oncomplete="PF('dlgPeriodoImpresion').hide();" />
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dlgPeriodoImpresion').hide();" />
         </h:form>
       </p:dialog>
     </div><!-- /main-container -->

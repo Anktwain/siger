@@ -1,5 +1,5 @@
 package dto;
-// Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1
+// Generated 22/02/2016 10:19:54 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -13,6 +13,7 @@ public class EstadoRepublica  implements java.io.Serializable {
 
      private Integer idEstado;
      private String nombre;
+     private String abreviatura;
      private Set municipios = new HashSet(0);
      private Set regions = new HashSet(0);
      private Set direccions = new HashSet(0);
@@ -24,8 +25,9 @@ public class EstadoRepublica  implements java.io.Serializable {
     public EstadoRepublica(String nombre) {
         this.nombre = nombre;
     }
-    public EstadoRepublica(String nombre, Set municipios, Set regions, Set direccions) {
+    public EstadoRepublica(String nombre, String abreviatura, Set municipios, Set regions, Set direccions) {
        this.nombre = nombre;
+       this.abreviatura = abreviatura;
        this.municipios = municipios;
        this.regions = regions;
        this.direccions = direccions;
@@ -44,6 +46,13 @@ public class EstadoRepublica  implements java.io.Serializable {
     
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+    public String getAbreviatura() {
+        return this.abreviatura;
+    }
+    
+    public void setAbreviatura(String abreviatura) {
+        this.abreviatura = abreviatura;
     }
     public Set getMunicipios() {
         return this.municipios;

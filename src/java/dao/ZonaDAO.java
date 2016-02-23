@@ -13,4 +13,5 @@ public interface ZonaDAO {
   public List<Zona> buscarPorDespacho(int idDespacho);
   public List<String> buscarNombresZonas(int idDespacho);
   public List<Integer> buscarIdsGestoresZonas();
+  public boolean eliminar(Zona zona);
 }

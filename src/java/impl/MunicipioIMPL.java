@@ -103,11 +103,11 @@ public class MunicipioIMPL implements MunicipioDAO {
   }
 
   @Override
-  public Municipio buscarPorNombresMunicipioEstado(String nombreMunicipio, String nombreEstado) {
+  public Municipio buscarPorNombreMunicipioAbreviaturaEstado(String nombreMunicipio, String abreviaturaEstado) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Municipio municipio;
     try {
-      municipio = (Municipio) sesion.createSQLQuery("SELECT * from municipio WHERE nombre = '" + nombreMunicipio + "' AND id_estado = (SELECT nombre FROM estado_republica WHERE nombre = '" + nombreEstado + "');").addEntity(Municipio.class).uniqueResult();
+      municipio = (Municipio) sesion.createSQLQuery("SELECT * from municipio WHERE nombre = '" + nombreMunicipio + "' AND id_estado = (SELECT id_estado FROM estado_republica WHERE abreviatura = '" + abreviaturaEstado + "');").addEntity(Municipio.class).uniqueResult();
     } catch (HibernateException he) {
       municipio = null;
       Logs.log.error("No se pudo obtener objeto: Municipio");

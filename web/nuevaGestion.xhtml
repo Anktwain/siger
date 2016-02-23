@@ -16,7 +16,7 @@
           <strong>
             Tipo de gestion:
           </strong>
-          <p:selectOneMenu id="tipoGestion" value="#{gestionBean.tipoSeleccionado.idTipoGestion}" style="width:200px">
+          <p:selectOneMenu id="tipoGestion" value="#{gestionBean.tipoSeleccionado.idTipoGestion}" style="width:200px" required="true" requiredMessage="Seleccione el tipo de gestion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaTipos}" var="tipos" itemLabel="#{tipos.nombre}" itemValue="#{tipos.idTipoGestion}" />
             <p:ajax update="dondeGestion" listener="#{gestionBean.preparaDonde()}" />
@@ -25,7 +25,7 @@
           <strong>
             Donde:
           </strong>
-          <p:selectOneMenu id="dondeGestion" value="#{gestionBean.dondeSeleccionado.idDondeGestion}" style="width:250px">
+          <p:selectOneMenu id="dondeGestion" value="#{gestionBean.dondeSeleccionado.idDondeGestion}" style="width:250px" required="true" requiredMessage="Seleccione el lugar de la gestion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaDonde}" var="dondes" itemLabel="#{dondes.nombre}" itemValue="#{dondes.idDondeGestion}" />
             <p:ajax update="asuntoGestion" listener="#{gestionBean.preparaAsunto()}" />
@@ -34,7 +34,7 @@
           <strong>
             Asunto:
           </strong>
-          <p:selectOneMenu id="asuntoGestion" value="#{gestionBean.asuntoSeleccionado.idAsuntoGestion}" style="width:250px">
+          <p:selectOneMenu id="asuntoGestion" value="#{gestionBean.asuntoSeleccionado.idAsuntoGestion}" style="width:250px" required="true" requiredMessage="Seleccione el asunto de la gestion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaAsuntos}" var="asuntos" itemLabel="#{asuntos.tipoAsuntoGestion.asunto}" itemValue="#{asuntos.idAsuntoGestion}" />
             <p:ajax update="descripcionGestion" listener="#{gestionBean.preparaDescripcion()}" />
@@ -44,7 +44,7 @@
           <strong>
             Descripcion Gestion:
           </strong>
-          <p:selectOneMenu id="descripcionGestion" value="#{gestionBean.descripcionSeleccionada.idDescripcionGestion}" style="width:800px">
+          <p:selectOneMenu id="descripcionGestion" value="#{gestionBean.descripcionSeleccionada.idDescripcionGestion}" style="width:800px" required="true"  requiredMessage="Seleccione una descripcion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaDescripciones}" var="descripciones" itemLabel="#{descripciones.textoGestion}" itemValue="#{descripciones.idDescripcionGestion}" />
             <p:ajax update="tipoSujetoGestion" listener="#{gestionBean.preparaTipoSujeto()}" />
@@ -54,7 +54,7 @@
           <strong>
             Tipo de sujeto:
           </strong>
-          <p:selectOneMenu id="tipoSujetoGestion" value="#{gestionBean.tipoSujetoSeleccionado.idTipoQuienGestion}" style="width:250px">
+          <p:selectOneMenu id="tipoSujetoGestion" value="#{gestionBean.tipoSujetoSeleccionado.idTipoQuienGestion}" style="width:250px" required="true"  requiredMessage="Seleccione el tipo sujeto para la gestion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaTipoSujetos}" var="tipoSujetos" itemLabel="#{tipoSujetos.descripcion}" itemValue="#{tipoSujetos.idTipoQuienGestion}" />
             <p:ajax update="sujetoGestion" listener="#{gestionBean.preparaSujetos()}"/>
@@ -63,7 +63,7 @@
           <strong>
             Sujeto gestion:
           </strong>
-          <p:selectOneMenu id="sujetoGestion" value="#{gestionBean.sujetoSeleccionado.idQuienGestion}" style="width:250px">
+          <p:selectOneMenu id="sujetoGestion" value="#{gestionBean.sujetoSeleccionado.idQuienGestion}" style="width:250px" required="true"  requiredMessage="Seleccione el sujeto de la gestion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaSujetos}" var="sujetos" itemLabel="#{sujetos.quien}" itemValue="#{sujetos.idQuienGestion}" />
             <p:ajax update="estatusInformativoGestion" listener="#{gestionBean.preparaEstatus()}" />
@@ -74,7 +74,7 @@
             Informacion para el banco:
           </strong>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:selectOneMenu id="estatusInformativoGestion" value="#{gestionBean.estatusSeleccionado.idEstatusInformativo}" style="width:250px">
+          <p:selectOneMenu id="estatusInformativoGestion" value="#{gestionBean.estatusSeleccionado.idEstatusInformativo}" style="width:250px" required="true"  requiredMessage="Seleccione la informacion para el banco">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaEstatus}"  var="e" itemLabel="#{e.estatus}" itemValue="#{e.idEstatusInformativo}"  />
           </p:selectOneMenu>
@@ -84,7 +84,7 @@
             Gestion:
           </strong>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:inputTextarea rows="2" cols="100" id="gestion" value="#{gestionBean.gestion}" >
+          <p:inputTextarea rows="2" cols="100" id="gestion" value="#{gestionBean.gestion}" required="true"  requiredMessage="Ingrese la gestion">
             <p:ajax event="keyup" />
           </p:inputTextarea>
           <br />

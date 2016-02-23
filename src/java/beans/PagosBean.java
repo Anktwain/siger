@@ -81,14 +81,14 @@ public class PagosBean implements Serializable {
   public void aprobarPago() {
     FacesContext contexto = FacesContext.getCurrentInstance();
     pagoSeleccionado = revisionSeleccionados.get(0);
-    Credito c = creditoDao.buscar(pagoSeleccionado.getConvenioPago().getCredito().getNumeroCredito());
+    Credito c = creditoDao.buscar(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
     float monto = c.getMonto() - pagoSeleccionado.getMonto();
     c.setMonto(monto);
     boolean ok = creditoDao.editar(c);
     pagoSeleccionado.setEstatus(Pagos.APROBADO);
     pagoSeleccionado.setRevisor(revisor);
     ok = ok & (pagoDao.editar(pagoSeleccionado));
-    ConvenioPago co = pagoSeleccionado.getConvenioPago();
+    ConvenioPago co = pagoSeleccionado.getPromesaPago().getConvenioPago();
     //int numPagos = co.getPagosRealizados() + 1;
     //co.setPagosRealizados(numPagos);
     ok = ok & (convenioPagoDao.editar(co));

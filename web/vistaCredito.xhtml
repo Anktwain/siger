@@ -90,26 +90,37 @@
           </div>
           <div class="pull-right text-right">
             <h:form>
-              <strong>Fecha de inicio:</strong> <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <strong>Fecha de inicio:</strong>
+              &nbsp;
+              <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
-              <strong>Fecha Ultimo Pago:</strong> <p:outputLabel value="#{vistaCreditoBean.fup}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <strong>Fecha Ultimo Pago:</strong>
+              &nbsp;
+              <p:outputLabel value="#{vistaCreditoBean.fup}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
-              <strong>Fecha Ultimo Vencimiento Pagado:</strong> <p:outputLabel value="#{vistaCreditoBean.fvp}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <strong>Fecha Ultimo Vencimiento Pagado:</strong>
+              &nbsp;
+              <p:outputLabel value="#{vistaCreditoBean.fvp}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
-              <strong>Fecha Fin del credito:</strong> <p:outputLabel value="#{vistaCreditoBean.fechaFin}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <strong>Fecha Fin del credito:</strong>
+              &nbsp;
+              <p:outputLabel value="#{vistaCreditoBean.fechaFin}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
               <strong>Mensualidad:</strong>
               &nbsp;
-              <h:outputText value="#{vistaCreditoBean.mensualidad}"   style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" >
+              <h:outputText value="#{vistaCreditoBean.mensualidad}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
                 <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
               </h:outputText>
+              <br />
+              <strong>Meses vencidos:</strong>
+              &nbsp;
+              <p:outputLabel value="#{vistaCreditoBean.mesesVencidos}" style="font-size: 15px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
               <strong>Saldo vencido:</strong>
               &nbsp;
-              <h:outputText value="#{vistaCreditoBean.saldoVencido}">
+              <h:outputText value="#{vistaCreditoBean.saldoVencido}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
                 <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
               </h:outputText>
-              <br />
             </h:form>
           </div>
         </div>

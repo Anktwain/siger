@@ -32,10 +32,15 @@
           </li>
         </ul>
       </div>
-      <h3>
-        En construcci&oacute;n
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
+      <div class="padding-md">
+        <div class="col-lg-10">
+          <h:form id="visitasForm">
+            <h:outputText value="En periodo de impresion" style="color: #00CC00;" rendered="#{visitasBean.periodoActivo}" />
+            <br />
+            <br />
+          </h:form>
+        </div>
+      </div>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />

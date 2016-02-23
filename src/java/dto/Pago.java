@@ -1,5 +1,5 @@
 package dto;
-// Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1
+// Generated 22/02/2016 10:19:54 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -10,11 +10,10 @@ import java.util.Date;
 public class Pago  implements java.io.Serializable {
 
 
-     private int idPago;
-     private ConvenioPago convenioPago;
+     private Integer idPago;
      private Gestor gestor;
+     private PromesaPago promesaPago;
      private Quincena quincena;
-     private int idPromesaPago;
      private Date fechaDeposito;
      private Date fechaRegistro;
      private int estatus;
@@ -28,25 +27,22 @@ public class Pago  implements java.io.Serializable {
     }
 
 	
-    public Pago(int idPago, ConvenioPago convenioPago, Gestor gestor, Quincena quincena, int idPromesaPago, Date fechaDeposito, Date fechaRegistro, int estatus, float monto, String numeroCuenta, String nombreComprobante) {
-        this.idPago = idPago;
-        this.convenioPago = convenioPago;
+    public Pago(Gestor gestor, PromesaPago promesaPago, Quincena quincena, Date fechaDeposito, Date fechaRegistro, int estatus, float monto, String numeroCuenta, String nombreComprobante, String revisor) {
         this.gestor = gestor;
+        this.promesaPago = promesaPago;
         this.quincena = quincena;
-        this.idPromesaPago = idPromesaPago;
         this.fechaDeposito = fechaDeposito;
         this.fechaRegistro = fechaRegistro;
         this.estatus = estatus;
         this.monto = monto;
         this.numeroCuenta = numeroCuenta;
         this.nombreComprobante = nombreComprobante;
+        this.revisor = revisor;
     }
-    public Pago(int idPago, ConvenioPago convenioPago, Gestor gestor, Quincena quincena, int idPromesaPago, Date fechaDeposito, Date fechaRegistro, int estatus, float monto, String numeroCuenta, String nombreComprobante, String revisor, String observaciones) {
-       this.idPago = idPago;
-       this.convenioPago = convenioPago;
+    public Pago(Gestor gestor, PromesaPago promesaPago, Quincena quincena, Date fechaDeposito, Date fechaRegistro, int estatus, float monto, String numeroCuenta, String nombreComprobante, String revisor, String observaciones) {
        this.gestor = gestor;
+       this.promesaPago = promesaPago;
        this.quincena = quincena;
-       this.idPromesaPago = idPromesaPago;
        this.fechaDeposito = fechaDeposito;
        this.fechaRegistro = fechaRegistro;
        this.estatus = estatus;
@@ -57,19 +53,12 @@ public class Pago  implements java.io.Serializable {
        this.observaciones = observaciones;
     }
    
-    public int getIdPago() {
+    public Integer getIdPago() {
         return this.idPago;
     }
     
-    public void setIdPago(int idPago) {
+    public void setIdPago(Integer idPago) {
         this.idPago = idPago;
-    }
-    public ConvenioPago getConvenioPago() {
-        return this.convenioPago;
-    }
-    
-    public void setConvenioPago(ConvenioPago convenioPago) {
-        this.convenioPago = convenioPago;
     }
     public Gestor getGestor() {
         return this.gestor;
@@ -78,19 +67,19 @@ public class Pago  implements java.io.Serializable {
     public void setGestor(Gestor gestor) {
         this.gestor = gestor;
     }
+    public PromesaPago getPromesaPago() {
+        return this.promesaPago;
+    }
+    
+    public void setPromesaPago(PromesaPago promesaPago) {
+        this.promesaPago = promesaPago;
+    }
     public Quincena getQuincena() {
         return this.quincena;
     }
     
     public void setQuincena(Quincena quincena) {
         this.quincena = quincena;
-    }
-    public int getIdPromesaPago() {
-        return this.idPromesaPago;
-    }
-    
-    public void setIdPromesaPago(int idPromesaPago) {
-        this.idPromesaPago = idPromesaPago;
     }
     public Date getFechaDeposito() {
         return this.fechaDeposito;

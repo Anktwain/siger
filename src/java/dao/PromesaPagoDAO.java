@@ -5,15 +5,14 @@
  */
 package dao;
 
-import dto.TipoGestion;
+import dto.PromesaPago;
 import java.util.List;
 
 /**
  *
  * @author Eduardo
  */
-public interface TipoGestionDAO {
-  public List<TipoGestion> buscarTodo();
-  public TipoGestion buscarPorId(int idTipoGestion);
-  public List<TipoGestion> buscarParaConvenio();
+public interface PromesaPagoDAO {
+  public boolean insertar(PromesaPago promesa);
+  public List<PromesaPago> buscarPorConvenio(int idConvenio);
 }

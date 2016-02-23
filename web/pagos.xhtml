@@ -63,9 +63,9 @@
                     </h:outputText>
                   </p:column>
                   <p:column headerText="Credito" style="width:200px;">
-                    <h:outputText value="#{rev.convenioPago.credito.numeroCredito}" />
+                    <h:outputText value="#{rev.promesaPago.convenioPago.credito.numeroCredito}" />
                     <br />
-                    <h:outputText value="#{rev.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
+                    <h:outputText value="#{rev.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
                   </p:column>
                   <p:column headerText="Gestor" style="width:70px;" > 
                     <h:outputText value="#{rev.gestor.usuario.nombreLogin}" />
@@ -98,10 +98,10 @@
                     </h:outputText>
                   </p:column>
                   <p:column headerText="Credito" style="width:100px;"> 
-                    <h:outputText value="#{p.convenioPago.credito.numeroCredito}" />
+                    <h:outputText value="#{p.promesaPago.convenioPago.credito.numeroCredito}" />
                   </p:column>
                   <p:column headerText="Deudor" style="width:250px;"> 
-                    <h:outputText value="#{p.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
+                    <h:outputText value="#{p.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
                   </p:column>
                   <p:column headerText="Gestor" style="width:100px;" > 
                     <h:outputText value="#{p.gestor.usuario.nombreLogin}" />

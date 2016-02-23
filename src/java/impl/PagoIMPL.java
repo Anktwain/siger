@@ -72,7 +72,7 @@ public class PagoIMPL implements PagoDAO{
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Pago> pagos;
     try {
-      pagos = sesion.createSQLQuery("SELECT * FROM pago WHERE id_convenio_pago = " + idConvenio + ";").addEntity(Pago.class).list();
+      pagos = sesion.createSQLQuery("SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM promesa_pago WHERE id_convenio_pago = " + idConvenio + ");").addEntity(Pago.class).list();
     } catch (HibernateException he) {
       pagos = null;
       Logs.log.error(he.getMessage());
@@ -87,7 +87,7 @@ public class PagoIMPL implements PagoDAO{
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Pago> pagos;
     try {
-      pagos = sesion.createSQLQuery("SELECT * FROM pago WHERE id_convenio_pago IN (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus = " + Convenios.FINALIZADO + ");").addEntity(Pago.class).list();
+      pagos = sesion.createSQLQuery("SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus = " + Convenios.FINALIZADO + ");").addEntity(Pago.class).list();
     } catch (HibernateException he) {
       pagos = null;
       Logs.log.error(he.getMessage());

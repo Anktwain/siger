@@ -36,7 +36,7 @@ el otro especifica el que se ha creado en util.log-->
 </logger>
     
 <root>
-    <priority value="trace" />
+    <priority value="warn" />
     <appender-ref ref="consola" />
 </root>
 

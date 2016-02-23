@@ -1,5 +1,5 @@
 package dto;
-// Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1
+// Generated 22/02/2016 10:19:54 AM by Hibernate Tools 4.3.1
 
 
 
@@ -19,7 +19,9 @@ public class Region  implements java.io.Serializable {
     }
 
 	
-    public Region(Zona zona) {
+    public Region(EstadoRepublica estadoRepublica, Municipio municipio, Zona zona) {
+        this.estadoRepublica = estadoRepublica;
+        this.municipio = municipio;
         this.zona = zona;
     }
     public Region(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Zona zona) {

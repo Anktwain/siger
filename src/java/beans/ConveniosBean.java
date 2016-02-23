@@ -22,6 +22,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import util.constantes.Convenios;
+import util.constantes.Directorios;
 import util.constantes.Pagos;
 import util.log.Logs;
 
@@ -40,62 +41,70 @@ public class ConveniosBean implements Serializable {
 
   // VARIABLES DE CLASE
   private boolean habilitaConvenios;
+  private boolean habilitaPromesas;
+  private boolean quitaCapital;
+  private boolean sinContacto;
   private float saldoNuevoConvenio;
+  private float saldoNuevaPromesa;
   private float saldoNuevoPago;
   private float saldoMaximo;
+  private int pagosPrometidos;
   private Number saldoPendiente;
   private Date fechaDeposito;
+  private Date fechaNuevaPromesa;
   private String cuentaPago;
   private String observacionesPago;
-  private String ruta;
   private String nombrePago;
   private Credito creditoActual;
-  private final EstatusInformativoDAO estatusInformativoDao;
-  private final GestionDAO gestionDao;
+  private TipoGestion tipoGestionSeleccionada;
   private final QuincenaDAO quincenaDao;
   private final PagoDAO pagoDao;
   private final GestorDAO gestorDao;
   private final ConvenioPagoDAO convenioPagoDao;
-  private List<ConvenioPago> listaConvenios;
-  private List<ConvenioPago> convenioSeleccionado;
+  private final PromesaPagoDAO promesaPagoDao;
+  private PromesaPago promesaSeleccionada;
+  private ConvenioPago convenioSeleccionado;
+  private ConvenioPago convenioActivo;
   private List<ConvenioPago> listaHistorialConvenios;
+  private List<PromesaPago> listaPromesas;
   private List<Pago> listaPagosConvenioActivo;
   private List<Pago> listaHistorialPagos;
   private UploadedFile archivo;
 
   // CONSTRUCTOR
   public ConveniosBean() {
-    ruta = "C:\\Users\\Eduardo.CORPDELRIO\\Documents\\NetBeansProjects\\SigerWeb\\SigerWeb\\web\\resources\\img\\comprobantes\\";
     creditoActual = vistaCreditoBean.getCreditoActual();
     saldoMaximo = creditoActual.getMonto();
     convenioPagoDao = new ConvenioPagoIMPL();
-    listaConvenios = new ArrayList();
     listaHistorialConvenios = new ArrayList();
     listaPagosConvenioActivo = new ArrayList();
     listaHistorialPagos = new ArrayList();
-    estatusInformativoDao = new EstatusInformativoIMPL();
-    gestionDao = new GestionIMPL();
     quincenaDao = new QuincenaIMPL();
     pagoDao = new PagoIMPL();
     gestorDao = new GestorIMPL();
+    promesaPagoDao = new PromesaPagoIMPL();
+    tipoGestionSeleccionada = new TipoGestion();
     cargarListas();
   }
 
   // METODO QUE TRAE LA LISTA DE CONVENIOS
   public final void cargarListas() {
     int idCredito = creditoActual.getIdCredito();
-    listaConvenios = convenioPagoDao.buscarConveniosEnCursoCredito(idCredito);
+    convenioActivo = convenioPagoDao.buscarConvenioEnCursoCredito(idCredito);
     listaHistorialConvenios = convenioPagoDao.buscarConveniosFinalizadosCredito(idCredito);
     listaHistorialPagos = pagoDao.buscarPagosPorCredito(idCredito);
-    if (listaConvenios.isEmpty()) {
+    if (convenioActivo == null) {
       listaPagosConvenioActivo.clear();
       habilitaConvenios = false;
+      habilitaPromesas = true;
       saldoPendiente = 0;
     } else {
       habilitaConvenios = true;
-      int idConvenio = listaConvenios.get(0).getIdConvenioPago();
+      habilitaPromesas = false;
+      int idConvenio = convenioActivo.getIdConvenioPago();
       saldoPendiente = convenioPagoDao.calcularSaldoPendiente(idConvenio);
       listaPagosConvenioActivo = pagoDao.buscarPagosPorConvenioActivo(idConvenio);
+      listaPromesas = promesaPagoDao.buscarPorConvenio(idConvenio);
     }
   }
 
@@ -104,35 +113,36 @@ public class ConveniosBean implements Serializable {
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (saldoNuevoConvenio > saldoMaximo) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser menor al saldo vencido."));
+    } else if (pagosPrometidos <= 0) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe prometer al menos un pago."));
     } else {
       ConvenioPago convenio = new ConvenioPago();
       convenio.setCredito(creditoActual);
-      //convenio.setEstatus(Convenios.EN_CURSO);
+      if (quitaCapital) {
+        convenio.setEstatus(Convenios.CON_QUITA_DE_CAPITAL_EN_CURSO);
+      }
+      if (sinContacto) {
+        convenio.setEstatus(Convenios.SIN_CONTACTO_EN_CURSO);
+      }
+      if ((quitaCapital) && (sinContacto)) {
+        convenio.setEstatus(Convenios.CON_QUITA_SIN_CONTACTO_EN_CURSO);
+      } else {
+        convenio.setEstatus(Convenios.NORMAL_EN_CURSO);
+      }
       Date fecha = new Date();
       convenio.setFecha(fecha);
-      //convenio.setPagosRealizados(0);
+      convenio.setPagosNegociados(pagosPrometidos);
       convenio.setSaldoNegociado(saldoNuevoConvenio);
       boolean ok = convenioPagoDao.insertar(convenio);
+      // NO SE CREA LA GESTION AUTOMATICA PUESTO QUE:
+      // - EXISTEN 3 TIPOS DE GESTION PARA CONVENIOS DE PAGO
+      // - EL GESTOR DEBE SELECCIONAR EL LUGAR DONDE SE CELEBRO EL CONVENIO
       if (ok) {
-        Gestion g = new Gestion();
-        g.setCredito(creditoActual);
-        g.setFecha(fecha);
-        g.setUsuario(indexBean.getUsuario());
-        //g.setTipoGestion(new DescripcionGestion());
-        //g.setLugarGestion("");
-        //g.setAsuntoGestion("");
-        //g.setDescripcionGestion("SE REALIZA CONVENIO DE PAGO CON ");
-        //g.setTipoSujetoGestion(Gestiones.TIPO_SUJETOS.get(0));
-        EstatusInformativo e = estatusInformativoDao.buscar(2);
-        g.setEstatusInformativo(e);
-        g.setGestion("SALDO NEGOCIADO: " + saldoNuevoConvenio);
-        ok = ok & (gestionDao.insertarGestion(g));
-        if (ok) {
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo un nuevo convenio."));
-          cargarListas();
-        } else {
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se creo el convenio. Contacte al equipo de sistemas."));
-        }
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo un nuevo convenio."));
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Alerta.", "No olvide agregar la gestion correspondiente."));
+        habilitaPromesas = false;
+        RequestContext.getCurrentInstance().update("formConvenios");
+        cargarListas();
       } else {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se creo el convenio. Contacte al equipo de sistemas."));
       }
@@ -142,7 +152,7 @@ public class ConveniosBean implements Serializable {
 
   // METODO QUE TERMINA UN CONVENIO DE PAGO
   public void finalizarConvenio() {
-    ConvenioPago c = convenioSeleccionado.get(0);
+    ConvenioPago c = convenioSeleccionado;
     c.setEstatus(Convenios.FINALIZADO);
     boolean ok = convenioPagoDao.editar(c);
     FacesContext contexto = FacesContext.getCurrentInstance();
@@ -167,7 +177,7 @@ public class ConveniosBean implements Serializable {
       String nombre = indexBean.getUsuario().getNombreLogin() + "-" + fecha + archivo.getFileName().substring(archivo.getFileName().indexOf("."));
       nombre = nombre.replace(" ", "");
       nombrePago = nombre;
-      nombre = ruta + nombre;
+      nombre = Directorios.RUTA_WINDOWS_CARGA_COMPROBANTES + nombre;
       bytes = archivo.getContents();
       BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(nombre)));
       stream.write(bytes);
@@ -182,14 +192,42 @@ public class ConveniosBean implements Serializable {
     return ok;
   }
 
+  // METODO QUE AGREGA UNA PROMESA DE PAGO AL CONVENIO EN CURSO
+  public void agregarPromesa() {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    ConvenioPago convenio = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
+    List<PromesaPago> promesas = promesaPagoDao.buscarPorConvenio(convenio.getIdConvenioPago());
+    int promesasRestantes = convenio.getPagosNegociados() - promesas.size();
+    float montoMaximo = convenioPagoDao.calcularSaldoPendiente(convenio.getIdConvenioPago()).floatValue();
+    if (promesasRestantes <= 0) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Ya existen las promesas de pago necesarias."));
+    } else if (montoMaximo <= 0) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Ya se ha prometido el saldo total del convenio."));
+    } else {
+      PromesaPago p = new PromesaPago();
+      p.setConvenioPago(convenio);
+      p.setFechaPrometida(fechaNuevaPromesa);
+      p.setCantidadPrometida(saldoNuevaPromesa);
+      boolean ok = promesaPagoDao.insertar(p);
+      if (ok) {
+        cargarListas();
+        RequestContext.getCurrentInstance().update("formConvenios");
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego la promesa de pago."));
+        RequestContext.getCurrentInstance().execute("PF('agregarPromesaDialog').hide();");
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la promesa de pago. Contacte al equipo de sistemas"));
+      }
+    }
+  }
+
   // METODO QUE CARGA UN PAGO A UN CONVENIO EN ESPECIFICO
   public void agregarPago() {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    float montoMaximo = convenioSeleccionado.get(0).getSaldoNegociado();
-    if (saldoNuevoPago > 0 && saldoNuevoPago <= montoMaximo) {
+    float montoMaximo = promesaSeleccionada.getCantidadPrometida();
+    if ((saldoNuevoPago > 0) && (saldoNuevoPago <= montoMaximo)) {
       Pago p = new Pago();
       p.setMonto(saldoNuevoPago);
-      p.setConvenioPago(convenioSeleccionado.get(0));
+      p.setPromesaPago(promesaSeleccionada);
       p.setEstatus(Pagos.PENDIENTE);
       p.setFechaDeposito(fechaDeposito);
       Date fechaRegistro = new Date();
@@ -198,6 +236,7 @@ public class ConveniosBean implements Serializable {
       p.setNumeroCuenta(cuentaPago);
       Quincena q = quincenaDao.obtenerQuincenaActual();
       p.setQuincena(q);
+      p.setRevisor("");
       p.setObservaciones(observacionesPago);
       Gestor g = gestorDao.buscarGestorDelCredito(creditoActual.getIdCredito());
       p.setGestor(g);
@@ -233,20 +272,20 @@ public class ConveniosBean implements Serializable {
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-  public List<ConvenioPago> getConvenioSeleccionado() {
+  public ConvenioPago getConvenioSeleccionado() {
     return convenioSeleccionado;
   }
 
-  public void setConvenioSeleccionado(List<ConvenioPago> convenioSeleccionado) {
+  public void setConvenioSeleccionado(ConvenioPago convenioSeleccionado) {
     this.convenioSeleccionado = convenioSeleccionado;
   }
 
-  public List<ConvenioPago> getListaConvenios() {
-    return listaConvenios;
+  public ConvenioPago getConvenioActivo() {
+    return convenioActivo;
   }
 
-  public void setListaConvenios(List<ConvenioPago> listaConvenios) {
-    this.listaConvenios = listaConvenios;
+  public void setConvenioActivo(ConvenioPago convenioActivo) {
+    this.convenioActivo = convenioActivo;
   }
 
   public List<ConvenioPago> getListaHistorialConvenios() {
@@ -351,6 +390,78 @@ public class ConveniosBean implements Serializable {
 
   public void setListaHistorialPagos(List<Pago> listaHistorialPagos) {
     this.listaHistorialPagos = listaHistorialPagos;
+  }
+
+  public boolean isHabilitaPromesas() {
+    return habilitaPromesas;
+  }
+
+  public void setHabilitaPromesas(boolean habilitaPromesas) {
+    this.habilitaPromesas = habilitaPromesas;
+  }
+
+  public float getSaldoNuevaPromesa() {
+    return saldoNuevaPromesa;
+  }
+
+  public void setSaldoNuevaPromesa(float saldoNuevaPromesa) {
+    this.saldoNuevaPromesa = saldoNuevaPromesa;
+  }
+
+  public Date getFechaNuevaPromesa() {
+    return fechaNuevaPromesa;
+  }
+
+  public void setFechaNuevaPromesa(Date fechaNuevaPromesa) {
+    this.fechaNuevaPromesa = fechaNuevaPromesa;
+  }
+
+  public List<PromesaPago> getListaPromesas() {
+    return listaPromesas;
+  }
+
+  public void setListaPromesas(List<PromesaPago> listaPromesas) {
+    this.listaPromesas = listaPromesas;
+  }
+
+  public PromesaPago getPromesaSeleccionada() {
+    return promesaSeleccionada;
+  }
+
+  public void setPromesaSeleccionada(PromesaPago promesaSeleccionada) {
+    this.promesaSeleccionada = promesaSeleccionada;
+  }
+
+  public int getPagosPrometidos() {
+    return pagosPrometidos;
+  }
+
+  public void setPagosPrometidos(int pagosPrometidos) {
+    this.pagosPrometidos = pagosPrometidos;
+  }
+
+  public boolean isQuitaCapital() {
+    return quitaCapital;
+  }
+
+  public void setQuitaCapital(boolean quitaCapital) {
+    this.quitaCapital = quitaCapital;
+  }
+
+  public boolean isSinContacto() {
+    return sinContacto;
+  }
+
+  public void setSinContacto(boolean sinContacto) {
+    this.sinContacto = sinContacto;
+  }
+
+  public TipoGestion getTipoGestionSeleccionada() {
+    return tipoGestionSeleccionada;
+  }
+
+  public void setTipoGestionSeleccionada(TipoGestion tipoGestionSeleccionada) {
+    this.tipoGestionSeleccionada = tipoGestionSeleccionada;
   }
 
 }

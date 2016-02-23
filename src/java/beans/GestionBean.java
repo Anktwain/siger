@@ -9,15 +9,14 @@ import dao.*;
 import dto.*;
 import impl.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.constantes.Marcajes;
 
 /**
  *
@@ -41,7 +40,7 @@ public class GestionBean implements Serializable {
   private List<TipoQuienGestion> listaTipoSujetos;
   private List<QuienGestion> listaSujetos;
   private List<EstatusInformativo> listaEstatus;
-  private Gestion nueva;
+  private final Gestion nueva;
   private TipoGestion tipoSeleccionado;
   private DondeGestion dondeSeleccionado;
   private AsuntoGestion asuntoSeleccionado;
@@ -58,6 +57,7 @@ public class GestionBean implements Serializable {
   private final TipoQuienGestionDAO tipoQuienGestionDao;
   private final QuienGestionDAO quienGestionDao;
   private final DescripcionGestionDAO descripcionGestionDao;
+  private final CreditoDAO creditoDao;
 
   // CONSTRUCTOR
   public GestionBean() {
@@ -76,6 +76,7 @@ public class GestionBean implements Serializable {
     descripcionGestionDao = new DescripcionGestionIMPL();
     tipoQuienGestionDao = new TipoQuienGestionIMPL();
     quienGestionDao = new QuienGestionIMPL();
+    creditoDao = new CreditoIMPL();
     tipoSeleccionado = new TipoGestion();
     dondeSeleccionado = new DondeGestion();
     asuntoSeleccionado = new AsuntoGestion();
@@ -119,7 +120,8 @@ public class GestionBean implements Serializable {
 
   public void crearNuevaGestion() {
     preparaGestion();
-    boolean ok = gestionDao.insertarGestion(nueva);
+    boolean ok = verificaMarcaje();
+    ok = ok & gestionDao.insertarGestion(nueva);
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {
       limpiarCampos();
@@ -130,9 +132,9 @@ public class GestionBean implements Serializable {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se guardo la gestion. Contacte al equipo de sistemas."));
     }
   }
-  
+
   // METODO QUE MUESTRA LA ORACION COMPLETA
-  public void preparaGestion(){
+  public void preparaGestion() {
     estatusSeleccionado = estatusInformativoDao.buscar(estatusSeleccionado.getIdEstatusInformativo());
     nueva.setTipoGestion(tipoSeleccionado);
     nueva.setDondeGestion(dondeSeleccionado);
@@ -148,8 +150,121 @@ public class GestionBean implements Serializable {
     nueva.setUsuario(vistaCreditoBean.cuentasBean.indexBean.getUsuario());
   }
 
+  // METODO QUE VERIFICA SI LA GESTION QUITA EL MARCAJE A LAS CUENTAS
+  public boolean verificaMarcaje() {
+    int marcaje = vistaCreditoBean.getCreditoActual().getMarcaje();
+    boolean ok = true;
+    // APAGAR MARCAJE
+    switch (marcaje) {
+      case 1:
+        // CORREO ORDINARIO
+        if (descripcionSeleccionada.getAbreviatura().equals("4CADE")) {
+          Credito c = vistaCreditoBean.getCreditoActual();
+          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          ok = creditoDao.editar(c);
+        }
+        break;
+      case 2:
+        // TELEGRAMA
+        if ((descripcionSeleccionada.getAbreviatura().equals("3CETE")) || (descripcionSeleccionada.getAbreviatura().equals("21TELE3"))) {
+          Credito c = vistaCreditoBean.getCreditoActual();
+          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          ok = creditoDao.editar(c);
+        }
+        break;
+      case 3:
+        // VISITA
+        if (nueva.getTipoGestion().getIdTipoGestion() == 1) {
+          Credito c = vistaCreditoBean.getCreditoActual();
+          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          ok = creditoDao.editar(c);
+        }
+        break;
+      case 4:
+        // CORREO ELECTRONICO
+        if (descripcionSeleccionada.getAbreviatura().equals("2COEL")) {
+          Credito c = vistaCreditoBean.getCreditoActual();
+          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          ok = creditoDao.editar(c);
+        }
+        break;
+      case 5:
+        // LOCALIZACION
+        if ((descripcionSeleccionada.getAbreviatura().contains("POSI")) && (tipoSeleccionado.getIdTipoGestion() == (1 | 2))) {
+          Credito c = vistaCreditoBean.getCreditoActual();
+          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          ok = creditoDao.editar(c);
+        }
+        if (descripcionSeleccionada.getAbreviatura().equals("2SISB")) {
+          Credito c = vistaCreditoBean.getCreditoActual();
+          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          ok = creditoDao.editar(c);
+        }
+        break;
+      case 6:
+        // INFORMACION DEL BANCO
+        if (descripcionSeleccionada.getAbreviatura().equals("4CIAB")) {
+          Credito c = vistaCreditoBean.getCreditoActual();
+          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          ok = creditoDao.editar(c);
+        }
+        break;
+      // PROXIMAMENTE CASO WHATSAPP
+      default:
+        System.out.println("NO APAGA NINGUN MARCAJE");
+    }
+    // ENCENDER MARCAJE
+    // CASO CORREO ORDINARIO
+    if (descripcionSeleccionada.getAbreviatura().equals("26CACO")) {
+      Credito c = vistaCreditoBean.getCreditoActual();
+      c.setMarcaje(Marcajes.CORREO_SEPOMEX);
+      ok = creditoDao.editar(c);
+    }
+    // CASO TELEGRAMA
+    else if((descripcionSeleccionada.getAbreviatura().equals("19TELE1")) || (descripcionSeleccionada.getAbreviatura().equals("20TELE2"))){
+      Credito c = vistaCreditoBean.getCreditoActual();
+      c.setMarcaje(Marcajes.TELEGRAMA);
+      ok = creditoDao.editar(c);
+    }
+    // CASO VISITA
+    else if (descripcionSeleccionada.getAbreviatura().equals("32RUVD")){
+      Credito c = vistaCreditoBean.getCreditoActual();
+      c.setMarcaje(Marcajes.TELEGRAMA);
+      ok = creditoDao.editar(c);
+    }
+    // CASO CORREO ELECTRONICO
+    else if ((descripcionSeleccionada.getAbreviatura().equals("27CEBC")) || (descripcionSeleccionada.getAbreviatura().equals("28CEBCC")) || (descripcionSeleccionada.getAbreviatura().equals("29CEREQ")) || (descripcionSeleccionada.getAbreviatura().equals("30CENEG")) || (descripcionSeleccionada.getAbreviatura().equals("31CELIB"))){
+      Credito c = vistaCreditoBean.getCreditoActual();
+      c.setMarcaje(Marcajes.CORREO_ELECTRONICO);
+      ok = creditoDao.editar(c);
+    }
+    // CASO LOCALIZACION
+    else if ((descripcionSeleccionada.getAbreviatura().equals("1SECC")) || (descripcionSeleccionada.getAbreviatura().equals("3NOSB")) || (descripcionSeleccionada.getAbreviatura().equals("4CADE"))){
+      Credito c = vistaCreditoBean.getCreditoActual();
+      c.setMarcaje(Marcajes.LOCALIZACION);
+      ok = creditoDao.editar(c);
+    }
+    // CASO INFORMACION DEL BANCO
+    else if (descripcionSeleccionada.getAbreviatura().equals("33CEIB")){
+      Credito c = vistaCreditoBean.getCreditoActual();
+      c.setMarcaje(Marcajes.ESPERA_INFORMACION_BANCO);
+      ok = creditoDao.editar(c);
+    }
+    // CASO COBRO EN CELULAR
+    else if (descripcionSeleccionada.getAbreviatura().equals("1SMSC")){
+      Credito c = vistaCreditoBean.getCreditoActual();
+      c.setMarcaje(Marcajes.COBRO_EN_CELULAR);
+      ok = creditoDao.editar(c);
+    }
+    // PROXIMAMENTE CASO WHATSAPP
+    else{
+      System.out.println("NO ENCIENDE NINGUN MARCAJE");
+    }
+    return ok;
+  }
+
   public void limpiarCampos() {
-    listaTipos = new ArrayList();
+    listaTipos = tipoGestionDao.buscarTodo();
     listaDonde = new ArrayList();
     listaAsuntos = new ArrayList();
     listaTipoSujetos = new ArrayList();
@@ -157,7 +272,6 @@ public class GestionBean implements Serializable {
     listaSujetos = new ArrayList();
     listaEstatus = new ArrayList();
     gestion = "";
-    listaTipos = tipoGestionDao.buscarTodo();
     RequestContext.getCurrentInstance().update("formNuevaGestion");
   }
 
@@ -268,7 +382,7 @@ public class GestionBean implements Serializable {
   public void setGestion(String gestion) {
     this.gestion = gestion;
   }
-  
+
   public List<DescripcionGestion> getListaDescripciones() {
     return listaDescripciones;
   }
@@ -284,5 +398,5 @@ public class GestionBean implements Serializable {
   public void setDescripcionSeleccionada(DescripcionGestion descripcionSeleccionada) {
     this.descripcionSeleccionada = descripcionSeleccionada;
   }
-  
+
 }

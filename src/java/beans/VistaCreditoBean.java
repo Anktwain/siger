@@ -5,34 +5,9 @@
  */
 package beans;
 
-import dao.ContactoDAO;
-import dao.ConvenioPagoDAO;
-import dao.CreditoDAO;
-import dao.DireccionDAO;
-import dao.EmailDAO;
-import dao.GestionDAO;
-import dao.GestorDAO;
-import dao.HistorialDAO;
-import dao.TelefonoDAO;
-import dto.Contacto;
-import dto.ConvenioPago;
-import dto.Credito;
-import dto.Direccion;
-import dto.Email;
-import dto.Gestion;
-import dto.Gestor;
-import dto.Historial;
-import dto.Telefono;
-import dto.Usuario;
-import impl.ContactoIMPL;
-import impl.ConvenioPagoIMPL;
-import impl.CreditoIMPL;
-import impl.DireccionIMPL;
-import impl.EmailIMPL;
-import impl.GestionIMPL;
-import impl.GestorIMPL;
-import impl.HistorialIMPL;
-import impl.TelefonoIMPL;
+import dao.*;
+import dto.*;
+import impl.*;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -77,8 +52,9 @@ public class VistaCreditoBean implements Serializable {
   private String fechaFin;
   private String fup;
   private String fvp;
-  private String mensualidad;
-  private String saldoVencido;
+  private float mensualidad;
+  private int mesesVencidos;
+  private float saldoVencido;
   private Credito creditoActualCred;
   private Credito creditoActual;
   private Gestor gestorSeleccionado;
@@ -167,8 +143,9 @@ public class VistaCreditoBean implements Serializable {
       fvp = "";
     } catch (Exception e) {
     }
-    mensualidad = creditoActual.getMensualidad().toString();
-    saldoVencido = "";
+    mensualidad = creditoActual.getMensualidad();
+    mesesVencidos = 3;
+    saldoVencido = mensualidad * mesesVencidos;
     // OBTENEMOS LA LISTA DE GESTIONES PREVIAS
     obtenerGestionesAnteriores();
     // LOS ADMINISTRADORES NO PUEDEN REALIZAR CONVENIOS DE PAGO
@@ -211,14 +188,12 @@ public class VistaCreditoBean implements Serializable {
   // METODO QUE REASIGNARA AL GESTOR
   public void reasignarGestor() {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    // FINALIZAMOS LOS CONVENIOS EN CURSO DEL GESTOR ACTUAL PARA ESTE CREDITO
-    List<ConvenioPago> convenios = convenioPagoDao.buscarConveniosEnCursoCredito(creditoActual.getIdCredito());
+    // FINALIZAMOS EL CONVENIO EN CURSO DEL GESTOR ACTUAL PARA ESTE CREDITO
+    ConvenioPago convenio = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
     boolean ok = true;
-    for (int i = 0; i < convenios.size(); i++) {
-      ConvenioPago c = convenios.get(i);
-      c.setEstatus(Convenios.FINALIZADO);
-      ok = convenioPagoDao.editar(c);
-    }
+    ConvenioPago c = convenio;
+    c.setEstatus(Convenios.FINALIZADO);
+    ok = convenioPagoDao.editar(c);
     // CAMBIAMOS EL GESTOR ASIGNADO ACTUALMENTE
     Credito cred = creditoActual;
     Gestor nuevoGestor = gestorDao.buscar(gestorSeleccionado.getIdGestor());
@@ -375,19 +350,19 @@ public class VistaCreditoBean implements Serializable {
     this.fvp = fvp;
   }
 
-  public String getMensualidad() {
+  public float getMensualidad() {
     return mensualidad;
   }
 
-  public void setMensualidad(String mensualidad) {
+  public void setMensualidad(float mensualidad) {
     this.mensualidad = mensualidad;
   }
 
-  public String getSaldoVencido() {
+  public float getSaldoVencido() {
     return saldoVencido;
   }
 
-  public void setSaldoVencido(String saldoVencido) {
+  public void setSaldoVencido(float saldoVencido) {
     this.saldoVencido = saldoVencido;
   }
 
@@ -493,6 +468,14 @@ public class VistaCreditoBean implements Serializable {
 
   public void setHistorial(List<Historial> historial) {
     this.historial = historial;
+  }
+
+  public int getMesesVencidos() {
+    return mesesVencidos;
+  }
+
+  public void setMesesVencidos(int mesesVencidos) {
+    this.mesesVencidos = mesesVencidos;
   }
 
 }

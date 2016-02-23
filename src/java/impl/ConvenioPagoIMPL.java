@@ -79,18 +79,18 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
   }
 
   @Override
-  public List<ConvenioPago> buscarConveniosEnCursoCredito(int idCredito) {
+  public ConvenioPago buscarConvenioEnCursoCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<ConvenioPago> convenios;
+    ConvenioPago convenio;
     try {
-      convenios = sesion.createSQLQuery("SELECT * FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus != " + Convenios.FINALIZADO + ";").addEntity(ConvenioPago.class).list();
+      convenio = (ConvenioPago) sesion.createSQLQuery("SELECT * FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus != " + Convenios.FINALIZADO + ";").addEntity(ConvenioPago.class).uniqueResult();
     } catch (HibernateException he) {
-      convenios = null;
+      convenio = null;
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
-    return convenios;
+    return convenio;
   }
 
   @Override
@@ -111,16 +111,16 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
   @Override
   public Number calcularSaldoPendiente(int idConvenio) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Number pagos, convenio, saldo;
-    String consulta = "SELECT SUM(monto) FROM pago WHERE id_convenio_pago = " + idConvenio + ";";
+    Number cantidadPromesas, saldoConvenio, saldo;
+    String consulta = "SELECT SUM(cantidad_prometida) FROM promesa_pago WHERE id_convenio_pago = " + idConvenio + ";";
     String consulta2 = "SELECT saldo_negociado FROM convenio_pago WHERE id_convenio_pago = " + idConvenio + ";";
     try {
-      pagos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
-      convenio = (Number) sesion.createSQLQuery(consulta2).uniqueResult();
-      if ((pagos == null)) {
-        saldo = convenio;
+      cantidadPromesas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+      saldoConvenio = (Number) sesion.createSQLQuery(consulta2).uniqueResult();
+      if (cantidadPromesas == null) {
+        saldo = saldoConvenio;
       } else {
-        saldo = (convenio.doubleValue() - pagos.doubleValue());
+        saldo = (saldoConvenio.doubleValue() - cantidadPromesas.doubleValue());
       }
       Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {

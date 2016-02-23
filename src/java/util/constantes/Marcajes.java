@@ -25,5 +25,7 @@ public interface Marcajes {
   
   public static final int ESPERA_INFORMACION_BANCO = 6;
   
-  public static final int WHATSAPP = 7;
+  public static final int COBRO_EN_CELULAR = 7;
+  
+  public static final int WHATSAPP = 8;
 }

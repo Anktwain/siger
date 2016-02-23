@@ -12,4 +12,10 @@ package util.constantes;
 public interface TipoCreditos {
   
   public static final int LINEA_TELEFONICA = 1;
+  
+  public static final int HIPOTECARIO = 2;
+  
+  public static final int AUTOMOTRIZ = 3;
+  
+  public static final int FIANZAS = 4;
 }

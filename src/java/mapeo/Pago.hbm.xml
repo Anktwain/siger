@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 22/02/2016 10:19:55 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Pago" optimistic-lock="version" table="pago">
-    <id name="idPago" type="int">
+    <id name="idPago" type="java.lang.Integer">
       <column name="id_pago"/>
-      <generator class="assigned"/>
+      <generator class="identity"/>
     </id>
-    <many-to-one class="dto.ConvenioPago" fetch="select" name="convenioPago">
-      <column name="id_convenio_pago" not-null="true"/>
-    </many-to-one>
     <many-to-one class="dto.Gestor" fetch="select" name="gestor">
       <column name="id_gestor" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.PromesaPago" fetch="select" name="promesaPago">
+      <column name="id_promesa_pago" not-null="true"/>
     </many-to-one>
     <many-to-one class="dto.Quincena" fetch="select" name="quincena">
       <column name="id_quincena" not-null="true"/>
     </many-to-one>
-    <property name="idPromesaPago" type="int">
-      <column name="id_promesa_pago" not-null="true"/>
-    </property>
     <property name="fechaDeposito" type="date">
       <column length="10" name="fecha_deposito" not-null="true"/>
     </property>
@@ -38,7 +35,7 @@
       <column length="200" name="nombre_comprobante" not-null="true" unique="true"/>
     </property>
     <property name="revisor" type="string">
-      <column length="50" name="revisor"/>
+      <column length="50" name="revisor" not-null="true"/>
     </property>
     <property name="observaciones" type="string">
       <column length="200" name="observaciones"/>

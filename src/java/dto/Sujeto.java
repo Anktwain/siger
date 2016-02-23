@@ -1,5 +1,5 @@
 package dto;
-// Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1
+// Generated 22/02/2016 10:19:54 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -31,13 +31,11 @@ public class Sujeto  implements java.io.Serializable {
         this.nombreRazonSocial = nombreRazonSocial;
         this.eliminado = eliminado;
     }
-    
     public Sujeto(String nombreRazonSocial, String rfc, int eliminado) {
         this.nombreRazonSocial = nombreRazonSocial;
         this.rfc = rfc;
         this.eliminado = eliminado;
     }
-    
     public Sujeto(String nombreRazonSocial, String rfc, int eliminado, Set telefonos, Set direccions, Set contactos, Set institucions, Set despachos, Set deudors, Set emails) {
        this.nombreRazonSocial = nombreRazonSocial;
        this.rfc = rfc;

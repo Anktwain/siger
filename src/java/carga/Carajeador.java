@@ -146,7 +146,7 @@ public class Carajeador {
         sujeto = sujetoDao.insert(session, new Sujeto(f.getNombre(), f.getRfc(), 0));
 
         /* Nuevo deudor asociado al sujeto */
-        deudor = deudorDao.insert(session, new Deudor(sujeto, f.getIdCliente(), null, null, null, null));
+        deudor = deudorDao.insert(session, new Deudor(sujeto, f.getIdCliente(), null, null, null, null, null));
 
         /* Asigna todos los emails encontrados para ese sujeto */
         for (String email : f.getCorreos()) {

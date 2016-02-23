@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 9/02/2016 02:44:04 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 22/02/2016 10:19:55 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Gestion" optimistic-lock="version" table="gestion">
     <id name="idGestion" type="java.lang.Integer">
@@ -23,13 +23,13 @@
       <column name="id_estatus_informativo" not-null="true"/>
     </many-to-one>
     <many-to-one class="dto.QuienGestion" fetch="select" name="quienGestion">
-      <column name="quien_gestion" not-null="true"/>
+      <column name="id_quien_gestion" not-null="true"/>
     </many-to-one>
     <many-to-one class="dto.TipoGestion" fetch="select" name="tipoGestion">
       <column name="id_tipo_gestion" not-null="true"/>
     </many-to-one>
     <many-to-one class="dto.TipoQuienGestion" fetch="select" name="tipoQuienGestion">
-      <column name="tipo_quien_gestion" not-null="true"/>
+      <column name="id_tipo_quien_gestion" not-null="true"/>
     </many-to-one>
     <many-to-one class="dto.Usuario" fetch="select" name="usuario">
       <column name="id_usuario" not-null="true"/>

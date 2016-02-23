@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -110,6 +111,7 @@ public class GestionesBean implements Serializable {
 
   // METODO QUE BUSCA TODAS LAS GESTIONES SEGUN PARAMETROS INGRESADOS
   public void buscar() {
+    if (validarFechas()) {
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     fi = df.format(fechaInicio) + " 00:00:00";
     ff = df.format(fechaFin) + " 23:59:59";
@@ -148,6 +150,27 @@ public class GestionesBean implements Serializable {
       permitirExport = true;
     }
     RequestContext.getCurrentInstance().update("formGestionesAdmin");
+    }
+  }
+
+  // METODO QUE VALIDA LAS FECHAS
+  public boolean validarFechas() {
+    boolean ok;
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    Date fechaActual = new Date();
+    if(fechaInicio.after(fechaActual)){
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser mayor a la actual."));
+      ok = false;
+    }
+    if(fechaFin.after(fechaActual)){
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser mayor a la actual."));
+      ok = false;
+    }
+    if(fechaFin.before(fechaInicio)){
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la fecha inicial."));
+      ok = false;
+    }
+    return true;
   }
 
 // ***********************************************************************************************************************

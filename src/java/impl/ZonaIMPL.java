@@ -88,6 +88,27 @@ public class ZonaIMPL implements ZonaDAO {
     return gestores;
   }
 
+  @Override
+  public boolean eliminar(Zona zona) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
+    try {
+      sesion.delete(zona);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      he.printStackTrace();
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

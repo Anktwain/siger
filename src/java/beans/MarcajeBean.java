@@ -10,6 +10,7 @@ import dto.*;
 import impl.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
@@ -17,6 +18,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.CrearArchivoTexto;
+import util.constantes.Directorios;
 import util.constantes.Marcajes;
 
 /**
@@ -26,18 +29,21 @@ import util.constantes.Marcajes;
 @ManagedBean(name = "marcajeBean")
 @ViewScoped
 public class MarcajeBean implements Serializable {
-  
+
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
-  
+
   // VARIABLES DE CLASE
+  private Date fechaInicioImpresiones;
+  private Date fechaFinImpresiones;
   private List<Credito> listaSepomex;
   private List<Credito> listaTelegrama;
   private List<Credito> listaVisita;
   private List<Credito> listaCorreo;
   private List<Credito> listaLocalizacion;
   private List<Credito> listaInformacion;
+  private List<Credito> listaCobroCelular;
   private List<Credito> listaWhatsapp;
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
@@ -54,6 +60,7 @@ public class MarcajeBean implements Serializable {
     listaCorreo = new ArrayList();
     listaLocalizacion = new ArrayList();
     listaInformacion = new ArrayList();
+    listaCobroCelular = new ArrayList();
     listaWhatsapp = new ArrayList();
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
@@ -62,7 +69,7 @@ public class MarcajeBean implements Serializable {
     obtenerListas();
   }
 
-  // METODO QUE OBTIENE LAS LISTAS CON LOS CREDITO MARCADOS
+  // METODO QUE OBTIENE LAS LISTAS CON LOS CREDITOS MARCADOS
   public final void obtenerListas() {
     listaSepomex = creditoDao.buscarPorMarcaje(Marcajes.CORREO_SEPOMEX);
     listaTelegrama = creditoDao.buscarPorMarcaje(Marcajes.TELEGRAMA);
@@ -70,10 +77,11 @@ public class MarcajeBean implements Serializable {
     listaCorreo = creditoDao.buscarPorMarcaje(Marcajes.CORREO_ELECTRONICO);
     listaLocalizacion = creditoDao.buscarPorMarcaje(Marcajes.LOCALIZACION);
     listaInformacion = creditoDao.buscarPorMarcaje(Marcajes.ESPERA_INFORMACION_BANCO);
+    listaCobroCelular = creditoDao.buscarPorMarcaje(Marcajes.COBRO_EN_CELULAR);
     listaWhatsapp = creditoDao.buscarPorMarcaje(Marcajes.WHATSAPP);
   }
 
-  // METODO QUE QUITA EL MARCAJE A LOS CREDITOS ENVIADOS
+  // METODO QUE QUITA EL MARCAJE A LOS CREDITOS DE CORREO ORDINARIO
   public void quitarMarcaje() {
     seleccionadoSepomex.setMarcaje(Marcajes.SIN_MARCAJE);
     boolean ok = creditoDao.editar(seleccionadoSepomex);
@@ -93,6 +101,26 @@ public class MarcajeBean implements Serializable {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo realizar la operacion. Contacte al equipo de sistemas."));
     }
     RequestContext.getCurrentInstance().execute("PF('dlgConfirmarDevolucionSepomex').hide;");
+  }
+
+  // METODO QUE ESTABLECE UN PERIODO DE IMPRESIONES
+  public void establecerPeriodo() {
+    contexto = FacesContext.getCurrentInstance();
+    Date fechaActual = new Date();
+    if (fechaInicioImpresiones.before(fechaActual)) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser menor a la actual."));
+    } else if (fechaFinImpresiones.before(fechaInicioImpresiones)) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la inicial."));
+    } else {
+      String periodo = fechaInicioImpresiones.toString() + ";" + fechaFinImpresiones.toString();
+      boolean ok = CrearArchivoTexto.crearArchivo(periodo, Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES, "periodoActual.txt");
+      if(ok){
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se establecio el periodo de impresion."));
+      }
+      else{
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se establecio el periodo de impresion. Contacte al equipo de sistemas."));
+      }
+    }
   }
 
   // GETTER & SETTER
@@ -158,6 +186,30 @@ public class MarcajeBean implements Serializable {
 
   public void setSeleccionadoSepomex(Credito seleccionadoSepomex) {
     this.seleccionadoSepomex = seleccionadoSepomex;
+  }
+
+  public Date getFechaInicioImpresiones() {
+    return fechaInicioImpresiones;
+  }
+
+  public void setFechaInicioImpresiones(Date fechaInicioImpresiones) {
+    this.fechaInicioImpresiones = fechaInicioImpresiones;
+  }
+
+  public Date getFechaFinImpresiones() {
+    return fechaFinImpresiones;
+  }
+
+  public void setFechaFinImpresiones(Date fechaFinImpresiones) {
+    this.fechaFinImpresiones = fechaFinImpresiones;
+  }
+
+  public List<Credito> getListaCobroCelular() {
+    return listaCobroCelular;
+  }
+
+  public void setListaCobroCelular(List<Credito> listaCobroCelular) {
+    this.listaCobroCelular = listaCobroCelular;
   }
 
 }

@@ -51,6 +51,22 @@ public class TipoGestionIMPL implements TipoGestionDAO {
     return tipo;
   }
 
+  @Override
+  public List<TipoGestion> buscarParaConvenio() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<TipoGestion> tipos;
+    try {
+      tipos = sesion.createSQLQuery("SELECT * FROM tipo_gestion WHERE id_tipo_gestion NOT IN (4, 5);").addEntity(TipoGestion.class).list();
+    } catch (HibernateException he) {
+      tipos = null;
+      Logs.log.error("No se pudo hacer la consulta");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return tipos;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

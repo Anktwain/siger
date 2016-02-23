@@ -16,7 +16,9 @@ import java.util.List;
  */
 public interface RegionDAO {
   public Region insertar(Region region);
+  public List<Region> buscarPorZona(int idZona);
   public List<Integer> buscarMunicipiosRegion(int idDespacho);
   public List<Municipio> buscarMunicipiosZona(int idZona);
   public List<EstadoRepublica> buscarEstadosZona(int idZona);
+  public boolean eliminar(Region region);
 }
