@@ -5,11 +5,21 @@
  */
 package beans;
 
-import dao.*;
-import dto.*;
-import impl.*;
+
+import dao.CreditoDAO;
+import dao.EstatusInformativoDAO;
+import dao.GestionDAO;
+import dto.Credito;
+import dto.Gestion;
+import impl.CreditoIMPL;
+import impl.EstatusInformativoIMPL;
+import impl.GestionIMPL;
+import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
@@ -18,7 +28,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
-import util.CrearArchivoTexto;
+import util.ManejadorArchivosDeTexto;
 import util.constantes.Directorios;
 import util.constantes.Marcajes;
 
@@ -28,15 +38,20 @@ import util.constantes.Marcajes;
  */
 @ManagedBean(name = "marcajeBean")
 @ViewScoped
-public class MarcajeBean implements Serializable {
+public class MarcajesBean implements Serializable {
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
   // VARIABLES DE CLASE
+  private String tipoImpresionSeleccionado;
+  private String periodoActivoSepomex;
+  private String periodoActivoVisitas;
+  private String periodoActivoEmail;
   private Date fechaInicioImpresiones;
   private Date fechaFinImpresiones;
+  private List<String> tipoImpresion;
   private List<Credito> listaSepomex;
   private List<Credito> listaTelegrama;
   private List<Credito> listaVisita;
@@ -52,8 +67,9 @@ public class MarcajeBean implements Serializable {
   private FacesContext contexto;
 
   // CONSTRUCTOR
-  public MarcajeBean() {
+  public MarcajesBean() {
     contexto = FacesContext.getCurrentInstance();
+    tipoImpresion = new ArrayList();
     listaSepomex = new ArrayList();
     listaTelegrama = new ArrayList();
     listaVisita = new ArrayList();
@@ -67,10 +83,12 @@ public class MarcajeBean implements Serializable {
     estatusInformativoDao = new EstatusInformativoIMPL();
     seleccionadoSepomex = new Credito();
     obtenerListas();
+    obtenerPeriodos();
   }
 
   // METODO QUE OBTIENE LAS LISTAS CON LOS CREDITOS MARCADOS
   public final void obtenerListas() {
+    tipoImpresion = Arrays.asList("CORREO ORDINARIO", "VISITA DOMICILIARIA", "CORREO ELECTRONICO");
     listaSepomex = creditoDao.buscarPorMarcaje(Marcajes.CORREO_SEPOMEX);
     listaTelegrama = creditoDao.buscarPorMarcaje(Marcajes.TELEGRAMA);
     listaVisita = creditoDao.buscarPorMarcaje(Marcajes.VISITA_DOMICILIARIA);
@@ -79,6 +97,64 @@ public class MarcajeBean implements Serializable {
     listaInformacion = creditoDao.buscarPorMarcaje(Marcajes.ESPERA_INFORMACION_BANCO);
     listaCobroCelular = creditoDao.buscarPorMarcaje(Marcajes.COBRO_EN_CELULAR);
     listaWhatsapp = creditoDao.buscarPorMarcaje(Marcajes.WHATSAPP);
+  }
+
+  // METODO QUE BUSCA LOS PERIODOS DE IMPRESION
+  public final void obtenerPeriodos() {
+    // CORREO SEPOMEX
+    try {
+      String cadena = ManejadorArchivosDeTexto.leerArchivo(Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES, "CORREO_ORDINARIO.txt");
+      if (!cadena.isEmpty()) {
+        String[] arreglo = cadena.split(";");
+        String df = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(df);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(Long.parseLong(arreglo[0]));
+        String f1 = sdf.format(calendar.getTime());
+        calendar.setTimeInMillis(Long.parseLong(arreglo[1]));
+        String f2 = sdf.format(calendar.getTime());
+        periodoActivoSepomex = f1 + " al " + f2;
+      }
+    } catch (IOException ioe) {
+      System.out.println(ioe);
+      periodoActivoSepomex = "No existe un periodo activo";
+    }
+    // VISITA DOMICILIARIA
+    try {
+      String cadena = ManejadorArchivosDeTexto.leerArchivo(Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES, "VISITA_DOMICILIARIA.txt");
+      if (!cadena.isEmpty()) {
+        String[] arreglo = cadena.split(";");
+        String df = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(df);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(Long.parseLong(arreglo[0]));
+        String f1 = sdf.format(calendar.getTime());
+        calendar.setTimeInMillis(Long.parseLong(arreglo[1]));
+        String f2 = sdf.format(calendar.getTime());
+        periodoActivoVisitas = f1 + " al " + f2;
+      }
+    } catch (IOException ioe) {
+      System.out.println(ioe);
+      periodoActivoVisitas = "No existe un periodo activo";
+    }
+    // CORREO ELECTRONICO
+    try {
+      String cadena = ManejadorArchivosDeTexto.leerArchivo(Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES, "CORREO_ELECTRONICO.txt");
+      if (!cadena.isEmpty()) {
+        String[] arreglo = cadena.split(";");
+        String df = "dd/MM/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(df);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(Long.parseLong(arreglo[0]));
+        String f1 = sdf.format(calendar.getTime());
+        calendar.setTimeInMillis(Long.parseLong(arreglo[1]));
+        String f2 = sdf.format(calendar.getTime());
+        periodoActivoEmail = f1 + " al " + f2;
+      }
+    } catch (IOException ioe) {
+      System.out.println(ioe);
+      periodoActivoEmail = "No existe un periodo activo";
+    }
   }
 
   // METODO QUE QUITA EL MARCAJE A LOS CREDITOS DE CORREO ORDINARIO
@@ -108,19 +184,20 @@ public class MarcajeBean implements Serializable {
     contexto = FacesContext.getCurrentInstance();
     Date fechaActual = new Date();
     if (fechaInicioImpresiones.before(fechaActual)) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser menor a la actual."));
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser menor o igual a la actual."));
     } else if (fechaFinImpresiones.before(fechaInicioImpresiones)) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la inicial."));
     } else {
-      String periodo = fechaInicioImpresiones.toString() + ";" + fechaFinImpresiones.toString();
-      boolean ok = CrearArchivoTexto.crearArchivo(periodo, Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES, "periodoActual.txt");
-      if(ok){
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se establecio el periodo de impresion."));
-      }
-      else{
+      String periodo = fechaInicioImpresiones.getTime() + ";" + fechaFinImpresiones.getTime() + ";" + tipoImpresionSeleccionado;
+      boolean ok = ManejadorArchivosDeTexto.crearArchivo(periodo, Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES, tipoImpresionSeleccionado.replace(" ", "_") + ".txt");
+      if (ok) {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se establecio el periodo de impresion."));
+      } else {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se establecio el periodo de impresion. Contacte al equipo de sistemas."));
       }
     }
+    obtenerPeriodos();
+    RequestContext.getCurrentInstance().update("periodosActivosForm");
   }
 
   // GETTER & SETTER
@@ -210,6 +287,46 @@ public class MarcajeBean implements Serializable {
 
   public void setListaCobroCelular(List<Credito> listaCobroCelular) {
     this.listaCobroCelular = listaCobroCelular;
+  }
+
+  public List<String> getTipoImpresion() {
+    return tipoImpresion;
+  }
+
+  public void setTipoImpresion(List<String> tipoImpresion) {
+    this.tipoImpresion = tipoImpresion;
+  }
+
+  public String getTipoImpresionSeleccionado() {
+    return tipoImpresionSeleccionado;
+  }
+
+  public void setTipoImpresionSeleccionado(String tipoImpresionSeleccionado) {
+    this.tipoImpresionSeleccionado = tipoImpresionSeleccionado;
+  }
+
+  public String getPeriodoActivoSepomex() {
+    return periodoActivoSepomex;
+  }
+
+  public void setPeriodoActivoSepomex(String periodoActivoSepomex) {
+    this.periodoActivoSepomex = periodoActivoSepomex;
+  }
+
+  public String getPeriodoActivoVisitas() {
+    return periodoActivoVisitas;
+  }
+
+  public void setPeriodoActivoVisitas(String periodoActivoVisitas) {
+    this.periodoActivoVisitas = periodoActivoVisitas;
+  }
+
+  public String getPeriodoActivoEmail() {
+    return periodoActivoEmail;
+  }
+
+  public void setPeriodoActivoEmail(String periodoActivoEmail) {
+    this.periodoActivoEmail = periodoActivoEmail;
   }
 
 }

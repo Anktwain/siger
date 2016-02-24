@@ -264,7 +264,6 @@ public class VistaDeudores implements Serializable {
         setTxtNombreContactoDisabled(true);
         setTxtRfcContactoDisabled(true);
         setTxtObservacionesDisabled(true);
-        System.out.println("Deudor actual: " + deudorActual.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
       }
     }
   }

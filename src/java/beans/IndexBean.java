@@ -105,15 +105,6 @@ public class IndexBean implements Serializable {
             && (password.length() <= Constantes.longPassword) && (!password.matches("[.*\\s*]*"));
   }
 
-//    public static void main(String args[]) {
-//        UsuarioDAO usuariosDAO = new UsuarioIMPL();
-//        List<Usuario> listaUsuario = usuariosDAO.buscarTodo();
-//        System.out.println("Desplegando lista de usuarios traidos de la base de datos:");
-//        for (Usuario usr : listaUsuario) {
-//            System.out.println(usr.toString());
-//        }
-//        System.out.println("Despliegue terminado.");
-//    }
   /**
    * Solicita una búsqueda con las cadenas de nombre de usuario y de password y
    * devuelve el objeto {@code Usuario} al que correspondan en su caso, o

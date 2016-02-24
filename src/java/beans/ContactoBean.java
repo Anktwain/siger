@@ -59,10 +59,8 @@ public class ContactoBean implements Serializable {
       Logs.log.error("El método ContactoBean.insertar(deudor) recibe un deudor null");
       return null;
     } else {
-      System.out.println("Deudor actual(ContactoBean.insertar): " + deudor.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
       // Crea el sujeto asociado al Contacto
       sujeto = sujetoBean.insertar();
-      System.out.println("Deudor actual(ContactoBean.insertar), después de insertar sujeto contacto: " + deudor.getSujeto().getNombreRazonSocial()); // BÓRRAME...............
       // Verifica que el sujeto se haya creado correctamente
       if (sujeto == null) {
         Logs.log.error("El método ContactoBean.insertar(deudor) recibe un sujeto null");

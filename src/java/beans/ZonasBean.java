@@ -5,9 +5,22 @@
  */
 package beans;
 
-import dao.*;
-import dto.*;
-import impl.*;
+
+import dao.EstadoRepublicaDAO;
+import dao.GestorDAO;
+import dao.MunicipioDAO;
+import dao.RegionDAO;
+import dao.ZonaDAO;
+import dto.EstadoRepublica;
+import dto.Gestor;
+import dto.Municipio;
+import dto.Region;
+import dto.Zona;
+import impl.EstadoRepublicaIMPL;
+import impl.GestorIMPL;
+import impl.MunicipioIMPL;
+import impl.RegionIMPL;
+import impl.ZonaIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +123,6 @@ public class ZonasBean implements Serializable {
       z.setNombre(nombreZona);
       z = zonaDao.insertar(z);
       if (z != null) {
-        System.out.println("CANTIDAD DE MUNICIPIOS PARA ESTA ZONA: " + municipiosSeleccionados.size());
         for (int i = 0; i < (municipiosSeleccionados.size()); i++) {
           Municipio m = municipioDao.buscarPorId(municipiosSeleccionados.get(i).getIdMunicipio());
           Region r = new Region();
@@ -119,7 +131,6 @@ public class ZonasBean implements Serializable {
           r.setZona(z);
           r = regionDao.insertar(r);
           if (r != null) {
-            System.out.println("SE CREO REGION PARA EL MUNICIPIO " + r.getMunicipio().getNombre() + " DEL ESTADO DE " + r.getEstadoRepublica().getNombre());
             ok = true;
           } else {
             ok = false;

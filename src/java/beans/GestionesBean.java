@@ -5,9 +5,22 @@
  */
 package beans;
 
-import dao.*;
-import dto.*;
-import impl.*;
+
+import dao.GestionDAO;
+import dao.GestorDAO;
+import dao.InstitucionDAO;
+import dao.ProductoDAO;
+import dao.TipoGestionDAO;
+import dto.Gestion;
+import dto.Gestor;
+import dto.Institucion;
+import dto.Producto;
+import dto.TipoGestion;
+import impl.GestionIMPL;
+import impl.GestorIMPL;
+import impl.InstitucionIMPL;
+import impl.ProductoIMPL;
+import impl.TipoGestionIMPL;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -141,7 +154,6 @@ public class GestionesBean implements Serializable {
       nombreArchivo = nombreArchivo + "_" + productoSeleccionado.getNombre();
     }
     consulta = consulta + ";";
-    System.out.println(consulta);
     listaGestiones = gestionDao.busquedaReporteGestiones(consulta);
     habilitaTabla = true;
     if (listaGestiones.isEmpty()) {

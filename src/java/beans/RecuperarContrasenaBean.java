@@ -92,7 +92,6 @@ public class RecuperarContrasenaBean implements Serializable {
             mensaje.setText(generarMensaje(), "ISO-8859-1", "html");
 
             // Se envía el correo
-            System.out.println("... Se envía el correo a " + usuario.getCorreo());
             Transport t = sesion.getTransport("smtp");
             t.connect("servicios.cofradia@gmail.com", "@Cofradia&");
             t.sendMessage(mensaje, mensaje.getAllRecipients());

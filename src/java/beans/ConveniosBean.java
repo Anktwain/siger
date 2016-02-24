@@ -5,10 +5,29 @@
  */
 package beans;
 
-import dao.*;
-import dto.*;
-import impl.*;
-import java.io.*;
+
+import dao.ConvenioPagoDAO;
+import dao.GestorDAO;
+import dao.PagoDAO;
+import dao.PromesaPagoDAO;
+import dao.QuincenaDAO;
+import dto.ConvenioPago;
+import dto.Credito;
+import dto.Gestor;
+import dto.Pago;
+import dto.PromesaPago;
+import dto.Quincena;
+import dto.TipoGestion;
+import impl.ConvenioPagoIMPL;
+import impl.GestorIMPL;
+import impl.PagoIMPL;
+import impl.PromesaPagoIMPL;
+import impl.QuincenaIMPL;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

@@ -186,7 +186,6 @@ public class CreditoIMPL implements CreditoDAO {
 
   @Override
   public List<String> barraBusquedaAdmin(String valor, int idDespacho) {
-    System.out.println("BARRA BUSQUEDA ADMIN");
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<String> resultados = new ArrayList();
     List<Object[]> c;
@@ -209,7 +208,6 @@ public class CreditoIMPL implements CreditoDAO {
 
   @Override
   public List<String> barraBusquedaGestor(String valor, int idUsuario) {
-    System.out.println("BARRA BUSQUEDA GESTOR");
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<String> resultados = new ArrayList();
     List<Object[]> c;

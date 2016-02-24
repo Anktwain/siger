@@ -5,8 +5,13 @@
  */
 package impl;
 
-import dao.*;
-import dto.*;
+
+import dao.EstadoRepublicaDAO;
+import dao.MunicipioDAO;
+import dao.RegionDAO;
+import dto.EstadoRepublica;
+import dto.Municipio;
+import dto.Region;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;

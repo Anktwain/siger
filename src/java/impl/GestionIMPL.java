@@ -5,8 +5,13 @@
  */
 package impl;
 
-import dao.*;
-import dto.*;
+
+import dao.DondeGestionDAO;
+import dao.GestionDAO;
+import dao.QuienGestionDAO;
+import dao.TipoQuienGestionDAO;
+import dto.DescripcionGestion;
+import dto.Gestion;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -151,11 +156,10 @@ public class GestionIMPL implements GestionDAO {
     return gestion;
   }
   
-  
-
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();
     }
   }
+  
 }

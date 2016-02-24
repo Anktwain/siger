@@ -5,9 +5,34 @@
  */
 package beans;
 
-import dao.*;
-import dto.*;
-import impl.*;
+
+import dao.ContactoDAO;
+import dao.ConvenioPagoDAO;
+import dao.CreditoDAO;
+import dao.DireccionDAO;
+import dao.EmailDAO;
+import dao.GestionDAO;
+import dao.GestorDAO;
+import dao.HistorialDAO;
+import dao.TelefonoDAO;
+import dto.Contacto;
+import dto.ConvenioPago;
+import dto.Credito;
+import dto.Direccion;
+import dto.Email;
+import dto.Gestion;
+import dto.Gestor;
+import dto.Historial;
+import dto.Telefono;
+import impl.ContactoIMPL;
+import impl.ConvenioPagoIMPL;
+import impl.CreditoIMPL;
+import impl.DireccionIMPL;
+import impl.EmailIMPL;
+import impl.GestionIMPL;
+import impl.GestorIMPL;
+import impl.HistorialIMPL;
+import impl.TelefonoIMPL;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

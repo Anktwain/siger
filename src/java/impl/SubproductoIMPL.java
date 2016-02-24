@@ -114,7 +114,6 @@ public class SubproductoIMPL implements SubproductoDAO {
     Transaction tx = sesion.beginTransaction();
     Subproducto subproducto;
     try {
-      System.out.println("Busca: " + nombreSubproducto);
       subproducto = (Subproducto) sesion.createSQLQuery("select * from subproducto where nombre = '" + nombreSubproducto + "';").addEntity(Subproducto.class).uniqueResult();
     } catch (HibernateException he) {
       subproducto = null;

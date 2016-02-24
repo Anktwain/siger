@@ -20,7 +20,6 @@ public class Busqueda {
     String coloniaSinAsentamiento;
  //   List<String> resultados = new ArrayList<>();
 
-    System.out.println("Para la colonia " + coloniaABuscar);
 //    List<String> colonias = FuncionLike.buscarLikeLevenshtein(coincidencias, coloniaABuscar, 4);
 //
 //    if (colonias != null) {
@@ -65,7 +64,6 @@ public class Busqueda {
     for (String coincidencia : coincidencias) {
       //coincidencia{id_colonia;id_municipio;tipo;nombre;codigo_postal}
       coloniaDivididaEnPalabras = coincidencia.split(";"); // punto y coma como elemento divisor
-      System.out.println("buscarExacto:Compara: " + colonia + " con: " + coloniaDivididaEnPalabras[3].toLowerCase());
       if (colonia.equals(coloniaDivididaEnPalabras[3].toLowerCase())) {
         resultado.add(coincidencia);
         return resultado;
@@ -77,7 +75,6 @@ public class Busqueda {
   private static List<String> buscarLevenshtein(List<String> coincidencias, String colonia) {
     for (String coincidencia : coincidencias) {
       coloniaDivididaEnPalabras = coincidencia.split(";");
-      System.out.println("buscarLevenshtein:Compara: " + colonia + " con: " + coloniaDivididaEnPalabras[3].toLowerCase());
       if (Levenshtein.computeLevenshteinDistance(colonia, coloniaDivididaEnPalabras[3].toLowerCase()) < 4) {
         resultado.add(coincidencia);
         return resultado;
@@ -90,7 +87,6 @@ public class Busqueda {
     for (String coincidencia : coincidencias) {
       coloniaDivididaEnPalabras = coincidencia.split(";");
       Pattern patron = Pattern.compile(".*" + colonia + ".*"); // formamos expresión regular
-      System.out.println("buscarLike:Compara: " + colonia + " con: " + coloniaDivididaEnPalabras[3].toLowerCase());
       if (patron.matcher(coloniaDivididaEnPalabras[3].toLowerCase()).matches()) {
         resultado.add(coincidencia);
       }

@@ -5,11 +5,38 @@
  */
 package beans;
 
-import dao.*;
-import dto.*;
-import impl.*;
+
+import dao.AsuntoGestionDAO;
+import dao.CreditoDAO;
+import dao.DescripcionGestionDAO;
+import dao.DondeGestionDAO;
+import dao.EstatusInformativoDAO;
+import dao.GestionDAO;
+import dao.QuienGestionDAO;
+import dao.TipoGestionDAO;
+import dao.TipoQuienGestionDAO;
+import dto.AsuntoGestion;
+import dto.Credito;
+import dto.DescripcionGestion;
+import dto.DondeGestion;
+import dto.EstatusInformativo;
+import dto.Gestion;
+import dto.QuienGestion;
+import dto.TipoGestion;
+import dto.TipoQuienGestion;
+import impl.AsuntoGestionIMPL;
+import impl.CreditoIMPL;
+import impl.DescripcionGestionIMPL;
+import impl.DondeGestionIMPL;
+import impl.EstatusInformativoIMPL;
+import impl.GestionIMPL;
+import impl.QuienGestionIMPL;
+import impl.TipoGestionIMPL;
+import impl.TipoQuienGestionIMPL;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -210,8 +237,6 @@ public class GestionBean implements Serializable {
         }
         break;
       // PROXIMAMENTE CASO WHATSAPP
-      default:
-        System.out.println("NO APAGA NINGUN MARCAJE");
     }
     // ENCENDER MARCAJE
     // CASO CORREO ORDINARIO
