@@ -6,16 +6,13 @@
 package beans;
 
 import dao.CreditoDAO;
-import dao.InstitucionDAO;
 import dao.GestionDAO;
-import dao.SujetoDAO;
+import dao.PagoDAO;
 import impl.CreditoIMPL;
-import impl.InstitucionIMPL;
 import impl.GestionIMPL;
-import impl.SujetoIMPL;
+import impl.PagoIMPL;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import util.log.Logs;
@@ -36,15 +33,13 @@ public class BarraProgresoGestorBean {
   // VARIABLES DE CLASE
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
-  private final SujetoDAO sujetoDao;
-  private final InstitucionDAO empresaDao;
+  private final PagoDAO pagoDao;
 
   // CONSTRUCTOR
   public BarraProgresoGestorBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
-    sujetoDao = new SujetoIMPL();
-    empresaDao = new InstitucionIMPL();
+    pagoDao = new PagoIMPL();
   }
 
   public String calcularCuentasActivas() {
@@ -63,14 +58,14 @@ public class BarraProgresoGestorBean {
   }
 
   public String calcularPagosPorAprobarPorGestor() {
-    Number total = sujetoDao.calcularPagosPorAprobarPorGestor(indexBean.getUsuario().getIdUsuario());
+    Number total = pagoDao.calcularPagosPorAprobarPorGestor(indexBean.getUsuario().getIdUsuario());
     String pagos = total.toString();
     Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " tiene " + total + " pagos por aprobar");
     return pagos;
   }
 
   public String calcularRecuperacionPorGestor() {
-    Number total = empresaDao.calcularRecuperacionPorGestor(indexBean.getUsuario().getIdUsuario());
+    Number total = pagoDao.calcularRecuperacionPorGestor(indexBean.getUsuario().getIdUsuario());
     String pagos = total.toString();
     Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " ha recuperado $" + total + " este mes");
     return pagos;

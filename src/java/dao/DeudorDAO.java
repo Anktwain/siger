@@ -51,4 +51,6 @@ public interface DeudorDAO {
     public List<Deudor> buscarTodo();    
     
     public Deudor ultimoInsertado();
+    
+    public List<Deudor> buscarPorDespacho(int idDespacho);
 }

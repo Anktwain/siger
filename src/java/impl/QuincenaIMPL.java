@@ -26,7 +26,6 @@ public class QuincenaIMPL implements QuincenaDAO{
     String consulta = "SELECT * FROM quincena WHERE id_quincena = (SELECT MAX(id_quincena) FROM quincena);";
     try {
       quincena = (Quincena) sesion.createSQLQuery(consulta).addEntity(Quincena.class).uniqueResult();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       quincena = null;
       Logs.log.error(he.getStackTrace());

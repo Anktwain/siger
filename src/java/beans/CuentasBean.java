@@ -5,13 +5,16 @@
  */
 package beans;
 
+import dao.CampanaDAO;
 import dao.ConceptoDevolucionDAO;
 import dao.CreditoDAO;
 import dao.DevolucionDAO;
 import dao.HistorialDAO;
+import dto.Campana;
 import dto.ConceptoDevolucion;
 import dto.Credito;
 import dto.Devolucion;
+import impl.CampanaIMPL;
 import impl.ConceptoDevolucionIMPL;
 import impl.CreditoIMPL;
 import impl.DevolucionIMPL;
@@ -41,11 +44,14 @@ public class CuentasBean {
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
   // VARIABLES DE CLASE
-  private List<Credito> listaCreditosGestionables;
+  private boolean habilitaCampana;
+  private List<Credito> listaCreditos;
   private List<Credito> filtrados;
   private Credito creditoSeleccionado;
   private List<ConceptoDevolucion> listaConceptos;
+  private List<Campana> listaCampanas;
   private final CreditoDAO creditoDao;
+  private final CampanaDAO campanaDao;
   private final DevolucionDAO devolucionDao;
   private final HistorialDAO historialDao;
   private final ConceptoDevolucionDAO conceptoDevolucionDao;
@@ -53,14 +59,19 @@ public class CuentasBean {
   private String observaciones;
   private final String admin;
   private final int idDespacho;
+  private Campana campanaSeleccionada;
 
   //CONSTRUCTOR
   public CuentasBean() {
+    habilitaCampana = false;
+    campanaSeleccionada = new Campana();
     creditoDao = new CreditoIMPL();
     devolucionDao = new DevolucionIMPL();
     historialDao = new HistorialIMPL();
+    campanaDao = new CampanaIMPL();
     conceptoDevolucionDao = new ConceptoDevolucionIMPL();
-    listaCreditosGestionables = new ArrayList();
+    listaCreditos = new ArrayList();
+    listaCampanas = new ArrayList();
     creditoSeleccionado = new Credito();
     conceptoSeleccionado = new ConceptoDevolucion();
     listaConceptos = new ArrayList();
@@ -72,15 +83,32 @@ public class CuentasBean {
   // METODO QUE OBTIENE LA LISTA DE CREDITOS Y DE CONCEPTOS DE DEVOLUCION
   public final void obtenerListas() {
     // OBTENER LOS CREDITOS GESTIONABLES
-    listaCreditosGestionables = creditoDao.tablaCreditosEnGestionPorDespacho(idDespacho);
+    listaCreditos = creditoDao.tablaCreditosEnGestionPorDespacho(idDespacho);
     listaConceptos = conceptoDevolucionDao.obtenerConceptos();
+    listaCampanas = campanaDao.buscarTodas();
+  }
+
+  // METODO QUE OBTIENE LA LISTA DE LOS CREDITOS DE ACUERDO A SU CAMPAÑA
+  public void obtenerListaCreditos() {
+    listaCreditos.clear();
+    listaCreditos = creditoDao.buscarCreditosPorCampana(campanaSeleccionada.getIdCampana());
+    RequestContext.getCurrentInstance().update("formCuentas");
+  }
+
+  // METODO QUE OBTIENE TOLA LA LISTA DE CREDITOS SI ES QUE SE REGRESA EL SWITCH A "NO"
+  public void verificaSwitch() {
+    if (!habilitaCampana) {
+      listaCreditos.clear();
+      obtenerListas();
+      RequestContext.getCurrentInstance().update("formCuentas");
+    }
   }
 
   // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO
   public void selectorDeVista() throws IOException {
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (creditoSeleccionado != null) {
-      FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCredito.xhtml");
+      FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
     }
@@ -117,12 +145,12 @@ public class CuentasBean {
   }
 
   // SETTERS & GETTERS
-  public List<Credito> getListaCreditosGestionables() {
-    return listaCreditosGestionables;
+  public List<Credito> getListaCreditos() {
+    return listaCreditos;
   }
 
-  public void setListaCreditosGestionables(List<Credito> listaCreditosGestionables) {
-    this.listaCreditosGestionables = listaCreditosGestionables;
+  public void setListaCreditos(List<Credito> listaCreditos) {
+    this.listaCreditos = listaCreditos;
   }
 
   public List<Credito> getFiltrados() {
@@ -163,6 +191,30 @@ public class CuentasBean {
 
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
+  }
+
+  public List<Campana> getListaCampanas() {
+    return listaCampanas;
+  }
+
+  public void setListaCampanas(List<Campana> listaCampanas) {
+    this.listaCampanas = listaCampanas;
+  }
+
+  public Campana getCampanaSeleccionada() {
+    return campanaSeleccionada;
+  }
+
+  public void setCampanaSeleccionada(Campana campanaSeleccionada) {
+    this.campanaSeleccionada = campanaSeleccionada;
+  }
+
+  public boolean isHabilitaCampana() {
+    return habilitaCampana;
+  }
+
+  public void setHabilitaCampana(boolean habilitaCampana) {
+    this.habilitaCampana = habilitaCampana;
   }
 
 }

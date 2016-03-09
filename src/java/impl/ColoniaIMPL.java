@@ -25,10 +25,9 @@ public class ColoniaIMPL implements ColoniaDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Colonia> colonias;
-    String consulta = "select * from colonia where id_municipio = " + idMunicipio + " order by nombre asc;";
+    String consulta = "SELECT * FROM colonia WHERE id_municipio = " + idMunicipio + " ORDER BY nombre ASC;";
     try {
       colonias = sesion.createSQLQuery(consulta).addEntity(Colonia.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       colonias = null;
       Logs.log.error(he.getMessage());
@@ -62,11 +61,10 @@ public class ColoniaIMPL implements ColoniaDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     List<Colonia> colonias;
-    String consulta = "SELECT * from colonia WHERE nombre LIKE '%" + cadena + "%' order by nombre asc;";
+    String consulta = "SELECT * FROM colonia WHERE nombre LIKE '%" + cadena + "%' ORDER BY nombre ASC;";
     
     try {
       colonias = sesion.createSQLQuery(consulta).addEntity(Colonia.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       colonias = null;
       Logs.log.error("No se pudo obtener objeto: Colonia");
@@ -85,7 +83,7 @@ public class ColoniaIMPL implements ColoniaDAO {
     Colonia colonia;
 
     try {
-      colonia = (Colonia) sesion.createSQLQuery("SELECT * from colonia WHERE nombre LIKE '%" + cadena + "%' and codigo_postal = '" + cp + "';").addEntity(Colonia.class).uniqueResult();
+      colonia = (Colonia) sesion.createSQLQuery("SELECT * from colonia WHERE nombre LIKE '%" + cadena + "%' AND codigo_postal = '" + cp + "';").addEntity(Colonia.class).uniqueResult();
     } catch (HibernateException he) {
       colonia = null;
       Logs.log.error("No se pudo obtener objeto: Colonia");

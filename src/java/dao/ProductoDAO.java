@@ -50,4 +50,6 @@ public interface ProductoDAO {
     public List<Producto> buscarTodo();
     
     public List<Producto> buscarProductosPorInstitucion(int idInstitucion);
+    
+    public String buscarProductoDelCredito(int idCredito);
 }

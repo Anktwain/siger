@@ -49,6 +49,21 @@ public class CampanaIMPL implements CampanaDAO {
     return campana;
   }
 
+  @Override
+  public Campana buscarCampanaDelCredito(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Campana campana;
+    try {
+      campana = (Campana) sesion.createSQLQuery("SELECT * FROM campana WHERE id_campana IN (SELECT id_campana FROM credito WHERE id_credito = " + idCredito + ");").addEntity(Campana.class).uniqueResult();
+    } catch (HibernateException he) {
+      campana = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return campana;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

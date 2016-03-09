@@ -151,17 +151,6 @@ public class ProductoIMPL implements ProductoDAO {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  /**
-   *
-   *
-   * @param
-   */
-  private void cerrar(Session sesion) {
-    if (sesion.isOpen()) {
-      sesion.close();
-    }
-  }
-
   @Override
   public Producto buscar(String nombreProducto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -177,4 +166,31 @@ public class ProductoIMPL implements ProductoDAO {
     }
     return producto;
   }
+  
+  @Override
+  public String buscarProductoDelCredito(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    String producto;
+    try {
+      producto = (String) sesion.createSQLQuery("SELECT nombre FROM producto where id_producto = (SELECT id_producto FROM credito WHERE id_credito = " + idCredito + ");").uniqueResult();
+    } catch (HibernateException he) {
+      producto = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return producto;
+  }
+  
+  /**
+   *
+   *
+   * @param
+   */
+  private void cerrar(Session sesion) {
+    if (sesion.isOpen()) {
+      sesion.close();
+    }
+  }
+  
 }

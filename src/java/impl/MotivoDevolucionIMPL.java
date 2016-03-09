@@ -8,6 +8,7 @@ package impl;
 import dao.MotivoDevolucionDAO;
 import dto.ConceptoDevolucion;
 import dto.MotivoDevolucion;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -21,14 +22,12 @@ import util.log.Logs;
 public class MotivoDevolucionIMPL implements MotivoDevolucionDAO{
   
   @Override
-  public List<MotivoDevolucion> obtenerMotivosPorConcepto(ConceptoDevolucion concepto) {
+  public List<MotivoDevolucion> obtenerMotivosPorConcepto(int idConcepto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<MotivoDevolucion> md;
-    int id = concepto.getIdConceptoDevolucion();
-    String consulta = "SELECT * FROM motivo_devolucion WHERE id_concepto_devolucion = " + id + ";";
+    List<MotivoDevolucion> md = new ArrayList();
+    String consulta = "SELECT * FROM motivo_devolucion WHERE id_concepto_devolucion = " + idConcepto + ";";
     try {
       md = sesion.createSQLQuery(consulta).addEntity(MotivoDevolucion.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       md = null;
       Logs.log.error(he.getStackTrace());

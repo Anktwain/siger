@@ -45,7 +45,7 @@ public class TelefonoBean implements Serializable {
   // GESTIÓN DE TELEFONOS
   public Telefono insertar(Sujeto sujeto) {
     // Verfica que el sujeto sea válido
-    if (sujeto.getIdSujeto() == null) {
+    if (sujeto == null) {
       Logs.log.error("El método TelefonoBean.insertar(sujeto) recibe un sujeto null");
       return null;
     } else {

@@ -116,7 +116,6 @@ public class MarcajesBean implements Serializable {
         periodoActivoSepomex = f1 + " al " + f2;
       }
     } catch (IOException ioe) {
-      System.out.println(ioe);
       periodoActivoSepomex = "No existe un periodo activo";
     }
     // VISITA DOMICILIARIA
@@ -134,7 +133,6 @@ public class MarcajesBean implements Serializable {
         periodoActivoVisitas = f1 + " al " + f2;
       }
     } catch (IOException ioe) {
-      System.out.println(ioe);
       periodoActivoVisitas = "No existe un periodo activo";
     }
     // CORREO ELECTRONICO
@@ -152,7 +150,6 @@ public class MarcajesBean implements Serializable {
         periodoActivoEmail = f1 + " al " + f2;
       }
     } catch (IOException ioe) {
-      System.out.println(ioe);
       periodoActivoEmail = "No existe un periodo activo";
     }
   }

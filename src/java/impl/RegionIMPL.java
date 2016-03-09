@@ -54,7 +54,6 @@ public class RegionIMPL implements RegionDAO {
     String consulta = "SELECT * FROM region WHERE id_zona = " + idZona + ";";
     try {
       regiones = sesion.createSQLQuery(consulta).addEntity(Region.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       regiones = null;
       Logs.log.error(he.getStackTrace());
@@ -71,7 +70,6 @@ public class RegionIMPL implements RegionDAO {
     String consulta = "SELECT id_municipio FROM region WHERE id_zona IN (SELECT id_zona FROM zona WHERE id_despacho = " + idDespacho + ");";
     try {
       idsMunicipio = sesion.createSQLQuery(consulta).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       Logs.log.error(he.getStackTrace());
     } finally {
@@ -93,7 +91,6 @@ public class RegionIMPL implements RegionDAO {
         Municipio m = mdao.buscarPorId(muns.get(i));
         municipios.add(m);
       }
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       Logs.log.error(he.getStackTrace());
     } finally {
@@ -115,7 +112,6 @@ public class RegionIMPL implements RegionDAO {
         EstadoRepublica e = edao.buscarPorId(edos.get(i));
         estados.add(e);
       }
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       Logs.log.error(he.getStackTrace());
     } finally {

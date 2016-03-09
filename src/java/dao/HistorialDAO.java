@@ -17,5 +17,7 @@ public interface HistorialDAO {
   public boolean insertarHistorial(int idCredito, String evento);
   
   public List<Historial> buscarHistorialPorIdCredito(int idCredito);
+  
+  public boolean verificarCampioCampañaCredito(int idCredito);
     
 }

@@ -15,4 +15,8 @@ import java.util.List;
 public interface PromesaPagoDAO {
   public boolean insertar(PromesaPago promesa);
   public List<PromesaPago> buscarPorConvenio(int idConvenio);
+  public boolean buscarPromesasHoy(int idCredito);
+  public boolean buscarPromesasAnticipaFecha(int idCredito);
+  public boolean buscarPromesasPorCumplirse(int idCredito);
+  public List<PromesaPago> promesasPagoHoy(int idCredito);
 }

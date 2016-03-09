@@ -177,16 +177,6 @@ public class InstitucionIMPL implements InstitucionDAO {
         }
         return listaSujeto;
     }
-    
-    @Override
-    public Number calcularRecuperacionDeInstitucion() {
-    return 0;
-    }
-    
-    @Override
-    public Number calcularRecuperacionPorGestor(int idGestor) {
-    return 0;
-    }
 
   @Override
   public List<Institucion> buscarInstitucionesPorDespacho(int idDespacho) {

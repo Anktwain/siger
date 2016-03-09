@@ -68,7 +68,7 @@ public interface UsuarioDAO {
      *
      * @return
      */
-    public List<Usuario> buscarUsuariosNoConfirmados();
+    public List<Usuario> buscarUsuariosNoConfirmados(int idDespacho);
 
     /**
      *
@@ -86,4 +86,5 @@ public interface UsuarioDAO {
     
     public Usuario buscarUsuarioPorIdGestor(int idGestor);
     public List<Usuario> buscarGestores(int idDespacho);
+    public List<Usuario> buscarUsuariosPorDespacho(int idDespacho);
 }

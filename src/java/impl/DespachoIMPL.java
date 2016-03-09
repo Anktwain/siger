@@ -40,6 +40,21 @@ public class DespachoIMPL implements DespachoDAO {
   }
 
   @Override
+  public Despacho buscarPorId(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Despacho despacho;
+    try {
+      despacho = (Despacho) sesion.createSQLQuery("SELECT * FROM despacho WHERE id_despacho = " + idDespacho + ";").addEntity(Despacho.class).uniqueResult();
+    } catch (HibernateException he) {
+      despacho = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return despacho;
+  }
+  
+  @Override
   public List<Despacho> getAll() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();

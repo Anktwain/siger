@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Gestion campa&ntilde;a</title>
+    <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+  </h:head> 
+  <body>
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li>
+            Campaña: <h:outputText value="#{cuentasGestorBean.seleccion.nombreCampana}" />
+          </li>
+          <li class="active">
+            Detalle credito <p:outputLabel value="#{vistaCampanaGestorBean.creditoActual.numeroCredito}" />
+          </li>
+        </ul>
+      </div>
+      <h:form id="progresoGestorForm">
+        <table>
+          <tr>
+            <td style="padding-left: 40px; padding-right: 40px;">
+              <p:commandLink actionListener="#{vistaCampanaGestorBean.anterior()}">
+                <p:graphicImage library="img" name="iconos/flecha_izq.png" width="100" height="100" />
+              </p:commandLink>
+            </td>
+            <td>
+              <h4 class="no-margin">Progreso del dia:</h4>
+              <br />
+              <p:progressBar id="progresoDiario" value="#{vistaCampanaGestorBean.porcentajeProgreso}" labelTemplate="#{vistaCampanaGestorBean.progreso} de #{vistaCampanaGestorBean.totalCuentas}" style="width: 500px; height: 30px;" />
+            </td>
+            <td style="padding-left: 40px; padding-right: 40px;">
+              <h4 class="no-margin">Posicion campa&ntilde;a:</h4>
+              <br />
+              <p:outputLabel value="#{cuentasGestorBean.posicion + 1} de #{vistaCampanaGestorBean.totalCuentas}" style="font-size: 24px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            </td>
+            <td>
+              <p:commandLink actionListener="#{vistaCampanaGestorBean.siguiente()}">
+                <p:graphicImage library="img" name="iconos/flecha_der.png" width="100" height="100" />
+              </p:commandLink>
+            </td>
+          </tr>
+        </table>
+      </h:form>
+      <ui:include src="vistaCredito.xhtml" />
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </body>
+</html>

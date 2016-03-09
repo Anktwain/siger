@@ -100,7 +100,7 @@ public class InstitucionesBean implements Serializable {
     if (validarRfc(rfc)) {
       nuevoSujeto.setRfc(rfc);
       nuevoSujeto = sujetoDao.insertar(nuevoSujeto);
-      if (nuevoSujeto.getIdSujeto() != null) {
+      if (nuevoSujeto != null) {
         nuevaInstitucion.setSujeto(nuevoSujeto);
         nuevaInstitucion.setNombreCorto(nombrecorto);
         boolean ok = institucionDao.insertar(nuevaInstitucion);

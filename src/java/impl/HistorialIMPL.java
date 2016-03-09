@@ -8,6 +8,7 @@ package impl;
 import dao.CreditoDAO;
 import dao.HistorialDAO;
 import dto.Historial;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -64,6 +65,28 @@ public class HistorialIMPL implements HistorialDAO {
       cerrar(sesion);
     }
     return historial;
+  }
+
+  @Override
+  public boolean verificarCampioCampañaCredito(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Historial> historial;
+    boolean ok = false;
+    Date f = new Date();
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String fecha = df.format(f);
+    try {
+      historial = sesion.createSQLQuery("SELECT * FROM historial WHERE id_credito = " + idCredito + " AND fecha = '" + fecha + "' AND evento = 'AUTOMATICO. CAMBIO DE CONVENIO.';").addEntity(Historial.class).list();
+      if (historial.size() > 0) {
+        ok = true;
+      }
+    } catch (HibernateException he) {
+      historial = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
   }
 
   private void cerrar(Session sesion) {

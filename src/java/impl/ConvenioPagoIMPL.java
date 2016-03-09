@@ -7,6 +7,8 @@ package impl;
 
 import dao.ConvenioPagoDAO;
 import dto.ConvenioPago;
+import dto.PromesaPago;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -44,6 +46,7 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
 
   @Override
   public boolean editar(ConvenioPago convenio) {
+    System.out.println("ENTRO A EDITAR");
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
@@ -51,8 +54,10 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
       sesion.update(convenio);
       tx.commit();
       ok = true;
+      System.out.println("SI EDITO");
     } catch (HibernateException he) {
       ok = false;
+      System.out.println("NO EDITO");
       if (tx != null) {
         tx.rollback();
       }
@@ -61,21 +66,6 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
       cerrar(sesion);
     }
     return ok;
-  }
-
-  @Override
-  public List<ConvenioPago> buscarConveniosPorCredito(int idCredito) {
-    Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<ConvenioPago> convenios;
-    try {
-      convenios = sesion.createSQLQuery("SELECT * FROM convenio_pago WHERE id_credito = " + idCredito + ";").addEntity(ConvenioPago.class).list();
-    } catch (HibernateException he) {
-      convenios = null;
-      Logs.log.error(he.getMessage());
-    } finally {
-      cerrar(sesion);
-    }
-    return convenios;
   }
 
   @Override
@@ -111,18 +101,21 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
   @Override
   public Number calcularSaldoPendiente(int idConvenio) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Number cantidadPromesas, saldoConvenio, saldo;
-    String consulta = "SELECT SUM(cantidad_prometida) FROM promesa_pago WHERE id_convenio_pago = " + idConvenio + ";";
-    String consulta2 = "SELECT saldo_negociado FROM convenio_pago WHERE id_convenio_pago = " + idConvenio + ";";
+    Number saldoConvenio, saldo = 0;
+    float cantidadPromesas = 0;
+    List<PromesaPago> promesas = new ArrayList();
+    String consulta = "SELECT saldo_negociado FROM convenio_pago WHERE id_convenio_pago = " + idConvenio + ";";
+    String consulta2 = "SELECT * FROM promesa_pago WHERE id_convenio_pago = " + idConvenio + ";";
     try {
-      cantidadPromesas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
-      saldoConvenio = (Number) sesion.createSQLQuery(consulta2).uniqueResult();
-      if (cantidadPromesas == null) {
-        saldo = saldoConvenio;
+      saldoConvenio = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+      promesas = sesion.createSQLQuery(consulta2).addEntity(PromesaPago.class).list();
+      if (!promesas.isEmpty()) {
+        for (int i = 0; i < (promesas.size()); i++) {
+          cantidadPromesas = cantidadPromesas + promesas.get(i).getCantidadPrometida();
+        }
       } else {
-        saldo = (saldoConvenio.doubleValue() - cantidadPromesas.doubleValue());
+        saldo = saldoConvenio;
       }
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       saldo = -1;
       Logs.log.error(he.getStackTrace());

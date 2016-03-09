@@ -1,103 +1,93 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
-      xmlns:h="http://xmlns.jcp.org/jsf/html" 
-      xmlns:p="http://primefaces.org/ui" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <meta charset="utf-8"></meta>
-        <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
-        <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
-        <h:outputStylesheet library="css" name="pace.css" />
-        <h:outputStylesheet library="css" name="endless.min.css" />
-        <h:outputStylesheet library="css" name="endless-skin.css" />
-        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
-        <h:outputScript library="js" name="/uncompressed/pace.js" />
-    </h:head>
-    <h:body>
-        <aside class="fixed skin-6">
-            <div class="sidebar-inner scrollable-sidebar">
-                <div class="user-block clearfix">
-                    <h:graphicImage library="img" name="#{panelAdministrativoBean.imagenDePerfil}" />
-                </div><!-- /user-block -->
-                <div class="main-menu">
-                    <ul>
-                        <li class="openable">
-                            <a href="#{indexBean.vista}">
-                                <span class="menu-icon">
-                                    <i class="fa fa-desktop fa-lg"></i> 
-                                </span>
-                                <span class="text">Panel de control</span>
-                                <span class="menu-hover"></span>
-                            </a>
-                        </li>
-                        <li class="openable">
-                            <a href="instituciones.xhtml">
-                                <span class="menu-icon">
-                                    <i class="fa fa-envelope fa-lg"></i> 
-                                </span>
-                                <span class="text">Instituciones</span>
-                                <span class="menu-hover"></span>
-                            </a>
-                        </li>
-                        <li class="openable">
-                            <a href="zonas.xhtml">
-                                <span class="menu-icon">
-                                    <i class="fa fa-map-marker fa-lg"></i> 
-                                </span>
-                                <span class="text">Zonas</span>
-                                <span class="menu-hover"></span>
-                            </a>
-                        </li>
-                        <li class="openable">
-                            <a href="visitas.xhtml">
-                                <span class="menu-icon">
-                                    <i class="fa fa-tag fa-lg"></i> 
-                                </span>
-                                <span class="text">Visitas</span>
-                                <span class="menu-hover"></span>
-                            </a>
-                        </li>
-                        <li class="openable">
-                            <a href="tareas.xhtml">
-                                <span class="menu-icon">
-                                    <i class="fa fa-book fa-lg"></i> 
-                                </span>
-                                <span class="text">Tareas</span>
-                                <span class="menu-hover"></span>
-                            </a>
-                        </li>
-                        <li class="openable">
-                            <a href="busqueda.xhtml">
-                                <span class="menu-icon">
-                                    <i class="fa fa-search-plus fa-lg"></i> 
-                                </span>
-                                <span class="text">B&uacute;squeda</span>
-                                <span class="menu-hover"></span>
-                            </a>
-                        </li>
-                        <li class="openable">
-                            <a href="estatusInformativo.xhtml">
-                                <span class="menu-icon">
-                                    <i class="fa fa-info-circle fa-lg"></i> 
-                                </span>
-                                <span class="text">Estatus Informativo</span>
-                                <span class="menu-hover"></span>
-                            </a>
-                        </li>
-                        <li class="openable">
-                            <a href="deudores.xhtml">
-                                <span class="menu-icon">
-                                    <i class="fa fa-users"></i> 
-                                </span>
-                                <span class="text">Deudores</span>
-                                <span class="menu-hover"></span>
-                            </a>
-                        </li>
-                    </ul>
-                </div><!-- /main-menu -->
-            </div><!-- /sidebar-inner -->
-        </aside>
-    </h:body>
+  <h:head>
+    <meta charset="utf-8"></meta>
+  </h:head>
+  <h:body>
+    <aside class="fixed skin-6">
+      <div class="sidebar-inner scrollable-sidebar">
+        <div class="user-block clearfix">
+          <h:graphicImage library="img" name="#{indexBean.usuario.imagenPerfil}" />
+        </div><!-- /user-block -->
+        <div class="main-menu">
+          <ul>
+            <li class="openable">
+              <a href="#{indexBean.vista}">
+                <span class="menu-icon">
+                  <i class="fa fa-desktop fa-lg"></i> 
+                </span>
+                <span class="text">Panel de control</span>
+                <span class="menu-hover"></span>
+              </a>
+            </li>
+            <li class="openable">
+              <a href="instituciones.xhtml">
+                <span class="menu-icon">
+                  <i class="fa fa-envelope fa-lg"></i> 
+                </span>
+                <span class="text">Instituciones</span>
+                <span class="menu-hover"></span>
+              </a>
+            </li>
+            <li class="openable">
+              <a href="zonas.xhtml">
+                <span class="menu-icon">
+                  <i class="fa fa-map-marker fa-lg"></i> 
+                </span>
+                <span class="text">Zonas</span>
+                <span class="menu-hover"></span>
+              </a>
+            </li>
+            <li class="openable">
+              <a href="visitas.xhtml">
+                <span class="menu-icon">
+                  <i class="fa fa-tag fa-lg"></i> 
+                </span>
+                <span class="text">Visitas</span>
+                <span class="menu-hover"></span>
+              </a>
+            </li>
+            <li class="openable">
+              <a href="tareas.xhtml">
+                <span class="menu-icon">
+                  <i class="fa fa-book fa-lg"></i> 
+                </span>
+                <span class="text">Tareas</span>
+                <span class="menu-hover"></span>
+              </a>
+            </li>
+            <li class="openable">
+              <a href="busqueda.xhtml">
+                <span class="menu-icon">
+                  <i class="fa fa-search-plus fa-lg"></i> 
+                </span>
+                <span class="text">B&uacute;squeda</span>
+                <span class="menu-hover"></span>
+              </a>
+            </li>
+            <li class="openable">
+              <a href="estatusInformativo.xhtml">
+                <span class="menu-icon">
+                  <i class="fa fa-info-circle fa-lg"></i> 
+                </span>
+                <span class="text">Estatus Informativo</span>
+                <span class="menu-hover"></span>
+              </a>
+            </li>
+            <li class="openable">
+              <a href="deudores.xhtml">
+                <span class="menu-icon">
+                  <i class="fa fa-users"></i> 
+                </span>
+                <span class="text">Deudores</span>
+                <span class="menu-hover"></span>
+              </a>
+            </li>
+          </ul>
+        </div><!-- /main-menu -->
+      </div><!-- /sidebar-inner -->
+    </aside>
+  </h:body>
 </html>

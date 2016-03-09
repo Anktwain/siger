@@ -181,4 +181,9 @@
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
   </body>
+  <!-- DIALOGO BARRA DE CARGA -->
+  <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+  <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+    <p:graphicImage library="img" name="loadingBarra.gif" />
+  </p:dialog>
 </html>

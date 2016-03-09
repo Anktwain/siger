@@ -136,9 +136,7 @@ public class ContactoIMPL implements ContactoDAO {
     Transaction tx = sesion.beginTransaction();
     List<Contacto> listaContactos;
 
-    String consulta = "select c.* from sujeto s join contacto c on s.id_sujeto = c.id_sujeto "
-            + "join deudor l on l.id_deudor = c.id_deudor join sujeto s2 on s2.id_sujeto = l.id_sujeto "
-            + "where s2.id_sujeto=" + idSujeto + " and s.eliminado = " + Sujetos.ACTIVO + ";";
+    String consulta = "SELECT c.* FROM sujeto s JOIN contacto c ON s.id_sujeto = c.id_sujeto JOIN deudor l ON l.id_deudor = c.id_deudor JOIN sujeto s2 ON s2.id_sujeto = l.id_sujeto WHERE s2.id_sujeto=" + idSujeto + " AND s.eliminado = " + Sujetos.ACTIVO + ";";
 
     try {
       listaContactos = sesion.createSQLQuery(consulta).addEntity(Contacto.class).list();
@@ -159,7 +157,6 @@ public class ContactoIMPL implements ContactoDAO {
     String consulta = "SELECT c.* FROM contacto c JOIN sujeto s WHERE s.id_sujeto = c.id_sujeto AND c.id_deudor = (SELECT id_deudor FROM deudor WHERE id_sujeto = " + idSujeto + ");";
     try {
       contactos = sesion.createSQLQuery(consulta).addEntity(Contacto.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       contactos = null;
       Logs.log.error(he.getStackTrace());

@@ -29,7 +29,6 @@ public class DevolucionIMPL implements DevolucionDAO {
     String consulta = "SELECT d.* FROM deudor de JOIN sujeto s JOIN credito c JOIN devolucion d JOIN concepto_devolucion cd WHERE de.id_deudor = c.id_deudor AND d.estatus = " + Devoluciones.PENDIENTE + " AND cd.id_concepto_devolucion = 11 AND c.id_credito = d.id_credito AND cd.id_concepto_devolucion = d.id_concepto_devolucion AND de.id_sujeto = s.id_sujeto AND c.id_despacho = " + idDespacho + ";";
     try {
       retirados = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       Logs.log.error(he.getStackTrace());
     } finally {
@@ -45,7 +44,6 @@ public class DevolucionIMPL implements DevolucionDAO {
     String consulta = "SELECT d.* FROM deudor de JOIN sujeto s JOIN credito c JOIN devolucion d JOIN concepto_devolucion cd WHERE de.id_deudor = c.id_deudor AND ((d.estatus = " + Devoluciones.ESPERA_CONSERVACION + ") OR (d.estatus = " + Devoluciones.PENDIENTE + " AND d.id_concepto_devolucion != 11)) AND c.id_credito = d.id_credito AND cd.id_concepto_devolucion = d.id_concepto_devolucion AND de.id_sujeto = s.id_sujeto AND c.id_despacho = " + idDespacho + ";";
     try {
       bandeja = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       bandeja = null;
       Logs.log.error(he.getStackTrace());
@@ -62,7 +60,6 @@ public class DevolucionIMPL implements DevolucionDAO {
     String consulta = "SELECT d.* FROM deudor de JOIN sujeto s JOIN credito c JOIN devolucion d JOIN concepto_devolucion cd WHERE de.id_deudor = c.id_deudor AND d.estatus = " + Devoluciones.DEVUELTO + " AND c.id_credito = d.id_credito AND cd.id_concepto_devolucion = d.id_concepto_devolucion AND de.id_sujeto = s.id_sujeto AND c.id_despacho = " + idDespacho + ";";
     try {
       devueltos = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       devueltos = null;
       Logs.log.error(he.getStackTrace());

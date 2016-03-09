@@ -13,11 +13,26 @@ import java.util.List;
  * @author Eduardo
  */
 public interface PagoDAO {
-  
+
   public boolean insertar(Pago pago);
+
   public boolean editar(Pago pago);
+
   public List<Pago> buscarPagosPorConvenioActivo(int idConvenio);
+
   public List<Pago> buscarPagosPorCredito(int idCredito);
+
   public List<Pago> pagosPorDespacho(int idDespacho);
+
   public List<Pago> pagosPorRevisarPorDespacho(int idDespacho);
+
+  public Number calcularPagosRealizados();
+
+  public Number calcularPagosPorAprobarPorGestor(int idGestor);
+
+  public Number calcularRecuperacionDeInstitucion();
+
+  public Number calcularRecuperacionPorGestor(int idGestor);
+  
+  public Pago buscarPagoHoy(int idCredito);
 }

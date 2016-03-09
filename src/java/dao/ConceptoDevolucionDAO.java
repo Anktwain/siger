@@ -13,7 +13,6 @@ import java.util.List;
  * @author Eduardo
  */
 public interface ConceptoDevolucionDAO {
-  
   public List<ConceptoDevolucion> obtenerConceptos();
-  
+  public ConceptoDevolucion buscarPorId(int idConcepto);
 }

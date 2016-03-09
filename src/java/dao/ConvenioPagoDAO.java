@@ -16,7 +16,6 @@ public interface ConvenioPagoDAO {
   
   public boolean insertar(ConvenioPago convenio);
   public boolean editar(ConvenioPago convenio);
-  public List<ConvenioPago> buscarConveniosPorCredito(int idCredito);
   public ConvenioPago buscarConvenioEnCursoCredito(int idCredito);
   public List<ConvenioPago> buscarConveniosFinalizadosCredito(int idCredito);
   public Number calcularSaldoPendiente(int idConvenio);

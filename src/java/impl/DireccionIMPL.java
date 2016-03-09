@@ -148,7 +148,6 @@ public class DireccionIMPL implements DireccionDAO {
     String consulta = "SELECT d.* FROM direccion d JOIN colonia c JOIN municipio m JOIN estado_republica e WHERE d.id_colonia = c.id_colonia AND d.id_municipio = m.id_municipio AND d.id_estado = e.id_estado AND d.id_direccion = " + idDireccion + ";";
     try {
       completa = (Direccion) sesion.createSQLQuery(consulta).addEntity(Direccion.class).uniqueResult();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       completa = null;
     } finally {

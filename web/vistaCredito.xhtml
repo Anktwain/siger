@@ -11,25 +11,8 @@
   </h:head> 
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
-    <ui:include src="barraSuperior.xhtml" />
-    <ui:include src="barraLateral.xhtml" />
-    <div id="main-container">
-      <div id="breadcrumb">
-        <ul class="breadcrumb">
-          <li>
-            <i class="fa fa-home">
-            </i>
-            <a href="#{indexBean.vista}">Inicio</a>
-          </li>
-          <li>
-            <a href="cuentas.xhtml">Cuentas</a>
-          </li>
-          <li class="active">
-            Detalle credito <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" />
-          </li>
-        </ul>
-      </div>
-      <div class="padding-md">
+    <div class="padding-md">
+      <div class="clearfix" style="width: 1200px;">
         <div class="clearfix">
           <div class="pull-left">
             <div class="pull-left m-left-sm">
@@ -74,14 +57,13 @@
             <h:form id="barraDetalleCreditoForm">
               <p:button value="Editar datos del deudor" outcome="deudores" />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <!-- <p:button value="Convenios de pago" outcome="vistaConvenio" rendered="#{vistaCreditoBean.conveniosVisible}" /> -->
-              <p:button value="Convenios de pago" outcome="vistaConvenio" />
+              <p:button value="Convenios de pago" outcome="vistaConvenio" rendered="#{!vistaCreditoBean.adminVisible}" />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:button value="Impresion de visitas" outcome="vistaVisitas"  />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              Gestor actual:
-              &nbsp;
-              <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px" rendered="#{vistaCreditoBean.reasignarVisible}">
+              <p:commandButton value="Devolucion" oncomplete="PF('dialogoDevolucionVistaCredito').show();" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px" rendered="#{vistaCreditoBean.adminVisible}">
                 <f:selectItem itemValue="#{vistaCreditoBean.gestorActual.idGestor}" itemLabel="#{vistaCreditoBean.gestorActual.usuario.nombreLogin}" />
                 <f:selectItems value="#{vistaCreditoBean.listaGestores}" var="g" itemLabel="#{g.usuario.nombreLogin}" itemValue="#{g.idGestor}" />
                 <p:ajax listener="#{vistaCreditoBean.confirmar()}" />
@@ -89,43 +71,41 @@
             </h:form>
           </div>
           <div class="pull-right text-right">
-            <h:form>
-              <strong>Fecha de inicio:</strong>
-              &nbsp;
-              <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-              <br />
-              <strong>Fecha Ultimo Pago:</strong>
-              &nbsp;
-              <p:outputLabel value="#{vistaCreditoBean.fup}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-              <br />
-              <strong>Fecha Ultimo Vencimiento Pagado:</strong>
-              &nbsp;
-              <p:outputLabel value="#{vistaCreditoBean.fvp}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-              <br />
-              <strong>Fecha Fin del credito:</strong>
-              &nbsp;
-              <p:outputLabel value="#{vistaCreditoBean.fechaFin}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-              <br />
-              <strong>Mensualidad:</strong>
-              &nbsp;
-              <h:outputText value="#{vistaCreditoBean.mensualidad}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
-                <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-              </h:outputText>
-              <br />
-              <strong>Meses vencidos:</strong>
-              &nbsp;
-              <p:outputLabel value="#{vistaCreditoBean.mesesVencidos}" style="font-size: 15px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-              <br />
-              <strong>Saldo vencido:</strong>
-              &nbsp;
-              <h:outputText value="#{vistaCreditoBean.saldoVencido}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
-                <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-              </h:outputText>
-            </h:form>
+            <strong>Fecha de inicio:</strong>
+            &nbsp;
+            <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            <br />
+            <strong>Fecha Ultimo Pago:</strong>
+            &nbsp;
+            <p:outputLabel value="#{vistaCreditoBean.fup}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            <br />
+            <strong>Fecha Ultimo Vencimiento Pagado:</strong>
+            &nbsp;
+            <p:outputLabel value="#{vistaCreditoBean.fvp}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            <br />
+            <strong>Fecha Fin del credito:</strong>
+            &nbsp;
+            <p:outputLabel value="#{vistaCreditoBean.fechaFin}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            <br />
+            <strong>Mensualidad:</strong>
+            &nbsp;
+            <h:outputText value="#{vistaCreditoBean.mensualidad}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
+              <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+            </h:outputText>
+            <br />
+            <strong>Meses vencidos:</strong>
+            &nbsp;
+            <p:outputLabel value="#{vistaCreditoBean.mesesVencidos}" style="font-size: 15px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            <br />
+            <strong>Saldo vencido:</strong>
+            &nbsp;
+            <h:outputText value="#{vistaCreditoBean.saldoVencido}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
+              <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+            </h:outputText>
           </div>
         </div>
-        <br />
-        <ui:include src="tablaMarcajesListaCredito.xhtml" />
+        <hr />
+        <ui:include src="listaMarcajesCredito.xhtml" />
         <hr />
         <div class="clearfix">
           <ui:include src="nuevaGestion.xhtml" />
@@ -244,10 +224,42 @@
               <p:commandButton value="No" icon="ui-icon-close" actionListener="#{vistaCreditoBean.cerrar()}" />
             </h:form>
           </p:dialog>
+          <p:dialog id="dlgDevolucionVistaCredito" widgetVar="dialogoDevolucionVistaCredito" modal="true" resizable="false" header="Confirme la solicitud de devolucion">
+            <h:form>
+              Esta seguro de que desea devolver este credito?
+              <br />
+              <br />
+              Esta accion hara que el credito ya no se pueda gestionar.
+              <br />
+              <br />
+              Seleccione el concepto de devolucion:
+              <br />
+              <p:selectOneMenu id="conceptoVistaCredito" value="#{vistaCreditoBean.conceptoSeleccionado.idConceptoDevolucion}" style="width:200px">
+                <f:selectItem itemLabel="" itemValue="0" />
+                <f:selectItems value="#{vistaCreditoBean.listaConceptos}" var="c" itemLabel="#{c.concepto}" itemValue="#{c.idConceptoDevolucion}" />
+                <p:ajax update="motivoVistaCredito" listener="#{vistaCreditoBean.preparaMotivos()}" />
+              </p:selectOneMenu>
+              <br />
+              <br />
+              Motivo devolucion:
+              <br />
+              <p:selectOneMenu id="motivoVistaCredito" value="#{vistaCreditoBean.motivoSeleccionado.idMotivoDevolucion}" style="width:200px">
+                <f:selectItem itemLabel="" itemValue="0" />
+                <f:selectItems value="#{vistaCreditoBean.listaMotivos}" var="m" itemLabel="#{m.motivo}" itemValue="#{m.idMotivoDevolucion}" />
+              </p:selectOneMenu>
+              <br />
+              <br />
+              Observaciones:
+              <br />
+              <p:inputText value="#{vistaCreditoBean.observaciones}" style="width:300px" />
+              <br />
+              <br />
+              <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.devolverCredito()}" update=":growl" />
+              <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoDevolucionVistaCredito').hide();" />
+            </h:form>
+          </p:dialog>
         </div>
-      </div><!-- /.padding20 -->
-    </div><!-- /main-container -->
-    <!-- Footer ================================================== -->
-    <ui:include src="barraInferior.xhtml" />
+      </div>
+    </div>
   </h:body>
 </html>

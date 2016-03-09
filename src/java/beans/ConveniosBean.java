@@ -5,7 +5,6 @@
  */
 package beans;
 
-
 import dao.ConvenioPagoDAO;
 import dao.GestorDAO;
 import dao.PagoDAO;
@@ -43,6 +42,7 @@ import org.primefaces.model.UploadedFile;
 import util.constantes.Convenios;
 import util.constantes.Directorios;
 import util.constantes.Pagos;
+import util.constantes.Perfiles;
 import util.log.Logs;
 
 /**
@@ -59,6 +59,7 @@ public class ConveniosBean implements Serializable {
   VistaCreditoBean vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
 
   // VARIABLES DE CLASE
+  private boolean adminVisible;
   private boolean habilitaConvenios;
   private boolean habilitaPromesas;
   private boolean quitaCapital;
@@ -82,7 +83,6 @@ public class ConveniosBean implements Serializable {
   private final ConvenioPagoDAO convenioPagoDao;
   private final PromesaPagoDAO promesaPagoDao;
   private PromesaPago promesaSeleccionada;
-  private ConvenioPago convenioSeleccionado;
   private ConvenioPago convenioActivo;
   private List<ConvenioPago> listaHistorialConvenios;
   private List<PromesaPago> listaPromesas;
@@ -92,6 +92,7 @@ public class ConveniosBean implements Serializable {
 
   // CONSTRUCTOR
   public ConveniosBean() {
+    convenioActivo = new ConvenioPago();
     creditoActual = vistaCreditoBean.getCreditoActual();
     saldoMaximo = creditoActual.getMonto();
     convenioPagoDao = new ConvenioPagoIMPL();
@@ -108,6 +109,11 @@ public class ConveniosBean implements Serializable {
 
   // METODO QUE TRAE LA LISTA DE CONVENIOS
   public final void cargarListas() {
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      adminVisible = false;
+    } else {
+      adminVisible = true;
+    }
     int idCredito = creditoActual.getIdCredito();
     convenioActivo = convenioPagoDao.buscarConvenioEnCursoCredito(idCredito);
     listaHistorialConvenios = convenioPagoDao.buscarConveniosFinalizadosCredito(idCredito);
@@ -116,12 +122,10 @@ public class ConveniosBean implements Serializable {
       listaPagosConvenioActivo.clear();
       habilitaConvenios = false;
       habilitaPromesas = true;
-      saldoPendiente = 0;
     } else {
       habilitaConvenios = true;
       habilitaPromesas = false;
       int idConvenio = convenioActivo.getIdConvenioPago();
-      saldoPendiente = convenioPagoDao.calcularSaldoPendiente(idConvenio);
       listaPagosConvenioActivo = pagoDao.buscarPagosPorConvenioActivo(idConvenio);
       listaPromesas = promesaPagoDao.buscarPorConvenio(idConvenio);
     }
@@ -132,6 +136,8 @@ public class ConveniosBean implements Serializable {
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (saldoNuevoConvenio > saldoMaximo) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser menor al saldo vencido."));
+    } else if (saldoNuevoConvenio <= 0) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser mayor a cero."));
     } else if (pagosPrometidos <= 0) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe prometer al menos un pago."));
     } else {
@@ -156,22 +162,23 @@ public class ConveniosBean implements Serializable {
       // NO SE CREA LA GESTION AUTOMATICA PUESTO QUE:
       // - EXISTEN 3 TIPOS DE GESTION PARA CONVENIOS DE PAGO
       // - EL GESTOR DEBE SELECCIONAR EL LUGAR DONDE SE CELEBRO EL CONVENIO
+      RequestContext.getCurrentInstance().execute("PF('agregarConvenioDialog').hide();");
       if (ok) {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo un nuevo convenio."));
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Alerta.", "No olvide agregar la gestion correspondiente."));
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atencion.", "No olvide agregar la gestion correspondiente."));
         habilitaPromesas = false;
         RequestContext.getCurrentInstance().update("formConvenios");
         cargarListas();
       } else {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se creo el convenio. Contacte al equipo de sistemas."));
       }
-      RequestContext.getCurrentInstance().execute("PF('agregarConvenioDialog').hide();");
     }
   }
 
   // METODO QUE TERMINA UN CONVENIO DE PAGO
   public void finalizarConvenio() {
-    ConvenioPago c = convenioSeleccionado;
+    System.out.println("ENTRO AL METODO DE FINALIZAR CONVENIO");
+    ConvenioPago c = convenioActivo;
     c.setEstatus(Convenios.FINALIZADO);
     boolean ok = convenioPagoDao.editar(c);
     FacesContext contexto = FacesContext.getCurrentInstance();
@@ -217,11 +224,14 @@ public class ConveniosBean implements Serializable {
     ConvenioPago convenio = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
     List<PromesaPago> promesas = promesaPagoDao.buscarPorConvenio(convenio.getIdConvenioPago());
     int promesasRestantes = convenio.getPagosNegociados() - promesas.size();
-    float montoMaximo = convenioPagoDao.calcularSaldoPendiente(convenio.getIdConvenioPago()).floatValue();
-    if (promesasRestantes <= 0) {
+    saldoPendiente = convenioPagoDao.calcularSaldoPendiente(convenio.getIdConvenioPago());
+    float montoMaximo = saldoPendiente.floatValue() - saldoNuevaPromesa;
+    if (promesasRestantes == 0) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Ya existen las promesas de pago necesarias."));
-    } else if (montoMaximo <= 0) {
+    } else if (montoMaximo < 0) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Ya se ha prometido el saldo total del convenio."));
+    } else if (saldoNuevaPromesa <= 0) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo prometido de pago debe ser mayor a cero."));
     } else {
       PromesaPago p = new PromesaPago();
       p.setConvenioPago(convenio);
@@ -291,14 +301,6 @@ public class ConveniosBean implements Serializable {
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-  public ConvenioPago getConvenioSeleccionado() {
-    return convenioSeleccionado;
-  }
-
-  public void setConvenioSeleccionado(ConvenioPago convenioSeleccionado) {
-    this.convenioSeleccionado = convenioSeleccionado;
-  }
-
   public ConvenioPago getConvenioActivo() {
     return convenioActivo;
   }
@@ -481,6 +483,14 @@ public class ConveniosBean implements Serializable {
 
   public void setTipoGestionSeleccionada(TipoGestion tipoGestionSeleccionada) {
     this.tipoGestionSeleccionada = tipoGestionSeleccionada;
+  }
+
+  public boolean isAdminVisible() {
+    return adminVisible;
+  }
+
+  public void setAdminVisible(boolean adminVisible) {
+    this.adminVisible = adminVisible;
   }
 
 }

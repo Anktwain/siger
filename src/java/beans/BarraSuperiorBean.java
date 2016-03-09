@@ -1,6 +1,8 @@
 package beans;
 
+import dao.SujetoDAO;
 import dto.Sujeto;
+import impl.SujetoIMPL;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
@@ -8,17 +10,17 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 /**
- * La clase {@code PanelGestorBean} permite ... y es el bean correspondiente a
- * la vista {@code panelGestor.xhtml}
+ * La clase {@code PanelAdministrativoBean} permite ... y es el bean
+ * correspondiente a la vista {@code panelAdministrativo.xhtml}
  *
  * @author
  * @author
  * @author brionvega
  * @since SigerWeb2.0
  */
-@ManagedBean
+@ManagedBean(name = "barraSuperiorBean")
 @SessionScoped
-public class PanelGestorBean implements Serializable {
+public class BarraSuperiorBean implements Serializable {
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -31,15 +33,17 @@ public class PanelGestorBean implements Serializable {
   private String correo;
   private String despacho;
   private Sujeto sujeto;
+  private final SujetoDAO sujetoDao;
 
-  /**
-   *
-   */
-  public PanelGestorBean() {
+  // CONSTRUCTOR
+  public BarraSuperiorBean() {
     nombre = indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno();
     nombreUsuario = indexBean.getUsuario().getNombreLogin();
     imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
     correo = indexBean.getUsuario().getCorreo();
+    sujeto = new Sujeto();
+    sujetoDao = new SujetoIMPL();
+    sujeto = sujetoDao.buscar(indexBean.getUsuario().getDespacho().getSujeto().getIdSujeto());
     despacho = indexBean.getUsuario().getDespacho().getSujeto().getNombreRazonSocial();
   }
 

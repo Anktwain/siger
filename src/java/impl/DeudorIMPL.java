@@ -88,7 +88,6 @@ public class DeudorIMPL implements DeudorDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
       sesion.update(deudor);
@@ -120,9 +119,7 @@ public class DeudorIMPL implements DeudorDAO {
   @Override
   public Deudor buscar(String numeroDeudor) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Deudor deudor;
-    
     try {
       deudor = (Deudor) sesion.createSQLQuery("select * from deudor where numero_deudor = '" + numeroDeudor + "';").addEntity(Deudor.class).uniqueResult();
     } catch (HibernateException he) {
@@ -142,9 +139,7 @@ public class DeudorIMPL implements DeudorDAO {
   @Override
   public List<Deudor> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Deudor> listaDeudors;
-
     try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
       listaDeudors = sesion.createSQLQuery("select c.* from sujeto s join deudor c"
               + " on s.id_sujeto = c.id_sujeto"
@@ -155,7 +150,21 @@ public class DeudorIMPL implements DeudorDAO {
     } finally {
       cerrar(sesion);
     }
+    return listaDeudors;
+  }
 
+  @Override
+  public List<Deudor> buscarPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Deudor> listaDeudors;
+    try {
+      listaDeudors = sesion.createSQLQuery("SELECT * FROM deudor WHERE id_deudor IN (SELECT id_deudor FROM credito WHERE id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + idDespacho + ")));").addEntity(Deudor.class).list();
+    } catch (HibernateException he) {
+      listaDeudors = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
     return listaDeudors;
   }
 

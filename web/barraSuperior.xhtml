@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
-      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
@@ -21,16 +19,16 @@
       <ul class="nav-notification clearfix">                    
         <li class="profile dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown">
-            <strong><p:outputLabel value="#{panelAdministrativoBean.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" /></strong>
+            <strong><p:outputLabel value="#{barraSuperiorBean.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" /></strong>
             <span><i class="fa fa-chevron-down"></i></span>
           </a>
           <ul class="dropdown-menu">
             <li>
               <a class="clearfix" href="#">
-                  <h:graphicImage library="img" name="#{panelAdministrativoBean.imagenDePerfil}" />
+                <h:graphicImage library="img" name="#{barraSuperiorBean.imagenDePerfil}" />
                 <div class="detail">
-                  <strong><p:outputLabel value="#{panelGestorBean.nombreUsuario}" style="font-family: 'Open Sans',sans-serif; font-size: 14px;" /></strong>
-                  <p class="grey"><p:outputLabel value="#{panelGestorBean.correo}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></p> 
+                  <strong><p:outputLabel value="#{barraSuperiorBean.nombreUsuario}" style="font-family: 'Open Sans',sans-serif; font-size: 14px;" /></strong>
+                  <p class="grey"><p:outputLabel value="#{barraSuperiorBean.correo}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></p> 
                 </div>
               </a>
             </li>
@@ -41,15 +39,14 @@
             </li>
             <li>
               <a tabindex="-1" href="pswd.xhtml" class="main-link">
-                <i class="fa fa-unlock-alt fa-lg"></i> Cambiar contrase&ntilde;a
+                <i class="fa fa-key-alt fa-lg"></i> Cambiar contrase&ntilde;a
               </a>
             </li>
             <li>
-                <a tabindex="-1" href="index.xhtml" class="main-link">
-                  <i class="fa fa-power-off fa-lg"></i> Cerrar sesi&oacute;n
-                </a>
+              <a tabindex="-1" href="index.xhtml" class="main-link">
+                <i class="fa fa-power-off-alt fa-lg"></i> Cerrar sesi&oacute;n
+              </a>
             </li>
-            <li class="divider"></li>                            
           </ul>
         </li>
       </ul>

@@ -6,6 +6,7 @@
 package dao;
 
 import dto.Campana;
+import dto.Credito;
 import java.util.List;
 
 /**
@@ -15,4 +16,5 @@ import java.util.List;
 public interface CampanaDAO {
   public List<Campana> buscarTodas();
   public Campana buscarPorId(int idCampana);
+  public Campana buscarCampanaDelCredito(int idCredito);
 }

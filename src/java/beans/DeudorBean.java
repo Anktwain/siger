@@ -6,10 +6,11 @@ import dto.Sujeto;
 import impl.DeudorIMPL;
 import java.io.Serializable;
 import java.util.List;
+import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import util.constantes.Sujetos;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -19,6 +20,10 @@ import util.constantes.Sujetos;
 @ViewScoped
 public class DeudorBean implements Serializable {
 
+  // LLAMADA A OTROS BEANS
+  ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+  IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+
   // Objeto que gestiona este bean
   private Deudor deudor;
 
@@ -26,7 +31,7 @@ public class DeudorBean implements Serializable {
   private String numeroDeudor;
   private String curp;
   private String numeroSeguroSocial;
-  
+
   private Sujeto sujeto;
 
   // DAO, para acceso a la BD
@@ -44,7 +49,7 @@ public class DeudorBean implements Serializable {
 
   // GESTIÓN DE CLIENTES
   public List<Deudor> listar() {
-    return deudorDao.buscarTodo();
+    return deudorDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
   }
 
   public Deudor insertar() {
@@ -64,7 +69,7 @@ public class DeudorBean implements Serializable {
       return deudorDao.insertar(deudor);
     }
   }
-  
+
   public boolean eliminar(Deudor c) {
     return sujetoBean.eliminar(c.getSujeto());
   }

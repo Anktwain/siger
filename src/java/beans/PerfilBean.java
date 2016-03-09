@@ -56,12 +56,6 @@ public class PerfilBean implements Serializable {
       lista.add(new PerfilBean("gestor", util.constantes.Perfiles.GESTOR));
       lista.add(new PerfilBean("gestor no confirmado", util.constantes.Perfiles.GESTOR_NO_CONFIRMADO));
     }
-
-    Logs.log.info("*********** Perfiles enlistados en PerfilBean.enlistar(): ***********");
-    for (int i = 0; i < lista.size(); i++) {
-      Logs.log.info(lista.get(i).nombre + ": " + lista.get(i).clave);
-    }
-    Logs.log.info("***********  *******************************************  ***********");
   }
 
   public List<PerfilBean> ordenarLista(int cvePerfActual) throws Exception {

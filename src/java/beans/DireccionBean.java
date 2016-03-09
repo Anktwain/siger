@@ -68,7 +68,7 @@ public class DireccionBean implements Serializable {
   // GESTIÓN DE DIRECCIONES
   public Direccion insertar(Sujeto sujeto) {
     // Verfica que el sujeto sea válido
-    if (sujeto.getIdSujeto() == null) {
+    if (sujeto == null) {
       Logs.log.error("El método DireccionBean.insertar(sujeto) recibe un sujeto null");
       return null;
     } else {

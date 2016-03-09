@@ -44,7 +44,7 @@ public class EmailBean implements Serializable {
   // GESTIÓN DE EMAILS
   public Email insertar(Sujeto sujeto) {
     // Verfica que el sujeto sea válido
-    if (sujeto.getIdSujeto() == null) {
+    if (sujeto == null) {
       Logs.log.error("El método EmailBean.insertar(sujeto) recibe un sujeto null");
       return null;
     } else {

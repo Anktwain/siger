@@ -21,7 +21,7 @@
           <li>
             <i class="fa fa-home">
             </i>
-            <a href="panelAdministrativo.xhtml">Inicio</a>
+            <a href="#{indexBean.vista}">Inicio</a>
           </li>
           <li class="active">
             Cuentas
@@ -39,11 +39,24 @@
         <div class="padding-md">
           <div class="col-lg-12">
             <h:form id="formCuentas">
+              <h4 class="no-margin">Especificar campa&ntilde;a:</h4>
+              <br />
+              &nbsp;&nbsp;&nbsp;
+              <p:inputSwitch value="#{cuentasBean.habilitaCampana}" offLabel="No" onLabel="Si" >
+                <p:ajax listener="#{cuentasBean.verificaSwitch()}" update="formCuentas" />
+              </p:inputSwitch>
+              &nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu value="#{cuentasBean.campanaSeleccionada.idCampana}" disabled="#{!cuentasBean.habilitaCampana}">
+                <f:selectItems value="#{cuentasBean.listaCampanas}" var="c" itemLabel="#{c.nombre}" itemValue="#{c.idCampana}" />
+              </p:selectOneMenu>
+              &nbsp;&nbsp;
+              <p:commandButton value="Buscar" icon="ui-icon-search" disabled="#{!cuentasBean.habilitaCampana}" actionListener="#{cuentasBean.obtenerListaCreditos()}" />
+              <hr />
               <p:contextMenu for="cuentas" style="width:200px;">
                 <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{cuentasBean.selectorDeVista()}" />
                 <p:menuitem value="Devolver" icon="ui-icon-alert" oncomplete="PF('confirmacionDialog').show();" />
               </p:contextMenu>
-              <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditosGestionables}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" filteredValue="#{cuentasBean.filtrados}" style="width: 1050px;">
+              <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditos}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" filteredValue="#{cuentasBean.filtrados}" style="width: 1050px;">
                 <p:column headerText="Credito" style="width:150px;" filterBy="#{c.numeroCredito}" filterStyle="width:100px;">
                   <h:outputText value="#{c.numeroCredito}" style="float:right"/>
                 </p:column>
@@ -67,31 +80,37 @@
         </div>
       </div>
     </div><!-- /main-container -->
-    <p:dialog id="dlg1" widgetVar="confirmacionDialog" modal="true" header="Confirme esta devolucion">
-      <h:form id="devolucionDirectaForm">
-        <h:outputText value="Esta seguro de que desea devolver este credito?" />
-        <br />
-        <br />
-        <h:outputText value="Esta accion hara que el credito ya no se pueda gestionar." />
-        <br />
-        <br />
-        Seleccione el concepto de devolucion:
-        <br />
-        <p:selectOneMenu id="concepto" value="#{cuentasBean.conceptoSeleccionado.idConceptoDevolucion}" style="width:200px">
-          <f:selectItem itemLabel="" itemValue="0" />
-          <f:selectItems value="#{cuentasBean.listaConceptos}" var="c" itemLabel="#{c.concepto}" itemValue="#{c.idConceptoDevolucion}" />
-        </p:selectOneMenu>
-        <br />
-        Observaciones:
-        <br />
-        <p:inputText value="#{cuentasBean.observaciones}" style="width:300px" />
-        <br />
-        <br />
-        <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{cuentasBean.devolverDirecto()}" update="growl" />
-        <p:commandButton value="No" icon="ui-icon-close" oncomplete="PF('confirmacionDialog').hide();" />
-      </h:form>
-    </p:dialog>
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
   </h:body>
+  <!-- DIALOGO PARA DEVOLUCION   -->
+  <p:dialog id="dlg1" widgetVar="confirmacionDialog" modal="true" header="Confirme esta devolucion">
+    <h:form id="devolucionDirectaForm">
+      <h:outputText value="Esta seguro de que desea devolver este credito?" />
+      <br />
+      <br />
+      <h:outputText value="Esta accion hara que el credito ya no se pueda gestionar." />
+      <br />
+      <br />
+      Seleccione el concepto de devolucion:
+      <br />
+      <p:selectOneMenu id="concepto" value="#{cuentasBean.conceptoSeleccionado.idConceptoDevolucion}" style="width:200px">
+        <f:selectItem itemLabel="" itemValue="0" />
+        <f:selectItems value="#{cuentasBean.listaConceptos}" var="c" itemLabel="#{c.concepto}" itemValue="#{c.idConceptoDevolucion}" />
+      </p:selectOneMenu>
+      <br />
+      Observaciones:
+      <br />
+      <p:inputText value="#{cuentasBean.observaciones}" style="width:300px" />
+      <br />
+      <br />
+      <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{cuentasBean.devolverDirecto()}" update="growl" />
+      <p:commandButton value="No" icon="ui-icon-close" oncomplete="PF('confirmacionDialog').hide();" />
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO BARRA DE CARGA -->
+  <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+  <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+    <p:graphicImage library="img" name="loadingBarra.gif" />
+  </p:dialog>
 </html>

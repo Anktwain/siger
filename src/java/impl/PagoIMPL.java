@@ -7,6 +7,8 @@ package impl;
 
 import dao.PagoDAO;
 import dto.Pago;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -20,7 +22,7 @@ import util.log.Logs;
  *
  * @author Eduardo
  */
-public class PagoIMPL implements PagoDAO{
+public class PagoIMPL implements PagoDAO {
 
   @Override
   public boolean insertar(Pago pago) {
@@ -87,7 +89,7 @@ public class PagoIMPL implements PagoDAO{
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Pago> pagos;
     try {
-      pagos = sesion.createSQLQuery("SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus = " + Convenios.FINALIZADO + ");").addEntity(Pago.class).list();
+      pagos = sesion.createSQLQuery("SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito = " + idCredito + ");").addEntity(Pago.class).list();
     } catch (HibernateException he) {
       pagos = null;
       Logs.log.error(he.getMessage());
@@ -126,11 +128,49 @@ public class PagoIMPL implements PagoDAO{
     }
     return pagos;
   }
-  
+
+  @Override
+  public Number calcularPagosRealizados() {
+    return 0;
+  }
+
+  @Override
+  public Number calcularPagosPorAprobarPorGestor(int idGestor) {
+    return 0;
+  }
+
+  @Override
+  public Number calcularRecuperacionDeInstitucion() {
+    return 0;
+  }
+
+  @Override
+  public Number calcularRecuperacionPorGestor(int idGestor) {
+    return 0;
+  }
+
+  @Override
+  public Pago buscarPagoHoy(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Pago pago = new Pago();
+    Date f = new Date();
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String fecha = df.format(f);
+    try {
+      pago = (Pago) sesion.createSQLQuery("SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito = " + idCredito + ") AND fecha_registro = '" + fecha + "';").addEntity(Pago.class).uniqueResult();
+    } catch (HibernateException he) {
+      pago = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return pago;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();
     }
   }
-  
+
 }

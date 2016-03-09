@@ -1,5 +1,5 @@
 package dto;
-// Generated 22/02/2016 10:19:54 AM by Hibernate Tools 4.3.1
+// Generated 25/02/2016 03:00:35 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -12,11 +12,11 @@ public class Deudor  implements java.io.Serializable {
 
 
      private Integer idDeudor;
+     private Calificacion calificacion;
      private Sujeto sujeto;
      private String numeroDeudor;
      private String curp;
      private String numeroSeguroSocial;
-     private Integer calificacion;
      private Set contactos = new HashSet(0);
      private Set creditos = new HashSet(0);
 
@@ -24,15 +24,16 @@ public class Deudor  implements java.io.Serializable {
     }
 
 	
-    public Deudor(Sujeto sujeto) {
+    public Deudor(Calificacion calificacion, Sujeto sujeto) {
+        this.calificacion = calificacion;
         this.sujeto = sujeto;
     }
-    public Deudor(Sujeto sujeto, String numeroDeudor, String curp, String numeroSeguroSocial, Integer calificacion, Set contactos, Set creditos) {
+    public Deudor(Sujeto sujeto, String numeroDeudor, String curp, String numeroSeguroSocial, Set contactos, Set creditos, Calificacion calificacion) {
+       this.calificacion = calificacion;
        this.sujeto = sujeto;
        this.numeroDeudor = numeroDeudor;
        this.curp = curp;
        this.numeroSeguroSocial = numeroSeguroSocial;
-       this.calificacion = calificacion;
        this.contactos = contactos;
        this.creditos = creditos;
     }
@@ -43,6 +44,13 @@ public class Deudor  implements java.io.Serializable {
     
     public void setIdDeudor(Integer idDeudor) {
         this.idDeudor = idDeudor;
+    }
+    public Calificacion getCalificacion() {
+        return this.calificacion;
+    }
+    
+    public void setCalificacion(Calificacion calificacion) {
+        this.calificacion = calificacion;
     }
     public Sujeto getSujeto() {
         return this.sujeto;
@@ -71,13 +79,6 @@ public class Deudor  implements java.io.Serializable {
     
     public void setNumeroSeguroSocial(String numeroSeguroSocial) {
         this.numeroSeguroSocial = numeroSeguroSocial;
-    }
-    public Integer getCalificacion() {
-        return this.calificacion;
-    }
-    
-    public void setCalificacion(Integer calificacion) {
-        this.calificacion = calificacion;
     }
     public Set getContactos() {
         return this.contactos;

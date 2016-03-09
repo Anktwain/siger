@@ -25,7 +25,22 @@ public class ConceptoDevolucionIMPL implements ConceptoDevolucionDAO{
     String consulta = "SELECT * FROM concepto_devolucion;";
     try {
       cd = sesion.createSQLQuery(consulta).addEntity(ConceptoDevolucion.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
+    } catch (HibernateException he) {
+      cd = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return cd;
+  }
+
+  @Override
+  public ConceptoDevolucion buscarPorId(int idConcepto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    ConceptoDevolucion cd;
+    String consulta = "SELECT * FROM concepto_devolucion WHERE id_concepto_devolucion = " + idConcepto + ";";
+    try {
+      cd = (ConceptoDevolucion) sesion.createSQLQuery(consulta).addEntity(ConceptoDevolucion.class).uniqueResult();
     } catch (HibernateException he) {
       cd = null;
       Logs.log.error(he.getStackTrace());

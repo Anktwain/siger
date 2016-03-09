@@ -22,6 +22,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import util.constantes.Directorios;
 import util.constantes.Pagos;
 
 /**
@@ -38,9 +39,7 @@ public class PagosBean implements Serializable {
 
   // VARIABLES DE CLASE
   private final int idDespacho;
-  private String nombreImagen;
   private String urlImagen;
-  private final String ruta;
   private final String revisor;
   private Pago pagoSeleccionado;
   private final PagoDAO pagoDao;
@@ -52,7 +51,6 @@ public class PagosBean implements Serializable {
 
   // CONSTRUCTOR
   public PagosBean() {
-    ruta = "C:\\Users\\Eduardo.CORPDELRIO\\Documents\\NetBeansProjects\\SigerWeb\\SigerWeb\\web\\resources\\img\\comprobantes\\";
     idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
     revisor = indexBean.getUsuario().getNombreLogin();
     pagoDao = new PagoIMPL();
@@ -73,8 +71,7 @@ public class PagosBean implements Serializable {
   // METODO QUE TRAE LOS DATOS DEL PAGO SELECCIONADO
   public void visualizar() {
     pagoSeleccionado = revisionSeleccionados.get(0);
-    nombreImagen = pagoSeleccionado.getNombreComprobante();
-    urlImagen = ruta + nombreImagen;
+    urlImagen = Directorios.RUTA_WINDOWS_CARGA_COMPROBANTES + pagoSeleccionado.getNombreComprobante();
   }
 
 // METODO QUE APRUEBA UN PAGO
@@ -167,14 +164,6 @@ public class PagosBean implements Serializable {
     this.pagoSeleccionado = pagoSeleccionado;
   }
 
-  public String getNombreImagen() {
-    return nombreImagen;
-  }
-
-  public void setNombreImagen(String nombreImagen) {
-    this.nombreImagen = nombreImagen;
-  }
-
   public String getUrlImagen() {
     return urlImagen;
   }
@@ -182,5 +171,5 @@ public class PagosBean implements Serializable {
   public void setUrlImagen(String urlImagen) {
     this.urlImagen = urlImagen;
   }
-  
+
 }

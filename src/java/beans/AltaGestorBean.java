@@ -1,10 +1,14 @@
 package beans;
 
+import dao.DespachoDAO;
 import dao.UsuarioDAO;
+import dto.Despacho;
 import dto.Usuario;
+import impl.DespachoIMPL;
 import impl.UsuarioIMPL;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
@@ -39,17 +43,17 @@ public class AltaGestorBean implements Serializable {
   private String confirmePassword;
   private String correo;
   private String imagenPerfil;
-
+  private int idDespacho;
   private Usuario usuario;
-
+  private final DespachoDAO despachoDao;
   private final UsuarioDAO usuarioDao;
 
   /**
    *
    */
   public AltaGestorBean() {
+    despachoDao = new DespachoIMPL();
     usuarioDao = new UsuarioIMPL();
-    usuario = new Usuario();
     perfil = Perfiles.GESTOR_NO_CONFIRMADO;
     imagenPerfil = Directorios.RUTA_IMAGENES_DE_PERFIL + "sin.png";
   }
@@ -76,6 +80,10 @@ public class AltaGestorBean implements Serializable {
       FacesContext context = FacesContext.getCurrentInstance();
       context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
               "La dirección de correo electrónico ya se encuentra registrada."));
+    } else if (!despachoExiste()) {
+      FacesContext context = FacesContext.getCurrentInstance();
+      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+              "La clave de despacho proporcionada no es valida."));
     } else {
       insertarUsuario();
     }
@@ -106,6 +114,22 @@ public class AltaGestorBean implements Serializable {
     return true;
   }
 
+   /**
+   *
+   *
+   * @return
+   */
+  private boolean despachoExiste() {
+    boolean ok = false;
+    List<Despacho> despachos = despachoDao.getAll();
+    for (int i = 0; i < (despachos.size()); i++) {
+      if (despachos.get(i).getIdDespacho() == idDespacho) {
+        ok = true;
+      }
+    }
+    return ok;
+  }
+
   /**
    *
    *
@@ -113,6 +137,7 @@ public class AltaGestorBean implements Serializable {
    */
   private void insertarUsuario() throws IOException {
     // Crea objeto de tipo Usuario:
+    usuario = new Usuario();
     usuario.setNombre(nombre);
     usuario.setPaterno(paterno);
     usuario.setMaterno(materno);
@@ -121,7 +146,7 @@ public class AltaGestorBean implements Serializable {
     usuario.setPerfil(perfil);
     usuario.setCorreo(correo);
     usuario.setImagenPerfil(imagenPerfil);
-
+    usuario.setDespacho(despachoDao.buscarPorId(idDespacho));
     // Guarda el objeto en la BD
     if (usuarioDao.insertar(usuario) == 0) { // error al guardar
       FacesContext context = FacesContext.getCurrentInstance();
@@ -130,10 +155,8 @@ public class AltaGestorBean implements Serializable {
     } else {
       FacesContext context = FacesContext.getCurrentInstance();
       ExternalContext externalContext = context.getExternalContext();
-      context.addMessage(null, new FacesMessage("SE AGREGÓ NUEVO USUARIO",
-              "Se ha agregado un nuevo gestor,"
-              + " sin embargo no podrá ingresar al sistema hasta "
-              + "que sea confirmado por un Administrador"));
+      context.addMessage(null, new FacesMessage("Operacion exitosa",
+              "Se agrego el usuario correctamente al sistema. Espere instrucciones del administrador."));
       externalContext.getFlash().setKeepMessages(true);
       FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
     }
@@ -305,6 +328,14 @@ public class AltaGestorBean implements Serializable {
    */
   public void setImagenPerfil(String imagenPerfil) {
     this.imagenPerfil = imagenPerfil;
+  }
+
+  public int getIdDespacho() {
+    return idDespacho;
+  }
+
+  public void setIdDespacho(int idDespacho) {
+    this.idDespacho = idDespacho;
   }
 
 }

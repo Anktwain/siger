@@ -9,5 +9,6 @@ import java.util.List;
  */
 public interface DespachoDAO {
   public Despacho buscar(String nombreCorto);
+  public Despacho buscarPorId(int idDespacho);
   public List<Despacho> getAll();
 }

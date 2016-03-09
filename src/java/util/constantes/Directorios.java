@@ -18,6 +18,6 @@ public interface Directorios {
   public static final String RUTA_COLUMNAS_UTILES = "Remesas/columnas.txt";
   
   // RUTAS WINDOWS
-  public static final String RUTA_WINDOWS_CARGA_COMPROBANTES = "C:\\Comprobantes\\";
+  public static final String RUTA_WINDOWS_CARGA_COMPROBANTES = "C:\\apache-tomee-plume-1.7.2\\webapps\\comprobantes\\";
   public static final String RUTA_WINDOWS_PERIODO_IMPRESIONES = "C:\\Periodo_Impresiones\\";
 }

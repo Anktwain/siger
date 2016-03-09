@@ -18,8 +18,11 @@ public interface CreditoDAO {
   public List<Credito> buscarCreditosPorCliente(String numeroDeudor);
   public List<Credito> buscarCreditosRelacionados(Credito creditoActual);
   public List<String> barraBusquedaAdmin(String valor, int idDespacho);
-  public List<String> barraBusquedaGestor(String valor, int idUsuario);
   public Credito buscar(String numeroCredito);
   public Credito insertar(Credito credito);
   public List<Credito> buscarPorMarcaje(int idMarcaje);
+  public List<Credito> buscarCreditosPorCampana(int idCampana);
+  public List<Credito> buscarCreditosPorCampanaGestor(int idCampana, int idUsuario);
+  public List<Credito> buscarCreditosConPromesaDePagoHoy();
+  public List<Credito> buscarCreditosPorGestor(int idUsuario);
 }

@@ -1,5 +1,5 @@
 package dto;
-// Generated 22/02/2016 10:19:54 AM by Hibernate Tools 4.3.1
+// Generated 25/02/2016 03:00:35 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -12,7 +12,7 @@ import java.util.Set;
 public class Actualizacion  implements java.io.Serializable {
 
 
-     private Integer idActualizacion;
+     private int idActualizacion;
      private Credito credito;
      private Remesa remesa;
      private Integer mesesVencidos;
@@ -26,7 +26,8 @@ public class Actualizacion  implements java.io.Serializable {
     }
 
 	
-    public Actualizacion(Credito credito, Remesa remesa) {
+    public Actualizacion(int idActualizacion, Credito credito, Remesa remesa) {
+        this.idActualizacion = idActualizacion;
         this.credito = credito;
         this.remesa = remesa;
     }
@@ -41,11 +42,11 @@ public class Actualizacion  implements java.io.Serializable {
        this.facs = facs;
     }
    
-    public Integer getIdActualizacion() {
+    public int getIdActualizacion() {
         return this.idActualizacion;
     }
     
-    public void setIdActualizacion(Integer idActualizacion) {
+    public void setIdActualizacion(int idActualizacion) {
         this.idActualizacion = idActualizacion;
     }
     public Credito getCredito() {

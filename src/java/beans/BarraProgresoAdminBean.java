@@ -9,9 +9,11 @@ import dao.CreditoDAO;
 import dao.InstitucionDAO;
 import dao.SujetoDAO;
 import dao.GestionDAO;
+import dao.PagoDAO;
 import impl.CreditoIMPL;
 import impl.InstitucionIMPL;
 import impl.GestionIMPL;
+import impl.PagoIMPL;
 import impl.SujetoIMPL;
 import java.io.Serializable;
 import javax.el.ELContext;
@@ -31,8 +33,7 @@ public class BarraProgresoAdminBean implements Serializable {
 
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
-  private final SujetoDAO sujetoDao;
-  private final InstitucionDAO institucionDao;
+  private final PagoDAO pagoDao;
   private final int idDespacho;
 
   // LLAMADA A OTROS BEANS
@@ -42,8 +43,7 @@ public class BarraProgresoAdminBean implements Serializable {
   public BarraProgresoAdminBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
-    sujetoDao = new SujetoIMPL();
-    institucionDao = new InstitucionIMPL();
+    pagoDao = new PagoIMPL();
     idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
   }
 
@@ -62,14 +62,14 @@ public class BarraProgresoAdminBean implements Serializable {
   }
 
   public String calcularPagos() {
-    Number total = sujetoDao.calcularPagosRealizados();
+    Number total = pagoDao.calcularPagosRealizados();
     String pagos = total.toString();
     Logs.log.info("Se han realizado " + total + " pagos");
     return pagos;
   }
 
   public String calcularRecuperacion() {
-    Number total = institucionDao.calcularRecuperacionDeInstitucion();
+    Number total = pagoDao.calcularRecuperacionDeInstitucion();
     String recuperacion = total.toString();
     Logs.log.info("Se ha recuperado un %" + total + " del saldo a recuperar");
     return (recuperacion + " %");

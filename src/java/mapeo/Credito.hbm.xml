@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 22/02/2016 10:19:55 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 25/02/2016 03:00:36 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Credito" optimistic-lock="version" table="credito">
     <id name="idCredito" type="java.lang.Integer">
@@ -70,17 +70,17 @@
       </key>
       <one-to-many class="dto.Historial"/>
     </set>
-    <set fetch="select" inverse="true" lazy="true" name="gestions" table="gestion">
-      <key>
-        <column name="id_credito" not-null="true"/>
-      </key>
-      <one-to-many class="dto.Gestion"/>
-    </set>
     <set fetch="select" inverse="true" lazy="true" name="actualizacions" table="actualizacion">
       <key>
         <column name="id_credito" not-null="true"/>
       </key>
       <one-to-many class="dto.Actualizacion"/>
+    </set>
+    <set fetch="select" inverse="true" lazy="true" name="gestions" table="gestion">
+      <key>
+        <column name="id_credito" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Gestion"/>
     </set>
     <set fetch="select" inverse="true" lazy="true" name="autos" table="auto">
       <key>

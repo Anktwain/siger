@@ -5,13 +5,14 @@
  */
 package impl;
 
-
 import dao.DondeGestionDAO;
 import dao.GestionDAO;
 import dao.QuienGestionDAO;
 import dao.TipoQuienGestionDAO;
 import dto.DescripcionGestion;
 import dto.Gestion;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -33,7 +34,6 @@ public class GestionIMPL implements GestionDAO {
     String consulta = "SELECT COUNT(*) FROM gestion WHERE id_tipo_gestion = 1 AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
     try {
       visitas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       visitas = -1;
       Logs.log.error(he.getStackTrace());
@@ -47,10 +47,9 @@ public class GestionIMPL implements GestionDAO {
   public Number calcularVisitasDomiciliariasPorGestor(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number visitas;
-    String consulta = "SELECT COUNT(*) FROM gestion WHERE tipo_gestion = 'VISITA DOMICILIARIA' AND id_usuario = " + idUsuario + " AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    String consulta = "SELECT COUNT(*) FROM gestion WHERE id_tipo_gestion = 1 AND id_usuario = " + idUsuario + " AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
     try {
       visitas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       visitas = -1;
       Logs.log.error(he.getStackTrace());
@@ -86,8 +85,7 @@ public class GestionIMPL implements GestionDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Gestion> gestiones;
     try {
-      gestiones = sesion.createSQLQuery("SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND id_usuario = " + idUsuario + ";").addEntity(Gestion.class).list();
-      Logs.log.info("Se ejecutó query: ");
+      gestiones = sesion.createSQLQuery("SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND id_usuario = " + idUsuario + " ORDER BY fecha DESC;").addEntity(Gestion.class).list();
     } catch (HibernateException he) {
       gestiones = null;
       Logs.log.error(he.getStackTrace());
@@ -100,12 +98,13 @@ public class GestionIMPL implements GestionDAO {
   @Override
   public List<Gestion> buscarGestionesCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Gestion> gestiones;
+    List<Gestion> gestiones = new ArrayList();
     try {
-      gestiones = sesion.createSQLQuery("SELECT * FROM gestion WHERE id_credito = " + idCredito + ";").addEntity(Gestion.class).list();
-      Logs.log.info("Se ejecutó query: ");
+      String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " ORDER BY fecha DESC;";
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
     } catch (HibernateException he) {
       gestiones = null;
+      System.out.println("MANDO GESTIONES A NULL");
       Logs.log.error(he.getStackTrace());
     } finally {
       cerrar(sesion);
@@ -119,7 +118,6 @@ public class GestionIMPL implements GestionDAO {
     List<Gestion> gestiones;
     try {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       gestiones = null;
       Logs.log.error(he.getStackTrace());
@@ -155,11 +153,33 @@ public class GestionIMPL implements GestionDAO {
     }
     return gestion;
   }
-  
+
+  @Override
+  public boolean buscarGestionHoy(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones;
+    boolean ok = false;
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    Date fecha = new Date();
+    String f = df.format(fecha);
+    try {
+      String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND DATE(fecha) = '" + f + "' AND id_tipo_gestion != 5;";
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      if (gestiones.size() > 0) {
+        ok = true;
+      }
+    } catch (HibernateException he) {
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();
     }
   }
-  
+
 }

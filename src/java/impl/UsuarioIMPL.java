@@ -212,16 +212,15 @@ public class UsuarioIMPL implements UsuarioDAO {
   /**
    * Busca únicamente a los usuarios no confirmados.
    *
+   * @param idDespacho
    * @return
    */
   @Override
-  public List<Usuario> buscarUsuariosNoConfirmados() {
+  public List<Usuario> buscarUsuariosNoConfirmados(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Usuario> listaUsuarioNoConfirmados;
     try {
-      listaUsuarioNoConfirmados = sesion.createQuery("from Usuario u"
-              + " where u.perfil = " + Perfiles.GESTOR_NO_CONFIRMADO).list();
+      listaUsuarioNoConfirmados = sesion.createSQLQuery("SELECT * FROM usuario WHERE perfil = " + Perfiles.GESTOR_NO_CONFIRMADO + " AND id_despacho = " + idDespacho + ";").addEntity(Usuario.class).list();
     } catch (HibernateException he) {
       listaUsuarioNoConfirmados = null;
       he.printStackTrace();
@@ -240,7 +239,6 @@ public class UsuarioIMPL implements UsuarioDAO {
   @Override
   public Usuario buscarNombreLogin(String nombreLogin) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Usuario usuario;
     try {
       usuario = (Usuario) sesion.createQuery("from Usuario u where "
@@ -264,7 +262,6 @@ public class UsuarioIMPL implements UsuarioDAO {
   @Override
   public Usuario buscarCorreo(String correo) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Usuario usuario;
     try {
       usuario = (Usuario) sesion.createQuery("from Usuario u where "
@@ -282,7 +279,6 @@ public class UsuarioIMPL implements UsuarioDAO {
   @Override
   public Usuario buscarUsuarioPorIdGestor(int idGestor) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Usuario usuario;
     try {
       usuario = (Usuario) sesion.createSQLQuery("SELECT * FROM usuario WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ");").addEntity(Usuario.class).uniqueResult();
@@ -298,7 +294,6 @@ public class UsuarioIMPL implements UsuarioDAO {
   @Override
   public List<Usuario> buscarGestores(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Usuario> listaUsuario;
     String query = "select * from usuario u where u.perfil = " + Perfiles.GESTOR
             + " and u.id_despacho = " + idDespacho;
@@ -314,8 +309,23 @@ public class UsuarioIMPL implements UsuarioDAO {
 
     return listaUsuario;
   }
-  
-  
+
+  @Override
+  public List<Usuario> buscarUsuariosPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Usuario> listaUsuario;
+    String query = "SELECT * FROM usuario WHERE id_despacho = " + idDespacho + " AND perfil != " + Perfiles.ELIMINADO + ";";
+    try {
+      listaUsuario = sesion.createSQLQuery(query).addEntity(Usuario.class).list();
+    } catch (HibernateException he) {
+      listaUsuario = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+
+    return listaUsuario;
+  }
 
   /**
    *

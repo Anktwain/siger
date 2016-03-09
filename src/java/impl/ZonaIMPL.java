@@ -47,7 +47,6 @@ public class ZonaIMPL implements ZonaDAO {
     String consulta = "SELECT * FROM zona WHERE id_despacho = " + idDespacho + ";";
     try {
       zonas = sesion.createSQLQuery(consulta).addEntity(Zona.class).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       Logs.log.error(he.getStackTrace());
     } finally {
@@ -63,7 +62,6 @@ public class ZonaIMPL implements ZonaDAO {
     String consulta = "SELECT nombre FROM zona WHERE id_despacho = " + idDespacho + ";";
     try {
       nombres = sesion.createSQLQuery(consulta).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       Logs.log.error(he.getStackTrace());
     } finally {
@@ -79,7 +77,6 @@ public class ZonaIMPL implements ZonaDAO {
     String consulta = "SELECT id_gestor FROM zona;";
     try {
       gestores = sesion.createSQLQuery(consulta).list();
-      Logs.log.info("Se ejecutó query: " + consulta);
     } catch (HibernateException he) {
       Logs.log.error(he.getStackTrace());
     } finally {

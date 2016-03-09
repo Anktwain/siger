@@ -40,7 +40,7 @@ public class CreadorSQL {
       sujeto = sujetoDao.insertar(new Sujeto(f.getNombre(), f.getRfc(), 0));
       if (sujeto != null) {
         f.setIdSujeto(sujeto.getIdSujeto());
-        deudor = deudorDao.insertar(new Deudor(sujeto));
+        deudor = deudorDao.insertar(new Deudor(null, sujeto));
         if (deudor != null) {
           deudor.setNumeroDeudor(f.getIdCliente());
           f.setIdDeudor(deudor.getIdDeudor());

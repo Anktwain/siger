@@ -5,7 +5,7 @@
  */
 package beans;
 
-
+import dao.ConceptoDevolucionDAO;
 import dao.ContactoDAO;
 import dao.ConvenioPagoDAO;
 import dao.CreditoDAO;
@@ -14,16 +14,21 @@ import dao.EmailDAO;
 import dao.GestionDAO;
 import dao.GestorDAO;
 import dao.HistorialDAO;
+import dao.MotivoDevolucionDAO;
 import dao.TelefonoDAO;
+import dto.ConceptoDevolucion;
 import dto.Contacto;
 import dto.ConvenioPago;
 import dto.Credito;
+import dto.Devolucion;
 import dto.Direccion;
 import dto.Email;
 import dto.Gestion;
 import dto.Gestor;
 import dto.Historial;
+import dto.MotivoDevolucion;
 import dto.Telefono;
+import impl.ConceptoDevolucionIMPL;
 import impl.ContactoIMPL;
 import impl.ConvenioPagoIMPL;
 import impl.CreditoIMPL;
@@ -32,6 +37,7 @@ import impl.EmailIMPL;
 import impl.GestionIMPL;
 import impl.GestorIMPL;
 import impl.HistorialIMPL;
+import impl.MotivoDevolucionIMPL;
 import impl.TelefonoIMPL;
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -46,6 +52,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Convenios;
+import util.constantes.Devoluciones;
 import util.constantes.Perfiles;
 import util.constantes.TipoCreditos;
 
@@ -60,11 +67,12 @@ public class VistaCreditoBean implements Serializable {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
-  CuentasBean cuentasBean = (CuentasBean) elContext.getELResolver().getValue(elContext, null, "cuentasBean");
 
   // VARIABLES DE CLASE
-  private boolean reasignarVisible;
-  private boolean conveniosVisible;
+  private CuentasBean cuentasBean;
+  private CuentasGestorBean cuentasGestorBean;
+  private boolean adminVisible;
+  private String observaciones;
   private String nombreDeudor;
   private String numeroCredito;
   private String numeroCreditos;
@@ -80,10 +88,11 @@ public class VistaCreditoBean implements Serializable {
   private float mensualidad;
   private int mesesVencidos;
   private float saldoVencido;
-  private Credito creditoActualCred;
   private Credito creditoActual;
   private Gestor gestorSeleccionado;
   private Gestor gestorActual;
+  private ConceptoDevolucion conceptoSeleccionado;
+  private MotivoDevolucion motivoSeleccionado;
   private final CreditoDAO creditoDao;
   private final DireccionDAO direccionDAO;
   private final TelefonoDAO telefonoDAO;
@@ -93,6 +102,8 @@ public class VistaCreditoBean implements Serializable {
   private final GestionDAO gestionDao;
   private final GestorDAO gestorDao;
   private final ConvenioPagoDAO convenioPagoDao;
+  private final ConceptoDevolucionDAO conceptoDevolucionDao;
+  private final MotivoDevolucionDAO motivoDevolucionDao;
   private List<Gestion> listaGestiones;
   private List<Gestor> listaGestores;
   private List<Credito> creditosRelacionados;
@@ -102,9 +113,12 @@ public class VistaCreditoBean implements Serializable {
   private List<Email> listaCorreos;
   private List<Contacto> listaContactos;
   private List<Historial> historial;
+  private List<ConceptoDevolucion> listaConceptos;
+  private List<MotivoDevolucion> listaMotivos;
 
   public VistaCreditoBean() {
-    creditoActualCred = new Credito();
+    conceptoSeleccionado = new ConceptoDevolucion();
+    motivoSeleccionado = new MotivoDevolucion();
     creditoActual = new Credito();
     gestorSeleccionado = new Gestor();
     gestorActual = new Gestor();
@@ -117,28 +131,40 @@ public class VistaCreditoBean implements Serializable {
     gestionDao = new GestionIMPL();
     gestorDao = new GestorIMPL();
     convenioPagoDao = new ConvenioPagoIMPL();
+    conceptoDevolucionDao = new ConceptoDevolucionIMPL();
+    motivoDevolucionDao = new MotivoDevolucionIMPL();
+    listaMotivos = new ArrayList();
     creditosRelacionados = new ArrayList();
     credsRelacionados = new ArrayList();
     listaDirecciones = new ArrayList();
     historial = new ArrayList();
     listaGestiones = new ArrayList();
     listaGestores = new ArrayList();
-    creditoActualCred = cuentasBean.getCreditoSeleccionado();
+    listaGestores = gestorDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
+    listaConceptos = conceptoDevolucionDao.obtenerConceptos();
     obtenerDatos();
   }
 
   // METODO QUE OBTENDRA TODOS LOS DATOS PRIMARIOS SEGUN EL CREDITO SELECCIONADO EN LA VISTA cuentas.xhtml
   private void obtenerDatos() {
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      adminVisible = false;
+      cuentasGestorBean = (CuentasGestorBean) elContext.getELResolver().getValue(elContext, null, "cuentasGestorBean");
+      creditoActual = cuentasGestorBean.getCreditoActual();
+
+    } else {
+      adminVisible = true;
+      cuentasBean = (CuentasBean) elContext.getELResolver().getValue(elContext, null, "cuentasBean");
+      creditoActual = cuentasBean.getCreditoSeleccionado();
+    }
     // OBTIENE LA CADENA CON EL NUMERO DE CREDITO
-    numeroCredito = creditoActualCred.getNumeroCredito();
-    // OBTENEMOS EL CREDITO RELACIONADO
-    creditoActual = creditoDao.buscarCreditoPorId(creditoDao.obtenerIdDelCredito(numeroCredito));
+    numeroCredito = creditoActual.getNumeroCredito();
     // BUSCAMOS EL GESTOR ACTUAL DEL CREDITO
     gestorActual = gestorDao.buscarGestorDelCredito(creditoActual.getIdCredito());
     // OBTENEMOS EL ID DEL SUJETO PARA TODAS LAS OPERACIONES
     int idSujeto = creditoActual.getDeudor().getSujeto().getIdSujeto();
     // OBTIENE LA CADENA CON EL NOMBRE DEL DEUDOR
-    nombreDeudor = creditoActualCred.getDeudor().getSujeto().getNombreRazonSocial();
+    nombreDeudor = creditoActual.getDeudor().getSujeto().getNombreRazonSocial();
     // OBTENER LA PRIMER DIRECCION DEL DEUDOR
     Direccion d;
     try {
@@ -173,17 +199,6 @@ public class VistaCreditoBean implements Serializable {
     saldoVencido = mensualidad * mesesVencidos;
     // OBTENEMOS LA LISTA DE GESTIONES PREVIAS
     obtenerGestionesAnteriores();
-    // LOS ADMINISTRADORES NO PUEDEN REALIZAR CONVENIOS DE PAGO
-    // LOS GESTORES NO PUEDEN REASIGNAR CREDITOS
-    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      // NO SE VISUALIZA LA REASIGNACION DE GESTOR
-      reasignarVisible = false;
-      conveniosVisible = true;
-    } else {
-      listaGestores = gestorDao.buscarPorDespachoExceptoEste(indexBean.getUsuario().getDespacho().getIdDespacho(), gestorActual.getIdGestor());
-      reasignarVisible = true;
-      conveniosVisible = false;
-    }
     // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
     listaDirecciones = direccionDAO.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CREDITOS RELACIONADOS
@@ -215,7 +230,7 @@ public class VistaCreditoBean implements Serializable {
     FacesContext contexto = FacesContext.getCurrentInstance();
     // FINALIZAMOS EL CONVENIO EN CURSO DEL GESTOR ACTUAL PARA ESTE CREDITO
     ConvenioPago convenio = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
-    boolean ok = true;
+    boolean ok;
     ConvenioPago c = convenio;
     c.setEstatus(Convenios.FINALIZADO);
     ok = convenioPagoDao.editar(c);
@@ -253,32 +268,32 @@ public class VistaCreditoBean implements Serializable {
   // METODO QUE OBTIENE LA LISTA DE GESTIONES
   public void obtenerGestionesAnteriores() {
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      listaGestiones = gestionDao.buscarGestionesCreditoGestor(creditoActual.getIdCredito(), indexBean.getUsuario().getIdUsuario());
+      listaGestiones = gestionDao.buscarGestionesCreditoGestor(indexBean.getUsuario().getIdUsuario(), creditoActual.getIdCredito());
     } else {
       listaGestiones = gestionDao.buscarGestionesCredito(creditoActual.getIdCredito());
     }
   }
 
+  // METODO QUE OBTIENE LOS MOTIVOS DE DEVOLUCION DEPENDIENDO DEL CONCEPTO SELECCIONADO
+  public void preparaMotivos(){
+    conceptoSeleccionado = conceptoDevolucionDao.buscarPorId(conceptoSeleccionado.getIdConceptoDevolucion());
+    listaMotivos = motivoDevolucionDao.obtenerMotivosPorConcepto(conceptoSeleccionado.getIdConceptoDevolucion());
+  }
+  
+  // METODO QUE MANDA UN CREDITO A DEVOLUCION
+  public void devolverCredito(){
+    Devolucion d = new Devolucion();
+    d.setCredito(creditoActual);
+    // SI ES ADMIN QUE SE DEVUELVA DIRECTAMENTE
+    d.setEstatus(Devoluciones.PENDIENTE);
+    d.setObservaciones(observaciones);
+    d.setConceptoDevolucion(conceptoSeleccionado);
+  }
+  
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // GETTERS & SETTERS
-  public boolean isReasignarVisible() {
-    return reasignarVisible;
-  }
-
-  public void setReasignarVisible(boolean reasignarVisible) {
-    this.reasignarVisible = reasignarVisible;
-  }
-
-  public boolean isConveniosVisible() {
-    return conveniosVisible;
-  }
-
-  public void setConveniosVisible(boolean conveniosVisible) {
-    this.conveniosVisible = conveniosVisible;
-  }
-
   public String getNombreDeudor() {
     return nombreDeudor;
   }
@@ -391,14 +406,6 @@ public class VistaCreditoBean implements Serializable {
     this.saldoVencido = saldoVencido;
   }
 
-  public Credito getCreditoActualCred() {
-    return creditoActualCred;
-  }
-
-  public void setCreditoActualCred(Credito creditoActualCred) {
-    this.creditoActualCred = creditoActualCred;
-  }
-
   public Credito getCreditoActual() {
     return creditoActual;
   }
@@ -501,6 +508,54 @@ public class VistaCreditoBean implements Serializable {
 
   public void setMesesVencidos(int mesesVencidos) {
     this.mesesVencidos = mesesVencidos;
+  }
+
+  public boolean isAdminVisible() {
+    return adminVisible;
+  }
+
+  public void setAdminVisible(boolean adminVisible) {
+    this.adminVisible = adminVisible;
+  }
+
+  public List<ConceptoDevolucion> getListaConceptos() {
+    return listaConceptos;
+  }
+
+  public void setListaConceptos(List<ConceptoDevolucion> listaConceptos) {
+    this.listaConceptos = listaConceptos;
+  }
+
+  public ConceptoDevolucion getConceptoSeleccionado() {
+    return conceptoSeleccionado;
+  }
+
+  public void setConceptoSeleccionado(ConceptoDevolucion conceptoSeleccionado) {
+    this.conceptoSeleccionado = conceptoSeleccionado;
+  }
+
+  public MotivoDevolucion getMotivoSeleccionado() {
+    return motivoSeleccionado;
+  }
+
+  public void setMotivoSeleccionado(MotivoDevolucion motivoSeleccionado) {
+    this.motivoSeleccionado = motivoSeleccionado;
+  }
+
+  public List<MotivoDevolucion> getListaMotivos() {
+    return listaMotivos;
+  }
+
+  public void setListaMotivos(List<MotivoDevolucion> listaMotivos) {
+    this.listaMotivos = listaMotivos;
+  }
+
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
   }
 
 }

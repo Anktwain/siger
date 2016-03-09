@@ -1,5 +1,5 @@
 package dto;
-// Generated 22/02/2016 10:19:54 AM by Hibernate Tools 4.3.1
+// Generated 25/02/2016 03:00:35 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -15,8 +15,8 @@ public class Despacho  implements java.io.Serializable {
      private Sujeto sujeto;
      private String nombreCorto;
      private Set zonas = new HashSet(0);
-     private Set usuarios = new HashSet(0);
      private Set creditos = new HashSet(0);
+     private Set usuarios = new HashSet(0);
 
     public Despacho() {
     }
@@ -25,12 +25,12 @@ public class Despacho  implements java.io.Serializable {
     public Despacho(Sujeto sujeto) {
         this.sujeto = sujeto;
     }
-    public Despacho(Sujeto sujeto, String nombreCorto, Set zonas, Set usuarios, Set creditos) {
+    public Despacho(Sujeto sujeto, String nombreCorto, Set zonas, Set creditos, Set usuarios) {
        this.sujeto = sujeto;
        this.nombreCorto = nombreCorto;
        this.zonas = zonas;
-       this.usuarios = usuarios;
        this.creditos = creditos;
+       this.usuarios = usuarios;
     }
    
     public Integer getIdDespacho() {
@@ -61,19 +61,19 @@ public class Despacho  implements java.io.Serializable {
     public void setZonas(Set zonas) {
         this.zonas = zonas;
     }
-    public Set getUsuarios() {
-        return this.usuarios;
-    }
-    
-    public void setUsuarios(Set usuarios) {
-        this.usuarios = usuarios;
-    }
     public Set getCreditos() {
         return this.creditos;
     }
     
     public void setCreditos(Set creditos) {
         this.creditos = creditos;
+    }
+    public Set getUsuarios() {
+        return this.usuarios;
+    }
+    
+    public void setUsuarios(Set usuarios) {
+        this.usuarios = usuarios;
     }
 
 

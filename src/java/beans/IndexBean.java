@@ -13,7 +13,6 @@ import javax.faces.context.FacesContext;
 import util.MD5;
 import java.util.Calendar;
 import java.util.Date;
-import org.primefaces.context.RequestContext;
 import util.constantes.Perfiles;
 import util.log.Logs;
 
@@ -113,8 +112,6 @@ public class IndexBean implements Serializable {
    * @throws java.io.IOException
    */
   public void ingresar() throws IOException {
-    cerrarSesion();
-    Logs.log.info("########################### Estamos en la la funcion ingresar ###########################\n");
     nombreUsuario = nombreUsuario.toLowerCase();
     usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
     Calendar cal = Calendar.getInstance();
@@ -124,7 +121,7 @@ public class IndexBean implements Serializable {
         case Perfiles.GESTOR_NO_CONFIRMADO:
           instanciaActual.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
                   usuario.getNombre() + " ha ingresado con el perfil "
-                  + usuario.getPerfil() + " (GESTOR_NO_CONFIRMADO) correctamente."));
+                  + usuario.getPerfil() + " (GESTOR_NO_CONFIRMADO)."));
           Logs.log.info("#################### NOT OK. ACCESO DENEGADO(Gestor no confirmado).");
           sesionActiva = false;
           break;
@@ -177,13 +174,8 @@ public class IndexBean implements Serializable {
       Logs.log.info("#################### NOT OK. USUARIO NO CONFIRMADO O NOMBRE DE USUARIO O CONTRASEÑA INCORRECTOS!");
       sesionActiva = false;
     }
-  }
-
-  public void cerrarSesion() {
-    sesionActiva = false;
-    usuarioActivo = null;
-    vista = "";
-    RequestContext.getCurrentInstance().update("index.xhtml");
+    nombreUsuario = "";
+    password = "";
   }
 
   /**

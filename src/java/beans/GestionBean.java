@@ -5,7 +5,6 @@
  */
 package beans;
 
-
 import dao.AsuntoGestionDAO;
 import dao.CreditoDAO;
 import dao.DescripcionGestionDAO;
@@ -44,6 +43,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Marcajes;
+import util.constantes.Perfiles;
 
 /**
  *
@@ -56,10 +56,12 @@ public class GestionBean implements Serializable {
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-  VistaCreditoBean vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
+  IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
   ObtenerOracionCompletaGestionBean obtenerOracionCompletaGestionBean = (ObtenerOracionCompletaGestionBean) elContext.getELResolver().getValue(elContext, null, "obtenerOracionCompletaBean");
 
   // VARIABLES DE CLASE
+  private VistaCreditoBean vistaCreditoBean;
+  private CuentasGestorBean cuentasGestorBean;
   private List<TipoGestion> listaTipos;
   private List<DondeGestion> listaDonde;
   private List<AsuntoGestion> listaAsuntos;
@@ -85,9 +87,11 @@ public class GestionBean implements Serializable {
   private final QuienGestionDAO quienGestionDao;
   private final DescripcionGestionDAO descripcionGestionDao;
   private final CreditoDAO creditoDao;
+  private Credito creditoActual;
 
   // CONSTRUCTOR
   public GestionBean() {
+    creditoActual = new Credito();
     listaTipos = new ArrayList();
     listaDonde = new ArrayList();
     listaAsuntos = new ArrayList();
@@ -113,6 +117,18 @@ public class GestionBean implements Serializable {
     descripcionSeleccionada = new DescripcionGestion();
     nueva = new Gestion();
     listaTipos = tipoGestionDao.buscarTodo();
+    obtenerBeanActual();
+  }
+
+  // METODO QUE OBTIENE EL CREDITO ACTUAL DEPENDIENDO DE LA VISTA
+  public final void obtenerBeanActual() {
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      cuentasGestorBean = (CuentasGestorBean) elContext.getELResolver().getValue(elContext, null, "cuentasGestorBean");
+      creditoActual = cuentasGestorBean.getCreditoActual();
+    } else {
+      vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
+      creditoActual = vistaCreditoBean.getCreditoActual();
+    }
   }
 
   public void preparaDonde() {
@@ -152,8 +168,7 @@ public class GestionBean implements Serializable {
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {
       limpiarCampos();
-      vistaCreditoBean.obtenerGestionesAnteriores();
-      RequestContext.getCurrentInstance().update("DetalleCredito");
+      RequestContext.getCurrentInstance().update("@all");
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se guardo la gestion: "));
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se guardo la gestion. Contacte al equipo de sistemas."));
@@ -171,22 +186,23 @@ public class GestionBean implements Serializable {
     nueva.setQuienGestion(sujetoSeleccionado);
     nueva.setGestion(gestion.toUpperCase());
     nueva.setEstatusInformativo(estatusSeleccionado);
-    nueva.setCredito(vistaCreditoBean.getCreditoActual());
     Date fecha = new Date();
     nueva.setFecha(fecha);
-    nueva.setUsuario(vistaCreditoBean.cuentasBean.indexBean.getUsuario());
+    nueva.setCredito(creditoActual);
+    nueva.setUsuario(indexBean.getUsuario());
   }
 
   // METODO QUE VERIFICA SI LA GESTION QUITA EL MARCAJE A LAS CUENTAS
   public boolean verificaMarcaje() {
-    int marcaje = vistaCreditoBean.getCreditoActual().getMarcaje();
+    //TOFIX AQUI
+    int marcaje = creditoActual.getMarcaje();
     boolean ok = true;
     // APAGAR MARCAJE
     switch (marcaje) {
       case 1:
         // CORREO ORDINARIO
         if (descripcionSeleccionada.getAbreviatura().equals("4CADE")) {
-          Credito c = vistaCreditoBean.getCreditoActual();
+          Credito c = creditoActual;
           c.setMarcaje(Marcajes.SIN_MARCAJE);
           ok = creditoDao.editar(c);
         }
@@ -194,7 +210,7 @@ public class GestionBean implements Serializable {
       case 2:
         // TELEGRAMA
         if ((descripcionSeleccionada.getAbreviatura().equals("3CETE")) || (descripcionSeleccionada.getAbreviatura().equals("21TELE3"))) {
-          Credito c = vistaCreditoBean.getCreditoActual();
+          Credito c = creditoActual;
           c.setMarcaje(Marcajes.SIN_MARCAJE);
           ok = creditoDao.editar(c);
         }
@@ -202,7 +218,7 @@ public class GestionBean implements Serializable {
       case 3:
         // VISITA
         if (nueva.getTipoGestion().getIdTipoGestion() == 1) {
-          Credito c = vistaCreditoBean.getCreditoActual();
+          Credito c = creditoActual;
           c.setMarcaje(Marcajes.SIN_MARCAJE);
           ok = creditoDao.editar(c);
         }
@@ -210,7 +226,7 @@ public class GestionBean implements Serializable {
       case 4:
         // CORREO ELECTRONICO
         if (descripcionSeleccionada.getAbreviatura().equals("2COEL")) {
-          Credito c = vistaCreditoBean.getCreditoActual();
+          Credito c = creditoActual;
           c.setMarcaje(Marcajes.SIN_MARCAJE);
           ok = creditoDao.editar(c);
         }
@@ -218,12 +234,12 @@ public class GestionBean implements Serializable {
       case 5:
         // LOCALIZACION
         if ((descripcionSeleccionada.getAbreviatura().contains("POSI")) && (tipoSeleccionado.getIdTipoGestion() == (1 | 2))) {
-          Credito c = vistaCreditoBean.getCreditoActual();
+          Credito c = creditoActual;
           c.setMarcaje(Marcajes.SIN_MARCAJE);
           ok = creditoDao.editar(c);
         }
         if (descripcionSeleccionada.getAbreviatura().equals("2SISB")) {
-          Credito c = vistaCreditoBean.getCreditoActual();
+          Credito c = creditoActual;
           c.setMarcaje(Marcajes.SIN_MARCAJE);
           ok = creditoDao.editar(c);
         }
@@ -231,7 +247,7 @@ public class GestionBean implements Serializable {
       case 6:
         // INFORMACION DEL BANCO
         if (descripcionSeleccionada.getAbreviatura().equals("4CIAB")) {
-          Credito c = vistaCreditoBean.getCreditoActual();
+          Credito c = creditoActual;
           c.setMarcaje(Marcajes.SIN_MARCAJE);
           ok = creditoDao.editar(c);
         }
@@ -241,49 +257,41 @@ public class GestionBean implements Serializable {
     // ENCENDER MARCAJE
     // CASO CORREO ORDINARIO
     if (descripcionSeleccionada.getAbreviatura().equals("26CACO")) {
-      Credito c = vistaCreditoBean.getCreditoActual();
+      Credito c = creditoActual;
       c.setMarcaje(Marcajes.CORREO_SEPOMEX);
       ok = creditoDao.editar(c);
-    }
-    // CASO TELEGRAMA
-    else if((descripcionSeleccionada.getAbreviatura().equals("19TELE1")) || (descripcionSeleccionada.getAbreviatura().equals("20TELE2"))){
-      Credito c = vistaCreditoBean.getCreditoActual();
+    } // CASO TELEGRAMA
+    else if ((descripcionSeleccionada.getAbreviatura().equals("19TELE1")) || (descripcionSeleccionada.getAbreviatura().equals("20TELE2"))) {
+      Credito c = creditoActual;
       c.setMarcaje(Marcajes.TELEGRAMA);
       ok = creditoDao.editar(c);
-    }
-    // CASO VISITA
-    else if (descripcionSeleccionada.getAbreviatura().equals("32RUVD")){
-      Credito c = vistaCreditoBean.getCreditoActual();
+    } // CASO VISITA
+    else if (descripcionSeleccionada.getAbreviatura().equals("32RUVD")) {
+      Credito c = creditoActual;
       c.setMarcaje(Marcajes.TELEGRAMA);
       ok = creditoDao.editar(c);
-    }
-    // CASO CORREO ELECTRONICO
-    else if ((descripcionSeleccionada.getAbreviatura().equals("27CEBC")) || (descripcionSeleccionada.getAbreviatura().equals("28CEBCC")) || (descripcionSeleccionada.getAbreviatura().equals("29CEREQ")) || (descripcionSeleccionada.getAbreviatura().equals("30CENEG")) || (descripcionSeleccionada.getAbreviatura().equals("31CELIB"))){
-      Credito c = vistaCreditoBean.getCreditoActual();
+    } // CASO CORREO ELECTRONICO
+    else if ((descripcionSeleccionada.getAbreviatura().equals("27CEBC")) || (descripcionSeleccionada.getAbreviatura().equals("28CEBCC")) || (descripcionSeleccionada.getAbreviatura().equals("29CEREQ")) || (descripcionSeleccionada.getAbreviatura().equals("30CENEG")) || (descripcionSeleccionada.getAbreviatura().equals("31CELIB"))) {
+      Credito c = creditoActual;
       c.setMarcaje(Marcajes.CORREO_ELECTRONICO);
       ok = creditoDao.editar(c);
-    }
-    // CASO LOCALIZACION
-    else if ((descripcionSeleccionada.getAbreviatura().equals("1SECC")) || (descripcionSeleccionada.getAbreviatura().equals("3NOSB")) || (descripcionSeleccionada.getAbreviatura().equals("4CADE"))){
-      Credito c = vistaCreditoBean.getCreditoActual();
+    } // CASO LOCALIZACION
+    else if ((descripcionSeleccionada.getAbreviatura().equals("1SECC")) || (descripcionSeleccionada.getAbreviatura().equals("3NOSB")) || (descripcionSeleccionada.getAbreviatura().equals("4CADE"))) {
+      Credito c = creditoActual;
       c.setMarcaje(Marcajes.LOCALIZACION);
       ok = creditoDao.editar(c);
-    }
-    // CASO INFORMACION DEL BANCO
-    else if (descripcionSeleccionada.getAbreviatura().equals("33CEIB")){
-      Credito c = vistaCreditoBean.getCreditoActual();
+    } // CASO INFORMACION DEL BANCO
+    else if (descripcionSeleccionada.getAbreviatura().equals("33CEIB")) {
+      Credito c = creditoActual;
       c.setMarcaje(Marcajes.ESPERA_INFORMACION_BANCO);
       ok = creditoDao.editar(c);
-    }
-    // CASO COBRO EN CELULAR
-    else if (descripcionSeleccionada.getAbreviatura().equals("1SMSC")){
-      Credito c = vistaCreditoBean.getCreditoActual();
+    } // CASO COBRO EN CELULAR
+    else if (descripcionSeleccionada.getAbreviatura().equals("1SMSC")) {
+      Credito c = creditoActual;
       c.setMarcaje(Marcajes.COBRO_EN_CELULAR);
       ok = creditoDao.editar(c);
-    }
-    // PROXIMAMENTE CASO WHATSAPP
-    else{
-      System.out.println("NO ENCIENDE NINGUN MARCAJE");
+    } // PROXIMAMENTE CASO WHATSAPP
+    else {
     }
     return ok;
   }

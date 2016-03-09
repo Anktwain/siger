@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
-      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
@@ -12,29 +10,26 @@
     <div class="main-header clearfix">
       <div class="page-title">
         <h3 class="no-margin">Panel de control Administrativo</h3>
-        <span><p:outputLabel value="#{panelAdministrativoBean.despacho}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></span>
+        <span><p:outputLabel value="#{barraSuperiorBean.despacho}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></span>
       </div><!-- /page-title -->
       <ul class="page-stats">
         <li>
           <div class="value">
             <span>Gestiones hoy:</span>
-            <h4 id="currentVisitor">4256</h4>
+            <h4>4256</h4>
           </div>
-          <span id="visits" class="sparkline"></span>
         </li>
         <li>
           <div class="value">
             <span>Saldo aprobado hoy:</span>
-            <h4>$<strong id="currentBalance">32153</strong></h4>
+            <h4>$<strong>32153</strong></h4>
           </div>
-          <span id="balances" class="sparkline"></span>
         </li>
         <li>
           <div class="value">
             <span>Gestor del d&iacute;a:</span>
-            <h4 id="currentPromoter">H&eacute;ctor</h4>
+            <h4>H&eacute;ctor</h4>
           </div>
-          <span id="visits" class="sparkline"></span>
         </li>
       </ul><!-- /page-stats -->
     </div><!-- /main-header -->
