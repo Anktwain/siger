@@ -1,8 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-      xmlns="http://www.w3.org/1999/xhtml">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Busqueda</title>
@@ -32,32 +34,144 @@
           <br />
           <span>Obtenga un listado de creditos aplicando los filtros deseados.</span>
           <br />
-          <span>Puede filtrar utilizando citerios como zona, saldo vencido, campaña entre otros.</span>
+          <span>Puede filtrar utilizando criterios como zona, saldo vencido entre otros.</span>
         </div>
       </div>
       <hr class="no-margin" />
       <div class="padding-md">
-        <h:form>
-          <p:accordionPanel style="width: 1200px">
-            <p:tab title="Busqueda por area">
-
+        <h:form id="busquedasForm">
+          <p:accordionPanel style="width: 1200px" activeIndex="-1">
+            <p:tab title="Busqueda por zona">
+              Seleccione la zona en la cual quiere buscar creditos:
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu value="#{busquedaBean.zonaSeleccionada.idZona}">
+                <f:selectItems value="#{busquedaBean.listaZonas}" var="z" itemLabel="#{z.nombre}" itemValue="#{z.idZona}" />
+              </p:selectOneMenu>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorZona()}" update="busquedaPorZona" />
+              <br />
+              <br />
+              <p:contextMenu for="busquedaPorZona" style="width:200px;">
+                <p:menuitem value="Ver en Google Maps®" icon="ui-icon-flag" actionListener="#{busquedaBean.obtenerDireccionCredito()}" />
+              </p:contextMenu>
+              <p:dataTable id="busquedaPorZona" var="c" value="#{busquedaBean.listaCreditos}" selection="#{busquedaBean.creditoSeleccionado}" selectionMode="single" rowKey="#{c.numeroCredito}" emptyMessage="No existen creditos en la zona seleccionada." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:column headerText="Credito" style="width:300px;">
+                  <h:outputText value="#{c.numeroCredito}" />
+                  <br />
+                  <h:outputText value="#{c.nombreDeudor}" />
+                </p:column>
+                <p:column headerText="Institucion" style="width:100px;">
+                  <h:outputText value="#{c.institucion}" />
+                </p:column>
+                <p:column headerText="Gestor" style="width:100px;">
+                  <h:outputText value="#{c.gestorActual}" />
+                </p:column>
+                <p:column headerText="Calle y numero" style="width:200px;">
+                  <h:outputText value="#{c.calleNumero}" />
+                </p:column>
+                <p:column headerText="Colonia y C.P." style="width:200px;">
+                  <h:outputText value="#{c.colonia} (#{c.cp})" />
+                </p:column>
+                <p:column headerText="Municipio y estado" style="width:200px;">
+                  <h:outputText value="#{c.municipio}, #{c.estado}" />
+                </p:column>
+              </p:dataTable>
             </p:tab>
             <p:tab title="Busqueda por saldo vencido">
-
+              Introduzca el rango en el que se buscara
+              <p:inputText value="#{busquedaBean.saldoInferior}" type="number" style="width: 100px;" /> &lt; Saldo vencido &lt; <p:inputText value="#{busquedaBean.saldoSuperior}" type="number" style="width: 100px;" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorSaldoVencido()}" update="busquedaPorSaldoVencido" />
+              <br />
+              <br />
+              <p:dataTable id="busquedaPorSaldoVencido" var="c" value="#{busquedaBean.listaCreditos2}" emptyMessage="No existen creditos con este rango de saldo vencido." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:column headerText="Credito" style="width:100px;">
+                  <h:outputText value="#{c.numeroCredito}" />
+                </p:column>
+                <p:column headerText="Deudor" style="width:400px;">
+                  <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}" />
+                </p:column>
+                <p:column headerText="Institucion" style="width:100px;">
+                  <h:outputText value="#{c.producto.institucion.nombreCorto}" />
+                </p:column>
+                <p:column headerText="Gestor" style="width:100px;">
+                  <h:outputText value="#{c.gestor.usuario.nombreLogin}" />
+                </p:column>
+                <p:column headerText="Saldo vencido" style="width:100px;">
+                  <h:outputText value="#{busquedaBean.obtenerSaldoVencido(c.idCredito)}">
+                    <f:convertNumber type="currency" currencySymbol="$" />
+                  </h:outputText>
+                </p:column>
+              </p:dataTable>
             </p:tab>
             <p:tab title="Busqueda por tiempo con adeudo">
-
-            </p:tab>
-            <p:tab title="Busqueda por campaña">
-
+              Elija la cantidad de meses vencidos
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu value="#{busquedaBean.mesesVencidos}">
+                <f:selectItem itemLabel="1" itemValue="1" />
+                <f:selectItem itemLabel="2" itemValue="2" />
+                <f:selectItem itemLabel="3" itemValue="3" />
+                <f:selectItem itemLabel="4" itemValue="4" />
+                <f:selectItem itemLabel="5" itemValue="5" />
+                <f:selectItem itemLabel="6" itemValue="6" />
+                <f:selectItem itemLabel="7" itemValue="7" />
+                <f:selectItem itemLabel="8" itemValue="8" />
+                <f:selectItem itemLabel="9" itemValue="9" />
+                <f:selectItem itemLabel="10" itemValue="10" />
+                <f:selectItem itemLabel="11" itemValue="11" />
+                <f:selectItem itemLabel="12" itemValue="12" />
+              </p:selectOneMenu>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorMesesVencidos()}" update="busquedaPorMesesVencidos" />
+              <br />
+              <br />
+              <p:dataTable id="busquedaPorMesesVencidos" var="c" value="#{busquedaBean.listaCreditos2}" emptyMessage="No existen creditos con este tiempo de vencimiento." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:column headerText="Credito" style="width:100px;">
+                  <h:outputText value="#{c.numeroCredito}" />
+                </p:column>
+                <p:column headerText="Deudor" style="width:400px;">
+                  <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}" />
+                </p:column>
+                <p:column headerText="Institucion" style="width:100px;">
+                  <h:outputText value="#{c.producto.institucion.nombreCorto}" />
+                </p:column>
+                <p:column headerText="Gestor" style="width:100px;">
+                  <h:outputText value="#{c.gestor.usuario.nombreLogin}" />
+                </p:column>
+                <p:column headerText="Saldo vencido" style="width:100px;">
+                  <h:outputText value="#{busquedaBean.obtenerSaldoVencido(c.idCredito)}">
+                    <f:convertNumber type="currency" currencySymbol="$" />
+                  </h:outputText>
+                </p:column>
+                <p:column headerText="Meses vencidos" style="width:100px;">
+                  <h:outputText value="#{busquedaBean.obtenerMesesVencidos(c.idCredito)}" />
+                </p:column>
+              </p:dataTable>
             </p:tab>
           </p:accordionPanel>
-          <br />
-          <p:commandButton value="Buscar" />
         </h:form>
       </div>  
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
   </body>
+  <!-- DIALOGO BARRA DE CARGA -->
+  <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+  <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+    <p:graphicImage library="img" name="loadingBarra.gif" />
+  </p:dialog>
+  <p:dialog widgetVar="dlgDetalleDirecciones" modal="true" resizable="false" header="Direccion del credito" >
+    <h:form id="detalleDireccionesForm">
+      <h:outputText value="#{busquedaBean.direccionCredito.calle.toLowerCase()}" />
+      <br />
+      <h:outputText value="#{busquedaBean.direccionCredito.colonia.nombre}" />
+      ,&nbsp;
+      <h:outputText value="#{busquedaBean.direccionCredito.colonia.codigoPostal}" />
+      <br />
+      <h:outputText value="#{busquedaBean.direccionCredito.municipio.nombre}" />
+      ,&nbsp;
+      <h:outputText value="#{busquedaBean.direccionCredito.estadoRepublica.nombre}" />
+      <br />
+    </h:form>
+  </p:dialog>
 </html>

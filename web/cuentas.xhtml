@@ -60,7 +60,7 @@
                 <p:column headerText="Credito" style="width:150px;" filterBy="#{c.numeroCredito}" filterStyle="width:100px;">
                   <h:outputText value="#{c.numeroCredito}" style="float:right"/>
                 </p:column>
-                <p:column headerText="Nombre del deudor" style="width:400px;" filterBy="#{c.deudor.sujeto.nombreRazonSocial}" filterStyle="width:300px;" filterMatchMode="contains">
+                <p:column headerText="Nombre del deudor" style="width:400px;" filterBy="#{c.deudor.sujeto.nombreRazonSocial}" filterStyle="width:300px;">
                   <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
                 </p:column>
                 <p:column headerText="Saldo vencido" style="width:150px;" filterBy="#{c.monto}"> 
@@ -97,15 +97,26 @@
       <p:selectOneMenu id="concepto" value="#{cuentasBean.conceptoSeleccionado.idConceptoDevolucion}" style="width:200px">
         <f:selectItem itemLabel="" itemValue="0" />
         <f:selectItems value="#{cuentasBean.listaConceptos}" var="c" itemLabel="#{c.concepto}" itemValue="#{c.idConceptoDevolucion}" />
+        <p:ajax listener="#{cuentasBean.preparaMotivos()}" update="motivo" />
       </p:selectOneMenu>
+      <br />
+      <br />
+      Seleccione el motivo de la devolucion:
+      <br />
+      <p:selectOneMenu id="motivo" value="#{cuentasBean.motivoSeleccionado.idMotivoDevolucion}" style="width:200px">
+        <f:selectItem itemLabel="" itemValue="0" />
+        <f:selectItems value="#{cuentasBean.listaMotivos}" var="m" itemLabel="#{m.motivo}" itemValue="#{m.idMotivoDevolucion}" />
+      </p:selectOneMenu>
+      <br />
       <br />
       Observaciones:
       <br />
       <p:inputText value="#{cuentasBean.observaciones}" style="width:300px" />
       <br />
       <br />
-      <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{cuentasBean.devolverDirecto()}" update="growl" />
-      <p:commandButton value="No" icon="ui-icon-close" oncomplete="PF('confirmacionDialog').hide();" />
+      <p:commandButton value="Devolver" icon="ui-icon-check" actionListener="#{cuentasBean.devolverDirecto()}" update="growl" />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('confirmacionDialog').hide();" />
     </h:form>
   </p:dialog>
   <!-- DIALOGO BARRA DE CARGA -->

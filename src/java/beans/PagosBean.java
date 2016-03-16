@@ -22,6 +22,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 import util.constantes.Directorios;
 import util.constantes.Pagos;
 
@@ -71,7 +72,9 @@ public class PagosBean implements Serializable {
   // METODO QUE TRAE LOS DATOS DEL PAGO SELECCIONADO
   public void visualizar() {
     pagoSeleccionado = revisionSeleccionados.get(0);
-    urlImagen = Directorios.RUTA_WINDOWS_CARGA_COMPROBANTES + pagoSeleccionado.getNombreComprobante();
+    urlImagen = Directorios.RUTA_SERVIDOR_WEB_COMPROBANTES + pagoSeleccionado.getNombreComprobante();
+    RequestContext.getCurrentInstance().update("formVisorPago");
+    RequestContext.getCurrentInstance().execute("PF('detallePagoDialog').show();");
   }
 
 // METODO QUE APRUEBA UN PAGO
@@ -131,7 +134,6 @@ public class PagosBean implements Serializable {
 // ***********************************************************************************************************************
 // ***********************************************************************************************************************
 // GETTERS & SETTERS
-  
   public List<Pago> getPagosPorRevisar() {
     return pagosPorRevisar;
   }

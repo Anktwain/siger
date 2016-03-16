@@ -37,7 +37,16 @@ public class CreadorSQL {
     DeudorDAO deudorDao = new DeudorIMPL();
 
     for (Fila f : filas) {
-      sujeto = sujetoDao.insertar(new Sujeto(f.getNombre(), f.getRfc(), 0));
+      // ESTIMADO TIO:
+      // ME HE TOMADO EL ATREVIMIENTO DE UTILIZAR EL CONSTRUCTOR POR DEFECTO
+      // Y DESPUES ESTABLECERLE LOS ATRIBUTOS
+      // ESTO CON LA FINALIDAD DE QUE EN LOS NUEVOS POJOS NO MARQUE ERROR
+      // DISCULPA MI OSADIA
+      Sujeto s = new Sujeto();
+      s.setNombreRazonSocial(f.getNombre());
+      s.setRfc(f.getRfc());
+      s.setEliminado(0);
+      sujeto = sujetoDao.insertar(s);
       if (sujeto != null) {
         f.setIdSujeto(sujeto.getIdSujeto());
         deudor = deudorDao.insertar(new Deudor(null, sujeto));

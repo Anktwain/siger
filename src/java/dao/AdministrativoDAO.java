@@ -11,7 +11,7 @@ import dto.Administrativo;
  * @author brionvega
  * @since SigerWeb2.0
  */
-public interface AdministradorDAO {
+public interface AdministrativoDAO {
 
     /**
      *

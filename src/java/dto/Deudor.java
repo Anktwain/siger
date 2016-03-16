@@ -1,5 +1,5 @@
 package dto;
-// Generated 25/02/2016 03:00:35 PM by Hibernate Tools 4.3.1
+// Generated 9/03/2016 10:01:38 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public class Deudor  implements java.io.Serializable {
         this.calificacion = calificacion;
         this.sujeto = sujeto;
     }
-    public Deudor(Sujeto sujeto, String numeroDeudor, String curp, String numeroSeguroSocial, Set contactos, Set creditos, Calificacion calificacion) {
+    public Deudor(Calificacion calificacion, Sujeto sujeto, String numeroDeudor, String curp, String numeroSeguroSocial, Set contactos, Set creditos) {
        this.calificacion = calificacion;
        this.sujeto = sujeto;
        this.numeroDeudor = numeroDeudor;

@@ -39,6 +39,7 @@ public class IndexBean implements Serializable {
   private String password;
   private Usuario usuario;
   private final UsuarioDAO usuarioDao;
+  private boolean adminVisible;
   /**
    * Información de la sesión
    */
@@ -66,6 +67,7 @@ public class IndexBean implements Serializable {
   public IndexBean() {
     usuario = new Usuario();
     usuarioDao = new UsuarioIMPL();
+    adminVisible = false;
   }
 
   /**
@@ -122,14 +124,14 @@ public class IndexBean implements Serializable {
           instanciaActual.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
                   usuario.getNombre() + " ha ingresado con el perfil "
                   + usuario.getPerfil() + " (GESTOR_NO_CONFIRMADO)."));
-          Logs.log.info("#################### NOT OK. ACCESO DENEGADO(Gestor no confirmado).");
+          Logs.log.info("[" + cal.toInstant() + "] Intento de acceso gestor no confirmado. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
           sesionActiva = false;
           break;
         case Perfiles.ELIMINADO:
           instanciaActual.addMessage("",
                   new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
                           usuario.getNombre() + "No podrá ingresar con el perfil " + usuario.getPerfil() + " (ELIMINADO) porque ha sido desactivado."));
-          Logs.log.info("#################### NOT OK. ACCESO DENEGADO(Gestor eliminado).");
+          Logs.log.info("[" + cal.toInstant() + "] Intento de acceso usuario eliminado. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
           sesionActiva = false;
           break;
         case Perfiles.ADMINISTRADOR:
@@ -138,19 +140,20 @@ public class IndexBean implements Serializable {
 //                    mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.", usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
 //                    FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.", usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
           instanciaActual.getExternalContext().redirect("faces/panelAdministrativo.xhtml");
-          Logs.log.info("#################### OK. ACCESO ADMIN CORRECTO.");
+          Logs.log.info("[" + cal.toInstant() + "] Acceso administrador. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
           horaInicio = cal.getTime();
           horaFin = cal.getTime();
           sesionActiva = true;
           usuarioActivo = usuario;
           vista = "panelAdministrativo.xhtml";
+          adminVisible = true;
           break;
         case Perfiles.GESTOR:
           instanciaActual.addMessage("",
                   new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
                           usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
           instanciaActual.getExternalContext().redirect("faces/panelGestor.xhtml");
-          Logs.log.info("#################### OK. ACCESO GESTOR CORRECTO.");
+          Logs.log.info("[" + cal.toInstant() + "] Acceso gestor. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
           horaInicio = cal.getTime();
           horaFin = cal.getTime();
           sesionActiva = true;
@@ -161,8 +164,7 @@ public class IndexBean implements Serializable {
           instanciaActual.addMessage("",
                   new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
                           usuario.getNombre() + "Está intentando entrar con un perfil desconocido. (Perfil =" + usuario.getPerfil() + ")."));
-
-          Logs.log.info("#################### NOT OK. INTENTANDO ENTRAR CON UN PERFIL DESCONOCIDO.");
+          Logs.log.warn("[" + cal.toInstant() + "] Intento de intrusion al sistema. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
           sesionActiva = false;
           break;
       }
@@ -171,7 +173,7 @@ public class IndexBean implements Serializable {
       instanciaActual.addMessage("",
               new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
                       "Verifica que los datos que has introducido son correctos y que el administrador haya dado de alta tu cuenta."));
-      Logs.log.info("#################### NOT OK. USUARIO NO CONFIRMADO O NOMBRE DE USUARIO O CONTRASEÑA INCORRECTOS!");
+      Logs.log.warn("[" + cal.toInstant() + "] Intento de intrusion al sistema. Login: " + nombreUsuario + ", Pass: " + password);
       sesionActiva = false;
     }
     nombreUsuario = "";
@@ -238,6 +240,14 @@ public class IndexBean implements Serializable {
 
   public void setVista(String vista) {
     this.vista = vista;
+  }
+
+  public boolean isAdminVisible() {
+    return adminVisible;
+  }
+
+  public void setAdminVisible(boolean adminVisible) {
+    this.adminVisible = adminVisible;
   }
 
 }

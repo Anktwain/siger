@@ -238,6 +238,7 @@ public class CuentasGestorBean implements Serializable {
   // METODO QUE VERIFICA SI ANTERIORMENTE SE CUMPLIO UNA PROMESA DE PAGO
   // METODO QUE OBTIENE LA LISTA DE CREDITOS SEGUN LA CAMPAÑA ELEGIDA
   public void preparaCampana() {
+    posicion = 0;
     creditosCampana = creditoDao.buscarCreditosPorCampanaGestor(seleccion.getIdCampana(), idUsuario);
     if (!creditosCampana.isEmpty()) {
       try {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 25/02/2016 03:00:36 PM by Hibernate Tools 4.3.1 -->
+<!-- Generated 9/03/2016 10:01:39 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Devolucion" optimistic-lock="version" table="devolucion">
     <id name="idDevolucion" type="java.lang.Integer">
@@ -12,6 +12,9 @@
     </many-to-one>
     <many-to-one class="dto.Credito" fetch="select" name="credito">
       <column name="id_credito" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="dto.MotivoDevolucion" fetch="select" name="motivoDevolucion">
+      <column name="id_motivo_devolucion" not-null="true"/>
     </many-to-one>
     <property name="fecha" type="timestamp">
       <column length="19" name="fecha" not-null="true"/>

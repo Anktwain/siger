@@ -38,7 +38,7 @@ import util.constantes.Marcajes;
  */
 @ManagedBean(name = "marcajeBean")
 @ViewScoped
-public class MarcajesBean implements Serializable {
+public class MarcajeBean implements Serializable {
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -67,7 +67,7 @@ public class MarcajesBean implements Serializable {
   private FacesContext contexto;
 
   // CONSTRUCTOR
-  public MarcajesBean() {
+  public MarcajeBean() {
     contexto = FacesContext.getCurrentInstance();
     tipoImpresion = new ArrayList();
     listaSepomex = new ArrayList();

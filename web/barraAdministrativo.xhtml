@@ -36,7 +36,7 @@
         <span class="shortcut-icon">
           <i class="fa fa-user"></i>
           <span class="shortcut-alert">
-            <p:outputLabel id="circulito" value="#{barraAdministrativoBean.contar()}" />
+            <p:outputLabel id="circulito" value="#{barraAdministrativoBean.contarGestoresNoConfirmados()}" />
           </span>
         </span>
         <span class="text">Usuarios</span>
@@ -48,12 +48,20 @@
       </a>
       <a href="devoluciones.xhtml" class="shortcut-link">
         <span class="shortcut-icon">
-          <i class="fa fa-refresh"></i></span>
+          <i class="fa fa-refresh"></i>
+          <span class="shortcut-alert">
+            <p:outputLabel id="circulito" value="#{barraAdministrativoBean.contarDevolucionesPendientes()}" />
+          </span>
+        </span>
         <span class="text">Devoluci&oacute;n</span>
       </a>
       <a href="validarDirecciones.xhtml" class="shortcut-link">
         <span class="shortcut-icon">
-          <i class="fa fa-check-square-o"></i></span>
+          <i class="fa fa-check-square-o"></i>
+        <span class="shortcut-alert">
+            <p:outputLabel id="circulito" value="#{barraAdministrativoBean.contarDireccionesPendientes()}" />
+          </span>
+        </span>
         <span class="text">Validar direcciones</span>
       </a>
     </div><!-- /grey-container -->

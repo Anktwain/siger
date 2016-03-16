@@ -31,7 +31,7 @@ and open the template in the editor.
 <!--    Crea los loggers necesarios para cada appender. root indica el logger principal, y
 el otro especifica el que se ha creado en util.log-->
 <logger name="util.log.Logs">
-    <level value="info" />
+    <level value="debug" />
     <appender-ref ref="archivo" />
 </logger>
     

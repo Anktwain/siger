@@ -15,7 +15,6 @@ import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import util.log.Logs;
 
 /**
  *
@@ -43,32 +42,20 @@ public class BarraProgresoGestorBean {
   }
 
   public String calcularCuentasActivas() {
-    Number total = creditoDao.contarCreditosActivosPorGestor(indexBean.getUsuario().getIdUsuario());
-    String creditos = total.toString();
-    Logs.log.info("Existen " + total + " creditos activos en el sistema para el gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno());
-    return creditos;
+    return creditoDao.contarCreditosActivosPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
   }
 
   public String calcularVisitasPorGestor() {
-    Number total = gestionDao.calcularVisitasDomiciliariasPorGestor(indexBean.getUsuario().getIdUsuario());
-    String visitas = total.toString();
-    Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " ha realizado " + total + " visitas este mes");
-    return visitas;
+    return gestionDao.calcularVisitasDomiciliariasPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
 
   }
 
   public String calcularPagosPorAprobarPorGestor() {
-    Number total = pagoDao.calcularPagosPorAprobarPorGestor(indexBean.getUsuario().getIdUsuario());
-    String pagos = total.toString();
-    Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " tiene " + total + " pagos por aprobar");
-    return pagos;
+    return pagoDao.calcularPagosPorAprobarPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
   }
 
   public String calcularRecuperacionPorGestor() {
-    Number total = pagoDao.calcularRecuperacionPorGestor(indexBean.getUsuario().getIdUsuario());
-    String pagos = total.toString();
-    Logs.log.info("El gestor " + indexBean.getUsuario().getNombre() + " " + indexBean.getUsuario().getPaterno() + " ha recuperado $" + total + " este mes");
-    return pagos;
+    return pagoDao.calcularRecuperacionPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
   }
 
 }

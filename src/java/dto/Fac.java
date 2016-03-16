@@ -1,5 +1,5 @@
 package dto;
-// Generated 25/02/2016 03:00:35 PM by Hibernate Tools 4.3.1
+// Generated 9/03/2016 10:01:38 AM by Hibernate Tools 4.3.1
 
 
 
@@ -24,7 +24,8 @@ public class Fac  implements java.io.Serializable {
         this.idFac = idFac;
         this.actualizacion = actualizacion;
     }
-    public Fac(Actualizacion actualizacion, Integer mes, Integer anio, Float facPor, String facMes) {
+    public Fac(int idFac, Actualizacion actualizacion, Integer mes, Integer anio, Float facPor, String facMes) {
+       this.idFac = idFac;
        this.actualizacion = actualizacion;
        this.mes = mes;
        this.anio = anio;
@@ -75,9 +76,4 @@ public class Fac  implements java.io.Serializable {
         this.facMes = facMes;
     }
 
-
-
-
 }
-
-

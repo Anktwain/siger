@@ -59,7 +59,6 @@ public class ConveniosBean implements Serializable {
   VistaCreditoBean vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
 
   // VARIABLES DE CLASE
-  private boolean adminVisible;
   private boolean habilitaConvenios;
   private boolean habilitaPromesas;
   private boolean quitaCapital;
@@ -109,11 +108,6 @@ public class ConveniosBean implements Serializable {
 
   // METODO QUE TRAE LA LISTA DE CONVENIOS
   public final void cargarListas() {
-    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      adminVisible = false;
-    } else {
-      adminVisible = true;
-    }
     int idCredito = creditoActual.getIdCredito();
     convenioActivo = convenioPagoDao.buscarConvenioEnCursoCredito(idCredito);
     listaHistorialConvenios = convenioPagoDao.buscarConveniosFinalizadosCredito(idCredito);
@@ -483,14 +477,6 @@ public class ConveniosBean implements Serializable {
 
   public void setTipoGestionSeleccionada(TipoGestion tipoGestionSeleccionada) {
     this.tipoGestionSeleccionada = tipoGestionSeleccionada;
-  }
-
-  public boolean isAdminVisible() {
-    return adminVisible;
-  }
-
-  public void setAdminVisible(boolean adminVisible) {
-    this.adminVisible = adminVisible;
   }
 
 }

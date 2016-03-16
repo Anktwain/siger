@@ -10,15 +10,18 @@ import dao.ConceptoDevolucionDAO;
 import dao.CreditoDAO;
 import dao.DevolucionDAO;
 import dao.HistorialDAO;
+import dao.MotivoDevolucionDAO;
 import dto.Campana;
 import dto.ConceptoDevolucion;
 import dto.Credito;
 import dto.Devolucion;
+import dto.MotivoDevolucion;
 import impl.CampanaIMPL;
 import impl.ConceptoDevolucionIMPL;
 import impl.CreditoIMPL;
 import impl.DevolucionIMPL;
 import impl.HistorialIMPL;
+import impl.MotivoDevolucionIMPL;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +59,9 @@ public class CuentasBean {
   private final HistorialDAO historialDao;
   private final ConceptoDevolucionDAO conceptoDevolucionDao;
   private ConceptoDevolucion conceptoSeleccionado;
+  private final MotivoDevolucionDAO motivoDevolucionDao;
+  private List<MotivoDevolucion> listaMotivos;
+  private MotivoDevolucion motivoSeleccionado;
   private String observaciones;
   private final String admin;
   private final int idDespacho;
@@ -71,10 +77,14 @@ public class CuentasBean {
     campanaDao = new CampanaIMPL();
     conceptoDevolucionDao = new ConceptoDevolucionIMPL();
     listaCreditos = new ArrayList();
+    filtrados = new ArrayList();
     listaCampanas = new ArrayList();
     creditoSeleccionado = new Credito();
     conceptoSeleccionado = new ConceptoDevolucion();
     listaConceptos = new ArrayList();
+    motivoSeleccionado = new MotivoDevolucion();
+    listaMotivos = new ArrayList();
+    motivoDevolucionDao = new MotivoDevolucionIMPL();
     admin = indexBean.getUsuario().getNombreLogin();
     idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
     obtenerListas();
@@ -82,10 +92,12 @@ public class CuentasBean {
 
   // METODO QUE OBTIENE LA LISTA DE CREDITOS Y DE CONCEPTOS DE DEVOLUCION
   public final void obtenerListas() {
-    // OBTENER LOS CREDITOS GESTIONABLES
     listaCreditos = creditoDao.tablaCreditosEnGestionPorDespacho(idDespacho);
     listaConceptos = conceptoDevolucionDao.obtenerConceptos();
     listaCampanas = campanaDao.buscarTodas();
+    conceptoSeleccionado = new ConceptoDevolucion();
+    motivoSeleccionado = new MotivoDevolucion();
+    observaciones = "";
   }
 
   // METODO QUE OBTIENE LA LISTA DE LOS CREDITOS DE ACUERDO A SU CAMPAÑA
@@ -114,32 +126,38 @@ public class CuentasBean {
     }
   }
 
+  // METODO QUE PREPARA LA LISTA DE MOTIVOS DE DEVOLUCION DEPENDIENDO DEL CONCEPTO SELECCIONADO
+  public void preparaMotivos() {
+    listaMotivos = motivoDevolucionDao.obtenerMotivosPorConcepto(conceptoSeleccionado.getIdConceptoDevolucion());
+  }
+
   // METODO PARA DEVOLVER UN CREDITO DIRECTAMENTE (ADMINISTRADOR ENVIA A DEVOLUCION)
   public void devolverDirecto() {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    if (creditoSeleccionado != null) {
-      boolean ok;
-      if (conceptoSeleccionado != null) {
-        Devolucion d = new Devolucion();
-        d.setEstatus(Devoluciones.DEVUELTO);
-        Date fecha = new Date();
-        d.setFecha(fecha);
-        d.setConceptoDevolucion(conceptoSeleccionado);
-        d.setCredito(creditoSeleccionado);
-        d.setObservaciones(observaciones);
-        d.setSolicitante(admin);
-        d.setRevisor(admin);
-        String evento = "El administrador: " + admin + ", devolvio el credito";
-        ok = devolucionDao.insertar(d) && historialDao.insertarHistorial(creditoSeleccionado.getIdCredito(), evento);
-        if (ok) {
-          RequestContext con = RequestContext.getCurrentInstance();
-          obtenerListas();
-          con.execute("PF('confirmacionDialog').hide();");
-          con.update("cuentas");
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se devolvio el credito seleccionado"));
-        } else {
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
-        }
+    boolean ok;
+    if ((conceptoSeleccionado.getIdConceptoDevolucion() != 0) && (motivoSeleccionado.getIdMotivoDevolucion() != 0)) {
+      Devolucion d = new Devolucion();
+      d.setEstatus(Devoluciones.DEVUELTO);
+      Date fecha = new Date();
+      d.setFecha(fecha);
+      conceptoSeleccionado = conceptoDevolucionDao.buscarPorId(conceptoSeleccionado.getIdConceptoDevolucion());
+      d.setConceptoDevolucion(conceptoSeleccionado);
+      motivoSeleccionado = motivoDevolucionDao.buscarPorId(motivoSeleccionado.getIdMotivoDevolucion());
+      d.setMotivoDevolucion(motivoSeleccionado);
+      d.setCredito(creditoSeleccionado);
+      d.setObservaciones(observaciones);
+      d.setSolicitante(admin);
+      d.setRevisor(admin);
+      String evento = "El administrador: " + admin + ", devolvio el credito";
+      ok = devolucionDao.insertar(d) && historialDao.insertarHistorial(creditoSeleccionado.getIdCredito(), evento);
+      if (ok) {
+        RequestContext con = RequestContext.getCurrentInstance();
+        obtenerListas();
+        con.execute("PF('confirmacionDialog').hide();");
+        con.update("cuentas");
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se devolvio el credito seleccionado"));
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
       }
     }
   }
@@ -215,6 +233,22 @@ public class CuentasBean {
 
   public void setHabilitaCampana(boolean habilitaCampana) {
     this.habilitaCampana = habilitaCampana;
+  }
+
+  public List<MotivoDevolucion> getListaMotivos() {
+    return listaMotivos;
+  }
+
+  public void setListaMotivos(List<MotivoDevolucion> listaMotivos) {
+    this.listaMotivos = listaMotivos;
+  }
+
+  public MotivoDevolucion getMotivoSeleccionado() {
+    return motivoSeleccionado;
+  }
+
+  public void setMotivoSeleccionado(MotivoDevolucion motivoSeleccionado) {
+    this.motivoSeleccionado = motivoSeleccionado;
   }
 
 }

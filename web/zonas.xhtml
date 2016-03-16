@@ -159,11 +159,11 @@
   <!-- DIALOGO PARA DETALLE ZONA -->
   <p:dialog widgetVar="detalleZonaDialog" header="Detalle zona" modal="true" resizable="false">
     <h:form id="detalleZonaForm" >
-      <p:dataTable id="detalleZona" var="d" value="#{zonasBean.detalleZona}" emptyMessage="No existen municipios en esta zona." scrollable="true" scrollRows="10" style="width: 410px;">
+      <p:dataTable id="detalleZona" var="d" value="#{zonasBean.detalleZona}" emptyMessage="No existen municipios en esta zona." scrollable="true" scrollHeight="300" style="width: 410px;">
         <p:column headerText="Municipios en la zona" style="width:200px;">
           <h:outputText value="#{d.nombre}" />
         </p:column>
-        <p:column headerText="Estado" style="width:200px;">
+        <p:column headerText="Estado" style="width:190px;">
           <h:outputText value="#{d.estadoRepublica.nombre}" />
         </p:column>
         <f:facet name="footer">

@@ -1,5 +1,5 @@
 package dto;
-// Generated 25/02/2016 03:00:35 PM by Hibernate Tools 4.3.1
+// Generated 9/03/2016 10:01:38 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -13,6 +13,7 @@ public class Devolucion  implements java.io.Serializable {
      private Integer idDevolucion;
      private ConceptoDevolucion conceptoDevolucion;
      private Credito credito;
+     private MotivoDevolucion motivoDevolucion;
      private Date fecha;
      private String observaciones;
      private String solicitante;
@@ -23,16 +24,18 @@ public class Devolucion  implements java.io.Serializable {
     }
 
 	
-    public Devolucion(ConceptoDevolucion conceptoDevolucion, Credito credito, Date fecha, String solicitante, int estatus) {
+    public Devolucion(ConceptoDevolucion conceptoDevolucion, Credito credito, MotivoDevolucion motivoDevolucion, Date fecha, String solicitante, int estatus) {
         this.conceptoDevolucion = conceptoDevolucion;
         this.credito = credito;
+        this.motivoDevolucion = motivoDevolucion;
         this.fecha = fecha;
         this.solicitante = solicitante;
         this.estatus = estatus;
     }
-    public Devolucion(ConceptoDevolucion conceptoDevolucion, Credito credito, Date fecha, String observaciones, String solicitante, String revisor, int estatus) {
+    public Devolucion(ConceptoDevolucion conceptoDevolucion, Credito credito, MotivoDevolucion motivoDevolucion, Date fecha, String observaciones, String solicitante, String revisor, int estatus) {
        this.conceptoDevolucion = conceptoDevolucion;
        this.credito = credito;
+       this.motivoDevolucion = motivoDevolucion;
        this.fecha = fecha;
        this.observaciones = observaciones;
        this.solicitante = solicitante;
@@ -60,6 +63,13 @@ public class Devolucion  implements java.io.Serializable {
     
     public void setCredito(Credito credito) {
         this.credito = credito;
+    }
+    public MotivoDevolucion getMotivoDevolucion() {
+        return this.motivoDevolucion;
+    }
+    
+    public void setMotivoDevolucion(MotivoDevolucion motivoDevolucion) {
+        this.motivoDevolucion = motivoDevolucion;
     }
     public Date getFecha() {
         return this.fecha;

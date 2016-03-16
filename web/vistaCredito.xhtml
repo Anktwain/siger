@@ -8,7 +8,7 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Detalle de credito</title>
-  </h:head> 
+  </h:head>
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <div class="padding-md">
@@ -57,13 +57,13 @@
             <h:form id="barraDetalleCreditoForm">
               <p:button value="Editar datos del deudor" outcome="deudores" />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:button value="Convenios de pago" outcome="vistaConvenio" rendered="#{!vistaCreditoBean.adminVisible}" />
+              <p:button value="Convenios de pago" outcome="vistaConvenio" rendered="#{!indexBean.adminVisible}" />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:button value="Impresion de visitas" outcome="vistaVisitas"  />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:commandButton value="Devolucion" oncomplete="PF('dialogoDevolucionVistaCredito').show();" />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px" rendered="#{vistaCreditoBean.adminVisible}">
+              <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px" rendered="#{indexBean.adminVisible}">
                 <f:selectItem itemValue="#{vistaCreditoBean.gestorActual.idGestor}" itemLabel="#{vistaCreditoBean.gestorActual.usuario.nombreLogin}" />
                 <f:selectItems value="#{vistaCreditoBean.listaGestores}" var="g" itemLabel="#{g.usuario.nombreLogin}" itemValue="#{g.idGestor}" />
                 <p:ajax listener="#{vistaCreditoBean.confirmar()}" />
@@ -212,6 +212,7 @@
               </p:tab>
             </p:accordionPanel>
           </h:form>
+          <!-- DIALOGO CONFIRMAR REASIGNACION -->
           <p:dialog id="dlgConfirmacion" widgetVar="confirmacionDialog2" modal="true" header="Confirme esta reasignacion">
             <h:form>
               <h:outputText value="Esta seguro de que desea reasignar este credito?" />
@@ -224,6 +225,7 @@
               <p:commandButton value="No" icon="ui-icon-close" actionListener="#{vistaCreditoBean.cerrar()}" />
             </h:form>
           </p:dialog>
+          <!-- DIALOGO DEVOLUCION CREDITO -->
           <p:dialog id="dlgDevolucionVistaCredito" widgetVar="dialogoDevolucionVistaCredito" modal="true" resizable="false" header="Confirme la solicitud de devolucion">
             <h:form>
               Esta seguro de que desea devolver este credito?
@@ -241,7 +243,7 @@
               </p:selectOneMenu>
               <br />
               <br />
-              Motivo devolucion:
+              Seleccione el motivo de la devolucion:
               <br />
               <p:selectOneMenu id="motivoVistaCredito" value="#{vistaCreditoBean.motivoSeleccionado.idMotivoDevolucion}" style="width:200px">
                 <f:selectItem itemLabel="" itemValue="0" />

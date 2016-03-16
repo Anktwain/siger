@@ -16,4 +16,6 @@ import java.util.List;
 public interface MotivoDevolucionDAO {
   
   public List<MotivoDevolucion> obtenerMotivosPorConcepto(int idConcepto);
+  
+  public MotivoDevolucion buscarPorId(int idMotivo);
 }

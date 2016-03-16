@@ -9,6 +9,7 @@ import dao.ConceptoDevolucionDAO;
 import dao.ContactoDAO;
 import dao.ConvenioPagoDAO;
 import dao.CreditoDAO;
+import dao.DevolucionDAO;
 import dao.DireccionDAO;
 import dao.EmailDAO;
 import dao.GestionDAO;
@@ -32,6 +33,7 @@ import impl.ConceptoDevolucionIMPL;
 import impl.ContactoIMPL;
 import impl.ConvenioPagoIMPL;
 import impl.CreditoIMPL;
+import impl.DevolucionIMPL;
 import impl.DireccionIMPL;
 import impl.EmailIMPL;
 import impl.GestionIMPL;
@@ -71,7 +73,6 @@ public class VistaCreditoBean implements Serializable {
   // VARIABLES DE CLASE
   private CuentasBean cuentasBean;
   private CuentasGestorBean cuentasGestorBean;
-  private boolean adminVisible;
   private String observaciones;
   private String nombreDeudor;
   private String numeroCredito;
@@ -104,6 +105,7 @@ public class VistaCreditoBean implements Serializable {
   private final ConvenioPagoDAO convenioPagoDao;
   private final ConceptoDevolucionDAO conceptoDevolucionDao;
   private final MotivoDevolucionDAO motivoDevolucionDao;
+  private final DevolucionDAO devolucionDao;
   private List<Gestion> listaGestiones;
   private List<Gestor> listaGestores;
   private List<Credito> creditosRelacionados;
@@ -130,6 +132,7 @@ public class VistaCreditoBean implements Serializable {
     historialDao = new HistorialIMPL();
     gestionDao = new GestionIMPL();
     gestorDao = new GestorIMPL();
+    devolucionDao = new DevolucionIMPL();
     convenioPagoDao = new ConvenioPagoIMPL();
     conceptoDevolucionDao = new ConceptoDevolucionIMPL();
     motivoDevolucionDao = new MotivoDevolucionIMPL();
@@ -148,12 +151,9 @@ public class VistaCreditoBean implements Serializable {
   // METODO QUE OBTENDRA TODOS LOS DATOS PRIMARIOS SEGUN EL CREDITO SELECCIONADO EN LA VISTA cuentas.xhtml
   private void obtenerDatos() {
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      adminVisible = false;
       cuentasGestorBean = (CuentasGestorBean) elContext.getELResolver().getValue(elContext, null, "cuentasGestorBean");
       creditoActual = cuentasGestorBean.getCreditoActual();
-
     } else {
-      adminVisible = true;
       cuentasBean = (CuentasBean) elContext.getELResolver().getValue(elContext, null, "cuentasBean");
       creditoActual = cuentasBean.getCreditoSeleccionado();
     }
@@ -275,21 +275,47 @@ public class VistaCreditoBean implements Serializable {
   }
 
   // METODO QUE OBTIENE LOS MOTIVOS DE DEVOLUCION DEPENDIENDO DEL CONCEPTO SELECCIONADO
-  public void preparaMotivos(){
+  public void preparaMotivos() {
     conceptoSeleccionado = conceptoDevolucionDao.buscarPorId(conceptoSeleccionado.getIdConceptoDevolucion());
     listaMotivos = motivoDevolucionDao.obtenerMotivosPorConcepto(conceptoSeleccionado.getIdConceptoDevolucion());
   }
-  
+
   // METODO QUE MANDA UN CREDITO A DEVOLUCION
-  public void devolverCredito(){
-    Devolucion d = new Devolucion();
-    d.setCredito(creditoActual);
-    // SI ES ADMIN QUE SE DEVUELVA DIRECTAMENTE
-    d.setEstatus(Devoluciones.PENDIENTE);
-    d.setObservaciones(observaciones);
-    d.setConceptoDevolucion(conceptoSeleccionado);
+  public void devolverCredito() {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    boolean ok = false;
+    String evento;
+    if ((conceptoSeleccionado.getIdConceptoDevolucion() != 0) && (motivoSeleccionado.getIdMotivoDevolucion() != 0)) {
+      Devolucion d = new Devolucion();
+      Date fecha = new Date();
+      d.setFecha(fecha);
+      conceptoSeleccionado = conceptoDevolucionDao.buscarPorId(conceptoSeleccionado.getIdConceptoDevolucion());
+      d.setConceptoDevolucion(conceptoSeleccionado);
+      motivoSeleccionado = motivoDevolucionDao.buscarPorId(motivoSeleccionado.getIdMotivoDevolucion());
+      d.setMotivoDevolucion(motivoSeleccionado);
+      d.setCredito(creditoActual);
+      d.setObservaciones(observaciones);
+      d.setSolicitante(indexBean.getUsuario().getNombreLogin());
+      if (indexBean.getUsuario().getPerfil() != Perfiles.GESTOR) {
+        d.setEstatus(Devoluciones.DEVUELTO);
+        d.setRevisor(indexBean.getUsuario().getNombreLogin());
+        evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + ", devolvio el credito";
+        ok = historialDao.insertarHistorial(creditoActual.getIdCredito(), evento);
+      } else {
+        d.setEstatus(Devoluciones.PENDIENTE);
+      }
+      ok = ok && (devolucionDao.insertar(d));
+      if (ok) {
+        RequestContext con = RequestContext.getCurrentInstance();
+        con.execute("PF('dlgDevolucionVistaCredito').hide();");
+        con.update("cuentas");
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se devolvio el credito seleccionado"));
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
+      }
+    }
   }
-  
+
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
@@ -508,14 +534,6 @@ public class VistaCreditoBean implements Serializable {
 
   public void setMesesVencidos(int mesesVencidos) {
     this.mesesVencidos = mesesVencidos;
-  }
-
-  public boolean isAdminVisible() {
-    return adminVisible;
-  }
-
-  public void setAdminVisible(boolean adminVisible) {
-    this.adminVisible = adminVisible;
   }
 
   public List<ConceptoDevolucion> getListaConceptos() {

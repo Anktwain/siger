@@ -25,4 +25,9 @@ public interface CreditoDAO {
   public List<Credito> buscarCreditosPorCampanaGestor(int idCampana, int idUsuario);
   public List<Credito> buscarCreditosConPromesaDePagoHoy();
   public List<Credito> buscarCreditosPorGestor(int idUsuario);
+  public List<Credito> buscarCreditosPorZona(int idZona);
+  public List<Credito> buscarCreditosPorSaldoVencido(float saldoInferior, float saldoSuperior);
+  public float buscarSaldoVencidoCredito(int idCredito);
+  public List<Credito> buscarCreditosPorMesesVencidos(int mesesVencidos);
+  public int buscarMesesVencidosCredito(int idCredito);
 }

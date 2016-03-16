@@ -1,5 +1,5 @@
 package dto;
-// Generated 25/02/2016 03:00:35 PM by Hibernate Tools 4.3.1
+// Generated 9/03/2016 10:01:38 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -12,7 +12,7 @@ import java.util.Set;
 public class Credito  implements java.io.Serializable {
 
 
-     private int idCredito;
+     private Integer idCredito;
      private Campana campana;
      private Despacho despacho;
      private Deudor deudor;
@@ -79,11 +79,11 @@ public class Credito  implements java.io.Serializable {
        this.lineas = lineas;
     }
    
-    public int getIdCredito() {
+    public Integer getIdCredito() {
         return this.idCredito;
     }
     
-    public void setIdCredito(int idCredito) {
+    public void setIdCredito(Integer idCredito) {
         this.idCredito = idCredito;
     }
     public Campana getCampana() {

@@ -1,6 +1,6 @@
 package impl;
 
-import dao.AdministradorDAO;
+import dao.AdministrativoDAO;
 import dto.Administrativo;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -15,7 +15,7 @@ import util.HibernateUtil;
  * @author brionvega
  * @since SigerWeb2.0
  */
-public class AdministradorIMPL implements AdministradorDAO {
+public class AdministrativoIMPL implements AdministrativoDAO {
 
     /**
      *

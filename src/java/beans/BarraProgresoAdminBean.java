@@ -6,21 +6,16 @@
 package beans;
 
 import dao.CreditoDAO;
-import dao.InstitucionDAO;
-import dao.SujetoDAO;
 import dao.GestionDAO;
 import dao.PagoDAO;
 import impl.CreditoIMPL;
-import impl.InstitucionIMPL;
 import impl.GestionIMPL;
 import impl.PagoIMPL;
-import impl.SujetoIMPL;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import util.log.Logs;
 
 /**
  *
@@ -34,7 +29,6 @@ public class BarraProgresoAdminBean implements Serializable {
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
   private final PagoDAO pagoDao;
-  private final int idDespacho;
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -44,35 +38,22 @@ public class BarraProgresoAdminBean implements Serializable {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     pagoDao = new PagoIMPL();
-    idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
   }
 
   public String calcularCreditos() {
-    Number total = creditoDao.contarCreditosActivos(idDespacho);
-    String creditos = total.toString();
-    Logs.log.info("Existen " + total + " creditos activos en el sistema");
-    return creditos;
+    return creditoDao.contarCreditosActivos(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
 
   public String calcularVisitas() {
-    Number total = gestionDao.calcularVisitasDomiciliariasPorDespacho(idDespacho);
-    String visitas = total.toString();
-    Logs.log.info("Se han hecho " + total + " visitas domiciliarias");
-    return visitas;
+    return gestionDao.calcularVisitasDomiciliariasPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
 
   public String calcularPagos() {
-    Number total = pagoDao.calcularPagosRealizados();
-    String pagos = total.toString();
-    Logs.log.info("Se han realizado " + total + " pagos");
-    return pagos;
+    return pagoDao.calcularPagosRealizados().toString();
   }
 
   public String calcularRecuperacion() {
-    Number total = pagoDao.calcularRecuperacionDeInstitucion();
-    String recuperacion = total.toString();
-    Logs.log.info("Se ha recuperado un %" + total + " del saldo a recuperar");
-    return (recuperacion + " %");
+    return pagoDao.calcularRecuperacionDeInstitucion().toString() + " %";
   }
 
 }

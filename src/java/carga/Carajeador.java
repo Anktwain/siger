@@ -1,5 +1,6 @@
 package carga;
 
+import dao.CalificacionDAO;
 import dto.Actualizacion;
 import dto.Campana;
 import dto.Credito;
@@ -15,6 +16,7 @@ import dto.Remesa;
 import dto.Subproducto;
 import dto.Sujeto;
 import dto.Telefono;
+import impl.CalificacionIMPL;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -80,7 +82,7 @@ public class Carajeador {
     String linea = null;
     String archivoSql = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("script", BautistaDeArchivos.PREFIJO, "sql");
     String archivoPlano = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("direccionar", BautistaDeArchivos.PREFIJO, "txt");
-    String creditoActual="";
+    String creditoActual = "";
 
     try {
       Fecha fecha = new Fecha();
@@ -142,11 +144,33 @@ public class Carajeador {
 
       for (Fila f : filas) {
         creditoActual = f.getCredito();
+        // ESTIMADO TIO:
+        // ME HE TOMADO EL ATREVIMIENTO DE UTILIZAR EL CONSTRUCTOR POR DEFECTO
+        // Y DESPUES ESTABLECERLE LOS ATRIBUTOS
+        // ESTO CON LA FINALIDAD DE QUE EN LOS NUEVOS POJOS NO MARQUE ERROR
+        // DISCULPA MI OSADIA
         /* Crea un nuevo sujeto */
-        sujeto = sujetoDao.insert(session, new Sujeto(f.getNombre(), f.getRfc(), 0));
-
+        Sujeto s = new Sujeto();
+        s.setNombreRazonSocial(f.getNombre());
+        s.setRfc(f.getRfc());
+        s.setEliminado(0);
+        sujeto = sujetoDao.insert(session, s);
+        // ESTIMADO TIO:
+        // ME HE TOMADO EL ATREVIMIENTO DE UTILIZAR EL CONSTRUCTOR POR DEFECTO
+        // Y DESPUES ESTABLECERLE LOS ATRIBUTOS
+        // ESTO CON LA FINALIDAD DE QUE EN LOS NUEVOS POJOS NO MARQUE ERROR
+        // DISCULPA MI OSADIA
         /* Nuevo deudor asociado al sujeto */
-        deudor = deudorDao.insert(session, new Deudor(sujeto, f.getIdCliente(), null, null, null, null, null));
+        Deudor d = new Deudor();
+        d.setSujeto(s);
+        d.setNumeroDeudor(f.getIdCliente());
+        CalificacionDAO calificacionDAO = new CalificacionIMPL();
+        d.setCalificacion(calificacionDAO.buscarPorId(1));
+        d.setContactos(null);
+        d.setCreditos(null);
+        d.setCurp(null);
+        d.setNumeroSeguroSocial(null);
+        deudor = deudorDao.insert(session, d);
 
         /* Asigna todos los emails encontrados para ese sujeto */
         for (String email : f.getCorreos()) {
@@ -179,29 +203,47 @@ public class Carajeador {
         /* Crea la actualización */
         Date fechaUP;
         Date fechaUVP;
-        if(!f.getFechaUltimoPago().isEmpty()) {
+        if (!f.getFechaUltimoPago().isEmpty()) {
           fechaUP = simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaUltimoPago()));
         } else {
           fechaUP = null;
         }
-        if(!f.getFechaUltimoVencimientoPagado().isEmpty()) {
+        if (!f.getFechaUltimoVencimientoPagado().isEmpty()) {
           fechaUVP = simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaUltimoVencimientoPagado()));
         } else {
           fechaUVP = null;
         }
-        
-        actualizacion = new Actualizacion(credito, remesa,
-                Integer.parseInt(f.getMesesVencidos()), Float.parseFloat(f.getSaldoVencido()),
-                f.getEstatus(), fechaUP,
-                fechaUVP, null);
-
+        // ESTIMADO TIO:
+        // ME HE TOMADO EL ATREVIMIENTO DE UTILIZAR EL CONSTRUCTOR POR DEFECTO
+        // Y DESPUES ESTABLECERLE LOS ATRIBUTOS
+        // ESTO CON LA FINALIDAD DE QUE EN LOS NUEVOS POJOS NO MARQUE ERROR
+        // DISCULPA MI OSADIA
+        actualizacion = new Actualizacion();
+        actualizacion.setCredito(credito);
+        actualizacion.setRemesa(remesa);
+        actualizacion.setMesesVencidos(Integer.parseInt(f.getMesesVencidos()));
+        actualizacion.setSaldoVencido(Float.parseFloat(f.getSaldoVencido()));
+        actualizacion.setEstatus(f.getEstatus());
+        actualizacion.setFechaUltimoPago(fechaUP);
+        actualizacion.setFechaUltimoVencimientoPagado(fechaUVP);
+        actualizacion.setFacs(null);
         actualizacionDao.insert(session, actualizacion);
 
         /* Crea los facs asociados a la actualización */
         if (f.getFacs().size() > 0) {
           for (Fac fac : f.getFacs()) {
-            facDao.insert(session, new dto.Fac(actualizacion, fac.getMes(), fac.getAnio(),
-                    Float.parseFloat(fac.getFacPor()), fac.getFacMes()));
+            // ESTIMADO TIO:
+            // ME HE TOMADO EL ATREVIMIENTO DE UTILIZAR EL CONSTRUCTOR POR DEFECTO
+            // Y DESPUES ESTABLECERLE LOS ATRIBUTOS
+            // ESTO CON LA FINALIDAD DE QUE EN LOS NUEVOS POJOS NO MARQUE ERROR
+            // DISCULPA MI OSADIA
+            dto.Fac fa = new dto.Fac();
+            fa.setActualizacion(actualizacion);
+            fa.setAnio(fac.getAnio());
+            fa.setMes(fac.getMes());
+            fa.setFacPor(Float.parseFloat(fac.getFacPor()));
+            fa.setFacMes(fac.getFacMes());
+            facDao.insert(session, fa);
           }
         }
 

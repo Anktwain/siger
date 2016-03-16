@@ -7,6 +7,7 @@ package impl;
 
 import dao.CreditoDAO;
 import dto.Credito;
+import static java.lang.Float.NaN;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +49,6 @@ public class CreditoIMPL implements CreditoDAO {
   @Override
   public Number contarCreditosActivos(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Number creditos;
     String consulta = "SELECT COUNT(*) FROM credito c WHERE id_credito NOT IN (SELECT id_credito FROM devolucion) AND c.id_despacho = " + idDespacho + " ORDER BY numero_credito ASC;";
     try {
@@ -319,6 +319,86 @@ public class CreditoIMPL implements CreditoDAO {
       cerrar(sesion);
     }
     return creditos;
+  }
+
+  @Override
+  public List<Credito> buscarCreditosPorZona(int idZona) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos;
+    String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_municipio IN (SELECT id_municipio FROM region WHERE id_zona = " + idZona + "))));";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+    } catch (HibernateException he) {
+      creditos = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+
+  @Override
+  public List<Credito> buscarCreditosPorSaldoVencido(float saldoInferior, float saldoSuperior) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos;
+    String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE saldo_vencido > " + saldoInferior + " AND saldo_vencido < " + saldoSuperior + " ORDER BY id_actualizacion DESC);";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+    } catch (HibernateException he) {
+      creditos = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+
+  @Override
+  public float buscarSaldoVencidoCredito(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    float saldoVencido = 0;
+    String consulta = "SELECT saldo_vencido FROM actualizacion WHERE id_credito = " + idCredito + " ORDER BY id_actualizacion DESC LIMIT 1;";
+    try {
+      saldoVencido = (float) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      saldoVencido = -1;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return saldoVencido;
+  }
+
+  @Override
+  public List<Credito> buscarCreditosPorMesesVencidos(int mesesVencidos) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos;
+    String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE meses_vencidos = " + mesesVencidos + " ORDER BY id_actualizacion DESC);";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+    } catch (HibernateException he) {
+      creditos = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+
+  @Override
+  public int buscarMesesVencidosCredito(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    int mesesVencidos;
+    String consulta = "SELECT meses_vencidos FROM actualizacion WHERE id_credito = " + idCredito + " ORDER BY id_actualizacion DESC LIMIT 1;";
+    try {
+      mesesVencidos = (int) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      mesesVencidos = -1;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return mesesVencidos;
   }
 
   private void cerrar(Session sesion) {

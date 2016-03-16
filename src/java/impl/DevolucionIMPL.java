@@ -135,7 +135,6 @@ public class DevolucionIMPL implements DevolucionDAO {
   @Override
   public Devolucion buscarDevolucionPorNumeroCredito(String numeroCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Devolucion dev;
     try {
       dev = (Devolucion) sesion.createSQLQuery("SELECT * FROM devolucion WHERE id_credito = (SELECT id_credito FROM credito WHERE numero_credito = '" + numeroCredito + "') AND estatus = " + Devoluciones.DEVUELTO + ";").addEntity(Devolucion.class).uniqueResult();
@@ -146,6 +145,22 @@ public class DevolucionIMPL implements DevolucionDAO {
       cerrar(sesion);
     }
     return dev;
+  }
+
+  @Override
+  public List<Devolucion> buscarDevolucionesPendientesPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Devolucion> bandeja = new ArrayList<>();
+    String consulta = "SELECT * FROM devolucion WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND estatus = " + Devoluciones.PENDIENTE + ";";
+    try {
+      bandeja = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
+    } catch (HibernateException he) {
+      bandeja = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return bandeja;
   }
 
   private void cerrar(Session sesion) {

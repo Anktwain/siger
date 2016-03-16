@@ -77,12 +77,13 @@
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
   </h:body>
+  <!-- DIALOGO PARA CONFIRMAR GESTORES -->
   <p:dialog widgetVar="dlgConfirmarGestores" header="Confirmar gestores" modal="true" resizable="false">
     <h:form id="formConfirmarGestores">
       <br />
       <p:contextMenu for="gestoresPorConfirmar" style="width:200px;">
-        <p:menuitem value="Confirmar" icon="ui-icon-check" />
-        <p:menuitem value="Rechazar" icon="ui-icon-close" />
+        <p:menuitem value="Confirmar" icon="ui-icon-check" actionListener="#{usuariosBean.confirmarGestor()}" update=":growl, gestoresPorConfirmar, formBuscarUsuarios" />
+        <p:menuitem value="Rechazar" icon="ui-icon-close" actionListener="#{usuariosBean.rechazarGestor()}" update=":growl, gestoresPorConfirmar" />
       </p:contextMenu>
       <p:dataTable id="gestoresPorConfirmar" var="u" value="#{usuariosBean.usuariosNoConfirmados}" rowKey="#{u.idUsuario}" selectionMode="single" selection="#{usuariosBean.usuarioSeleccionado}" emptyMessage="No existen gestores por confirmar."  paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 700px;">
         <f:facet name="header">
@@ -98,32 +99,139 @@
           <h:outputText value="#{u.correo}"/>
         </p:column>
       </p:dataTable>
+      <br />
+      <div align="center">
+        <p:commandButton value="Ok" icon="ui-icon-check" oncomplete="PF('dlgConfirmarGestores').hide();" />
+      </div>
     </h:form>
   </p:dialog>
+  <!-- DIALOGO PARA NUEVO USUARIO -->
   <p:dialog widgetVar="dlgNuevoUsuario" header="Agregar un usuario" modal="true" resizable="false">
-    <!-- FORMULARIO PARA NUEVO USUARIO -->
+    <h:form id="nuevousuarioForm">
+      <br />
+      Por favor complete el siguiente formulario:
+      <br />
+      <br />
+      Nombre(s):
+      <br />
+      <p:inputText value="#{usuariosBean.nombreNuevoUsuario}" size="35" maxlength="50" required="true" requiredMessage="Debe escribir su(s) nombre(s)" />
+      <br />
+      Apellido Paterno:
+      <br />
+      <p:inputText value="#{usuariosBean.paternoNuevoUsuario}" size="20" maxlength="30" required="true" requiredMessage="Debe escribir su apellido paterno" />
+      <br />
+      Apellido Materno:
+      <br />
+      <p:inputText value="#{usuariosBean.maternoNuevoUsuario}" size="20" maxlength="30" />
+      <br />
+      Nombre de usuario:
+      <br />
+      <p:inputText value="#{usuariosBean.loginNuevoUsuario}" size="15" maxlength="15" required="true" requiredMessage="Debe escribir un nombre de usuario" />
+      <br />
+      Contraseña:
+      <br />
+      <p:inputText value="#{usuariosBean.passwordNuevoUsuario}" size="20" maxlength="20" required="true" type="password" requiredMessage="Debe escribir una contraseña" />
+      <br />
+      Confirme la contraseña:
+      <br />
+      <p:inputText value="#{usuariosBean.password2NuevoUsuario}" size="20" maxlength="20" required="true" type="password" requiredMessage="Debe confirmar la contraseña" />
+      <br />
+      Dirección de correo electrónico:
+      <br />
+      <p:inputText value="#{usuariosBean.correoNuevoUsuario}" size="30" maxlength="50" required="true" requiredMessage="Debe escribir una direccion de correo electronico" />
+      <br />
+      Perfil del nuevo usuario:
+      <br />
+      <p:selectOneMenu value="#{usuariosBean.tipoUsuarioSeleccionado}">
+        <f:selectItems value="#{usuariosBean.tipoUsuarios}" var="t" itemLabel="#{t}" itemValue="#{t}" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{usuariosBean.crearUsuario()}" update=":growl, formBuscarUsuarios" />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dlgNuevoUsuario').hide();" />
+    </h:form>
   </p:dialog>
+  <!-- DIALOGO PARA BUSCAR USUARIOS -->
   <p:dialog widgetVar="dlgBuscarUsuarios" header="Busqueda de usuarios" modal="true" resizable="false">
     <h:form id="formBuscarUsuarios">
       <br />
       <p:contextMenu for="usuariosActuales" style="width:200px;">
-        <p:menuitem value="Ver detalle" icon="ui-icon-search" />
-        <p:menuitem value="Eliminar" icon="ui-icon-close" />
+        <p:menuitem value="Ver detalle" icon="ui-icon-search" oncomplete="PF('dlgDetalleUsuario').show();" update="detalleUsuarioForm" />
+        <p:menuitem value="Eliminar" icon="ui-icon-close" oncomplete="PF('dlgEliminarUsuario').show();" />
       </p:contextMenu>
-      <p:dataTable id="usuariosActuales" var="u" value="#{usuariosBean.usuariosActuales}" rowKey="#{u.idUsuario}" selectionMode="single" selection="#{usuariosBean.usuarioSeleccionado}" emptyMessage="No existen gestores por confirmar."  paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 700px;">
+      <p:dataTable id="usuariosActuales" var="u" value="#{usuariosBean.usuariosActuales}" rowKey="#{u.idUsuario}" selectionMode="single" selection="#{usuariosBean.usuarioSeleccionado}" emptyMessage="No existen gestores por confirmar."  paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 800px;">
         <f:facet name="header">
           Lista de usuarios en este despacho
         </f:facet>
         <p:column headerText="Nombre" style="width:250px;" > 
           <h:outputText value="#{u.nombre} #{u.paterno} #{u.materno}"/>
         </p:column>
-        <p:column headerText="Nombre de login" style="width:150px;" > 
-          <h:outputText value="#{u.nombreLogin}"/>
-        </p:column>
-        <p:column headerText="Correo proporcionado" style="width:250px;" > 
+        <p:column headerText="Correo proporcionado" style="width:300px;" > 
           <h:outputText value="#{u.correo}"/>
         </p:column>
+        <p:column headerText="Perfil" style="width:200px;" > 
+          <h:outputText value="#{usuariosBean.etiquetarPerfiles(u.perfil)}"/>
+        </p:column>
       </p:dataTable>
+      <br />
+      <div align="center">
+        <p:commandButton value="Ok" icon="ui-icon-check" oncomplete="PF('dlgBuscarUsuarios').hide();" />
+      </div>
     </h:form>
+  </p:dialog>
+  <!-- DIALOGO DETALLE USUARIO -->
+  <p:dialog widgetVar="dlgDetalleUsuario" header="Detalle del gestor" modal="true" resizable="false" showEffect="fade" hideEffect="fade">
+    <h:form id="detalleUsuarioForm">
+      <p:outputPanel style="text-align:center;">
+        <p:panelGrid columns="2">
+          <f:facet name="header">
+            <p:graphicImage library="img" name="#{usuariosBean.usuarioSeleccionado.imagenPerfil}" width="200" height="200" />
+          </f:facet>
+          <h:outputText value="Nombre: "/>
+          <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombre}"  />
+          <h:outputText value="Apellido paterno: "/>
+          <p:inputText value="#{usuariosBean.usuarioSeleccionado.paterno}" />
+          <h:outputText value="Apellido materno: "/>
+          <p:inputText value="#{usuariosBean.usuarioSeleccionado.materno}" />
+          <h:outputText value="Nombre login: "/>
+          <p:inputText value="#{usuariosBean.usuarioSeleccionado.nombreLogin}" />
+          <h:outputText value="Perfil: "/>
+          <h:outputText value="#{usuariosBean.etiquetarPerfiles(usuariosBean.usuarioSeleccionado.perfil)}" />
+          <h:outputText value="Correo: "/>
+          <h:inputText value="#{usuariosBean.usuarioSeleccionado.correo}" />
+          <f:facet name="footer">
+            <br />
+            <div align="center">
+              <p:commandButton value="Ok" icon="ui-icon-check" actionListener="#{usuariosBean.modificarUsuario()}" update=":growl, formBuscarUsuarios" />
+            </div>
+            <br />
+          </f:facet>
+        </p:panelGrid>
+      </p:outputPanel>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO ELIMINAR USUARIO -->
+  <p:dialog widgetVar="dlgEliminarUsuario" header="Confirme esta accion" modal="true" resizable="false">
+    <h:form id="formEliminarUsuario">
+      Esta seguro de elimiar a este usuario?
+      <br />
+      <br />
+      Esta accion provocara que:
+      <ul style="list-style-type:disc; padding: 20px;">
+        <li>Todos su creditos se reasignen entre los gestores activos.</li>
+        <li>Se finalizen todos los convenios de pago.</li>
+        <li>Se eliminen las zonas asignadas para este gestor.</li>
+        <li>NOTA: Los cambios no tomaran efecto hasta que el usuario cierre sesion.</li>
+      </ul>
+      <p:commandButton value="Eliminar usuario" icon="ui-icon-check" actionListener="#{usuariosBean.eliminarUsuario()}" update=":growl, formBuscarUsuarios" />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dlgEliminarUsuario').hide();" />
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO BARRA DE CARGA -->
+  <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+  <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+    <p:graphicImage library="img" name="loadingBarra.gif" />
   </p:dialog>
 </html>

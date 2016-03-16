@@ -1,9 +1,12 @@
 package beans;
 
+import dao.DevolucionDAO;
 import java.io.Serializable;
 import dto.Usuario;
 import impl.UsuarioIMPL;
 import dao.UsuarioDAO;
+import dto.Devolucion;
+import impl.DevolucionIMPL;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
@@ -23,18 +26,21 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 
 public class BarraAdministrativoBean implements Serializable {
+
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
-  
+
+  // VARIABLES DE CLASE
   private final UsuarioDAO usuarioDao;
-  private List<Usuario> sinConfirmar;
+  private final DevolucionDAO devolucionDao;
 
   /**
    *
    */
   public BarraAdministrativoBean() {
     usuarioDao = new UsuarioIMPL();
+    devolucionDao = new DevolucionIMPL();
   }
 
   /**
@@ -42,29 +48,30 @@ public class BarraAdministrativoBean implements Serializable {
    *
    * @return
    */
-  // CREO QUE ESTOY LISTO PARA CERTIFICARME COMO ARQUITECTO JAVA
-  public String contar() {
-    sinConfirmar = usuarioDao.buscarUsuariosNoConfirmados(indexBean.getUsuario().getDespacho().getIdDespacho());
-    int cuenta = sinConfirmar.size();
-    String total = Integer.toString(cuenta);
-    return total;
+  // CREO QUE ESTOY LISTO PARA CERTIFICARME COMO ARQUITECTO JAVA 05-03-2015
+  // METODO QUE CUENTA LOS GESTORES QUE NO SE HAN CONFIRMADO
+  public String contarGestoresNoConfirmados() {
+    List<Usuario> sinConfirmar = usuarioDao.buscarUsuariosNoConfirmados(indexBean.getUsuario().getDespacho().getIdDespacho());
+    if (!sinConfirmar.isEmpty()) {
+      return String.valueOf(sinConfirmar.size());
+    } else {
+      return "0";
+    }
   }
 
-  /**
-   *
-   *
-   * @param sinConfirmar
-   */
-  public void setSinConfirmar(List sinConfirmar) {
-    this.sinConfirmar = sinConfirmar;
+  //METODO QUE CUENTA LOS CREDITOS DEVUELTOS QUE NO HAN SIDO REVISADOS
+  public String contarDevolucionesPendientes() {
+    List<Devolucion> pendientes = devolucionDao.bandejaDevolucionPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
+    if (!pendientes.isEmpty()) {
+      return String.valueOf(pendientes.size());
+    } else {
+      return "0";
+    }
   }
 
-  /**
-   *
-   *
-   * @return
-   */
-  public List getSinConfirmar() {
-    return sinConfirmar;
+  // METODO QUE CUENTA LAS DIRECCIONES POR VALIDAR
+  public String contarDireccionesPendientes() {
+    return "+1";
   }
+
 }

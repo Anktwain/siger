@@ -8,7 +8,6 @@ package beans;
 import dao.CreditoDAO;
 import dao.GestionDAO;
 import dto.Credito;
-import dto.Gestion;
 import impl.CreditoIMPL;
 import impl.GestionIMPL;
 import java.io.IOException;
@@ -16,11 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
-import util.constantes.Perfiles;
 
 /**
  *

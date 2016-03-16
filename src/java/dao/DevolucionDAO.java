@@ -28,4 +28,6 @@ public interface DevolucionDAO {
   
   public Devolucion buscarDevolucionPorNumeroCredito(String numeroCredito);
   
+  public List<Devolucion> buscarDevolucionesPendientesPorDespacho(int idDespacho);
+  
 }

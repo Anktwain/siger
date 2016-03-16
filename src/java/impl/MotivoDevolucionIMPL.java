@@ -19,8 +19,8 @@ import util.log.Logs;
  *
  * @author Eduardo
  */
-public class MotivoDevolucionIMPL implements MotivoDevolucionDAO{
-  
+public class MotivoDevolucionIMPL implements MotivoDevolucionDAO {
+
   @Override
   public List<MotivoDevolucion> obtenerMotivosPorConcepto(int idConcepto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -36,11 +36,27 @@ public class MotivoDevolucionIMPL implements MotivoDevolucionDAO{
     }
     return md;
   }
-  
+
+  @Override
+  public MotivoDevolucion buscarPorId(int idMotivo) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    MotivoDevolucion md;
+    String consulta = "SELECT * FROM motivo_devolucion WHERE id_motivo_devolucion = " + idMotivo + ";";
+    try {
+      md = (MotivoDevolucion) sesion.createSQLQuery(consulta).addEntity(MotivoDevolucion.class).uniqueResult();
+    } catch (HibernateException he) {
+      md = null;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return md;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();
     }
   }
-  
+
 }

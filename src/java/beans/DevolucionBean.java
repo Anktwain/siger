@@ -63,15 +63,14 @@ public class DevolucionBean implements Serializable {
   public void aprobar(List<Devolucion> lista) {
     FacesContext contexto = FacesContext.getCurrentInstance();
     int tam = lista.size();
-    if ((!lista.isEmpty()) && (tam >= 1)) {
+    if (!lista.isEmpty()) {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
-        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getCredito().getNumeroCredito());
-        devolucion.setEstatus(Devoluciones.DEVUELTO);
+        lista.get(i).setEstatus(Devoluciones.DEVUELTO);
         String quien = indexBean.getUsuario().getNombreLogin();
-        devolucion.setRevisor(quien);
+        lista.get(i).setRevisor(quien);
         String evento = "El administrador: " + admin + ", aprobo la devolucion del credito";
-        ok = devolucionDao.editar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
+        ok = devolucionDao.editar(lista.get(i)) && historialDao.insertarHistorial(lista.get(i).getCredito().getIdCredito(), evento);
       }
       if (ok) {
         obtenerListas();
@@ -151,7 +150,7 @@ public class DevolucionBean implements Serializable {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
     }
   }
-  
+
   public final void obtenerListas() {
     // OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
     listaDevoluciones = devolucionDao.bandejaDevolucionPorDespacho(idDespacho);
@@ -160,10 +159,10 @@ public class DevolucionBean implements Serializable {
     // OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
     listaRetirados = devolucionDao.retiradosBancoPorDespacho(idDespacho);
   }
-  
+
   // METODO QUE LE DA UNA ETIQUETA A LOS VALORES NUMERICOS DEL ESTATUS DE PAGOS
   public String etiquetarEstatus(int estatus) {
-    String estado = null;
+    String estado = "";
     if (estatus == Devoluciones.CONSERVADO) {
       estado = "Conservado";
     }
