@@ -83,6 +83,7 @@ public class Carajeador {
     String archivoSql = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("script", BautistaDeArchivos.PREFIJO, "sql");
     String archivoPlano = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("direccionar", BautistaDeArchivos.PREFIJO, "txt");
     String creditoActual = "";
+    int idActualizacion = 0;
 
     try {
       Fecha fecha = new Fecha();
@@ -227,6 +228,8 @@ public class Carajeador {
         actualizacion.setFechaUltimoPago(fechaUP);
         actualizacion.setFechaUltimoVencimientoPagado(fechaUVP);
         actualizacion.setFacs(null);
+        actualizacion.setIdActualizacion(idActualizacion);
+        System.out.println(actualizacion.getIdActualizacion());
         actualizacionDao.insert(session, actualizacion);
 
         /* Crea los facs asociados a la actualización */
@@ -246,6 +249,8 @@ public class Carajeador {
             facDao.insert(session, fa);
           }
         }
+
+        idActualizacion = idActualizacion + 1;
 
         if (f.getIdColonia() != 0) {
           query += "INSERT INTO `sigerbd`.`direccion` (`calle`, `id_sujeto`, `id_municipio`, `id_estado`, `id_colonia`) "

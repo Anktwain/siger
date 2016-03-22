@@ -3,11 +3,15 @@
 <html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-      xmlns="http://www.w3.org/1999/xhtml">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Visitas</title>
-  </h:head> 
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('visitas')}" type="preRenderView" />
+  </f:metadata>
   <body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
@@ -15,7 +19,7 @@
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-        <div id="breadcrumb">
+      <div id="breadcrumb">
         <ul class="breadcrumb">
           <li>
             <i class="fa fa-home">

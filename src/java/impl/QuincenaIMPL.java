@@ -9,7 +9,6 @@ import dao.QuincenaDAO;
 import dto.Quincena;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import util.HibernateUtil;
 import util.log.Logs;
 

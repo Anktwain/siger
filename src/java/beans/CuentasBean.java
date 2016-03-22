@@ -93,6 +93,7 @@ public class CuentasBean {
   // METODO QUE OBTIENE LA LISTA DE CREDITOS Y DE CONCEPTOS DE DEVOLUCION
   public final void obtenerListas() {
     listaCreditos = creditoDao.tablaCreditosEnGestionPorDespacho(idDespacho);
+    filtrados = listaCreditos;
     listaConceptos = conceptoDevolucionDao.obtenerConceptos();
     listaCampanas = campanaDao.buscarTodas();
     conceptoSeleccionado = new ConceptoDevolucion();
@@ -113,6 +114,8 @@ public class CuentasBean {
       listaCreditos.clear();
       obtenerListas();
       RequestContext.getCurrentInstance().update("formCuentas");
+    } else {
+      obtenerListaCreditos();
     }
   }
 
@@ -159,6 +162,16 @@ public class CuentasBean {
       } else {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
       }
+    }
+  }
+
+  // METODO QUE OBTIENE EL SALDO VENCIDO DEL CREDITO
+  public float calcularSaldoVencido(Credito credito) {
+    float f = creditoDao.buscarSaldoVencidoCredito(credito.getIdCredito());
+    if (f == 0) {
+      return 0;
+    } else {
+      return f;
     }
   }
 

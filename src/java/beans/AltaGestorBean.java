@@ -95,11 +95,7 @@ public class AltaGestorBean implements Serializable {
    * @return
    */
   private boolean nombreLoginEsUnico() {
-    if (usuarioDao.buscarNombreLogin(nombreLogin) != null) {
-      // Error: El usuario ya existe
-      return false;
-    }
-    return true;
+    return (usuarioDao.buscarNombreLogin(nombreLogin) == null);
   }
 
   /**
@@ -108,13 +104,10 @@ public class AltaGestorBean implements Serializable {
    * @return
    */
   private boolean correoEsUnico() {
-    if (usuarioDao.buscarCorreo(correo) != null) {
-      return false;
-    }
-    return true;
+    return (usuarioDao.buscarCorreo(correo) == null);
   }
 
-   /**
+  /**
    *
    *
    * @return
@@ -158,7 +151,7 @@ public class AltaGestorBean implements Serializable {
       context.addMessage(null, new FacesMessage("Operacion exitosa",
               "Se agrego el usuario correctamente al sistema. Espere instrucciones del administrador."));
       externalContext.getFlash().setKeepMessages(true);
-      FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
+      FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
     }
   }
 

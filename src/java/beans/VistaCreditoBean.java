@@ -57,6 +57,7 @@ import util.constantes.Convenios;
 import util.constantes.Devoluciones;
 import util.constantes.Perfiles;
 import util.constantes.TipoCreditos;
+import util.log.Logs;
 
 /**
  *
@@ -239,17 +240,23 @@ public class VistaCreditoBean implements Serializable {
     Gestor nuevoGestor = gestorDao.buscar(gestorSeleccionado.getIdGestor());
     cred.setGestor(nuevoGestor);
     ok = ok & (creditoDao.editar(cred));
-    // ESCRIBIMOS EN EL HISTORIAL LA REASIGNACION
-    Historial h = new Historial();
-    h.setCredito(creditoActual);
-    Date fecha = new Date();
-    h.setFecha(fecha);
-    String evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + gestorActual.getUsuario().getNombreLogin() + " al gestor " + nuevoGestor.getUsuario().getNombreLogin();
-    h.setEvento(evento);
-    ok = ok & (historialDao.insertarHistorial(creditoActual.getIdCredito(), evento));
     if (ok) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
-      gestorActual = nuevoGestor;
+      // GUARDAMOS EN EL LOG EL DETALLE DE LA REASIGNACION
+      Logs.log.info("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + gestorActual.getUsuario().getNombreLogin() + " al gestor " + nuevoGestor.getUsuario().getNombreLogin());
+      // ESCRIBIMOS EN EL HISTORIAL LA REASIGNACION
+      Historial h = new Historial();
+      h.setCredito(creditoActual);
+      Date fecha = new Date();
+      h.setFecha(fecha);
+      String evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito al gestor " + nuevoGestor.getUsuario().getNombreLogin();
+      h.setEvento(evento);
+      ok = ok & (historialDao.insertarHistorial(creditoActual.getIdCredito(), evento));
+      if (ok) {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
+        gestorActual = nuevoGestor;
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
+      }
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
     }
@@ -300,6 +307,7 @@ public class VistaCreditoBean implements Serializable {
         d.setEstatus(Devoluciones.DEVUELTO);
         d.setRevisor(indexBean.getUsuario().getNombreLogin());
         evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + ", devolvio el credito";
+        Logs.log.info(evento);
         ok = historialDao.insertarHistorial(creditoActual.getIdCredito(), evento);
       } else {
         d.setEstatus(Devoluciones.PENDIENTE);

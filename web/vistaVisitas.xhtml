@@ -65,9 +65,7 @@
             <br />
             <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="#{visitasBean.generarPdf()}" update=":growl, visitasForm" />
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:commandButton value="Descargar" icon="ui-icon-arrowthick-1-s" rendered="#{visitasBean.descargarPdf}">
-              <p:fileDownload value="#{visitasBean.archivo}" />
-            </p:commandButton>
+            <p:button value="Descargar" icon="ui-icon-arrowthick-1-s" rendered="#{visitasBean.descargarPdf}" href="#{visitasBean.rutaPdf}" target="_blank" />
           </h:form>
         </div>
       </div>

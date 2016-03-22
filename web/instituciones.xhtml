@@ -9,7 +9,10 @@
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Instituciones</title>
     <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
-  </h:head> 
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('instituciones')}" type="preRenderView" />
+  </f:metadata>
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <div id="overlay" class="transparent" style="display: none;"></div>
@@ -31,7 +34,7 @@
       <div class="main-header clearfix">
         <div class="page-title">
           <h3 class="no-margin">Instituciones</h3>
-          <span>Consulte informaci&oacute;n de las instituciones, registre a una nueva, modifique o elimine las instituciones registradas</span>
+          <span>Consulte informaci&oacute;n de las instituciones, registre a una nueva o modifique.</span>
         </div>
       </div>
       <div class="padding-md">

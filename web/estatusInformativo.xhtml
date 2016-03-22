@@ -8,7 +8,10 @@
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Estatus informativo</title>
     <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
-  </h:head> 
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('estatus informativo')}" type="preRenderView" />
+  </f:metadata>
   <body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->

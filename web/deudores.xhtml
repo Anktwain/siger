@@ -9,6 +9,9 @@
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Deudores</title>
   </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('deudores')}" type="preRenderView" />
+  </f:metadata>
   <h:body>
     <p:growl id="growl" showDetail="true" />
     <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
@@ -644,8 +647,8 @@
                 </div>
                 <div class="ui-fluid">
                   <h:form id="frmDetalleTelefono">
-                      <p:panelGrid columns="2" class="table table-hover table-striped no-margin table-responsive">
-                        <h:outputText value="N&uacute;mero: "/>
+                    <p:panelGrid columns="2" class="table table-hover table-striped no-margin table-responsive">
+                      <h:outputText value="N&uacute;mero: "/>
                       <p:inputText value="#{vistaDeudores.telefonoActual.numero}" class="no-margin no-padding" />
                       <h:outputText value="Tipo: " />
                       <p:inputText value="#{vistaDeudores.telefonoActual.tipo}" class="no-margin no-padding"/>

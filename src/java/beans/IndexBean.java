@@ -11,8 +11,7 @@ import javax.faces.bean.SessionScoped;
 import util.constantes.Constantes;
 import javax.faces.context.FacesContext;
 import util.MD5;
-import java.util.Calendar;
-import java.util.Date;
+import javax.servlet.http.HttpSession;
 import util.constantes.Perfiles;
 import util.log.Logs;
 
@@ -40,23 +39,6 @@ public class IndexBean implements Serializable {
   private Usuario usuario;
   private final UsuarioDAO usuarioDao;
   private boolean adminVisible;
-  /**
-   * Información de la sesión
-   */
-  private Date horaInicio;
-  /**
-   * Información de la sesión
-   */
-  private Date horaFin;
-  /**
-   * Información de la sesión
-   */
-  private Usuario usuarioActivo;
-  /**
-   * Información de la sesión
-   */
-  private boolean sesionActiva;
-
   private String vista;
 
   /**
@@ -114,70 +96,82 @@ public class IndexBean implements Serializable {
    * @throws java.io.IOException
    */
   public void ingresar() throws IOException {
+    HttpSession sesion = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
     nombreUsuario = nombreUsuario.toLowerCase();
     usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
-    Calendar cal = Calendar.getInstance();
     FacesContext instanciaActual = FacesContext.getCurrentInstance();
     if (usuario != null) {
       switch (usuario.getPerfil()) {
         case Perfiles.GESTOR_NO_CONFIRMADO:
-          instanciaActual.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
-                  usuario.getNombre() + " ha ingresado con el perfil "
-                  + usuario.getPerfil() + " (GESTOR_NO_CONFIRMADO)."));
-          Logs.log.info("[" + cal.toInstant() + "] Intento de acceso gestor no confirmado. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
-          sesionActiva = false;
+          instanciaActual.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.", "Usuario no encontrado."));
+          Logs.log.info("Intento de acceso gestor no confirmado. " + nombreUsuario + ", despacho: " + usuario.getDespacho().getNombreCorto());
           break;
         case Perfiles.ELIMINADO:
-          instanciaActual.addMessage("",
-                  new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.",
-                          usuario.getNombre() + "No podrá ingresar con el perfil " + usuario.getPerfil() + " (ELIMINADO) porque ha sido desactivado."));
-          Logs.log.info("[" + cal.toInstant() + "] Intento de acceso usuario eliminado. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
-          sesionActiva = false;
+          instanciaActual.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso denegado.", usuario.getNombre() + " ha sido eliminado."));
+          Logs.log.info("Intento de acceso usuario eliminado. " + nombreUsuario + ", despacho: " + usuario.getDespacho().getNombreCorto());
           break;
         case Perfiles.ADMINISTRADOR:
         case Perfiles.SUPER_ADMINISTRADOR:
-//                    FacesContext mensaje = FacesContext.getCurrentInstance();
-//                    mensaje.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.", usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
-//                    FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.", usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (ADMINISTRADOR) correctamente."));
           instanciaActual.getExternalContext().redirect("faces/panelAdministrativo.xhtml");
-          Logs.log.info("[" + cal.toInstant() + "] Acceso administrador. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
-          horaInicio = cal.getTime();
-          horaFin = cal.getTime();
-          sesionActiva = true;
-          usuarioActivo = usuario;
+          Logs.log.info("Acceso administrador " + nombreUsuario + ", despacho " + usuario.getDespacho().getNombreCorto() + ", sesion " + sesion.getId());
           vista = "panelAdministrativo.xhtml";
           adminVisible = true;
           break;
         case Perfiles.GESTOR:
-          instanciaActual.addMessage("",
-                  new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso permitido.",
-                          usuario.getNombre() + " ha ingresado con el perfil " + usuario.getPerfil() + " (GESTOR) correctamente."));
           instanciaActual.getExternalContext().redirect("faces/panelGestor.xhtml");
-          Logs.log.info("[" + cal.toInstant() + "] Acceso gestor. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
-          horaInicio = cal.getTime();
-          horaFin = cal.getTime();
-          sesionActiva = true;
-          usuarioActivo = usuario;
+          Logs.log.info("Acceso gestor " + nombreUsuario + ", despacho: " + usuario.getDespacho().getNombreCorto() + ", sesion " + sesion.getId());
           vista = "panelGestor.xhtml";
           break;
         default:
-          instanciaActual.addMessage("",
-                  new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
-                          usuario.getNombre() + "Está intentando entrar con un perfil desconocido. (Perfil =" + usuario.getPerfil() + ")."));
-          Logs.log.warn("[" + cal.toInstant() + "] Intento de intrusion al sistema. " + nombreUsuario + ", Despacho: " + usuario.getDespacho().getNombreCorto());
-          sesionActiva = false;
+          instanciaActual.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.", usuario.getNombre() + ". Usuario no encontrado."));
+          Logs.log.warn("Usuario o password incorrectos. " + nombreUsuario + ", despacho: " + usuario.getDespacho().getNombreCorto());
           break;
       }
 
     } else {
-      instanciaActual.addMessage("",
-              new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.",
-                      "Verifica que los datos que has introducido son correctos y que el administrador haya dado de alta tu cuenta."));
-      Logs.log.warn("[" + cal.toInstant() + "] Intento de intrusion al sistema. Login: " + nombreUsuario + ", Pass: " + password);
-      sesionActiva = false;
+      instanciaActual.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Acceso denegado.", "Verifique los datos y que el administrador haya dado de alta su cuenta."));
+      Logs.log.warn("Intento de intrusion al sistema. Login: " + nombreUsuario + ", Pass: " + password);
     }
     nombreUsuario = "";
     password = "";
+  }
+
+  // METODO QUE SIRVE PARA VERIFICAR 
+  public void verificarAcceso(String modulo) {
+    if ((usuario.getPerfil() == Perfiles.SUPER_ADMINISTRADOR) || (usuario.getPerfil() == Perfiles.ADMINISTRADOR) || (usuario.getPerfil() == Perfiles.GESTOR)) {
+      verificarAccesoIlegal(modulo);
+    } else {
+      verificarIntrusion(modulo);
+    }
+  }
+
+  // METODO QUE REDIRIGE LAS INTRUSIONES AL SISTEMA (INTENTO DE ACCESO SIN ESTAR LOGGEADO)
+  // ESTO CON LA FINALIDAD DE EVITAR ACCESOS NO PERMITIDOS QUE PUEDEN VULNERAR LA INTEGRIDAD DE LOS DATOS
+  public void verificarIntrusion(String modulo) {
+    try {
+      FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+      Logs.log.info("Se intento entrar al modulo " + modulo + " sin haber ingresado al sistema. Ha sido redirigido");
+    } catch (IOException ex) {
+      Logs.log.info("Intrusion en el modulo " + modulo + ". El intruso no logro ser redirigido");
+      ex.printStackTrace();
+    }
+  }
+
+  // METODO QUE VERIFICA SI SE TRATA DE UN USUARIO ADMINISTRATIVO O DE UN GESTOR
+  // ESTO CON LA FINALIDAD DE EVITAR ACCESOS NO PERMITIDOS QUE PUEDEN VULNERAR LA INTEGRIDAD DE LOS DATOS
+  public void verificarAccesoIlegal(String modulo) {
+    if ((usuario.getPerfil() == Perfiles.SUPER_ADMINISTRADOR) || (usuario.getPerfil() == Perfiles.ADMINISTRADOR)) {
+    } else {
+      if ((modulo.equals("panel administrativo")) || (modulo.equals("carga")) || (modulo.equals("cuentas")) || (modulo.equals("gestiones")) || (modulo.equals("pagos")) || (modulo.equals("usuarios")) || (modulo.equals("marcaje")) || (modulo.equals("devolucion")) || (modulo.equals("validar direcciones"))) {
+        try {
+          FacesContext.getCurrentInstance().getExternalContext().redirect("accesoIlegal.xhtml");
+          Logs.log.info("El gestor " + usuario.getNombreLogin() + " del despacho " + usuario.getDespacho().getNombreCorto() + " intento entrar al modulo administrativo " + modulo + ". Ha sido redirigido");
+        } catch (IOException ex) {
+          Logs.log.warn("El gestor " + usuario.getNombreLogin() + " del despacho " + usuario.getDespacho().getNombreCorto() + " accedio al modulo administrativo " + modulo + ". Fallo el redireccionamiento");
+          ex.printStackTrace();
+        }
+      }
+    }
   }
 
   /**

@@ -42,7 +42,6 @@ import org.primefaces.model.UploadedFile;
 import util.constantes.Convenios;
 import util.constantes.Directorios;
 import util.constantes.Pagos;
-import util.constantes.Perfiles;
 import util.log.Logs;
 
 /**
@@ -171,7 +170,6 @@ public class ConveniosBean implements Serializable {
 
   // METODO QUE TERMINA UN CONVENIO DE PAGO
   public void finalizarConvenio() {
-    System.out.println("ENTRO AL METODO DE FINALIZAR CONVENIO");
     ConvenioPago c = convenioActivo;
     c.setEstatus(Convenios.FINALIZADO);
     boolean ok = convenioPagoDao.editar(c);
@@ -201,7 +199,7 @@ public class ConveniosBean implements Serializable {
       bytes = archivo.getContents();
       BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File(nombre)));
       stream.write(bytes);
-      Logs.log.info("Se carga archivo al servidor: " + nombre);
+      Logs.log.info("Se carga comprobante de pago al servidor: " + nombre);
       ok = archivo.getFileName();
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Carga exitosa.", "El comprobante se cargo con exito."));
     } catch (IOException ioe) {

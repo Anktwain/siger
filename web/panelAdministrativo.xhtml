@@ -2,44 +2,48 @@
 <html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-      xmlns="http://www.w3.org/1999/xhtml">
-    <h:head>
-        <meta charset="utf-8"></meta>
-        <title>SigerWeb - Panel Administativo</title>
-        <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
-        <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
-        <h:outputStylesheet library="css" name="pace.css" />
-        <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
-        <h:outputStylesheet library="css" name="morris.css" />
-        <h:outputStylesheet library="css" name="endless.min.css" />
-        <h:outputStylesheet library="css" name="endless-skin.css" />
-        <h:outputScript library="js" name="jquery-1.10.2.min.js" />
-        <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
-        <h:outputScript library="js" name="jquery.flot.min.js" />
-        <h:outputScript library="js" name="rapheal.min.js" />
-        <h:outputScript library="js" name="morris.min.js" />
-        <h:outputScript library="js" name="jquery.colorbox.min.js" />
-        <h:outputScript library="js" name="jquery.sparkline.min.js" />
-        <h:outputScript library="js" name="/uncompressed/pace.js" />
-        <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
-        <h:outputScript library="js" name="jquery.slimscroll.min.js" />
-        <h:outputScript library="js" name="modernizr.min.js" />
-        <h:outputScript library="js" name="jquery.cookie.min.js" />
-        <h:outputScript library="js" name="/endless/endless_dashboard.js" />
-        <h:outputScript library="js" name="/endless/endless.js" />
-        <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
-    </h:head>
-    <body class="overflow-hidden">
-        <p:growl id="growl" showDetail="true" sticky="true" />
-        <!-- Overlay Div -->
-        <div id="overlay" class="transparent"></div>
-        <ui:include src="barraSuperior.xhtml" />
-        <ui:include src="barraLateral.xhtml" />
-        <div id="main-container">
-            <ui:include src="barraEstadisticasAdmin.xhtml" />
-            <ui:include src="barraAdministrativo.xhtml" />
-            <ui:include src="barraProgresoAdmin.xhtml" />
-        </div><!-- /main-container -->
-        <ui:include src="barraInferior.xhtml" />
-    </body>
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Panel Administativo</title>
+    <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
+    <h:outputStylesheet library="font-awesome-4.3.0" name="css/font-awesome.min.css" />
+    <h:outputStylesheet library="css" name="pace.css" />
+    <h:outputStylesheet library="css" name="colorbox/colorbox.css" />
+    <h:outputStylesheet library="css" name="morris.css" />
+    <h:outputStylesheet library="css" name="endless.min.css" />
+    <h:outputStylesheet library="css" name="endless-skin.css" />
+    <h:outputScript library="js" name="jquery-1.11.0.min.js" />
+    <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
+    <h:outputScript library="js" name="jquery.flot.min.js" />
+    <h:outputScript library="js" name="rapheal.min.js" />
+    <h:outputScript library="js" name="morris.min.js" />
+    <h:outputScript library="js" name="jquery.colorbox.min.js" />
+    <h:outputScript library="js" name="jquery.sparkline.min.js" />
+    <h:outputScript library="js" name="/uncompressed/pace.js" />
+    <h:outputScript library="js" name="jquery.popupoverlay.min.js" />
+    <h:outputScript library="js" name="jquery.slimscroll.min.js" />
+    <h:outputScript library="js" name="modernizr.min.js" />
+    <h:outputScript library="js" name="jquery.cookie.min.js" />
+    <h:outputScript library="js" name="/endless/endless_dashboard.js" />
+    <h:outputScript library="js" name="/endless/endless.js" />
+    <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('panel administrativo')}" type="preRenderView" />
+  </f:metadata>
+  <body class="overflow-hidden">
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <ui:include src="barraEstadisticasAdmin.xhtml" />
+      <ui:include src="barraAdministrativo.xhtml" />
+      <ui:include src="barraProgresoAdmin.xhtml" />
+    </div><!-- /main-container -->
+    <ui:include src="barraInferior.xhtml" />
+  </body>
 </html>

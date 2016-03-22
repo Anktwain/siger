@@ -102,10 +102,10 @@ public class RecuperarContrasenaBean implements Serializable {
 
             FacesContext context = FacesContext.getCurrentInstance();
             ExternalContext externalContext = context.getExternalContext();
-            context.addMessage(null, new FacesMessage("ENVIANDO MENSAJE",
+            context.addMessage(null, new FacesMessage("Operacion exitosa",
                     "Revise su correo electrónico, se ha enviado un mensaje para la recuperación de su contraseña"));
             externalContext.getFlash().setKeepMessages(true);
-            FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
 
             // Se cierra
             t.close();

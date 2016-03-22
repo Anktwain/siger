@@ -3,11 +3,14 @@ package beans;
 import dao.SujetoDAO;
 import dto.Sujeto;
 import impl.SujetoIMPL;
+import java.io.IOException;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
+import util.log.Logs;
 
 /**
  * La clase {@code PanelAdministrativoBean} permite ... y es el bean
@@ -45,6 +48,21 @@ public class BarraSuperiorBean implements Serializable {
     sujetoDao = new SujetoIMPL();
     sujeto = sujetoDao.buscar(indexBean.getUsuario().getDespacho().getSujeto().getIdSujeto());
     despacho = indexBean.getUsuario().getDespacho().getSujeto().getNombreRazonSocial();
+  }
+
+  // METODO QUE GESTIONA EL CIERRE DE SESION
+  public void cerrarSesion() {
+    HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+    FacesContext context = FacesContext.getCurrentInstance();
+    session.invalidate();
+    try {
+      indexBean.setNombreUsuario("");
+      indexBean.setPassword("");
+      context.getExternalContext().redirect("index.xhtml");
+      Logs.log.info("Usuario " + indexBean.getUsuario().getNombreLogin() + " cerro la sesion " + session.getId());
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
   }
 
   /**

@@ -8,7 +8,10 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Cuentas</title>
-  </h:head> 
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('cuentas')}" type="preRenderView" />
+  </f:metadata>
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
@@ -22,7 +25,7 @@
             <i class="fa fa-home">
             </i>
             <a href="#{indexBean.vista}">Inicio</a>
-          </li>
+          </li> 
           <li class="active">
             Cuentas
           </li>
@@ -63,8 +66,8 @@
                 <p:column headerText="Nombre del deudor" style="width:400px;" filterBy="#{c.deudor.sujeto.nombreRazonSocial}" filterStyle="width:300px;">
                   <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
                 </p:column>
-                <p:column headerText="Saldo vencido" style="width:150px;" filterBy="#{c.monto}"> 
-                  <h:outputText value="#{c.monto}" style="float:right">
+                <p:column headerText="Saldo vencido" style="width:150px;"> 
+                  <h:outputText value="#{cuentasBean.calcularSaldoVencido(c)}" style="float:right">
                     <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                   </h:outputText>
                 </p:column>

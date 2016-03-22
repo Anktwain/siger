@@ -66,6 +66,7 @@ public interface UsuarioDAO {
 
     /**
      *
+     * @param idDespacho
      * @return
      */
     public List<Usuario> buscarUsuariosNoConfirmados(int idDespacho);

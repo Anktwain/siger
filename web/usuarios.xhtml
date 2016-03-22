@@ -11,6 +11,9 @@
     <h:outputStylesheet library="css" name="usuarios.css" />
     <link rel="shortcut icon" href="resources/img/iconos/icono1.ico" type="image/x-icon" />
   </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('usuarios')}" type="preRenderView" />
+  </f:metadata>
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <div id="overlay" class="transparent" style="display: none"></div>        

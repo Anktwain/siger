@@ -5,6 +5,7 @@
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
+    <h:outputScript library="primefaces" name="jquery.js" />
   </h:head>
   <h:body>
     <div class="main-header clearfix">
@@ -12,8 +13,8 @@
         <p:contextMenu for="campanasGestor" style="width:200px;">
           <p:menuitem value="Gestionar campaña" icon="ui-icon-check" actionListener="#{cuentasGestorBean.preparaCampana()}" update=":growl" />
         </p:contextMenu>
-        <p:dataTable id="campanasGestor" var="l" value="#{cuentasGestorBean.listaCreditosCampanas}" selectionMode="single" selection="#{cuentasGestorBean.seleccion}" rowKey="#{l.idCampana}" emptyMessage="No existen campañas disponibles." style="width: 500px;">
-          <p:column headerText="Campaña" style="width:300px;">
+        <p:dataTable id="campanasGestor" var="l" value="#{cuentasGestorBean.listaCreditosCampanas}" selectionMode="single" selection="#{cuentasGestorBean.seleccion}" rowKey="#{l.idCampana}" emptyMessage="No existen campañas disponibles." style="width: 600px;">
+          <p:column headerText="Campaña" style="width:400px;">
             <h:outputText value="#{l.nombreCampana}" />
           </p:column>
           <p:column headerText="Cuentas" style="width:70px;">
@@ -23,7 +24,7 @@
             <h:outputText value="#{l.progresoCampana}"/>
           </p:column>
           <f:facet name="footer">
-            <p:button value="Actualizar" icon="ui-icon-refresh" outcome="panelGestor" />
+            <p:button value="Actualizar" icon="ui-icon-refresh" outcome="panelGestor.xhtml" />
           </f:facet>
         </p:dataTable>
       </h:form>

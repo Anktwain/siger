@@ -16,7 +16,7 @@
         <span>Siger</span>
         <span class="text-toggle"> Web</span>
       </a><!-- /brand -->
-      <ul class="nav-notification clearfix">                    
+      <ul class="nav-notification clearfix">
         <li class="profile dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown">
             <strong><p:outputLabel value="#{barraSuperiorBean.nombre}" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" /></strong>
@@ -39,13 +39,13 @@
             </li>
             <li>
               <a tabindex="-1" href="pswd.xhtml" class="main-link">
-                <i class="fa fa-key-alt fa-lg"></i> Cambiar contrase&ntilde;a
+                <i class="fa fa-key fa-lg"></i> Cambiar contrase&ntilde;a
               </a>
             </li>
             <li>
-              <a tabindex="-1" href="index.xhtml" class="main-link">
-                <i class="fa fa-power-off-alt fa-lg"></i> Cerrar sesi&oacute;n
-              </a>
+              <h:form style="padding-left: 20px;">
+                <p:commandButton value="Cerrar sesíon" actionListener="#{barraSuperiorBean.cerrarSesion()}" />
+              </h:form>
             </li>
           </ul>
         </li>

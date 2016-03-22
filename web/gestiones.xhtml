@@ -8,7 +8,10 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Gestiones</title>
-  </h:head> 
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('gestiones')}" type="preRenderView" />
+  </f:metadata>
   <body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
@@ -163,12 +166,12 @@
             </p:column>
             <f:facet name="footer">
               <div align="right">
-                <h:commandLink>
+                <h:commandLink actionListener="#{gestionesBean.reportarExportacion('xls')}">
                   <p:graphicImage name="/img/iconos/excel.png" width="40" rendered="#{gestionesBean.permitirExport}" />
                   <p:dataExporter type="xls" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}" />
                 </h:commandLink>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <h:commandLink>
+                <h:commandLink  actionListener="#{gestionesBean.reportarExportacion('pdf')}">
                   <p:graphicImage name="/img/iconos/pdf.png" width="40" rendered="#{gestionesBean.permitirExport}" />
                   <p:dataExporter type="pdf" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}"/>
                 </h:commandLink>

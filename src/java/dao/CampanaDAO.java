@@ -6,7 +6,6 @@
 package dao;
 
 import dto.Campana;
-import dto.Credito;
 import java.util.List;
 
 /**

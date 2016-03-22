@@ -314,7 +314,7 @@ public class UsuarioIMPL implements UsuarioDAO {
   public List<Usuario> buscarUsuariosPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Usuario> listaUsuario;
-    String query = "SELECT * FROM usuario WHERE id_despacho = " + idDespacho + " AND perfil != " + Perfiles.ELIMINADO + ";";
+    String query = "SELECT * FROM usuario WHERE id_despacho = " + idDespacho + " AND perfil NOT IN (" + Perfiles.ELIMINADO + ", " + Perfiles.SUPER_ADMINISTRADOR + ");";
     try {
       listaUsuario = sesion.createSQLQuery(query).addEntity(Usuario.class).list();
     } catch (HibernateException he) {

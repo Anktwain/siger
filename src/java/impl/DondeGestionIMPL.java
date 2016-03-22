@@ -7,7 +7,6 @@ package impl;
 
 import dao.DondeGestionDAO;
 import dto.DondeGestion;
-import dto.TipoGestion;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

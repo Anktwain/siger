@@ -29,6 +29,7 @@ import util.MD5;
 import util.constantes.Directorios;
 import util.constantes.Patrones;
 import util.constantes.Perfiles;
+import util.log.Logs;
 
 /**
  *
@@ -85,6 +86,7 @@ public class UsuariosBean {
     usuarioSeleccionado.setPerfil(Perfiles.GESTOR);
     if (usuarioDao.editar(usuarioSeleccionado)) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se confirmo al gestor seleccionado."));
+      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " confirmo en el sistema al gestor " + usuarioSeleccionado.getNombreLogin());
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo confirmar al gestor. Contacte al equipo de sistemas."));
     }
@@ -97,6 +99,7 @@ public class UsuariosBean {
     usuarioSeleccionado.setPerfil(Perfiles.ELIMINADO);
     if (usuarioDao.editar(usuarioSeleccionado)) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se rechazo al gestor seleccionado."));
+      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " rechazo del sistema al gestor " + usuarioSeleccionado.getNombreLogin());
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo rechazar al gestor. Contacte al equipo de sistemas."));
     }
@@ -135,6 +138,7 @@ public class UsuariosBean {
           g.setUsuario(u);
           if (gestorDao.insertar(g)) {
             contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego a un nuevo gestor."));
+            Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " creo al gestor " + loginNuevoUsuario);
           } else {
             contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo agregar el gestor. Contacte al equipo de sistemas."));
           }
@@ -144,6 +148,7 @@ public class UsuariosBean {
           if (administradorDao.insertar(a)) {
             RequestContext.getCurrentInstance().execute("PF('dlgNuevoUsuario').hide();");
             contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego a un nuevo administrador."));
+            Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " creo al administrador " + loginNuevoUsuario);
           } else {
             contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo agregar el administrador. Contacte al equipo de sistemas."));
           }
@@ -170,15 +175,12 @@ public class UsuariosBean {
   // METODO QUE ELIMINA EL USUARIO SELECCIONADO
   public void eliminarUsuario() {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    if (usuarioSeleccionado.getPerfil() != Perfiles.SUPER_ADMINISTRADOR) {
-      usuarioSeleccionado.setPerfil(Perfiles.ELIMINADO);
-      if (usuarioDao.editar(usuarioSeleccionado)) {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se elimino al usuario seleccionado."));
-      } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar al usuario. Contacte al equipo de sistemas."));
-      }
+    usuarioSeleccionado.setPerfil(Perfiles.ELIMINADO);
+    if (usuarioDao.editar(usuarioSeleccionado)) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se elimino al usuario seleccionado."));
+      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " creo al administrador " + loginNuevoUsuario);
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Error.", "No se puede eliminar a un super administrador."));
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar al usuario. Contacte al equipo de sistemas."));
     }
     RequestContext.getCurrentInstance().execute("PF('dlgEliminarUsuario').hide();");
     obtenerListas();
@@ -211,9 +213,6 @@ public class UsuariosBean {
         break;
       case (Perfiles.GESTOR_NO_CONFIRMADO):
         etiqueta = "Gestor no confirmado";
-        break;
-      case (Perfiles.SUPER_ADMINISTRADOR):
-        etiqueta = "Super administrador";
         break;
     }
     return etiqueta;

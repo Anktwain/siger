@@ -6,7 +6,6 @@
 package carga;
 
 import java.text.Normalizer;
-import util.Levenshtein;
 
 /**
  *

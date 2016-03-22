@@ -16,7 +16,6 @@ public class ActualizacionIMPL implements ActualizacionDAO {
   @Override
   public boolean insert(Session session, Actualizacion actualizacion) throws Exception {
     session.save(actualizacion);
-    
     return true;
   }
 

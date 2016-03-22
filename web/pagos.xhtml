@@ -8,7 +8,10 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Pagos</title>
-  </h:head> 
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('pagos')}" type="preRenderView" />
+  </f:metadata>
   <body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->

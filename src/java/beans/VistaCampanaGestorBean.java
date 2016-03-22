@@ -11,8 +11,6 @@ import dto.Credito;
 import impl.CreditoIMPL;
 import impl.GestionIMPL;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -37,13 +35,11 @@ public class VistaCampanaGestorBean {
   private int posicion;
   private int totalCuentas;
   private Credito creditoActual;
-  private List<Credito> creditos;
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
 
   // CONSTRUCTOR
   public VistaCampanaGestorBean() {
-    creditos = new ArrayList();
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     obtenerDatos();

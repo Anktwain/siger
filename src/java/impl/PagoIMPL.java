@@ -14,7 +14,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
-import util.constantes.Convenios;
 import util.constantes.Pagos;
 import util.log.Logs;
 

@@ -8,7 +8,10 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Bandeja de devoluci&oacute;n</title>
-  </h:head> 
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('devoluciones')}" type="preRenderView" />
+  </f:metadata>
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
@@ -57,7 +60,7 @@
                 <p:dataTable id="retirados" var="ret" value="#{devolucionBean.listaRetirados}" rowKey="#{ret.idDevolucion}" selection="#{devolucionBean.retiradosSeleccionados}" emptyMessage="No existen creditos retirados por el banco."  paginator="true" rows="15" paginatorPosition="bottom">
                   <p:column selectionMode="multiple" style="width:35px;text-align:center" />
                   <p:column headerText="Fecha devolucion" style="width:250px;" > 
-                      <h:outputText value="#{ret.fecha}"/>
+                    <h:outputText value="#{ret.fecha}"/>
                   </p:column>
                   <p:column headerText="Estatus" style="width:150px;" > 
                     <h:outputText value="#{devolucionBean.etiquetarEstatus(ret.estatus)}"/>

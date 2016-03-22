@@ -10,6 +10,9 @@
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Carga</title>
   </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('carga')}" type="preRenderView" />
+  </f:metadata>
   <h:body>
     <!--<p:growl id="growl" showDetail="true" />-->
 

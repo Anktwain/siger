@@ -6,8 +6,8 @@
 package impl;
 
 import dao.CreditoDAO;
+import dto.Actualizacion;
 import dto.Credito;
-import static java.lang.Float.NaN;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -356,17 +356,18 @@ public class CreditoIMPL implements CreditoDAO {
   @Override
   public float buscarSaldoVencidoCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    float saldoVencido = 0;
-    String consulta = "SELECT saldo_vencido FROM actualizacion WHERE id_credito = " + idCredito + " ORDER BY id_actualizacion DESC LIMIT 1;";
+    List<Actualizacion> acts = new ArrayList();
     try {
-      saldoVencido = (float) sesion.createSQLQuery(consulta).uniqueResult();
+      acts = sesion.createSQLQuery("SELECT * FROM actualizacion WHERE id_credito = " + idCredito + " ORDER BY id_actualizacion DESC LIMIT 1;").addEntity(Actualizacion.class).list();
     } catch (HibernateException he) {
-      saldoVencido = -1;
       Logs.log.error(he.getStackTrace());
-    } finally {
-      cerrar(sesion);
     }
-    return saldoVencido;
+    cerrar(sesion);
+    if (!acts.isEmpty()) {
+      return acts.get(0).getSaldoVencido();
+    } else {
+      return 0;
+    }
   }
 
   @Override

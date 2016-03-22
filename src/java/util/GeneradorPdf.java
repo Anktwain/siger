@@ -103,6 +103,7 @@ public class GeneradorPdf {
       documento.add(p);
       // ZONA DE COMPARACION
       String producto = "", texto1 = "", texto2 = "", texto3 = "", texto4 = "", texto5 = "";
+      int coordy = 120;
       texto3 = TextoPdfs.TEXTO_GENERAL_3;
       texto5 = TextoPdfs.TEXTO_GENERAL_5;
       if (credito.getProducto().getNombre().contains("CREDITO EXPRESS CT")) {
@@ -110,19 +111,21 @@ public class GeneradorPdf {
         producto = "Crédito TELMEX (SOFOM)";
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
         texto2 = TextoPdfs.TEXTO_TELMEX_2;
-        texto4 = TextoPdfs.TEXTO_SOFOM_4;
+        texto4 = "Numero de cuenta asociado a su credito (" + credito.getNumeroCuenta() + ")";
+        coordy = 160;
       } else if (credito.getProducto().getNombre().contains("EXPRESS")) {
         // CREDITOS CT EXPRESS
         producto = "Credito CT Express";
         texto1 = TextoPdfs.TEXTO_EXPRESS_1;
         texto2 = TextoPdfs.TEXTO_EXPRESS_2;
         texto4 = TextoPdfs.TEXTO_EXPRESS_4;
-      } else if (credito.getProducto().getNombre().contains("LINEA")) {
+      } else if (credito.getProducto().getNombre().contains("TELMEX")) {
         // CREDITOS LINEA TELMEX
         producto = "Crédito TELMEX";
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
         texto2 = TextoPdfs.TEXTO_TELMEX_2;
         texto4 = TextoPdfs.TEXTO_TELMEX_4;
+        coordy = 140;
       } else {
         producto = credito.getProducto().getNombre();
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
@@ -168,7 +171,7 @@ public class GeneradorPdf {
       // FIRMA DEL CORPORATIVO
       foto2 = Image.getInstance(Directorios.RUTA_IMAGENES + "firma.jpg");
       foto2.scaleToFit(100, 100);
-      foto2.setAbsolutePosition(255, 130);
+      foto2.setAbsolutePosition(255, coordy);
       documento.add(foto2);
       documento.add(new Paragraph(Chunk.NEWLINE));
       documento.add(new Paragraph(Chunk.NEWLINE));

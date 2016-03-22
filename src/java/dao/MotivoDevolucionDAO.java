@@ -5,7 +5,6 @@
  */
 package dao;
 
-import dto.ConceptoDevolucion;
 import dto.MotivoDevolucion;
 import java.util.List;
 

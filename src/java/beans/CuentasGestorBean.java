@@ -30,6 +30,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import util.constantes.Marcajes;
+import util.log.Logs;
 
 /**
  *
@@ -155,7 +156,7 @@ public class CuentasGestorBean implements Serializable {
       camp = campanaDao.buscarPorId(campana);
       c.setCampana(camp);
       if (!creditoDao.editar(c)) {
-        System.out.println("ERROR. CREDITO " + c.getNumeroCredito() + " NO CAMBIO DE CAMPAÑA");
+        Logs.log.error("CREDITO " + c.getNumeroCredito() + " NO CAMBIO DE CAMPAÑA");
       }
     }
   }

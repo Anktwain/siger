@@ -105,7 +105,7 @@ public class ZonasBean implements Serializable {
   // METODO QUE CREA LA ZONA
   public void crearZona() {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    boolean ok = true;
+    boolean ok = false;
     if (nombreZona.equals("")) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe indicar un nombre para la zona."));
     } else if (municipiosSeleccionados.isEmpty()) {
@@ -129,11 +129,8 @@ public class ZonasBean implements Serializable {
           r.setEstadoRepublica(m.getEstadoRepublica());
           r.setMunicipio(m);
           r.setZona(z);
-          r = regionDao.insertar(r);
-          if (r != null) {
+          if(regionDao.insertar(r) != null){
             ok = true;
-          } else {
-            ok = false;
           }
         }
         if (ok) {

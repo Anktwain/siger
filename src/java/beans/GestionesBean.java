@@ -5,7 +5,6 @@
  */
 package beans;
 
-
 import dao.GestionDAO;
 import dao.GestorDAO;
 import dao.InstitucionDAO;
@@ -33,6 +32,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.log.Logs;
 
 /**
  *
@@ -125,43 +125,39 @@ public class GestionesBean implements Serializable {
   // METODO QUE BUSCA TODAS LAS GESTIONES SEGUN PARAMETROS INGRESADOS
   public void buscar() {
     if (validarFechas()) {
-    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    fi = df.format(fechaInicio) + " 00:00:00";
-    ff = df.format(fechaFin) + " 23:59:59";
-    nombreArchivo = "GESTIONES_" + fi + "_" + ff.replace(":", "-");
-    String consulta = "SELECT * FROM gestion WHERE fecha BETWEEN '" + fi + "' AND '" + ff + "' ";
-    if (habilitaTipoGestion) {
-      tipoSeleccionado = tipoGestionDao.buscarPorId(tipoSeleccionado.getIdTipoGestion());
-      consulta = consulta + "AND id_tipo_gestion = " + tipoSeleccionado.getIdTipoGestion().toString() + " ";
-      nombreArchivo = nombreArchivo + "_" + tipoSeleccionado.getNombre();
-    }
-    if (habilitaGestor) {
-      gestorSeleccionado = gestorDao.buscar(gestorSeleccionado.getIdGestor());
-      consulta = consulta + "AND id_usuario = (SELECT id_usuario FROM usuario WHERE id_usuario = " + gestorSeleccionado.getUsuario().getIdUsuario().toString() + ") ";
-      nombreArchivo = nombreArchivo + "_" + gestorSeleccionado.getUsuario().getNombreLogin();
-    } else {
-      consulta = consulta + "AND id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + idDespacho + ") ";
-      nombreArchivo = nombreArchivo + "_Todos los usuarios";
-    }
-    if (habilitaInstitucion) {
-      institucionSeleccionada = institucionDao.buscar(institucionSeleccionada.getIdInstitucion());
-      consulta = consulta + "AND id_credito IN (SELECT id_credito FROM credito WHERE id_producto IN (SELECT id_producto FROM producto WHERE id_institucion = " + institucionSeleccionada.getIdInstitucion().toString() + " )) ";
-      nombreArchivo = nombreArchivo + "_" + institucionSeleccionada.getNombreCorto();
-    }
-    if (habilitaProducto) {
-      productoSeleccionado = productoDao.buscar(productoSeleccionado.getIdProducto());
-      consulta = consulta + "AND id_credito IN (SELECT id_credito FROM credito WHERE id_producto IN (SELECT id_producto FROM producto WHERE id_producto = " + productoSeleccionado.getIdProducto().toString() + ")) ";
-      nombreArchivo = nombreArchivo + "_" + productoSeleccionado.getNombre();
-    }
-    consulta = consulta + ";";
-    listaGestiones = gestionDao.busquedaReporteGestiones(consulta);
-    habilitaTabla = true;
-    if (listaGestiones.isEmpty()) {
-      permitirExport = false;
-    } else {
-      permitirExport = true;
-    }
-    RequestContext.getCurrentInstance().update("formGestionesAdmin");
+      DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+      fi = df.format(fechaInicio) + " 00:00:00";
+      ff = df.format(fechaFin) + " 23:59:59";
+      nombreArchivo = "GESTIONES_" + fi + "_" + ff.replace(":", "-");
+      String consulta = "SELECT * FROM gestion WHERE fecha BETWEEN '" + fi + "' AND '" + ff + "' ";
+      if (habilitaTipoGestion) {
+        tipoSeleccionado = tipoGestionDao.buscarPorId(tipoSeleccionado.getIdTipoGestion());
+        consulta = consulta + "AND id_tipo_gestion = " + tipoSeleccionado.getIdTipoGestion().toString() + " ";
+        nombreArchivo = nombreArchivo + "_" + tipoSeleccionado.getNombre();
+      }
+      if (habilitaGestor) {
+        gestorSeleccionado = gestorDao.buscar(gestorSeleccionado.getIdGestor());
+        consulta = consulta + "AND id_usuario = (SELECT id_usuario FROM usuario WHERE id_usuario = " + gestorSeleccionado.getUsuario().getIdUsuario().toString() + ") ";
+        nombreArchivo = nombreArchivo + "_" + gestorSeleccionado.getUsuario().getNombreLogin();
+      } else {
+        consulta = consulta + "AND id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + idDespacho + ") ";
+        nombreArchivo = nombreArchivo + "_Todos los usuarios";
+      }
+      if (habilitaInstitucion) {
+        institucionSeleccionada = institucionDao.buscar(institucionSeleccionada.getIdInstitucion());
+        consulta = consulta + "AND id_credito IN (SELECT id_credito FROM credito WHERE id_producto IN (SELECT id_producto FROM producto WHERE id_institucion = " + institucionSeleccionada.getIdInstitucion().toString() + " )) ";
+        nombreArchivo = nombreArchivo + "_" + institucionSeleccionada.getNombreCorto();
+      }
+      if (habilitaProducto) {
+        productoSeleccionado = productoDao.buscar(productoSeleccionado.getIdProducto());
+        consulta = consulta + "AND id_credito IN (SELECT id_credito FROM credito WHERE id_producto IN (SELECT id_producto FROM producto WHERE id_producto = " + productoSeleccionado.getIdProducto().toString() + ")) ";
+        nombreArchivo = nombreArchivo + "_" + productoSeleccionado.getNombre();
+      }
+      consulta = consulta + ";";
+      listaGestiones = gestionDao.busquedaReporteGestiones(consulta);
+      habilitaTabla = true;
+      permitirExport = !listaGestiones.isEmpty();
+      RequestContext.getCurrentInstance().update("formGestionesAdmin");
     }
   }
 
@@ -170,25 +166,30 @@ public class GestionesBean implements Serializable {
     boolean ok;
     FacesContext contexto = FacesContext.getCurrentInstance();
     Date fechaActual = new Date();
-    if(fechaInicio.after(fechaActual)){
+    if (fechaInicio.after(fechaActual)) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser mayor a la actual."));
       ok = false;
     }
-    if(fechaFin.after(fechaActual)){
+    if (fechaFin.after(fechaActual)) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser mayor a la actual."));
       ok = false;
     }
-    if(fechaFin.before(fechaInicio)){
+    if (fechaFin.before(fechaInicio)) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la fecha inicial."));
       ok = false;
     }
     return true;
   }
 
-// ***********************************************************************************************************************
-// ***********************************************************************************************************************
-// ***********************************************************************************************************************
-// GETTERS & SETTERS
+  //METODO QUE GUARDA EL EVENTO DE EXPORTACION
+  public void reportarExportacion(String formato) {
+    Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " exporto un reporte de gestiones en formato " + formato);
+  }
+
+  // ***********************************************************************************************************************
+  // ***********************************************************************************************************************
+  // ***********************************************************************************************************************
+  // GETTERS & SETTERS
   public List<TipoGestion> getListaTipos() {
     return listaTipos;
   }

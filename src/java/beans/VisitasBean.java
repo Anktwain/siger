@@ -52,7 +52,7 @@ public class VisitasBean {
   private boolean periodoVisitasActivo;
   private boolean periodoEmailActivo;
   private boolean descargarPdf;
-  private String pdf;
+  private String rutaPdf;
   StreamedContent archivo;
 
   // CONSTRUCTOR
@@ -145,6 +145,7 @@ public class VisitasBean {
       try {
         InputStream stream = new FileInputStream(GeneradorPdf.crearPdf(nombrarPdf(), creditoActual, direcciones.get(0), creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito())));
         archivo = new DefaultStreamedContent(stream, "application/pdf", nombrarPdf());
+        rutaPdf = "http://localhost:8080/pdfs/" + archivo.getName();
         descargarPdf = true;
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero un archivo PDF con la visita."));
       } catch (Exception e) {
@@ -185,12 +186,12 @@ public class VisitasBean {
     this.periodoEmailActivo = periodoEmailActivo;
   }
 
-  public String getPdf() {
-    return pdf;
+  public String getRutaPdf() {
+    return rutaPdf;
   }
 
-  public void setPdf(String pdf) {
-    this.pdf = pdf;
+  public void setRutaPdf(String rutaPdf) {
+    this.rutaPdf = rutaPdf;
   }
 
   public boolean isDescargarPdf() {

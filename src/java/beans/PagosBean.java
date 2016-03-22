@@ -25,6 +25,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Directorios;
 import util.constantes.Pagos;
+import util.log.Logs;
 
 /**
  *
@@ -89,11 +90,10 @@ public class PagosBean implements Serializable {
     pagoSeleccionado.setRevisor(revisor);
     ok = ok & (pagoDao.editar(pagoSeleccionado));
     ConvenioPago co = pagoSeleccionado.getPromesaPago().getConvenioPago();
-    //int numPagos = co.getPagosRealizados() + 1;
-    //co.setPagosRealizados(numPagos);
     ok = ok & (convenioPagoDao.editar(co));
     if (ok) {
       cargarListas();
+      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " aprobo un pago por $" + pagoSeleccionado.getMonto() + " de la promesa #" + pagoSeleccionado.getPromesaPago().getIdPromesaPago());
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se aprobo el pago."));
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo aprobar el pago. Contacte al equipo de sistemas."));
@@ -109,6 +109,7 @@ public class PagosBean implements Serializable {
     boolean ok = pagoDao.editar(pagoSeleccionado);
     if (ok) {
       cargarListas();
+      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " rechazo un pago por $" + pagoSeleccionado.getMonto() + " de la promesa #" + pagoSeleccionado.getPromesaPago().getIdPromesaPago());
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se rechazo el pago."));
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo rechazar el pago. Contacte al equipo de sistemas."));
