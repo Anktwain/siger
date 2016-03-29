@@ -16,19 +16,25 @@
         <li>
           <div class="value">
             <span>Gestiones hoy:</span>
-            <h4>4256</h4>
+            <h4><p:outputLabel value="#{progresoAdminBean.gestionesHoy()}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></h4>
           </div>
         </li>
         <li>
           <div class="value">
             <span>Saldo aprobado hoy:</span>
-            <h4>$<strong>32153</strong></h4>
+            <h4>$<strong><p:outputLabel value="#{progresoAdminBean.saldoAprobadoHoy()}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></strong></h4>
           </div>
         </li>
         <li>
           <div class="value">
-            <span>Gestor del d&iacute;a:</span>
-            <h4>H&eacute;ctor</h4>
+            <span>Gestor del d&iacute;a (Pagos):</span>
+            <h4><p:outputLabel value="#{progresoAdminBean.gestorDelDiaPagos()}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></h4>
+          </div>
+        </li>
+        <li>
+          <div class="value">
+            <span>Gestor del d&iacute;a (Gestiones):</span>
+            <h4><p:outputLabel value="#{progresoAdminBean.gestorDelDiaGestiones()}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></h4>
           </div>
         </li>
       </ul><!-- /page-stats -->

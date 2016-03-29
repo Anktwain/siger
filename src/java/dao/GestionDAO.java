@@ -22,4 +22,7 @@ public interface GestionDAO {
   public List<Gestion> buscarGestionesCredito(int idCredito);  
   public Gestion obtenerGestionAutomaticaPorAbreviatura(String abreviatura);
   public boolean buscarGestionHoy(int idCredito);
+  public Number calcularGestionesHoyPorDespacho(int idDespacho);
+  public Number calcularGestionesHoyPorGestor(int idUsuario);
+  public String obtenerGestorDelDia(int idDespacho);
 }

@@ -25,14 +25,8 @@ public interface PagoDAO {
   public List<Pago> pagosPorDespacho(int idDespacho);
 
   public List<Pago> pagosPorRevisarPorDespacho(int idDespacho);
-
-  public Number calcularPagosRealizados();
-
-  public Number calcularPagosPorAprobarPorGestor(int idGestor);
-
-  public Number calcularRecuperacionDeInstitucion();
-
-  public Number calcularRecuperacionPorGestor(int idGestor);
   
   public Pago buscarPagoHoy(int idCredito);
+  
+  public String obtenerGestorDelDia(int idDespacho);
 }

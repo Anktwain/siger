@@ -11,8 +11,6 @@ package util.constantes;
  */
 public interface Marcajes {
   
-  public static final int SIN_MARCAJE = 0;
- 
   public static final int CORREO_SEPOMEX = 1;
   
   public static final int TELEGRAMA = 2;
@@ -28,4 +26,7 @@ public interface Marcajes {
   public static final int COBRO_EN_CELULAR = 7;
   
   public static final int WHATSAPP = 8;
+  
+  public static final int SIN_MARCAJE = 9;
+ 
 }

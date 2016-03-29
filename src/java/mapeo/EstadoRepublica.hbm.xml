@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 9/03/2016 10:01:39 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 22/03/2016 03:28:08 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.EstadoRepublica" optimistic-lock="version" table="estado_republica">
     <id name="idEstado" type="java.lang.Integer">

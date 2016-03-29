@@ -13,22 +13,11 @@
     <f:event listener="#{indexBean.verificarAcceso('validar direcciones')}" type="preRenderView" />
   </f:metadata>
   <h:body>
-    <!--<p:growl id="growl" showDetail="true" />-->
-
-    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"  />
-
-    <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
-              closable="false" resizable="false" showHeader="false" >
-      <p:outputLabel value="SigerWeb est&aacute; trabajando. Espere..."/>
-      <p:graphicImage library="img" name="loadingBarra.gif" />
-      <br/>
-      <p:graphicImage library="img" name="trabajando.jpg" />
-    </p:dialog>
-
-    <div id="overlay" class="transparent" style="display: none;"></div>
+    <p:growl id="growl" showDetail="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none;" />
     <ui:include src="barraLateral.xhtml" />
     <ui:include src="barraSuperior.xhtml" />
-
     <div id="main-container">
       <div id="breadcrumb">
         <ul class="breadcrumb">
@@ -42,52 +31,156 @@
           </li>
         </ul>
       </div>
-
       <div class="main-header clearfix">
         <div class="page-title">
           <h3 class="no-margin">Validaci&oacute;n de direcciones</h3>
           <span>Valide y corrija las direcciones de los deudores </span>
+          <span>Seleccione con un click la direcci&oacute;n que desea validar </span>
         </div>
       </div>
-
-      <div class="col-sm-4" id="divDirecciones">
-        <h:form>
-          <p:dataTable id="tblDirecciones" emptyMessage="No hay direcciones por validar"
-                       value="#{vistaValidarDirecciones.direccionesPorValidar}" var="direccion"
-                       paginator="true" rowsPerPageTemplate="5,10,15" paginatorPosition="top" rows="10">
-            <p:column headerText="Direcci&oacute;n">
-              <h:outputText value="#{direccion}" />
-            </p:column>
-          </p:dataTable>
-        </h:form>
-      </div>
-
-
       <div class="row">
-        <div class="col-sm-1"></div>
-        <div class="col-sm-10" id="divMensajes">
-          <h:form id="frmMensajeMesDeCarga">
-            <p:outputLabel
-              value="Cargando la remesa correspondiente al mes de: #{vistaCarga.mesCarga}, para el despacho: #{vistaCarga.idDespacho}..." />
-          </h:form>
-          <p:messages id="mensajes" showDetail="true" autoUpdate="true"/>
-        </div>
-        <div class="col-sm-1"></div>
-      </div>
-
-      <div class="row">
-        <div class="col-sm-9" id="divTrabajo">
-          <div class="padding-md">
-            <div class="tab-content">
-              Hola jelou
-            </div>
+        <div class="padding-md">
+          <div class="col-lg-12">
+            <h:form id="direccionesPorValidarForm">
+              <p:dataTable id="direccionesPorValidar" var="d" value="#{vistaValidarDirecciones.direccionesPorValidar}" selection="#{vistaValidarDirecciones.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idSujeto}" emptyMessage="No hay direcciones por validar" paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1350px;">
+                <f:facet name="header">
+                  <p:outputLabel value="Lista de direcciones por validar de la remesa del mes de #{vistaCarga.mesCarga} para el despacho #{vistaCarga.idDespacho}" />
+                </f:facet>
+                <p:column headerText="Credito" style="width: 100px;">
+                  <h:outputText value="#{d.numeroCredito}" />
+                </p:column>
+                <p:column headerText="Calle" style="width: 300px;">
+                  <h:outputText value="#{d.calle}" />
+                </p:column>
+                <p:column headerText="Colonia" style="width: 350px;">
+                  <h:outputText value="#{d.colonia}" />
+                </p:column>
+                <p:column headerText="Municipio" style="width: 250px;">
+                  <h:outputText value="#{d.municipio}" />
+                </p:column>
+                  <p:column headerText="Estado" sortBy="#{d.estado}" style="width: 200px;">
+                  <h:outputText value="#{d.estado}" />
+                </p:column>
+                <p:column headerText="Codigo postal"  style="width: 120px;">
+                  <h:outputText value="#{d.cp}" />
+                </p:column>
+                <p:ajax event="rowSelect" listener="#{vistaValidarDirecciones.prepararDireccion()}" oncomplete="PF('validarDireccionDlg').show();" update="validarDireccionForm, :growl" />
+              </p:dataTable>
+            </h:form>
           </div>
-        </div> <!-- divTrabajo -->
-
+        </div>
       </div>
-
     </div> <!-- main-container -->
     <ui:include src="barraInferior.xhtml"/>
-
   </h:body>
+  <!-- DIALOGO BARRA DE CARGA -->
+  <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+  <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+    <p:graphicImage library="img" name="loadingBarra.gif" />
+  </p:dialog>
+  <!-- DIALOGO DETALLE DIRECCION POR VALIDAR -->
+  <p:dialog widgetVar="validarDireccionDlg" modal="true" resizable="false" header="Validar direccion" width="700">
+    <h:form id="validarDireccionForm">
+      De lado izquierdo aparecera el dato obtenido de la remesa, de lado derecho aparecera una sugerencia (si es el caso) a partir de los datos obtenidos.
+      <br />
+      <br />
+      <p:outputPanel style="text-align:center;">
+        <p:panelGrid columns="3">
+          <h:outputText value="Calle:" />
+          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.calle}" />
+          <p:inputText value="#{vistaValidarDirecciones.direccionSeleccionada.calle}" size="30" />
+          <h:outputText value="Colonia:" />
+          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.colonia}" />
+          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevaColonia.idColonia}" style="width:350px" filter="true" filterMatchMode="contains">
+            <f:selectItems value="#{vistaValidarDirecciones.listaColonias}" var="c" itemValue="#{c.idColonia}" itemLabel="(#{c.codigoPostal}) [#{c.tipo}] #{c.nombre}" />
+            <p:ajax listener="#{vistaValidarDirecciones.obtenerColoniaCompleta()}" update="direccionesPorValidarForm:direccionesPorValidar, cpValidacion" />
+          </p:selectOneMenu>
+          <h:outputText value="Municipio:" />
+          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.municipio}" />
+          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevoMunicipio.idMunicipio}" style="width:300px">
+            <f:selectItems value="#{vistaValidarDirecciones.listaMunicipios}" var="m" itemValue="#{m.idMunicipio}" itemLabel="#{m.nombre}" />
+          </p:selectOneMenu>
+          <h:outputText value="Estado:" />
+          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.estado}" />
+          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevoEstado.idEstado}" style="width:300px">
+            <f:selectItems value="#{vistaValidarDirecciones.listaEstados}" var="e" itemValue="#{e.idEstado}" itemLabel="#{e.nombre}" />
+          </p:selectOneMenu>
+          <h:outputText value="Codigo Postal:" />
+          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.cp}" />
+          <h:outputText id="cpValidacion" value="#{vistaValidarDirecciones.nuevaColonia.codigoPostal}" />
+        </p:panelGrid>
+      </p:outputPanel>
+      <br />
+      <div align="center">
+        <p:commandButton value="Validar" icon="ui-icon-check" actionListener="#{vistaValidarDirecciones.validar()}" oncomplete="PF('validarDireccionDlg').hide();" update=":growl, :direccionesPorValidarForm" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Ver colonias" icon="ui-icon-bookmark" actionListener="#{vistaValidarDirecciones.mostrarColonias()}" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Nueva colonia" icon="ui-icon-plus" actionListener="#{vistaValidarDirecciones.prepararCombos()}" oncomplete="PF('nuevaColoniaDlg').show();" update=":growl, nuevaColoniaForm, validarDireccionForm" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Localizacion" icon="ui-icon-search" oncomplete="PF('localizacionDireccionDlg').show();" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-cancel" oncomplete="PF('validarDireccionDlg').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO NUEVA COLONIA -->
+  <p:dialog widgetVar="nuevaColoniaDlg" modal="true" header="Nueva colonia" width="800">
+    <h:form id="nuevaColoniaForm">
+      <br />
+      <p:fieldset legend="Advertencia!">
+        Por favor asegurese de que la colonia que busca no existe en la lista de colonias del municipio.
+        <br />
+        <br />
+        En ocasiones las colonias no se encuentran con el codigo postal obtenido en la remesa. Visualize las colonias de todo el municipio dando un click al boton "Ver colonias"
+        <br />
+        <br />
+        Tambien es comun que existan diferencias en el tipo de asentamiento (Colonia, Unidad habitacional, etc.) Compare el nombre de la colonia sin el tipo de asentamiento para evitar dar de alta una colonia que ya existe.
+        <br />
+        <br />
+        Cuando no encuentra una colonia en la lista de colonias del municipio debe validar que la colonia que desea dar de alta exista en Google Maps&copy;.
+        <br />
+        <br />
+        Si esta seguro de que la colonia no esta en la lista y ya la ha validado con Google Maps&copy; proceda a llenar el siguiente formulario.
+      </p:fieldset>
+      <br />
+      <div align="center">
+        <p:panelGrid columns="2">
+          <h:outputText value="Estado:" />
+          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevaColoniaEstado.idEstado}" style="width:300px">
+            <f:selectItems value="#{vistaValidarDirecciones.listaEstados}" var="e2" itemValue="#{e2.idEstado}" itemLabel="#{e2.nombre}" />
+          </p:selectOneMenu>
+          <h:outputText value="Municipio:" />
+          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevaColoniaMunicipio.idMunicipio}" style="width:300px">
+            <f:selectItems value="#{vistaValidarDirecciones.listaMunicipios}" var="m2" itemValue="#{m2.idMunicipio}" itemLabel="#{m2.nombre}" />
+          </p:selectOneMenu>
+          <h:outputText value="Tipo de asentamiento:" />
+          <p:selectOneMenu value="#{vistaValidarDirecciones.tipoNuevaColonia}" style="width:300px">
+            <f:selectItems value="#{vistaValidarDirecciones.tiposAsentamiento}" var="t" itemValue="#{t}" itemLabel="#{t}" />
+          </p:selectOneMenu>
+          <h:outputText value="Nombre de la colonia:" />
+          <h:inputText value="#{vistaValidarDirecciones.nombreNuevaColonia}" size="35" required="true" requiredMessage="Debe ingresar el nombre de la nueva colonia." />
+          <h:outputText value="Codigo postal:" />
+          <h:inputText value="#{vistaValidarDirecciones.cpNuevaColonia}" size="5" required="true" requiredMessage="Debe ingresar un codigo postal." />
+        </p:panelGrid>
+        <br />
+        <br />
+        <p:commandButton value="Aceptar" actionListener="#{vistaValidarDirecciones.crearColonia()}" oncomplete="PF('nuevaColoniaDlg').hide();" update=":growl, :validarDireccionForm" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" oncomplete="PF('nuevaColoniaDlg').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO LOCALIZACION -->
+  <p:dialog widgetVar="localizacionDireccionDlg" modal="true" header="Localizacion de credito" width="300">
+    <h:form id="localizacionDireccionForm">
+      Aqui se pedira localizacion de una cuenta al banco
+      <br />
+      <div align="center">
+        <p:commandButton value="Aceptar" oncomplete="PF('localizacionDireccionDlg').hide();" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" oncomplete="PF('localizacionDireccionDlg').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
 </html>

@@ -1,6 +1,7 @@
 package dto;
 
 import dao.GestorDAO;
+import dto.Gestor;
 import impl.GestorIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,7 +43,12 @@ public class Asignacion implements Serializable {
 
   public String getNombreDelGestor() {
     Gestor g = gestorDao.buscar(gestor);
+    if(g!= null){
     return g.getUsuario().getNombre() + " " + g.getUsuario().getPaterno() + " " + g.getUsuario().getMaterno();
+    }
+    else{
+      return "Gestor " + gestor;
+    }
   }
 
   public void setGestor(int gestor) {

@@ -5,6 +5,8 @@
  */
 package beans;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.PageSize;
 import dao.GestionDAO;
 import dao.GestorDAO;
 import dao.InstitucionDAO;
@@ -184,6 +186,14 @@ public class GestionesBean implements Serializable {
   //METODO QUE GUARDA EL EVENTO DE EXPORTACION
   public void reportarExportacion(String formato) {
     Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " exporto un reporte de gestiones en formato " + formato);
+  }
+
+  // METODO QUE PREPARA EL PDF PARA QUE TENGA MEJOR ESTETICA
+  public void preparaPdf(Object document) {
+    Document pdf = (Document) document;
+    pdf.setPageSize(PageSize.LETTER.rotate());
+    pdf.setMargins(10, 10, 10, 10);
+    pdf.open();
   }
 
   // ***********************************************************************************************************************

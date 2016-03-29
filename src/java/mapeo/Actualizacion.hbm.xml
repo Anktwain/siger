@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 9/03/2016 10:01:39 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 22/03/2016 03:28:08 PM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Actualizacion" optimistic-lock="version" table="actualizacion">
-    <id name="idActualizacion" type="int">
+    <id name="idActualizacion" type="java.lang.Integer">
       <column name="id_actualizacion"/>
-      <generator class="assigned"/>
+      <generator class="identity"/>
     </id>
     <many-to-one class="dto.Credito" fetch="select" name="credito">
       <column name="id_credito" not-null="true"/>

@@ -53,12 +53,11 @@ public class BarraSuperiorBean implements Serializable {
   // METODO QUE GESTIONA EL CIERRE DE SESION
   public void cerrarSesion() {
     HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-    FacesContext context = FacesContext.getCurrentInstance();
     session.invalidate();
     try {
       indexBean.setNombreUsuario("");
       indexBean.setPassword("");
-      context.getExternalContext().redirect("index.xhtml");
+      FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
       Logs.log.info("Usuario " + indexBean.getUsuario().getNombreLogin() + " cerro la sesion " + session.getId());
     } catch (IOException ex) {
       ex.printStackTrace();

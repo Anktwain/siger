@@ -11,6 +11,7 @@ import dao.QuienGestionDAO;
 import dao.TipoQuienGestionDAO;
 import dto.DescripcionGestion;
 import dto.Gestion;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -174,6 +175,60 @@ public class GestionIMPL implements GestionDAO {
       cerrar(sesion);
     }
     return ok;
+  }
+
+  @Override
+  public Number calcularGestionesHoyPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number gestiones;
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String fecha = df.format(new Date());
+    String consulta = "SELECT COUNT(*) FROM gestion WHERE id_tipo_gestion != 5 AND DATE(fecha) = '" + fecha + "' AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    try {
+      gestiones = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      gestiones = -1;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public Number calcularGestionesHoyPorGestor(int idUsuario) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number gestiones;
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String fecha = df.format(new Date());
+    String consulta = "SELECT COUNT(*) FROM gestion WHERE id_tipo_gestion != 5 AND DATE(fecha) = '" + fecha + "' AND id_credito IN (SELECT id_credito FROM credito WHERE id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ")) AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    try {
+      gestiones = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      gestiones = -1;
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public String obtenerGestorDelDia(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    String gestor;
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String fecha = df.format(new Date());
+    String consulta = "SELECT u.nombre, u.paterno FROM usuario u WHERE id_usuario = (SELECT MAX(id_usuario) FROM gestion WHERE DATE(fecha) = '" + fecha + "') AND id_despacho = " + idDespacho + ";";
+    try {
+      gestor = (String) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      gestor = "";
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestor;
   }
 
   private void cerrar(Session sesion) {

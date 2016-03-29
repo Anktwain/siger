@@ -163,16 +163,18 @@
   <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
     <p:graphicImage library="img" name="loadingBarra.gif" />
   </p:dialog>
+  <!-- DIALOGO DETALLE DE DIRECCIONES -->
   <p:dialog widgetVar="dlgDetalleDirecciones" modal="true" resizable="false" header="Direccion del credito" >
     <h:form id="detalleDireccionesForm">
       <h:outputText value="#{busquedaBean.direccionCredito.calle.toLowerCase()}" />
       <br />
-      <h:outputText value="#{busquedaBean.direccionCredito.colonia.nombre}" />
-      ,&nbsp;
-      <h:outputText value="#{busquedaBean.direccionCredito.colonia.codigoPostal}" />
+      <br />
+      <h:outputText value="#{busquedaBean.direccionCredito.colonia.nombre} (#{busquedaBean.direccionCredito.colonia.codigoPostal})" />
+      <br />
       <br />
       <h:outputText value="#{busquedaBean.direccionCredito.municipio.nombre}" />
-      ,&nbsp;
+      <br />
+      <br />
       <h:outputText value="#{busquedaBean.direccionCredito.estadoRepublica.nombre}" />
       <br />
     </h:form>

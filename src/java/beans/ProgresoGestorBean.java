@@ -20,10 +20,10 @@ import javax.faces.context.FacesContext;
  *
  * @author Eduardo
  */
-@ManagedBean(name = "barraProgresoGestorBean")
+@ManagedBean(name = "progresoGestorBean")
 @SessionScoped
 
-public class BarraProgresoGestorBean {
+public class ProgresoGestorBean {
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -35,7 +35,7 @@ public class BarraProgresoGestorBean {
   private final PagoDAO pagoDao;
 
   // CONSTRUCTOR
-  public BarraProgresoGestorBean() {
+  public ProgresoGestorBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     pagoDao = new PagoIMPL();
@@ -51,11 +51,13 @@ public class BarraProgresoGestorBean {
   }
 
   public String calcularPagosPorAprobarPorGestor() {
-    return pagoDao.calcularPagosPorAprobarPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
+    return "0";
+    //return pagoDao.calcularPagosPorAprobarGestor(indexBean.getUsuario().getIdUsuario()).toString();
   }
 
   public String calcularRecuperacionPorGestor() {
-    return pagoDao.calcularRecuperacionPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
+    return "0";
+    //return pagoDao.calcularRecuperacionGestor(indexBean.getUsuario().getIdUsuario()).toString();
   }
 
 }

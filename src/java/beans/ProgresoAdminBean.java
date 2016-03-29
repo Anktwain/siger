@@ -21,10 +21,10 @@ import javax.faces.context.FacesContext;
  *
  * @author Eduardo
  */
-@ManagedBean(name = "barraProgresoAdminBean")
+@ManagedBean(name = "progresoAdminBean")
 @SessionScoped
 
-public class BarraProgresoAdminBean implements Serializable {
+public class ProgresoAdminBean implements Serializable {
 
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
@@ -34,7 +34,7 @@ public class BarraProgresoAdminBean implements Serializable {
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
-  public BarraProgresoAdminBean() {
+  public ProgresoAdminBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     pagoDao = new PagoIMPL();
@@ -49,11 +49,30 @@ public class BarraProgresoAdminBean implements Serializable {
   }
 
   public String calcularPagos() {
-    return pagoDao.calcularPagosRealizados().toString();
+    return "";
+    //return pagoDao.calcularPagosRealizados().toString();
   }
 
   public String calcularRecuperacion() {
-    return pagoDao.calcularRecuperacionDeInstitucion().toString() + " %";
+    return "";
+    //return pagoDao.calcularRecuperacionDespacho().toString() + " %";
+  }
+  
+  public String gestionesHoy(){
+    return gestionDao.calcularGestionesHoyPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
+  }
+  
+  public String saldoAprobadoHoy(){
+    return "";
+    //return pagoDao.calcularSaldoAprobadoHoy();
+  }
+  
+  public String gestorDelDiaPagos(){
+    return pagoDao.obtenerGestorDelDia(indexBean.getUsuario().getDespacho().getIdDespacho());
+  }
+  
+  public String gestorDelDiaGestiones(){
+    return gestionDao.obtenerGestorDelDia(indexBean.getUsuario().getDespacho().getIdDespacho());
   }
 
 }

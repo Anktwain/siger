@@ -22,7 +22,7 @@ import util.log.Logs;
  *
  * @author brionvega
  */
-@ManagedBean
+@ManagedBean(name = "emailBean")
 @ViewScoped
 public class EmailBean implements Serializable {
 // Objeto que gestiona este bean

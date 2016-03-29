@@ -229,7 +229,6 @@ public class Carajeador {
         actualizacion.setFechaUltimoVencimientoPagado(fechaUVP);
         actualizacion.setFacs(null);
         actualizacion.setIdActualizacion(idActualizacion);
-        System.out.println(actualizacion.getIdActualizacion());
         actualizacionDao.insert(session, actualizacion);
 
         /* Crea los facs asociados a la actualización */

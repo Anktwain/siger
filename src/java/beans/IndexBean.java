@@ -10,6 +10,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import util.constantes.Constantes;
 import javax.faces.context.FacesContext;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
 import util.MD5;
 import javax.servlet.http.HttpSession;
 import util.constantes.Perfiles;
@@ -97,6 +99,7 @@ public class IndexBean implements Serializable {
    */
   public void ingresar() throws IOException {
     HttpSession sesion = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+
     nombreUsuario = nombreUsuario.toLowerCase();
     usuario = usuarioDao.buscar(nombreUsuario, MD5.encriptar(password));
     FacesContext instanciaActual = FacesContext.getCurrentInstance();
@@ -112,13 +115,13 @@ public class IndexBean implements Serializable {
           break;
         case Perfiles.ADMINISTRADOR:
         case Perfiles.SUPER_ADMINISTRADOR:
-          instanciaActual.getExternalContext().redirect("faces/panelAdministrativo.xhtml");
+          instanciaActual.getExternalContext().redirect("panelAdministrativo.xhtml");
           Logs.log.info("Acceso administrador " + nombreUsuario + ", despacho " + usuario.getDespacho().getNombreCorto() + ", sesion " + sesion.getId());
           vista = "panelAdministrativo.xhtml";
           adminVisible = true;
           break;
         case Perfiles.GESTOR:
-          instanciaActual.getExternalContext().redirect("faces/panelGestor.xhtml");
+          instanciaActual.getExternalContext().redirect("panelGestor.xhtml");
           Logs.log.info("Acceso gestor " + nombreUsuario + ", despacho: " + usuario.getDespacho().getNombreCorto() + ", sesion " + sesion.getId());
           vista = "panelGestor.xhtml";
           break;

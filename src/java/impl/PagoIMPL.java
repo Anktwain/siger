@@ -7,6 +7,7 @@ package impl;
 
 import dao.PagoDAO;
 import dto.Pago;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -129,26 +130,6 @@ public class PagoIMPL implements PagoDAO {
   }
 
   @Override
-  public Number calcularPagosRealizados() {
-    return 0;
-  }
-
-  @Override
-  public Number calcularPagosPorAprobarPorGestor(int idGestor) {
-    return 0;
-  }
-
-  @Override
-  public Number calcularRecuperacionDeInstitucion() {
-    return 0;
-  }
-
-  @Override
-  public Number calcularRecuperacionPorGestor(int idGestor) {
-    return 0;
-  }
-
-  @Override
   public Pago buscarPagoHoy(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Pago pago = new Pago();
@@ -164,6 +145,24 @@ public class PagoIMPL implements PagoDAO {
       cerrar(sesion);
     }
     return pago;
+  }
+
+  @Override
+  public String obtenerGestorDelDia(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    String gestor;
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String fecha = df.format(new Date());
+    String consulta = "SELECT u.nombre, u.paterno FROM usuario u WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = (SELECT MAX(id_gestor) FROM pago WHERE fecha_registro = '" + fecha + "' AND estatus = " + Pagos.APROBADO + ")) AND id_despacho = " + idDespacho + ";";
+    try {
+      gestor = (String) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      gestor = "";
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestor;
   }
 
   private void cerrar(Session sesion) {

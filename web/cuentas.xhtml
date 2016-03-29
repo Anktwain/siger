@@ -15,7 +15,7 @@
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
-    <div id="overlay" class="transparent" style="display: none"></div>
+    <div id="overlay" class="transparent" style="display: none" />
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
@@ -60,10 +60,10 @@
                 <p:menuitem value="Devolver" icon="ui-icon-alert" oncomplete="PF('confirmacionDialog').show();" />
               </p:contextMenu>
               <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditos}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" filteredValue="#{cuentasBean.filtrados}" style="width: 1050px;">
-                <p:column headerText="Credito" style="width:150px;" filterBy="#{c.numeroCredito}" filterStyle="width:100px;">
+                  <p:column headerText="Credito" style="width:150px;" filterBy="#{c.numeroCredito}" filterStyle="width:100px;" filterMatchMode="startsWith">
                   <h:outputText value="#{c.numeroCredito}" style="float:right"/>
                 </p:column>
-                <p:column headerText="Nombre del deudor" style="width:400px;" filterBy="#{c.deudor.sujeto.nombreRazonSocial}" filterStyle="width:300px;">
+                <p:column headerText="Nombre del deudor" style="width:400px;" filterBy="#{c.deudor.sujeto.nombreRazonSocial}" filterStyle="width:300px;" filterMatchMode="startsWith">
                   <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
                 </p:column>
                 <p:column headerText="Saldo vencido" style="width:150px;"> 

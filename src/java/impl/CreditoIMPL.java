@@ -242,7 +242,7 @@ public class CreditoIMPL implements CreditoDAO {
   public List<Credito> buscarPorMarcaje(int marcaje) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Credito> creditos;
-    String consulta = "SELECT * FROM credito WHERE marcaje = " + marcaje + ";";
+    String consulta = "SELECT * FROM credito WHERE id_marcaje = " + marcaje + ";";
     try {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {

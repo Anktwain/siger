@@ -173,7 +173,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <h:commandLink  actionListener="#{gestionesBean.reportarExportacion('pdf')}">
                   <p:graphicImage name="/img/iconos/pdf.png" width="40" rendered="#{gestionesBean.permitirExport}" />
-                  <p:dataExporter type="pdf" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}"/>
+                  <p:dataExporter type="pdf" preProcessor="#{gestionesBean.preparaPdf}" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}"/>
                 </h:commandLink>
               </div>
             </f:facet>
