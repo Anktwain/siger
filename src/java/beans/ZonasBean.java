@@ -5,7 +5,6 @@
  */
 package beans;
 
-
 import dao.EstadoRepublicaDAO;
 import dao.GestorDAO;
 import dao.MunicipioDAO;
@@ -49,7 +48,6 @@ public class ZonasBean implements Serializable {
   public final IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
   // VARIBALES DE CLASE
-  private final int idDespacho;
   private String nombreZona;
   private List<Municipio> detalleZona;
   private List<Municipio> municipiosSeleccionados;
@@ -63,6 +61,7 @@ public class ZonasBean implements Serializable {
   private final GestorDAO gestorDao;
   private Gestor gestorSeleccionado;
   private Zona zonaSeleccionada;
+  private List<Municipio> municipiosPorEliminar;
 
   // CONSTRUCTOR
   public ZonasBean() {
@@ -78,14 +77,15 @@ public class ZonasBean implements Serializable {
     gestorDao = new GestorIMPL();
     gestorSeleccionado = new Gestor();
     zonaSeleccionada = new Zona();
-    idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
+    municipiosPorEliminar = new ArrayList();
     obtenerListas();
   }
 
   //  METODO QUE CARGA LA LISTA DE MUNICIPIOS
   public final void obtenerListas() {
-    listaZonas = zonaDao.buscarPorDespacho(idDespacho);
-    listaGestores = gestorDao.buscarPorDespacho(idDespacho);
+    listaMunicipios = new ArrayList();
+    listaZonas = zonaDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
+    listaGestores = gestorDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     List<EstadoRepublica> estados = estadoRepublicaDao.buscarTodo();
     for (int i = 0; i < (estados.size()); i++) {
       List<Municipio> municipios = municipioDao.buscarMunicipiosPorEstado(estados.get(i).getIdEstado());
@@ -93,9 +93,17 @@ public class ZonasBean implements Serializable {
         listaMunicipios.add(municipios.get(j));
       }
     }
+    List<Integer> ids = regionDao.buscarMunicipiosRegion(indexBean.getUsuario().getDespacho().getIdDespacho());
+    for (int i = 0; i < (listaMunicipios.size()); i++) {
+      for (int j = 0; j < (ids.size()); j++) {
+        if (listaMunicipios.get(i).getIdMunicipio() == ids.get(j).intValue()) {
+          listaMunicipios.remove(i);
+        }
+      }
+    }
   }
 
-  // METODO QUE ACTUALIZARA LA VISTA
+// METODO QUE ACTUALIZARA LA VISTA
   public void actualizaVista() {
     RequestContext.getCurrentInstance().update("nuevaZonaForm");
     RequestContext.getCurrentInstance().update("listaZonasForm");
@@ -114,8 +122,6 @@ public class ZonasBean implements Serializable {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Ya existe una zona con el nombre propuesto."));
     } else if (!validarGestorZona()) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El gestor seleccionado ya tiene asignada una zona."));
-    } else if (!validarMunicipiosEnZona()) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Uno o varios de los municipios ya pertenecen a otra zona."));
     } else {
       Zona z = new Zona();
       z.setDespacho(indexBean.getUsuario().getDespacho());
@@ -129,7 +135,7 @@ public class ZonasBean implements Serializable {
           r.setEstadoRepublica(m.getEstadoRepublica());
           r.setMunicipio(m);
           r.setZona(z);
-          if(regionDao.insertar(r) != null){
+          if (regionDao.insertar(r) != null) {
             ok = true;
           }
         }
@@ -150,25 +156,23 @@ public class ZonasBean implements Serializable {
     FacesContext contexto = FacesContext.getCurrentInstance();
     List<Region> regiones = regionDao.buscarPorZona(zona.getIdZona());
     boolean ok = true;
-    for (int i = 0; i <(regiones.size()); i++) {
+    for (int i = 0; i < (regiones.size()); i++) {
       ok = regionDao.eliminar(regiones.get(i));
-      if(!ok){
+      if (!ok) {
         break;
       }
     }
-    if(ok){
+    if (ok) {
       ok = zonaDao.eliminar(zona);
-      if(ok){
+      if (ok) {
         obtenerListas();
         actualizaVista();
         RequestContext.getCurrentInstance().execute("PF('dlgZonas').hide();");
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se elimino la zona."));
-      }
-      else{
+      } else {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar la zona. Contacte al equipo de sistemas"));
       }
-    }
-    else{
+    } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar la zona. Contacte al equipo de sistemas"));
     }
   }
@@ -176,6 +180,7 @@ public class ZonasBean implements Serializable {
   // METODO QUE ABRE LA TABLA DEL DETALLE DE LA ZONA SELECCIONADA
   public void abrirDetalleZona(Zona zona) {
     detalleZona = regionDao.buscarMunicipiosZona(zona.getIdZona());
+    zonaSeleccionada = zona;
     actualizaVista();
     RequestContext.getCurrentInstance().execute("PF('detalleZonaDialog').show();");
   }
@@ -192,7 +197,7 @@ public class ZonasBean implements Serializable {
 // METODO QUE VALIDA QUE EL NOMBRE DE LA ZONA NO EXISTA
   public boolean validarNombreZona() {
     boolean ok = true;
-    List<String> nombres = zonaDao.buscarNombresZonas(idDespacho);
+    List<String> nombres = zonaDao.buscarNombresZonas(indexBean.getUsuario().getDespacho().getIdDespacho());
     if (nombres.size() > 0) {
       for (int i = 0; i < (nombres.size()); i++) {
         ok = nombreZona.equals(nombres.get(i));
@@ -216,19 +221,33 @@ public class ZonasBean implements Serializable {
     return ok;
   }
 
-  //METODO QUE VALIDA QUE NO SE REPITAN MUNICIPIOS EN LAS ZONAS
-  public boolean validarMunicipiosEnZona() {
-    boolean ok = true;
-    List<Integer> ids = regionDao.buscarMunicipiosRegion(idDespacho);
-    for (int i = 0; i < (ids.size()); i++) {
-      for (int j = 0; j < (municipiosSeleccionados.size()); j++) {
-        if ((municipiosSeleccionados.get(j).getIdMunicipio()) == (ids.get(i).intValue())) {
-          ok = false;
-          break;
+  // METODO QUE ELIMINA EL MUNICIPIO SELECCIONADO
+  public void eliminarMunicipios() {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    if (municipiosPorEliminar.isEmpty()) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se ha seleccionado ningun municipio."));
+    } else {
+      System.out.println("MUNICIPIOS POR ELIMINAR: " + municipiosPorEliminar.size());
+      /*
+      for (int i = 0; i < (detalleZona.size()); i++) {
+        System.out.println("ENTRO AL FOR");
+        System.out.println("DETALLE ZONA " + (i + 1));
+        if (detalleZona.get(i) == municipioPorEliminar) {
+          System.out.println("SON IGUALES");
+          Region r = new Region();
+          r.setMunicipio(municipioPorEliminar);
+          r.setEstadoRepublica(municipioPorEliminar.getEstadoRepublica());
+          r.setZona(zonaSeleccionada);
+          if (regionDao.eliminar(r)) {
+            contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se elimino el municipio " + municipioPorEliminar.getNombre() + " de la zona."));
+          } else {
+            contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar el municipio. Contacte al equipo de sistemas"));
+          }
         }
       }
+      System.out.println("DETALLE ZONA VACIO");
+      */
     }
-    return ok;
   }
 
   // GETTERS & SETTERS
@@ -294,6 +313,14 @@ public class ZonasBean implements Serializable {
 
   public void setDetalleZona(List<Municipio> detalleZona) {
     this.detalleZona = detalleZona;
+  }
+
+  public List<Municipio> getMunicipiosPorEliminar() {
+    return municipiosPorEliminar;
+  }
+
+  public void setMunicipiosPorEliminar(List<Municipio> municipiosPorEliminar) {
+    this.municipiosPorEliminar = municipiosPorEliminar;
   }
 
 }

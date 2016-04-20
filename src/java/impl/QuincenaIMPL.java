@@ -7,6 +7,8 @@ package impl;
 
 import dao.QuincenaDAO;
 import dto.Quincena;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import util.HibernateUtil;
@@ -22,7 +24,8 @@ public class QuincenaIMPL implements QuincenaDAO{
   public Quincena obtenerQuincenaActual() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Quincena quincena;
-    String consulta = "SELECT * FROM quincena WHERE id_quincena = (SELECT MAX(id_quincena) FROM quincena);";
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+    String consulta = "SELECT * FROM quincena WHERE '" + df.format(new Date()) + "' BETWEEN fecha_inicio AND fecha_fin;";
     try {
       quincena = (Quincena) sesion.createSQLQuery(consulta).addEntity(Quincena.class).uniqueResult();
     } catch (HibernateException he) {

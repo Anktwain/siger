@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Detalle credito</title>
+    <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+  </h:head>
+  <body>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Detalle credito <p:outputLabel value="#{vistaCreditoBean.creditoActual.numeroCredito}" />
+          </li>
+        </ul>
+      </div>
+      <ui:include src="vistaCredito.xhtml" />
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </body>
+</html>

@@ -11,11 +11,13 @@ import dto.Credito;
 import impl.CreditoIMPL;
 import impl.GestionIMPL;
 import java.io.IOException;
+import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.log.Logs;
 
 /**
  *
@@ -23,11 +25,12 @@ import org.primefaces.context.RequestContext;
  */
 @ManagedBean(name = "vistaCampanaGestorBean")
 @ViewScoped
-public class VistaCampanaGestorBean {
+public class VistaCampanaGestorBean implements Serializable {
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   CuentasGestorBean cuentasGestorBean = (CuentasGestorBean) elContext.getELResolver().getValue(elContext, null, "cuentasGestorBean");
+  CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
 
   // VARIABLES DE CLASE
   private int progreso;
@@ -47,8 +50,8 @@ public class VistaCampanaGestorBean {
 
   // METODO QUE CARGA LOS DATOS NECESARIOS
   public final void obtenerDatos() {
+    creditoActualBean.setCreditoActual(cuentasGestorBean.creditosCampana.get(cuentasGestorBean.getPosicion()));
     cuentasGestorBean.creditosCampana = creditoDao.buscarCreditosPorCampanaGestor(cuentasGestorBean.getSeleccion().getIdCampana(), cuentasGestorBean.indexBean.getUsuario().getIdUsuario());
-    cuentasGestorBean.setCreditoActual(cuentasGestorBean.creditosCampana.get(cuentasGestorBean.getPosicion()));
     totalCuentas = cuentasGestorBean.creditosCampana.size();
     checarProgreso();
   }
@@ -114,6 +117,8 @@ public class VistaCampanaGestorBean {
     try {
       context.getExternalContext().redirect("vistaCampanaActual.xhtml");
     } catch (IOException ioe) {
+      Logs.log.error("No se pudo redirigir a la vista de campaña actual");
+      Logs.log.error(ioe);
     }
   }
 

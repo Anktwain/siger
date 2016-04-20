@@ -45,34 +45,40 @@ public class ProgresoAdminBean implements Serializable {
   }
 
   public String calcularVisitas() {
-    return gestionDao.calcularVisitasDomiciliariasPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
+    return "";
+    //return gestionDao.calcularVisitasDomiciliariasPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
 
-  public String calcularPagos() {
-    return "";
-    //return pagoDao.calcularPagosRealizados().toString();
+  public String calcularPagosPorAprobar() {
+    return pagoDao.calcularPagosPendientes(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
 
   public String calcularRecuperacion() {
-    return "";
-    //return pagoDao.calcularRecuperacionDespacho().toString() + " %";
+    return pagoDao.calcularRecuperacionDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString() + " %";
   }
-  
-  public String gestionesHoy(){
+
+  public String gestionesHoy() {
     return gestionDao.calcularGestionesHoyPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
-  
-  public String saldoAprobadoHoy(){
-    return "";
-    //return pagoDao.calcularSaldoAprobadoHoy();
+
+  public String saldoAprobadoHoy() {
+    return pagoDao.calcularSaldoAprobadoHoy(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
-  
-  public String gestorDelDiaPagos(){
-    return pagoDao.obtenerGestorDelDia(indexBean.getUsuario().getDespacho().getIdDespacho());
+
+  public String gestorDelDiaPagos() {
+    try {
+      return pagoDao.obtenerGestorDelDia(indexBean.getUsuario().getDespacho().getIdDespacho());
+    } catch (Exception e) {
+      return "";
+    }
   }
-  
-  public String gestorDelDiaGestiones(){
-    return gestionDao.obtenerGestorDelDia(indexBean.getUsuario().getDespacho().getIdDespacho());
+
+  public String gestorDelDiaGestiones() {
+    try {
+      return gestionDao.obtenerGestorDelDia(indexBean.getUsuario().getDespacho().getIdDespacho());
+    } catch (Exception e) {
+      return "";
+    }
   }
 
 }

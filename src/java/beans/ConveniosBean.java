@@ -6,6 +6,7 @@
 package beans;
 
 import dao.ConvenioPagoDAO;
+import dao.CreditoDAO;
 import dao.GestorDAO;
 import dao.PagoDAO;
 import dao.PromesaPagoDAO;
@@ -18,6 +19,7 @@ import dto.PromesaPago;
 import dto.Quincena;
 import dto.TipoGestion;
 import impl.ConvenioPagoIMPL;
+import impl.CreditoIMPL;
 import impl.GestorIMPL;
 import impl.PagoIMPL;
 import impl.PromesaPagoIMPL;
@@ -39,6 +41,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
+import util.GestionAutomatica;
 import util.constantes.Convenios;
 import util.constantes.Directorios;
 import util.constantes.Pagos;
@@ -55,7 +58,7 @@ public class ConveniosBean implements Serializable {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
-  VistaCreditoBean vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
+  CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
 
   // VARIABLES DE CLASE
   private boolean habilitaConvenios;
@@ -80,6 +83,7 @@ public class ConveniosBean implements Serializable {
   private final GestorDAO gestorDao;
   private final ConvenioPagoDAO convenioPagoDao;
   private final PromesaPagoDAO promesaPagoDao;
+  private final CreditoDAO creditoDao;
   private PromesaPago promesaSeleccionada;
   private ConvenioPago convenioActivo;
   private List<ConvenioPago> listaHistorialConvenios;
@@ -91,8 +95,7 @@ public class ConveniosBean implements Serializable {
   // CONSTRUCTOR
   public ConveniosBean() {
     convenioActivo = new ConvenioPago();
-    creditoActual = vistaCreditoBean.getCreditoActual();
-    saldoMaximo = creditoActual.getMonto();
+    creditoActual = creditoActualBean.getCreditoActual();
     convenioPagoDao = new ConvenioPagoIMPL();
     listaHistorialConvenios = new ArrayList();
     listaPagosConvenioActivo = new ArrayList();
@@ -101,6 +104,8 @@ public class ConveniosBean implements Serializable {
     pagoDao = new PagoIMPL();
     gestorDao = new GestorIMPL();
     promesaPagoDao = new PromesaPagoIMPL();
+    creditoDao = new CreditoIMPL();
+    saldoMaximo = creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito());
     tipoGestionSeleccionada = new TipoGestion();
     cargarListas();
   }
@@ -128,7 +133,7 @@ public class ConveniosBean implements Serializable {
   public void agregarConvenio() {
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (saldoNuevoConvenio > saldoMaximo) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser menor al saldo vencido."));
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser menor o igual al saldo vencido."));
     } else if (saldoNuevoConvenio <= 0) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser mayor a cero."));
     } else if (pagosPrometidos <= 0) {
@@ -152,13 +157,11 @@ public class ConveniosBean implements Serializable {
       convenio.setPagosNegociados(pagosPrometidos);
       convenio.setSaldoNegociado(saldoNuevoConvenio);
       boolean ok = convenioPagoDao.insertar(convenio);
-      // NO SE CREA LA GESTION AUTOMATICA PUESTO QUE:
-      // - EXISTEN 3 TIPOS DE GESTION PARA CONVENIOS DE PAGO
-      // - EL GESTOR DEBE SELECCIONAR EL LUGAR DONDE SE CELEBRO EL CONVENIO
       RequestContext.getCurrentInstance().execute("PF('agregarConvenioDialog').hide();");
       if (ok) {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo un nuevo convenio."));
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atencion.", "No olvide agregar la gestion correspondiente."));
+        GestionAutomatica.generarGestionAutomatica("9APROB", creditoActual, indexBean.getUsuario(), "CONVENIO PÒR " + saldoNuevoConvenio);
         habilitaPromesas = false;
         RequestContext.getCurrentInstance().update("formConvenios");
         cargarListas();
@@ -175,6 +178,7 @@ public class ConveniosBean implements Serializable {
     boolean ok = convenioPagoDao.editar(c);
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {
+      GestionAutomatica.generarGestionAutomatica("14DELC", creditoActual, indexBean.getUsuario(), "SE FINALIZA CONVENIO POR CUMPLIMIENTO O INCUMPLIMIENTO");
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se finalizo convenio."));
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se finalizo el convenio. Contacte al equipo de sistemas."));
@@ -189,10 +193,8 @@ public class ConveniosBean implements Serializable {
     byte[] bytes;
     String ok;
     try {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-      Date f = new Date();
-      String fecha = dateFormat.format(f);
-      String nombre = indexBean.getUsuario().getNombreLogin() + "-" + fecha + archivo.getFileName().substring(archivo.getFileName().indexOf("."));
+      SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+      String nombre = indexBean.getUsuario().getNombreLogin() + "-" + df.format(new Date()) + archivo.getFileName().substring(archivo.getFileName().indexOf("."));
       nombre = nombre.replace(" ", "");
       nombrePago = nombre;
       nombre = Directorios.RUTA_WINDOWS_CARGA_COMPROBANTES + nombre;
@@ -259,8 +261,12 @@ public class ConveniosBean implements Serializable {
       p.setQuincena(q);
       p.setRevisor("");
       p.setObservaciones(observacionesPago);
-      Gestor g = gestorDao.buscarGestorDelCredito(creditoActual.getIdCredito());
+      p.setGestor(creditoActual.getGestor());
+      Gestor g = creditoActual.getGestor();
       p.setGestor(g);
+      if (!indexBean.getUsuario().getNombreLogin().equals(creditoActual.getGestor().getUsuario().getNombreLogin())){
+         Logs.log.warn("El usuario " + indexBean.getUsuario().getNombreLogin() + " ha cargado un pago para el credito " + creditoActual.getNumeroCredito() + ", asignado al gestor " + creditoActual.getGestor().getUsuario().getNombreLogin());
+      }
       boolean ok = pagoDao.insertar(p);
       if (ok) {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego un nuevo pago."));
@@ -285,6 +291,9 @@ public class ConveniosBean implements Serializable {
     }
     if (estatus == Pagos.RECHAZADO) {
       estado = "Rechazado";
+    }
+    if (estatus == Pagos.REVISION_BANCO) {
+      estado = "Revision banco";
     }
     return estado;
   }

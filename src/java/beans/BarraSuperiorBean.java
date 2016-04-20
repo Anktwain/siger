@@ -1,16 +1,10 @@
 package beans;
 
-import dao.SujetoDAO;
-import dto.Sujeto;
-import impl.SujetoIMPL;
-import java.io.IOException;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
-import util.log.Logs;
 
 /**
  * La clase {@code PanelAdministrativoBean} permite ... y es el bean
@@ -35,8 +29,7 @@ public class BarraSuperiorBean implements Serializable {
   private String nombre;
   private String correo;
   private String despacho;
-  private Sujeto sujeto;
-  private final SujetoDAO sujetoDao;
+  private String creditoSeleccionado;
 
   // CONSTRUCTOR
   public BarraSuperiorBean() {
@@ -44,26 +37,10 @@ public class BarraSuperiorBean implements Serializable {
     nombreUsuario = indexBean.getUsuario().getNombreLogin();
     imagenDePerfil = indexBean.getUsuario().getImagenPerfil();
     correo = indexBean.getUsuario().getCorreo();
-    sujeto = new Sujeto();
-    sujetoDao = new SujetoIMPL();
-    sujeto = sujetoDao.buscar(indexBean.getUsuario().getDespacho().getSujeto().getIdSujeto());
     despacho = indexBean.getUsuario().getDespacho().getSujeto().getNombreRazonSocial();
   }
-
-  // METODO QUE GESTIONA EL CIERRE DE SESION
-  public void cerrarSesion() {
-    HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-    session.invalidate();
-    try {
-      indexBean.setNombreUsuario("");
-      indexBean.setPassword("");
-      FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
-      Logs.log.info("Usuario " + indexBean.getUsuario().getNombreLogin() + " cerro la sesion " + session.getId());
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
-  }
-
+  
+  // GETTERS & SETTERS
   /**
    *
    *
@@ -144,12 +121,12 @@ public class BarraSuperiorBean implements Serializable {
     this.despacho = despacho;
   }
 
-  public Sujeto getSujeto() {
-    return sujeto;
+  public String getCreditoSeleccionado() {
+    return creditoSeleccionado;
   }
 
-  public void setSujeto(Sujeto sujeto) {
-    this.sujeto = sujeto;
+  public void setCreditoSeleccionado(String creditoSeleccionado) {
+    this.creditoSeleccionado = creditoSeleccionado;
   }
 
 }

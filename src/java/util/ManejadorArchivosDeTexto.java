@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import util.log.Logs;
 
 
 /**
@@ -39,7 +40,8 @@ public class ManejadorArchivosDeTexto {
         ok = true;
       }
     } catch (IOException ioe) {
-      System.out.println(ioe);
+      Logs.log.error("No se pudo crear el archivo");
+      Logs.log.error(ioe);
       ok = false;
     }
     return ok;

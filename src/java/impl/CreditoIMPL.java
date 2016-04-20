@@ -66,7 +66,7 @@ public class CreditoIMPL implements CreditoDAO {
   public Number contarCreditosActivosPorGestor(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number creditos;
-    String consulta = "SELECT COUNT(*) FROM credito WHERE id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario = 19) AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    String consulta = "SELECT COUNT(*) FROM credito WHERE id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
     try {
       creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
@@ -202,9 +202,7 @@ public class CreditoIMPL implements CreditoDAO {
   @Override
   public Credito buscar(String numeroCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Credito credito;
-
     try {
       credito = (Credito) sesion.createSQLQuery("SELECT * FROM credito WHERE numero_credito = '" + numeroCredito + "';").addEntity(Credito.class).uniqueResult();
     } catch (HibernateException he) {
@@ -220,7 +218,6 @@ public class CreditoIMPL implements CreditoDAO {
   public Credito insertar(Credito credito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
-
     try {
       sesion.save(credito);
       tx.commit();
@@ -239,10 +236,10 @@ public class CreditoIMPL implements CreditoDAO {
   }
 
   @Override
-  public List<Credito> buscarPorMarcaje(int marcaje) {
+  public List<Credito> buscarPorMarcaje(int idMarcaje) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Credito> creditos;
-    String consulta = "SELECT * FROM credito WHERE id_marcaje = " + marcaje + ";";
+    String consulta = "SELECT * FROM credito WHERE id_marcaje = " + idMarcaje + ";";
     try {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
@@ -298,6 +295,7 @@ public class CreditoIMPL implements CreditoDAO {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
       creditos = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
@@ -314,6 +312,7 @@ public class CreditoIMPL implements CreditoDAO {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
       creditos = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
@@ -400,6 +399,57 @@ public class CreditoIMPL implements CreditoDAO {
       cerrar(sesion);
     }
     return mesesVencidos;
+  }
+
+  @Override
+  public List<Credito> buscarCoincidenciasCredito(int idDespacho, String cadena) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos = new ArrayList();
+    String consulta;
+    if (cadena.matches("\\d+")) {
+      consulta = "SELECT * FROM credito WHERE id_despacho = " + idDespacho + " AND numero_credito LIKE '" + cadena + "%';";
+    } else {
+      consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM sujeto WHERE nombre_razon_social LIKE '%" + cadena + "%')) AND id_despacho = " + idDespacho + ";";
+    }
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+
+  @Override
+  public Credito buscarPorSujeto(int idSujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Credito credito;
+    try {
+      credito = (Credito) sesion.createSQLQuery("SELECT * FROM credito WHERE id_deudor = (SELECT id_deudor FROM deudor WHERE id_sujeto = " + idSujeto + ");").addEntity(Credito.class).uniqueResult();
+    } catch (HibernateException he) {
+      credito = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return credito;
+  }
+
+  @Override
+  public List<Credito> buscarCreditosPorProducto(int idProducto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos;
+    String consulta = "SELECT * FROM credito WHERE id_producto = " + idProducto + ";";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+    } catch (HibernateException he) {
+      creditos = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
   }
 
   private void cerrar(Session sesion) {

@@ -165,7 +165,7 @@ public class GestionesBean implements Serializable {
 
   // METODO QUE VALIDA LAS FECHAS
   public boolean validarFechas() {
-    boolean ok;
+    boolean ok = true;
     FacesContext contexto = FacesContext.getCurrentInstance();
     Date fechaActual = new Date();
     if (fechaInicio.after(fechaActual)) {
@@ -180,7 +180,7 @@ public class GestionesBean implements Serializable {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la fecha inicial."));
       ok = false;
     }
-    return true;
+    return ok;
   }
 
   //METODO QUE GUARDA EL EVENTO DE EXPORTACION

@@ -1,6 +1,7 @@
 package beans;
 
 import dao.ColoniaDAO;
+import dao.CreditoDAO;
 import dao.DireccionDAO;
 import dao.EstadoRepublicaDAO;
 import dao.MunicipioDAO;
@@ -10,6 +11,7 @@ import dto.Direccion;
 import dto.EstadoRepublica;
 import dto.Municipio;
 import impl.ColoniaIMPL;
+import impl.CreditoIMPL;
 import impl.DireccionIMPL;
 import impl.EstadoRepublicaIMPL;
 import impl.MunicipioIMPL;
@@ -30,6 +32,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.GestionAutomatica;
 import util.constantes.Directorios;
 import util.log.Logs;
 
@@ -67,6 +70,7 @@ public class VistaValidarDirecciones implements Serializable {
   private final ColoniaDAO coloniaDao;
   private final SujetoDAO sujetoDao;
   private final DireccionDAO direccionDao;
+  private final CreditoDAO creditoDao;
 
   // CONSTRUCTOR
   public VistaValidarDirecciones() {
@@ -83,6 +87,7 @@ public class VistaValidarDirecciones implements Serializable {
     coloniaDao = new ColoniaIMPL();
     sujetoDao = new SujetoIMPL();
     direccionDao = new DireccionIMPL();
+    creditoDao = new CreditoIMPL();
     direccionSeleccionada = new DirsPorValidar();
     direccionesPorValidar = obtenerListaDeDirecciones();
   }
@@ -149,7 +154,6 @@ public class VistaValidarDirecciones implements Serializable {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atencion.", "No existen colonias con este codigo postal. Elija una colonia de la lista o agregue una nueva."));
       }
     } catch (Exception e) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una direccion."));
     }
   }
 
@@ -157,7 +161,7 @@ public class VistaValidarDirecciones implements Serializable {
   public void obtenerColoniaCompleta() {
     nuevaColonia = coloniaDao.buscar(nuevaColonia.getIdColonia());
   }
-  
+
   // METODO QUE MUESTRA TODAS LAS COLONIAS DEL MUNICIPIO
   public void mostrarColonias() {
     listaColonias = coloniaDao.buscarColoniasPorMunicipio(nuevoMunicipio.getIdMunicipio());
@@ -184,6 +188,7 @@ public class VistaValidarDirecciones implements Serializable {
         nuevoEstado = new EstadoRepublica();
         direccionesPorValidar = obtenerListaDeDirecciones();
         Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " valido una direccion asociada al sujeto " + d.getSujeto().getNombreRazonSocial());
+        GestionAutomatica.generarGestionAutomatica("4DOMI", creditoDao.buscarPorSujeto(direccionSeleccionada.getIdSujeto()), indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL CLIENTE: " + d.getSujeto().getNombreRazonSocial());
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se ha validado la direccion"));
       } else {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se actualizo el archivo. Contacte al equipo de sistemas"));
@@ -214,18 +219,13 @@ public class VistaValidarDirecciones implements Serializable {
       writer.close();
       reader.close();
     } catch (Exception e) {
-      e.printStackTrace();
       Logs.log.error("Error de lectura/escritura en archivo de direcciones");
       Logs.log.error(e.getMessage());
     }
     // SE ELIMINA EL ARCHIVO ORIGINAL
     inputFile.delete();
     // SE RENOMBRA EL ARCHIVO CON EL NOMBRE ORIGINAL
-    if (tempFile.renameTo(inputFile)) {
-      return true;
-    } else {
-      return false;
-    }
+    return tempFile.renameTo(inputFile);
   }
 
   // METODO QUE PREPARA LAS LISTAS PARA UNA NUEVA COLONIA

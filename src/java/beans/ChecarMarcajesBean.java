@@ -23,7 +23,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import util.constantes.Marcajes;
-import util.constantes.Perfiles;
 
 /**
  *
@@ -36,39 +35,24 @@ public class ChecarMarcajesBean implements Serializable {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
 
   // VARIABLES DE CLASE
-  private CuentasBean cuentasBean;
-  private CuentasGestorBean cuentasGestorBean;
-  private Credito creditoActual;
+  private final Credito creditoActual;
   private final CampanaDAO campanaDao;
   private final GestionDAO gestionDao;
   private final CreditoDAO creditoDao;
   private final ProductoDAO productoDao;
   private final HistorialDAO historialDao;
-  private int idCredito;
 
   //CONSTRUCTOR
   public ChecarMarcajesBean() {
-    creditoActual = new Credito();
     campanaDao = new CampanaIMPL();
     gestionDao = new GestionIMPL();
     creditoDao = new CreditoIMPL();
     productoDao = new ProductoIMPL();
     historialDao = new HistorialIMPL();
-    verificaUsuario();
-  }
-
-  // METODO QUE VERIFICA SI ESTA GESTIONANDO UN ADMINISTRADOR O UN GESTOR
-  public final void verificaUsuario() {
-    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      cuentasGestorBean = (CuentasGestorBean) elContext.getELResolver().getValue(elContext, null, "cuentasGestorBean");
-      creditoActual = cuentasGestorBean.getCreditoActual();
-    } else {
-      cuentasBean = (CuentasBean) elContext.getELResolver().getValue(elContext, null, "cuentasBean");
-      creditoActual = cuentasBean.getCreditoSeleccionado();
-    }
-    idCredito = creditoActual.getIdCredito();
+    creditoActual = creditoActualBean.getCreditoActual();
   }
 
   // METODO QUE VERIFICA EN QUE CAMPAÑA SE ENCUENTRA EL CREDITO
@@ -78,20 +62,16 @@ public class ChecarMarcajesBean implements Serializable {
 
   // METODO QUE VERIFICA SI EL CREDITO TIENE ALGUN MARCAJE
   public String verificaMarcaje() {
-    List<Credito> listaCorreos = creditoDao.buscarPorMarcaje(Marcajes.CORREO_SEPOMEX);
-    String cadena = "";
-    for (int i = 0; i < (listaCorreos.size()); i++) {
-      if (creditoActual.getNumeroCredito().equals(listaCorreos.get(i).getNumeroCredito())) {
-        cadena = "Visita domiciliaria";
-        break;
-      }
+    if (creditoActual.getMarcaje().getIdMarcaje() != Marcajes.SIN_MARCAJE) {
+      return creditoActual.getMarcaje().getMarcaje();
+    } else {
+      return "";
     }
-    return cadena;
   }
 
   // METODO QUE AVISA AL GESTOR SI LA CUENTA SE HA GESTIONADO HOY
   public String verificaGestionHoy() {
-    if (gestionDao.buscarGestionHoy(idCredito)) {
+    if (gestionDao.buscarGestionHoy(creditoActual.getIdCredito())) {
       return "Se ha gestionado el dia de hoy";
     } else {
       return "";
@@ -100,7 +80,7 @@ public class ChecarMarcajesBean implements Serializable {
 
   // METODO QUE VERIFICA SI EL CREDITO CAMBIO DE CAMPAÑA EL DIA DE HOY
   public String verificaCambioDeCampaña() {
-    if (historialDao.verificarCampioCampañaCredito(idCredito)) {
+    if (historialDao.verificarCampioCampañaCredito(creditoActual.getIdCredito())) {
       return "Cambio de campaña hoy";
     } else {
       return "";
@@ -126,11 +106,21 @@ public class ChecarMarcajesBean implements Serializable {
 
   // METODO QUE VERIFICA SI UNA CUENTA ES DE SOFOM
   public String verificaSOFOM() {
-    String producto = productoDao.buscarProductoDelCredito(idCredito);
+    String producto = productoDao.buscarProductoDelCredito(creditoActual.getIdCredito());
     if (producto.contains("CREDITO EXPRESS CT")) {
       return "SOFOM CT";
     } else {
       return "";
     }
   }
+
+  //METODO QUE VERIFICA SI LA CUENTA CAMBIO DE GESTOR EL DIA DE HOY
+  public String verificaReasignacionHoy() {
+    if (gestionDao.buscarReasignacionHoy(creditoActual.getIdCredito())) {
+      return "Cambio de gestor hoy";
+    } else {
+      return "";
+    }
+  }
+
 }

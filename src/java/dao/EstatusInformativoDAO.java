@@ -13,7 +13,11 @@ import java.util.List;
  * @author Eduardo
  */
 public interface EstatusInformativoDAO {
+  
   public List<EstatusInformativo> buscarTodos();
+  
   public boolean insertar(EstatusInformativo estatus);
+  
   public EstatusInformativo buscar(int idEstatus);
+  
 }

@@ -8,7 +8,7 @@
     <h:outputStylesheet library="bootstrap" name="css/bootstrap.min.css" />
     <h:outputStylesheet library="css" name="endless.min.css" />
     <h:outputStylesheet library="css" name="endless-skin.css" />
-    <h:outputScript library="bootstrap" name="/js/bootstrap.js" />
+    <h:outputScript library="bootstrap" name="js/bootstrap.js" />
   </h:head>
   <h:body>
     <div id="top-nav" class="fixed skin-6">
@@ -44,7 +44,7 @@
             </li>
             <li>
               <h:form style="padding-left: 20px;">
-                <p:commandButton value="Cerrar sesíon" actionListener="#{barraSuperiorBean.cerrarSesion()}" />
+                <p:commandButton value="Cerrar sesíon" actionListener="#{indexBean.cerrarSesion()}" />
               </h:form>
             </li>
           </ul>

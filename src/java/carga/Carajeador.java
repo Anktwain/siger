@@ -1,6 +1,7 @@
 package carga;
 
 import dao.CalificacionDAO;
+import dao.MarcajeDAO;
 import dto.Actualizacion;
 import dto.Campana;
 import dto.Credito;
@@ -17,6 +18,7 @@ import dto.Subproducto;
 import dto.Sujeto;
 import dto.Telefono;
 import impl.CalificacionIMPL;
+import impl.MarcajeIMPL;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -65,6 +67,7 @@ import util.BautistaDeArchivos;
 import util.Fecha;
 import util.HibernateUtil;
 import util.constantes.Directorios;
+import util.constantes.Marcajes;
 import util.log.Logs;
 
 /**
@@ -189,13 +192,30 @@ public class Carajeador {
         /* Obtiene subproducto y producto, el primero no es obligatorio */
 //        subproducto = subproductoDao.getById(session, f.getIdSubproducto());
 //        producto = productoDao.getById(session, f.getIdProducto());
+        // ESTIMADO TIO:
+        // ME HE TOMADO EL ATREVIMIENTO DE UTILIZAR EL CONSTRUCTOR POR DEFECTO
+        // Y DESPUES ESTABLECERLE LOS ATRIBUTOS
+        // ESTO CON LA FINALIDAD DE QUE EN LOS NUEVOS POJOS NO MARQUE ERROR
+        // DISCULPA MI OSADIA
         /* Crea un nuevo crédito */
-        credito = new Credito(campana, despacho, deudor, gestor, f.getProductoDTO(), f.getSubproductoDTO(),
-                f.getCredito(), simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaInicioCredito())),
-                simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaVencimientoCred())), null,
-                f.getDisposicionFloat(), Float.parseFloat(f.getMensualidad()), (float) 0.0,
-                0, f.getCuenta(), 1, 0, null, null, null, null, null, null, null);
-
+        credito = new Credito();
+        credito.setCampana(campana);
+        credito.setDespacho(despacho);
+        credito.setDeudor(deudor);
+        credito.setGestor(gestor);
+        MarcajeDAO marcajeDao = new MarcajeIMPL();
+        credito.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
+        credito.setProducto(f.getProductoDTO());
+        credito.setSubproducto(f.getSubproductoDTO());
+        credito.setNumeroCredito(f.getCredito());
+        credito.setFechaInicio(simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaInicioCredito())));
+        credito.setFechaFin(simpleDateFormat.parse(fecha.convertirFormatoMySQL(f.getFechaVencimientoCred())));
+        credito.setMonto(f.getDisposicionFloat());
+        credito.setMensualidad(Float.parseFloat(f.getMensualidad()));
+        credito.setTasaInteres((float) 0);
+        credito.setDiasMora(0);
+        credito.setNumeroCuenta(f.getCuenta());
+        credito.setTipoCredito(1);
         creditoDao.insert(session, credito);
 
         /* Crea objeto Linea para el crédito */

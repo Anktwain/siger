@@ -102,8 +102,7 @@ public class GeneradorPdf {
       p.setAlignment(Chunk.ALIGN_RIGHT);
       documento.add(p);
       // ZONA DE COMPARACION
-      String producto = "", texto1 = "", texto2 = "", texto3 = "", texto4 = "", texto5 = "";
-      int coordy = 120;
+      String producto, texto1, texto2, texto3, texto4, texto5;
       texto3 = TextoPdfs.TEXTO_GENERAL_3;
       texto5 = TextoPdfs.TEXTO_GENERAL_5;
       if (credito.getProducto().getNombre().contains("CREDITO EXPRESS CT")) {
@@ -112,7 +111,6 @@ public class GeneradorPdf {
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
         texto2 = TextoPdfs.TEXTO_TELMEX_2;
         texto4 = "Numero de cuenta asociado a su credito (" + credito.getNumeroCuenta() + ")";
-        coordy = 160;
       } else if (credito.getProducto().getNombre().contains("EXPRESS")) {
         // CREDITOS CT EXPRESS
         producto = "Credito CT Express";
@@ -125,7 +123,6 @@ public class GeneradorPdf {
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
         texto2 = TextoPdfs.TEXTO_TELMEX_2;
         texto4 = TextoPdfs.TEXTO_TELMEX_4;
-        coordy = 140;
       } else {
         producto = credito.getProducto().getNombre();
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
@@ -167,12 +164,6 @@ public class GeneradorPdf {
       p = new Paragraph(TextoPdfs.TEXTO_GENERAL_6, cuerpoNegritas);
       p.setAlignment(Chunk.ALIGN_CENTER);
       documento.add(p);
-      documento.add(new Paragraph(Chunk.NEWLINE));
-      // FIRMA DEL CORPORATIVO
-      foto2 = Image.getInstance(Directorios.RUTA_IMAGENES + "firma.jpg");
-      foto2.scaleToFit(100, 100);
-      foto2.setAbsolutePosition(255, coordy);
-      documento.add(foto2);
       documento.add(new Paragraph(Chunk.NEWLINE));
       documento.add(new Paragraph(Chunk.NEWLINE));
       documento.add(new Paragraph(Chunk.NEWLINE));

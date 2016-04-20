@@ -42,39 +42,26 @@
         <div class="padding-md">
           <div class="col-lg-12">
             <h:form id="formCuentas">
-              <h4 class="no-margin">Especificar campa&ntilde;a:</h4>
-              <br />
-              &nbsp;&nbsp;&nbsp;
-              <p:inputSwitch value="#{cuentasBean.habilitaCampana}" offLabel="No" onLabel="Si" >
-                <p:ajax listener="#{cuentasBean.verificaSwitch()}" update="formCuentas" />
-              </p:inputSwitch>
-              &nbsp;&nbsp;&nbsp;
-              <p:selectOneMenu value="#{cuentasBean.campanaSeleccionada.idCampana}" disabled="#{!cuentasBean.habilitaCampana}">
-                <f:selectItems value="#{cuentasBean.listaCampanas}" var="c" itemLabel="#{c.nombre}" itemValue="#{c.idCampana}" />
-              </p:selectOneMenu>
-              &nbsp;&nbsp;
-              <p:commandButton value="Buscar" icon="ui-icon-search" disabled="#{!cuentasBean.habilitaCampana}" actionListener="#{cuentasBean.obtenerListaCreditos()}" />
-              <hr />
               <p:contextMenu for="cuentas" style="width:200px;">
                 <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{cuentasBean.selectorDeVista()}" />
                 <p:menuitem value="Devolver" icon="ui-icon-alert" oncomplete="PF('confirmacionDialog').show();" />
               </p:contextMenu>
-              <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditos}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" filteredValue="#{cuentasBean.filtrados}" style="width: 1050px;">
-                  <p:column headerText="Credito" style="width:150px;" filterBy="#{c.numeroCredito}" filterStyle="width:100px;" filterMatchMode="startsWith">
+              <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditos}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" style="width: 1050px;">
+                <p:column headerText="Credito" style="width:150px;" sortBy="#{c.numeroCredito}">
                   <h:outputText value="#{c.numeroCredito}" style="float:right"/>
                 </p:column>
-                <p:column headerText="Nombre del deudor" style="width:400px;" filterBy="#{c.deudor.sujeto.nombreRazonSocial}" filterStyle="width:300px;" filterMatchMode="startsWith">
+                <p:column headerText="Nombre del deudor" style="width:400px;" sortBy="#{c.deudor.sujeto.nombreRazonSocial}">
                   <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
                 </p:column>
-                <p:column headerText="Saldo vencido" style="width:150px;"> 
+                <p:column headerText="Saldo vencido" style="width:150px;" sortBy="#{cuentasBean.calcularSaldoVencido(c)}"> 
                   <h:outputText value="#{cuentasBean.calcularSaldoVencido(c)}" style="float:right">
                     <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                   </h:outputText>
                 </p:column>
-                <p:column headerText="Institucion" style="width:150px;" filterBy="#{c.producto.institucion.nombreCorto}">
+                <p:column headerText="Institucion" style="width:150px;" sortBy="#{c.producto.institucion.nombreCorto}">
                   <h:outputText value="#{c.producto.institucion.nombreCorto}"/>
                 </p:column>
-                <p:column headerText="Gestor asignado" style="width:150px;" filterBy="#{c.gestor.usuario.nombreLogin}">
+                <p:column headerText="Gestor asignado" style="width:150px;" sortBy="#{c.gestor.usuario.nombreLogin}">
                   <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>
                 </p:column>
               </p:dataTable>

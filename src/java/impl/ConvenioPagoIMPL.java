@@ -46,7 +46,6 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
 
   @Override
   public boolean editar(ConvenioPago convenio) {
-    System.out.println("ENTRO A EDITAR");
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
@@ -54,10 +53,8 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
       sesion.update(convenio);
       tx.commit();
       ok = true;
-      System.out.println("SI EDITO");
     } catch (HibernateException he) {
       ok = false;
-      System.out.println("NO EDITO");
       if (tx != null) {
         tx.rollback();
       }

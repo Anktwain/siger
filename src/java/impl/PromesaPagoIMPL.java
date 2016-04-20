@@ -16,6 +16,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.log.Logs;
 
 /**
  *
@@ -72,6 +73,8 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
     try {
       promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
     } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he);
     } finally {
       cerrar(sesion);
       if (!promesas.isEmpty()) {
@@ -96,6 +99,8 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
     try {
       promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
     } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he);
     } finally {
       cerrar(sesion);
       if (!promesas.isEmpty()) {
@@ -120,6 +125,8 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
     try {
       promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
     } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he);
       promesas = null;
     } finally {
       cerrar(sesion);
@@ -142,6 +149,8 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
       promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
     } catch (HibernateException he) {
       promesas = null;
+      Logs.log.error(consulta);
+      Logs.log.error(he);
     } finally {
       cerrar(sesion);
     }

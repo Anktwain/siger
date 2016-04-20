@@ -22,11 +22,22 @@ public interface PagoDAO {
 
   public List<Pago> buscarPagosPorCredito(int idCredito);
 
-  public List<Pago> pagosPorDespacho(int idDespacho);
+  public List<Pago> pagosPorDespacho(int idDespacho, String fechaInicio, String fechaFin);
 
   public List<Pago> pagosPorRevisarPorDespacho(int idDespacho);
   
   public Pago buscarPagoHoy(int idCredito);
   
   public String obtenerGestorDelDia(int idDespacho);
+  
+  public Number calcularPagosPendientes(int idDespacho);
+  
+  public Number calcularSaldoAprobadoHoy(int idDespacho);
+  
+  public Number calcularRecuperacionDespacho(int idDespacho);
+  
+  public List<Pago> pagosPorRevisarBanco(int idDespacho);
+  
+  public float calcularMontoGestor(int idGestor);
+          
 }

@@ -9,11 +9,13 @@ package beans;
 import dao.CreditoDAO;
 import dao.EstatusInformativoDAO;
 import dao.GestionDAO;
+import dao.MarcajeDAO;
 import dto.Credito;
 import dto.Gestion;
 import impl.CreditoIMPL;
 import impl.EstatusInformativoIMPL;
 import impl.GestionIMPL;
+import impl.MarcajeIMPL;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -63,6 +65,7 @@ public class MarcajeBean implements Serializable {
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
   private final EstatusInformativoDAO estatusInformativoDao;
+  private final MarcajeDAO marcajeDao;
   private Credito seleccionadoSepomex;
   private FacesContext contexto;
 
@@ -81,6 +84,7 @@ public class MarcajeBean implements Serializable {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     estatusInformativoDao = new EstatusInformativoIMPL();
+    marcajeDao = new MarcajeIMPL();
     seleccionadoSepomex = new Credito();
     obtenerListas();
     obtenerPeriodos();
@@ -156,7 +160,7 @@ public class MarcajeBean implements Serializable {
 
   // METODO QUE QUITA EL MARCAJE A LOS CREDITOS DE CORREO ORDINARIO
   public void quitarMarcaje() {
-    seleccionadoSepomex.setMarcaje(Marcajes.SIN_MARCAJE);
+    seleccionadoSepomex.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
     boolean ok = creditoDao.editar(seleccionadoSepomex);
     Gestion g = gestionDao.obtenerGestionAutomaticaPorAbreviatura("4CADE");
     g.setCredito(seleccionadoSepomex);

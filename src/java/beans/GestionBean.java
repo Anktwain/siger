@@ -11,6 +11,7 @@ import dao.DescripcionGestionDAO;
 import dao.DondeGestionDAO;
 import dao.EstatusInformativoDAO;
 import dao.GestionDAO;
+import dao.MarcajeDAO;
 import dao.QuienGestionDAO;
 import dao.TipoGestionDAO;
 import dao.TipoQuienGestionDAO;
@@ -29,6 +30,7 @@ import impl.DescripcionGestionIMPL;
 import impl.DondeGestionIMPL;
 import impl.EstatusInformativoIMPL;
 import impl.GestionIMPL;
+import impl.MarcajeIMPL;
 import impl.QuienGestionIMPL;
 import impl.TipoGestionIMPL;
 import impl.TipoQuienGestionIMPL;
@@ -43,7 +45,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Marcajes;
-import util.constantes.Perfiles;
 
 /**
  *
@@ -57,11 +58,10 @@ public class GestionBean implements Serializable {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
   ObtenerOracionCompletaGestionBean obtenerOracionCompletaGestionBean = (ObtenerOracionCompletaGestionBean) elContext.getELResolver().getValue(elContext, null, "obtenerOracionCompletaBean");
 
   // VARIABLES DE CLASE
-  private VistaCreditoBean vistaCreditoBean;
-  private CuentasGestorBean cuentasGestorBean;
   private List<TipoGestion> listaTipos;
   private List<DondeGestion> listaDonde;
   private List<AsuntoGestion> listaAsuntos;
@@ -87,11 +87,11 @@ public class GestionBean implements Serializable {
   private final QuienGestionDAO quienGestionDao;
   private final DescripcionGestionDAO descripcionGestionDao;
   private final CreditoDAO creditoDao;
-  private Credito creditoActual;
+  private final MarcajeDAO marcajeDao;
+  private final Credito creditoActual;
 
   // CONSTRUCTOR
   public GestionBean() {
-    creditoActual = new Credito();
     listaTipos = new ArrayList();
     listaDonde = new ArrayList();
     listaAsuntos = new ArrayList();
@@ -108,6 +108,7 @@ public class GestionBean implements Serializable {
     tipoQuienGestionDao = new TipoQuienGestionIMPL();
     quienGestionDao = new QuienGestionIMPL();
     creditoDao = new CreditoIMPL();
+    marcajeDao = new MarcajeIMPL();
     tipoSeleccionado = new TipoGestion();
     dondeSeleccionado = new DondeGestion();
     asuntoSeleccionado = new AsuntoGestion();
@@ -117,48 +118,229 @@ public class GestionBean implements Serializable {
     descripcionSeleccionada = new DescripcionGestion();
     nueva = new Gestion();
     listaTipos = tipoGestionDao.buscarTodo();
-    obtenerBeanActual();
+    creditoActual = creditoActualBean.getCreditoActual();
   }
 
-  // METODO QUE OBTIENE EL CREDITO ACTUAL DEPENDIENDO DE LA VISTA
-  public final void obtenerBeanActual() {
-    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      cuentasGestorBean = (CuentasGestorBean) elContext.getELResolver().getValue(elContext, null, "cuentasGestorBean");
-      creditoActual = cuentasGestorBean.getCreditoActual();
-    } else {
-      vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
-      creditoActual = vistaCreditoBean.getCreditoActual();
-    }
-  }
-
+  // METODO QUE PREPARA EL COMBOBOX DONDE GESTION
   public void preparaDonde() {
     tipoSeleccionado = tipoGestionDao.buscarPorId(tipoSeleccionado.getIdTipoGestion());
     listaDonde = dondeGestionDao.buscarPorTipoGestion(tipoSeleccionado.getIdTipoGestion());
   }
 
+  // METODO QUE PREPARA EL COMBOBOX ASUNTO GESTION
   public void preparaAsunto() {
     dondeSeleccionado = dondeGestionDao.buscarPorId(dondeSeleccionado.getIdDondeGestion());
     listaAsuntos = asuntoGestionDao.buscarPorTipoGestion(tipoSeleccionado.getIdTipoGestion());
   }
 
+  // METODO QUE PREPARA EL COMBOBOX DESCRIPCION GESTION
   public void preparaDescripcion() {
     asuntoSeleccionado = asuntoGestionDao.buscarPorId(asuntoSeleccionado.getIdAsuntoGestion());
     listaDescripciones = descripcionGestionDao.buscarPorAsuntoTipo(tipoSeleccionado.getIdTipoGestion(), asuntoSeleccionado.getIdAsuntoGestion());
   }
 
+  // METODO QUE PREPARA EL COMBOBOX TIPO SUJETO GESTION
   public void preparaTipoSujeto() {
     descripcionSeleccionada = descripcionGestionDao.buscarPorId(descripcionSeleccionada.getIdDescripcionGestion());
     listaTipoSujetos = tipoQuienGestionDao.buscarPorAsuntoDescripcion(asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto(), descripcionSeleccionada.getAbreviatura());
+    if(listaTipoSujetos.get(0).getDescripcion().equals("NO APLICA")){
+      tipoSujetoSeleccionado = tipoQuienGestionDao.buscarPorId(12);
+      preparaSujetos();
+      sujetoSeleccionado = quienGestionDao.buscarPorId(89);
+      preparaEstatus();
+    }
   }
 
+  // METODO QUE PREPARA EL COMBOBOX SUJETO GESTION
   public void preparaSujetos() {
     tipoSujetoSeleccionado = tipoQuienGestionDao.buscarPorId(tipoSujetoSeleccionado.getIdTipoQuienGestion());
     listaSujetos = quienGestionDao.buscarPorTipoQuien(tipoSujetoSeleccionado.getIdTipoQuienGestion());
   }
 
+  // METODO QUE PREPARA EL COMBOBOX DE ESTATUS DEL BANCO
   public void preparaEstatus() {
     sujetoSeleccionado = quienGestionDao.buscarPorId(sujetoSeleccionado.getIdQuienGestion());
-    listaEstatus = estatusInformativoDao.buscarTodos();
+    listaEstatus = seleccionadorEstatus();
+    if(listaEstatus.size()==1){
+      estatusSeleccionado = listaEstatus.get(0);
+    }
+  }
+
+  // METODO QUE SELECCIONA EL ESTATUS DEL BANCO DEPENDIENDO DE LA GESTION ACTUAL
+  public List<EstatusInformativo> seleccionadorEstatus() {
+    List<EstatusInformativo> estatusPosibles = new ArrayList();
+    listaEstatus = estatusPosibles;
+    switch (tipoSeleccionado.getIdTipoGestion()) {
+      case 1:
+        switch (asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto()) {
+          case 2:
+            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+              estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(10));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(11));
+            } else {
+              estatusPosibles.add(estatusInformativoDao.buscar(6));
+            }
+            break;
+          case 3:
+            estatusPosibles.add(estatusInformativoDao.buscar(21));
+            break;
+          case 4:
+            estatusPosibles.add(estatusInformativoDao.buscar(19));
+            break;
+          case 6:
+            estatusPosibles.add(estatusInformativoDao.buscar(16));
+            break;
+          case 7:
+          case 11:
+            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+              estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else {
+              estatusPosibles.add(estatusInformativoDao.buscar(6));
+            }
+            break;
+          case 8:
+            if (descripcionSeleccionada.getAbreviatura().equals("1CONV")) {
+              estatusPosibles.add(estatusInformativoDao.buscar(1));
+            } else if ((descripcionSeleccionada.getAbreviatura().equals("2CONV")) || (descripcionSeleccionada.getAbreviatura().equals("3CONV"))) {
+              estatusPosibles.add(estatusInformativoDao.buscar(2));
+            }
+            break;
+        }
+        break;
+      case 2:
+        switch (asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto()) {
+          case 1:
+            if ((descripcionSeleccionada.getAbreviatura().equals("1PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("2PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("3PRTE"))) {
+              estatusPosibles.add(estatusInformativoDao.buscar(13));
+            } else if (descripcionSeleccionada.getAbreviatura().equals("5PRTE")) {
+              estatusPosibles.add(estatusInformativoDao.buscar(14));
+            } else if ((descripcionSeleccionada.getAbreviatura().equals("4PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("6PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("9PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("10PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("11PRTE"))) {
+              estatusPosibles.add(estatusInformativoDao.buscar(15));
+            } else if ((descripcionSeleccionada.getAbreviatura().equals("1PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("2PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("3PRTE"))) {
+              estatusPosibles.add(estatusInformativoDao.buscar(13));
+            } else if (descripcionSeleccionada.getAbreviatura().equals("15PRTE")) {
+              estatusPosibles.add(estatusInformativoDao.buscar(20));
+            } else {
+              estatusPosibles.add(estatusInformativoDao.buscar(9));
+              estatusPosibles.add(estatusInformativoDao.buscar(19));
+            }
+            break;
+          case 2:
+            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+              estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(10));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(11));
+            } else {
+              estatusPosibles.add(estatusInformativoDao.buscar(6));
+            }
+            break;
+          case 3:
+            estatusPosibles.add(estatusInformativoDao.buscar(21));
+            break;
+          case 4:
+            estatusPosibles.add(estatusInformativoDao.buscar(19));
+            break;
+          case 6:
+            estatusPosibles.add(estatusInformativoDao.buscar(16));
+            break;
+          case 7:
+          case 11:
+            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+              estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else {
+              estatusPosibles.add(estatusInformativoDao.buscar(6));
+            }
+            break;
+          case 8:
+            if (descripcionSeleccionada.getAbreviatura().equals("1CONV")) {
+              estatusPosibles.add(estatusInformativoDao.buscar(1));
+            } else if ((descripcionSeleccionada.getAbreviatura().equals("2CONV")) || (descripcionSeleccionada.getAbreviatura().equals("3CONV"))) {
+              estatusPosibles.add(estatusInformativoDao.buscar(2));
+            }
+            break;
+        }
+        break;
+      case 3:
+        switch (asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto()) {
+          case 2:
+            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+              estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(10));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(11));
+            } else {
+              estatusPosibles.add(estatusInformativoDao.buscar(6));
+            }
+            break;
+          case 3:
+            estatusPosibles.add(estatusInformativoDao.buscar(21));
+            break;
+          case 4:
+            estatusPosibles.add(estatusInformativoDao.buscar(19));
+            break;
+          case 6:
+            estatusPosibles.add(estatusInformativoDao.buscar(16));
+            break;
+          case 7:
+          case 11:
+          case 13:
+            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+              estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else {
+              estatusPosibles.add(estatusInformativoDao.buscar(6));
+            }
+            break;
+          case 8:
+            if (descripcionSeleccionada.getAbreviatura().equals("1CONV")) {
+              estatusPosibles.add(estatusInformativoDao.buscar(1));
+            } else if ((descripcionSeleccionada.getAbreviatura().equals("2CONV")) || (descripcionSeleccionada.getAbreviatura().equals("3CONV"))) {
+              estatusPosibles.add(estatusInformativoDao.buscar(2));
+            }
+            break;
+        }
+        break;
+      case 4:
+        switch (asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto()) {
+          case 12:
+            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+              estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else {
+              estatusPosibles.add(estatusInformativoDao.buscar(6));
+            }
+            break;
+          case 14:
+          case 15:
+            estatusPosibles.add(estatusInformativoDao.buscar(16));
+            break;
+          case 16:
+            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+              estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(10));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(11));
+            } else {
+              estatusPosibles.add(estatusInformativoDao.buscar(6));
+              estatusPosibles.add(estatusInformativoDao.buscar(7));
+            }
+            break;
+          case 17:
+          case 18:
+            estatusPosibles.add(estatusInformativoDao.buscar(12));
+            break;
+        }
+        break;
+    }
+    if (listaEstatus.isEmpty()) {
+      listaEstatus = estatusInformativoDao.buscarTodos();
+    }
+    return estatusPosibles;
   }
 
   public void crearNuevaGestion() {
@@ -194,106 +376,98 @@ public class GestionBean implements Serializable {
 
   // METODO QUE VERIFICA SI LA GESTION QUITA EL MARCAJE A LAS CUENTAS
   public boolean verificaMarcaje() {
-    //TOFIX AQUI
-    int marcaje = creditoActual.getMarcaje();
-    boolean ok = true;
-    // APAGAR MARCAJE
-    switch (marcaje) {
+    boolean ok = false;
+    // AREA DE APAGADO DE MARCAJE
+    Credito c = creditoActual;
+    switch (creditoActual.getMarcaje().getIdMarcaje()) {
+      // CORREO ORDINARIO
       case 1:
-        // CORREO ORDINARIO
         if (descripcionSeleccionada.getAbreviatura().equals("4CADE")) {
-          Credito c = creditoActual;
-          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
         }
         break;
+      // TELEGRAMA
       case 2:
-        // TELEGRAMA
         if ((descripcionSeleccionada.getAbreviatura().equals("3CETE")) || (descripcionSeleccionada.getAbreviatura().equals("21TELE3"))) {
-          Credito c = creditoActual;
-          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
         }
         break;
+      // VISITA
       case 3:
-        // VISITA
         if (nueva.getTipoGestion().getIdTipoGestion() == 1) {
-          Credito c = creditoActual;
-          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
         }
         break;
+      // CORREO ELECTRONICO
       case 4:
-        // CORREO ELECTRONICO
         if (descripcionSeleccionada.getAbreviatura().equals("2COEL")) {
-          Credito c = creditoActual;
-          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
         }
         break;
+      // LOCALIZACION
       case 5:
-        // LOCALIZACION
-        if ((descripcionSeleccionada.getAbreviatura().contains("POSI")) && (tipoSeleccionado.getIdTipoGestion() == (1 | 2))) {
-          Credito c = creditoActual;
-          c.setMarcaje(Marcajes.SIN_MARCAJE);
-          ok = creditoDao.editar(c);
-        }
-        if (descripcionSeleccionada.getAbreviatura().equals("2SISB")) {
-          Credito c = creditoActual;
-          c.setMarcaje(Marcajes.SIN_MARCAJE);
+        if (((descripcionSeleccionada.getAbreviatura().contains("POSI")) && (tipoSeleccionado.getIdTipoGestion() == (1 | 2))) || (descripcionSeleccionada.getAbreviatura().equals("2SISB"))) {
+          c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
         }
         break;
+      // INFORMACION DEL BANCO
       case 6:
-        // INFORMACION DEL BANCO
         if (descripcionSeleccionada.getAbreviatura().equals("4CIAB")) {
-          Credito c = creditoActual;
-          c.setMarcaje(Marcajes.SIN_MARCAJE);
+          c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
         }
         break;
       // PROXIMAMENTE CASO WHATSAPP
+      default:
+        ok = true;
     }
-    // ENCENDER MARCAJE
-    // CASO CORREO ORDINARIO
-    if (descripcionSeleccionada.getAbreviatura().equals("26CACO")) {
-      Credito c = creditoActual;
-      c.setMarcaje(Marcajes.CORREO_SEPOMEX);
-      ok = creditoDao.editar(c);
-    } // CASO TELEGRAMA
-    else if ((descripcionSeleccionada.getAbreviatura().equals("19TELE1")) || (descripcionSeleccionada.getAbreviatura().equals("20TELE2"))) {
-      Credito c = creditoActual;
-      c.setMarcaje(Marcajes.TELEGRAMA);
-      ok = creditoDao.editar(c);
-    } // CASO VISITA
-    else if (descripcionSeleccionada.getAbreviatura().equals("32RUVD")) {
-      Credito c = creditoActual;
-      c.setMarcaje(Marcajes.TELEGRAMA);
-      ok = creditoDao.editar(c);
-    } // CASO CORREO ELECTRONICO
-    else if ((descripcionSeleccionada.getAbreviatura().equals("27CEBC")) || (descripcionSeleccionada.getAbreviatura().equals("28CEBCC")) || (descripcionSeleccionada.getAbreviatura().equals("29CEREQ")) || (descripcionSeleccionada.getAbreviatura().equals("30CENEG")) || (descripcionSeleccionada.getAbreviatura().equals("31CELIB"))) {
-      Credito c = creditoActual;
-      c.setMarcaje(Marcajes.CORREO_ELECTRONICO);
-      ok = creditoDao.editar(c);
-    } // CASO LOCALIZACION
-    else if ((descripcionSeleccionada.getAbreviatura().equals("1SECC")) || (descripcionSeleccionada.getAbreviatura().equals("3NOSB")) || (descripcionSeleccionada.getAbreviatura().equals("4CADE"))) {
-      Credito c = creditoActual;
-      c.setMarcaje(Marcajes.LOCALIZACION);
-      ok = creditoDao.editar(c);
-    } // CASO INFORMACION DEL BANCO
-    else if (descripcionSeleccionada.getAbreviatura().equals("33CEIB")) {
-      Credito c = creditoActual;
-      c.setMarcaje(Marcajes.ESPERA_INFORMACION_BANCO);
-      ok = creditoDao.editar(c);
-    } // CASO COBRO EN CELULAR
-    else if (descripcionSeleccionada.getAbreviatura().equals("1SMSC")) {
-      Credito c = creditoActual;
-      c.setMarcaje(Marcajes.COBRO_EN_CELULAR);
-      ok = creditoDao.editar(c);
-    } // PROXIMAMENTE CASO WHATSAPP
-    else {
+    // AREA DE ENCENDIDO DE MARCAJE
+    switch (descripcionSeleccionada.getAbreviatura()) {
+      // CASO CORREO ORDINARIO
+      case "26CACO":
+        c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.CORREO_SEPOMEX));
+        break;
+      // CASO TELEGRAMA
+      case "19TELE1":
+      case "20TELE2":
+        c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.TELEGRAMA));
+        break;
+      // CASO VISITA
+      case "32RUVD":
+        c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.VISITA_DOMICILIARIA));
+        break;
+      // CASO CORREO ELECTRONICO
+      case "27CEBC":
+      case "28CEBCC":
+      case "29CEREQ":
+      case "30CENEG":
+      case "31CELIB":
+        c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.CORREO_ELECTRONICO));
+        break;
+      // CASO LOCALIZACION
+      case "1SECC":
+      case "3NOSB":
+      case "4CADE":
+        c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.LOCALIZACION));
+        break;
+      // CASO INFORMACION DEL BANCO
+      case "33CEIB":
+        c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.ESPERA_INFORMACION_BANCO));
+        break;
+      // CASO COBRO EN CELULAR
+      case "1SMSC":
+        c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.COBRO_EN_CELULAR));
+        break;
+      // PROXIMAMENTE CASO WHATSAPP
+      default:
+        ok = true;
     }
-    return ok;
+    return (ok & (creditoDao.editar(c)));
   }
 
   public void limpiarCampos() {

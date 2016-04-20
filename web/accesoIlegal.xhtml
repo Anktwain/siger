@@ -21,11 +21,13 @@
             <div class="h5">Ha intentado acceder al area administrativa de manera intencional.</div>
             <div class="h5">Este abuso se ha reportado con el administrador de este despacho.</div>
             <div class="h5">Regrese inmediatamente al area de gestores o bien salga del sistema.</div>
+            <br />
             <div class="input-group m-bottom-md center-block">
-              <br />
-              <p:button value="Regresar" icon="ui-icon-cancel" href="#{indexBean.vista}" />
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:button value="Cerrar Sesion" icon="ui-icon-key" outcome="index" />
+              <h:form>
+                <p:button value="Regresar" icon="ui-icon-cancel" href="#{indexBean.vista}" />
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:commandButton value="Cerrar Sesion" icon="ui-icon-key" actionListener="#{indexBean.cerrarSesion()}" />
+              </h:form>
             </div><!-- /input-group -->
           </div><!-- /.col -->
         </div><!-- /.row -->

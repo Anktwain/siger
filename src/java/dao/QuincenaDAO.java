@@ -6,6 +6,7 @@
 package dao;
 
 import dto.Quincena;
+import java.util.Date;
 
 /**
  *

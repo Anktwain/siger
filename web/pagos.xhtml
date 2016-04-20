@@ -41,9 +41,11 @@
       <div class="panel panel-default">
         <div class="panel-tab clearfix">
           <ul class="tab-bar">
-            <li><a href="#pestanaRevisionPagos" data-toggle="tab" title="Click aqui si desea ver los creditos retirados por el banco"><h2><i class="fa fa-check"></i> Revision de pagos</h2></a></li>
+            <li><a href="#pestanaRevisionPagos" data-toggle="tab" title="Click aqui si desea ver los pagos pendientes de revision"><h2><i class="fa fa-check"></i> Revision de pagos</h2></a></li>
             &nbsp;
-            <li><a href="#pestanaTodosPagos" data-toggle="tab" title="Click aqui si desea ver los creditos pendientes de devolucion"><h2><i class="fa fa-usd"></i> Consulta de pagos</h2></a></li>
+            <li><a href="#pestanaTodosPagos" data-toggle="tab" title="Click aqui si desea ver el historial de pagos"><h2><i class="fa fa-usd"></i> Consulta de pagos</h2></a></li>
+            &nbsp;
+            <li><a href="#pestanaPagosGestores" data-toggle="tab" title="Click aqui si desea ver los detalles de pagos por gestor"><h2><i class="fa fa-user"></i> Pagos por gestor</h2></a></li>
           </ul>
         </div>
         <div class="panel-body">
@@ -53,28 +55,44 @@
               <h:form id="formRevisionPagos">
                 <p:contextMenu for="revisionPagos" style="width:230px;">
                   <p:menuitem value="Visualizar comprobante" icon="ui-icon-search" actionListener="#{pagosBean.visualizar()}" />
+                  <p:menuitem value="Enviar a revision" icon="ui-icon-mail-closed" actionListener="#{pagosBean.verificarCorreoRevision()}" update="growl, mailPagoForm" />
                   <p:menuitem value="Aprobar pago" icon="ui-icon-check" actionListener="#{pagosBean.aprobarPago()}" update="growl, revisionPagos, formTodosPagos:todosPagos" />
                   <p:menuitem value="Rechazar pago" icon="ui-icon-cancel" actionListener="#{pagosBean.rechazarPago()}" update="growl, revisionPagos, formTodosPagos:todosPagos" />
                 </p:contextMenu>
-                <p:dataTable id="revisionPagos" var="rev" value="#{pagosBean.pagosPorRevisar}" rowKey="#{rev.idPago}" selection="#{pagosBean.revisionSeleccionados}" selectionMode="multiple" emptyMessage="No existen pagos por revisar."  paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 900px;">
+                <p:dataTable id="revisionPagos" var="pen" value="#{pagosBean.pagosPorRevisar}" rowKey="#{pen.idPago}" selection="#{pagosBean.pagoSeleccionado}" selectionMode="single" emptyMessage="No existen pagos por revisar." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1360px;">
                   <p:column headerText="Fecha deposito" style="width:100px;"> 
-                    <h:outputText value="#{rev.fechaDeposito}" />
+                    <h:outputText value="#{pen.fechaDeposito}" />
                   </p:column>
-                  <p:column headerText="Monto" style="width:70px;"> 
-                    <h:outputText value="#{rev.monto}" >
+                  <p:column headerText="Monto" style="width:100px;"> 
+                    <h:outputText value="#{pen.monto}" style="float:right">
                       <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
-                  <p:column headerText="Credito" style="width:200px;">
-                    <h:outputText value="#{rev.promesaPago.convenioPago.credito.numeroCredito}" />
-                    <br />
-                    <h:outputText value="#{rev.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
+                  <p:column headerText="Credito" style="width:100px;">
+                    <h:outputText value="#{pen.promesaPago.convenioPago.credito.numeroCredito}" />
                   </p:column>
-                  <p:column headerText="Gestor" style="width:70px;" > 
-                    <h:outputText value="#{rev.gestor.usuario.nombreLogin}" />
+                  <p:column headerText="Deudor" style="width:250px;">
+                    <h:outputText value="#{pen.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
                   </p:column>
-                  <p:column headerText="Observaciones" style="width:150px;" > 
-                    <h:outputText value="#{rev.observaciones}"/>
+                  <p:column headerText="Producto" style="width:150px;">
+                    <h:outputText value="#{pen.promesaPago.convenioPago.credito.producto.nombre}" />
+                  </p:column>
+                  <p:column headerText="Meses vencidos" style="width:100px;">
+                    <h:outputText value="#{pagosBean.obtenerMesesVencidos(pen.promesaPago.convenioPago.credito.idCredito)}" style="float:right" />
+                  </p:column>
+                  <p:column headerText="Mensualidad" style="width:100px;">
+                    <h:outputText value="#{pen.promesaPago.convenioPago.credito.mensualidad}" style="float:right">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </p:column>
+                  <p:column headerText="Gestor" style="width:100px;" > 
+                    <h:outputText value="#{pen.gestor.usuario.nombreLogin}" />
+                  </p:column>
+                  <p:column headerText="Estatus" style="width:150px;"> 
+                    <h:outputText value="#{pagosBean.etiquetarEstatus(pen.estatus)}" />
+                  </p:column>
+                  <p:column headerText="Observaciones" style="width:200px;"> 
+                    <h:outputText value="#{pen.observaciones}"/>
                   </p:column>
                 </p:dataTable>
               </h:form>
@@ -82,21 +100,42 @@
             <!-- AQUI VA LA TABLA QUE MUESTRA TODOS LOS PAGOS DEL SISTEMA -->
             <div class="tab-pane fade" id="pestanaTodosPagos">
               <h:form id="formTodosPagos">
-                <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos revisados."  paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1300px;">
+                <table>
+                  <tr>
+                    <td>
+                      <h4 class="no-margin">Fecha inicio:</h4>
+                      <br />
+                      <p:calendar id="startDate" value="#{pagosBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial.">
+                        <p:ajax event="dateSelect" update="endDate" />
+                      </p:calendar>
+                    </td>
+                    <td style="padding-left: 20px;"></td>
+                    <td style="padding-left: 20px;">
+                      <h4 class="no-margin">Fecha fin:</h4>
+                      <br />
+                      <p:calendar id="endDate" value="#{pagosBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top: 20px"></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{pagosBean.buscar()}" update="growl, todosPagos" />
+                    </td>
+                  </tr>
+                </table>
+                <br />
+                <p:contextMenu for="todosPagos" style="width:230px;">
+                  <p:menuitem value="Aprobar pago" icon="ui-icon-check" oncomplete="PF('confirmacionAprobarPagoDialog').show()" />
+                  <p:menuitem value="Rechazar pago" icon="ui-icon-cancel" oncomplete="PF('confirmacionRechazarPagoDialog').show()" />
+                </p:contextMenu>
+                <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1300px;" rendered="#{pagosBean.habilitaTabla}">
                   <p:column headerText="Fecha deposito" style="width:100px;"> 
                     <h:outputText value="#{p.fechaDeposito}" />
                   </p:column>
-                  <p:column headerText="Estatus" style="width:100px;" > 
-                    <h:outputText value="#{pagosBean.etiquetarEstatus(p.estatus)}" />
-                  </p:column>
-                  <p:column headerText="Fecha revision" style="width:100px;"> 
-                    <h:outputText value="#{p.fechaRegistro}" />
-                  </p:column>
-                  <p:column headerText="Revisor" style="width:100px;" > 
-                    <h:outputText value="#{p.revisor}" />
-                  </p:column>
                   <p:column headerText="Monto" style="width:100px;"> 
-                    <h:outputText value="#{p.monto}" >
+                    <h:outputText value="#{p.monto}">
                       <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
@@ -106,22 +145,139 @@
                   <p:column headerText="Deudor" style="width:250px;"> 
                     <h:outputText value="#{p.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
                   </p:column>
-                  <p:column headerText="Gestor" style="width:100px;" > 
+                  <p:column headerText="Estatus" style="width:150px;"> 
+                    <h:outputText value="#{pagosBean.etiquetarEstatus(p.estatus)}" />
+                  </p:column>
+                  <p:column headerText="Fecha revision" style="width:100px;"> 
+                    <h:outputText value="#{p.fechaRegistro}" />
+                  </p:column>
+                  <p:column headerText="Revisor" style="width:100px;"> 
+                    <h:outputText value="#{p.revisor}" />
+                  </p:column>
+                  <p:column headerText="Gestor" style="width:100px;"> 
                     <h:outputText value="#{p.gestor.usuario.nombreLogin}" />
                   </p:column>
-                  <p:column headerText="Observaciones" style="width:200px;" >
+                  <p:column headerText="Observaciones" style="width:200px;">
                     <h:outputText value="#{p.observaciones}"/>
+                  </p:column>
+                  <f:facet name="footer">
+                    <div align="right">
+                      <h:commandLink actionListener="#{pagosBean.reportarExportacion('xls')}">
+                        <p:graphicImage name="/img/iconos/excel.png" width="40" rendered="#{pagosBean.permitirExport}" />
+                        <p:dataExporter type="xls" target="todosPagos" fileName="#{pagosBean.nombreArchivo}" />
+                      </h:commandLink>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <h:commandLink  actionListener="#{pagosBean.reportarExportacion('pdf')}">
+                        <p:graphicImage name="/img/iconos/pdf.png" width="40" rendered="#{pagosBean.permitirExport}" />
+                        <p:dataExporter type="pdf" preProcessor="#{pagosBean.preparaPdf}" target="todosPagos" fileName="#{pagosBean.nombreArchivo}"/>
+                      </h:commandLink>
+                    </div>
+                  </f:facet>
+                </p:dataTable>
+              </h:form>
+            </div>
+            <!-- AQUI VA LA TABLA QUE MUESTRA LOS PAGOS POR GESTORES Y DETALLES DE COBRANZA -->
+            <div class="tab-pane fade" id="pestanaPagosGestores">
+              <h:form id="formPagosGestores">
+                <p:dataTable id="pagosGestores" var="pg" value="#{pagosBean.listaPagosGestor}" rowKey="#{pg.idGestor}" emptyMessage="No existe informacion de los pagos por gestor." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 750px;">
+                  <p:column headerText="Gestor" style="width:150px;"> 
+                    <h:outputText value="#{pg.gestor}" />
+                  </p:column>
+                  <p:column headerText="Monto pagos aprobados" style="width:200px;"> 
+                    <h:outputText value="#{pg.montoPagos}" style="float: right;">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </p:column>
+                  <p:column headerText="Monto creditos en gestion" style="width:200px;"> 
+                    <h:outputText value="#{pg.montoPrometido}" style="float: right;">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </p:column>
+                  <p:column headerText="Eficiencia" style="width:150px;"> 
+                    <h:outputText value="#{pg.eficiencia} %" style="float: right;">
+                      <f:convertNumber minFractionDigits="4" maxFractionDigits="4" type="number" />
+                    </h:outputText>
                   </p:column>
                 </p:dataTable>
               </h:form>
             </div>
           </div>
         </div>
+        <!-- DIALOGO BARRA DE CARGA -->
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+          <p:graphicImage library="img" name="loadingBarra.gif" />
+        </p:dialog>
+        <!-- DIALOGO DE REVISION DE PAGOS -->
         <p:dialog id="dlgRevisionPago" widgetVar="detallePagoDialog" position="right top" resizable="false" width="500" height="850" header="Revisar pago">
           <h:form id="formVisorPago">
             <h:graphicImage url="#{pagosBean.urlImagen}" width="490" height="840" />
+          </h:form>
+        </p:dialog>
+        <!-- DIALOGO DE CORREO ELECTRONICO -->
+        <p:dialog id="dlgMailPago" widgetVar="mailPagoDialog" resizable="false" width="500" header="Enviar pago a revision">
+          <h:form id="mailPagoForm">
+            Informacion para el banco:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:selectOneMenu value="#{pagosBean.observacionParaBanco}">
+              <f:selectItems value="#{pagosBean.listaObservacionesPago}" />
+            </p:selectOneMenu>
             <br />
             <br />
+            Remitente:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <h:outputText value="#{pagosBean.remitente}" />
+            <br />
+            <br />
+            Destinatario(s):
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:selectCheckboxMenu value="#{pagosBean.destinatarios}" label="Correos" style="width: 250px;">
+              <f:selectItems value="#{pagosBean.listaDestinatarios}" />
+            </p:selectCheckboxMenu>
+            <br />
+            <br />
+            Copia oculta para:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:selectOneMenu value="#{pagosBean.copia}">
+              <f:selectItems value="#{pagosBean.listaCorreos}" />
+            </p:selectOneMenu>
+            <br />
+            <br />
+            <br />
+            Cuerpo del mensaje:
+            <br />
+            <p:inputTextarea value="#{pagosBean.mensajeCorreo}" rows="3" cols="50" />
+            <br />
+            <br />
+            <div align="center">
+              <p:commandButton value="Enviar a revision" icon="ui-icon-mail-closed" actionListener="#{pagosBean.enviarCorreoBanco()}" update="growl, formRevisionPagos" />
+            </div>
+          </h:form>
+        </p:dialog>
+        <!-- DIALOGO DE CONFIRMACION APROBAR PAGO -->
+        <p:dialog id="dlgConfirmacionAprobarPago" widgetVar="confirmacionAprobarPagoDialog" modal="true" resizable="false" header="Confirme esta accion">
+          <h:form id="confirmacionAprobarPagoForm">
+            Esta seguro de aprobar este pago?
+            <br />
+            <br />
+            <div align="center">
+              <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('confirmacionAprobarPagoDialog').hide()" actionListener="#{pagosBean.aprobarPago()}" update="growl, formRevisionPagos, formTodosPagos:todosPagos" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('confirmacionAprobarPagoDialog').hide()" />
+            </div>
+          </h:form>
+        </p:dialog>
+        <!-- DIALOGO DE CONFIRMACION RECHAZAR PAGO -->
+        <p:dialog id="dlgConfirmacionRechazarPago" widgetVar="confirmacionRechazarPagoDialog" modal="true" resizable="false" header="Confirme esta accion">
+          <h:form id="confirmacionRechazarPagoForm">
+            Esta seguro de rechazar este pago?
+            <br />
+            <br />
+            <div align="center">
+              <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('confirmacionRechazarPagoDialog').hide()" actionListener="#{pagosBean.rechazarPago()}" update="growl, formRevisionPagos, formTodosPagos:todosPagos" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('confirmacionRechazarPagoDialog').hide()" />
+            </div>
           </h:form>
         </p:dialog>
       </div>

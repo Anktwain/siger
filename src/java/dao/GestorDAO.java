@@ -27,7 +27,5 @@ public interface GestorDAO {
     
     public List<Gestor> buscarPorDespacho(int idDespacho);
     
-    public Gestor buscarGestorDelCredito(int idCredito);
-    
     public List<Gestor> buscarPorDespachoExceptoEste(int idDespacho, int idGestor);
 }

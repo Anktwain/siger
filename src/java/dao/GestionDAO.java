@@ -15,14 +15,27 @@ import java.util.List;
 public interface GestionDAO {
 
   public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho);
+  
   public Number calcularVisitasDomiciliariasPorGestor(int idusuario);
+  
   public boolean insertarGestion(Gestion gestion);
+  
   public List<Gestion> busquedaReporteGestiones (String consulta);
+  
   public List<Gestion> buscarGestionesCreditoGestor(int idUsuario, int idCredito);
-  public List<Gestion> buscarGestionesCredito(int idCredito);  
+  
+  public List<Gestion> buscarGestionesCredito(int idCredito);
+  
   public Gestion obtenerGestionAutomaticaPorAbreviatura(String abreviatura);
+  
   public boolean buscarGestionHoy(int idCredito);
+  
   public Number calcularGestionesHoyPorDespacho(int idDespacho);
+  
   public Number calcularGestionesHoyPorGestor(int idUsuario);
+  
   public String obtenerGestorDelDia(int idDespacho);
+  
+  public boolean buscarReasignacionHoy(int idCredito);
+  
 }

@@ -5,24 +5,22 @@
  */
 package beans;
 
-import dao.CampanaDAO;
 import dao.ConceptoDevolucionDAO;
 import dao.CreditoDAO;
 import dao.DevolucionDAO;
 import dao.HistorialDAO;
 import dao.MotivoDevolucionDAO;
-import dto.Campana;
 import dto.ConceptoDevolucion;
 import dto.Credito;
 import dto.Devolucion;
 import dto.MotivoDevolucion;
-import impl.CampanaIMPL;
 import impl.ConceptoDevolucionIMPL;
 import impl.CreditoIMPL;
 import impl.DevolucionIMPL;
 import impl.HistorialIMPL;
 import impl.MotivoDevolucionIMPL;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,21 +38,18 @@ import util.constantes.Devoluciones;
  */
 @ManagedBean(name = "cuentasBean")
 @SessionScoped
-public class CuentasBean {
+public class CuentasBean implements Serializable {
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
 
   // VARIABLES DE CLASE
-  private boolean habilitaCampana;
   private List<Credito> listaCreditos;
-  private List<Credito> filtrados;
   private Credito creditoSeleccionado;
   private List<ConceptoDevolucion> listaConceptos;
-  private List<Campana> listaCampanas;
   private final CreditoDAO creditoDao;
-  private final CampanaDAO campanaDao;
   private final DevolucionDAO devolucionDao;
   private final HistorialDAO historialDao;
   private final ConceptoDevolucionDAO conceptoDevolucionDao;
@@ -65,20 +60,14 @@ public class CuentasBean {
   private String observaciones;
   private final String admin;
   private final int idDespacho;
-  private Campana campanaSeleccionada;
 
   //CONSTRUCTOR
   public CuentasBean() {
-    habilitaCampana = false;
-    campanaSeleccionada = new Campana();
     creditoDao = new CreditoIMPL();
     devolucionDao = new DevolucionIMPL();
     historialDao = new HistorialIMPL();
-    campanaDao = new CampanaIMPL();
     conceptoDevolucionDao = new ConceptoDevolucionIMPL();
     listaCreditos = new ArrayList();
-    filtrados = new ArrayList();
-    listaCampanas = new ArrayList();
     creditoSeleccionado = new Credito();
     conceptoSeleccionado = new ConceptoDevolucion();
     listaConceptos = new ArrayList();
@@ -93,36 +82,17 @@ public class CuentasBean {
   // METODO QUE OBTIENE LA LISTA DE CREDITOS Y DE CONCEPTOS DE DEVOLUCION
   public final void obtenerListas() {
     listaCreditos = creditoDao.tablaCreditosEnGestionPorDespacho(idDespacho);
-    filtrados = listaCreditos;
     listaConceptos = conceptoDevolucionDao.obtenerConceptos();
-    listaCampanas = campanaDao.buscarTodas();
     conceptoSeleccionado = new ConceptoDevolucion();
     motivoSeleccionado = new MotivoDevolucion();
     observaciones = "";
-  }
-
-  // METODO QUE OBTIENE LA LISTA DE LOS CREDITOS DE ACUERDO A SU CAMPAÑA
-  public void obtenerListaCreditos() {
-    listaCreditos.clear();
-    listaCreditos = creditoDao.buscarCreditosPorCampana(campanaSeleccionada.getIdCampana());
-    RequestContext.getCurrentInstance().update("formCuentas");
-  }
-
-  // METODO QUE OBTIENE TOLA LA LISTA DE CREDITOS SI ES QUE SE REGRESA EL SWITCH A "NO"
-  public void verificaSwitch() {
-    if (!habilitaCampana) {
-      listaCreditos.clear();
-      obtenerListas();
-      RequestContext.getCurrentInstance().update("formCuentas");
-    } else {
-      obtenerListaCreditos();
-    }
   }
 
   // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO
   public void selectorDeVista() throws IOException {
     FacesContext contexto = FacesContext.getCurrentInstance();
     if (creditoSeleccionado != null) {
+      creditoActualBean.setCreditoActual(creditoSeleccionado);
       FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
@@ -184,14 +154,6 @@ public class CuentasBean {
     this.listaCreditos = listaCreditos;
   }
 
-  public List<Credito> getFiltrados() {
-    return filtrados;
-  }
-
-  public void setFiltrados(List<Credito> filtrados) {
-    this.filtrados = filtrados;
-  }
-
   public Credito getCreditoSeleccionado() {
     return creditoSeleccionado;
   }
@@ -222,30 +184,6 @@ public class CuentasBean {
 
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
-  }
-
-  public List<Campana> getListaCampanas() {
-    return listaCampanas;
-  }
-
-  public void setListaCampanas(List<Campana> listaCampanas) {
-    this.listaCampanas = listaCampanas;
-  }
-
-  public Campana getCampanaSeleccionada() {
-    return campanaSeleccionada;
-  }
-
-  public void setCampanaSeleccionada(Campana campanaSeleccionada) {
-    this.campanaSeleccionada = campanaSeleccionada;
-  }
-
-  public boolean isHabilitaCampana() {
-    return habilitaCampana;
-  }
-
-  public void setHabilitaCampana(boolean habilitaCampana) {
-    this.habilitaCampana = habilitaCampana;
   }
 
   public List<MotivoDevolucion> getListaMotivos() {

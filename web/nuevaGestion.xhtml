@@ -47,7 +47,7 @@
           <p:selectOneMenu id="descripcionGestion" value="#{gestionBean.descripcionSeleccionada.idDescripcionGestion}" style="width:800px" required="true"  requiredMessage="Seleccione una descripcion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaDescripciones}" var="descripciones" itemLabel="#{descripciones.textoGestion}" itemValue="#{descripciones.idDescripcionGestion}" />
-            <p:ajax update="tipoSujetoGestion" listener="#{gestionBean.preparaTipoSujeto()}" />
+            <p:ajax update="tipoSujetoGestion, sujetoGestion, estatusInformativoGestion" listener="#{gestionBean.preparaTipoSujeto()}" />
           </p:selectOneMenu>
           <br />
           <br />

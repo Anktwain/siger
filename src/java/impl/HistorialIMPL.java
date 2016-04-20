@@ -9,6 +9,7 @@ import dao.CreditoDAO;
 import dao.HistorialDAO;
 import dto.Historial;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -55,11 +56,10 @@ public class HistorialIMPL implements HistorialDAO {
   @Override
   public List<Historial> buscarHistorialPorIdCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Historial> historial;
+    List<Historial> historial = new ArrayList();
     try {
       historial = sesion.createSQLQuery("SELECT * FROM historial WHERE id_credito = " + idCredito + ";").addEntity(Historial.class).list();
     } catch (HibernateException he) {
-      historial = null;
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
@@ -75,13 +75,16 @@ public class HistorialIMPL implements HistorialDAO {
     Date f = new Date();
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String fecha = df.format(f);
+    String consulta = "SELECT * FROM historial WHERE id_credito = " + idCredito + " AND fecha = '" + fecha + "' AND evento = 'Automatico. Cambio de campaña.';";
     try {
-      historial = sesion.createSQLQuery("SELECT * FROM historial WHERE id_credito = " + idCredito + " AND fecha = '" + fecha + "' AND evento = 'AUTOMATICO. CAMBIO DE CONVENIO.';").addEntity(Historial.class).list();
+      historial = sesion.createSQLQuery(consulta).addEntity(Historial.class).list();
       if (historial.size() > 0) {
         ok = true;
       }
     } catch (HibernateException he) {
-      historial = null;
+      ok = false;
+      Logs.log.error(consulta);
+      Logs.log.error(he);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

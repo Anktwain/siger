@@ -26,9 +26,9 @@ import javax.faces.view.ViewScoped;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import util.GeneradorPdf;
+import util.GestionAutomatica;
 import util.ManejadorArchivosDeTexto;
 import util.constantes.Directorios;
-import util.constantes.Perfiles;
 
 /**
  *
@@ -41,13 +41,12 @@ public class VisitasBean {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
 
   // VARIABLES DE CLASE
   private final CreditoDAO creditoDao;
   private final DireccionDAO direccionDao;
   private Credito creditoActual;
-  private CuentasBean cuentasBean;
-  private CuentasGestorBean cuentasGestorBean;
   private boolean periodoSepomexActivo;
   private boolean periodoVisitasActivo;
   private boolean periodoEmailActivo;
@@ -59,26 +58,14 @@ public class VisitasBean {
   public VisitasBean() {
     direccionDao = new DireccionIMPL();
     creditoDao = new CreditoIMPL();
-    creditoActual = new Credito();
+    creditoActual = creditoActualBean.getCreditoActual();
     periodoSepomexActivo = false;
     periodoVisitasActivo = false;
     periodoEmailActivo = false;
     descargarPdf = false;
-    verificaUsuario();
     verificarPeriodoSepomex();
     verificarPeriodoVisitas();
     verificarPeriodoEmail();
-  }
-
-  // METODO QUE VERIFICA SI ESTA GESTIONANDO UN ADMINISTRADOR O UN GESTOR
-  public final void verificaUsuario() {
-    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      cuentasGestorBean = (CuentasGestorBean) elContext.getELResolver().getValue(elContext, null, "cuentasGestorBean");
-      creditoActual = cuentasGestorBean.getCreditoActual();
-    } else {
-      cuentasBean = (CuentasBean) elContext.getELResolver().getValue(elContext, null, "cuentasBean");
-      creditoActual = cuentasBean.getCreditoSeleccionado();
-    }
   }
 
   // METODO QUE VERIFICA SI EL PERIODODE IMPRESIONES PARA CORREO ESTA ACTIVO
@@ -147,6 +134,7 @@ public class VisitasBean {
         archivo = new DefaultStreamedContent(stream, "application/pdf", nombrarPdf());
         rutaPdf = "http://localhost:8080/pdfs/" + archivo.getName();
         descargarPdf = true;
+        GestionAutomatica.generarGestionAutomatica("32RUVD", creditoActual, indexBean.getUsuario(), "CREDITO " + creditoActual.getNumeroCredito());
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero un archivo PDF con la visita."));
       } catch (Exception e) {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));

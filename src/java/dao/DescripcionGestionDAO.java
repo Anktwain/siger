@@ -13,6 +13,10 @@ import java.util.List;
  * @author Eduardo
  */
 public interface DescripcionGestionDAO {
+  
   public List<DescripcionGestion> buscarPorAsuntoTipo(int idTipoGestion, int idAsunto);
+  
   public DescripcionGestion buscarPorId(int idDescripcionGestion);
+  
+  public DescripcionGestion buscarPorAbreviatura(String abreviatura);
 }

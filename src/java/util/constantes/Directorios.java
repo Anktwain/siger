@@ -22,6 +22,7 @@ public interface Directorios {
   public static final String RUTA_WINDOWS_CARGA_COMPROBANTES = "C:\\apache-tomee-plume-1.7.2\\webapps\\comprobantes\\";
   public static final String RUTA_WINDOWS_CARGA_VISITAS = "C:\\apache-tomee-plume-1.7.2\\webapps\\pdfs\\";
   public static final String RUTA_WINDOWS_PERIODO_IMPRESIONES = "C:\\Periodo_Impresiones\\";
+  public static final String RUTA_CORREOS = "CorreosInbursa/";
   
   // RUTAS LOCALHOST
   public static final String RUTA_SERVIDOR_WEB_COMPROBANTES = "http://localhost:8080/comprobantes/";

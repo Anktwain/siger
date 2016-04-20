@@ -28,7 +28,7 @@ public class ObtenerOracionCompletaGestionBean implements Serializable {
       if (gestion.getTipoQuienGestion().getDescripcion().equals("NO APLICA")) {
         return gestion.getTipoGestion().getNombre() + ". " + gestion.getDondeGestion().getNombre() + ", " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ": " + gestion.getDescripcionGestion().getTextoGestion() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
       } else {
-        return gestion.getTipoGestion().getNombre() + ". " + gestion.getDondeGestion().getNombre() + ", " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ": " + gestion.getDescripcionGestion().getTextoGestion() + " " + gestion.getTipoQuienGestion().getDescripcion() + ": " + gestion.getQuienGestion().getQuien() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
+        return gestion.getTipoGestion().getNombre() + ". " + gestion.getDondeGestion().getNombre() + ", " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ": " + gestion.getDescripcionGestion().getTextoGestion() + " " +  gestion.getQuienGestion().getQuien() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
       }
     }
     return "";

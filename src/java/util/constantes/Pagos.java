@@ -17,4 +17,6 @@ public interface Pagos {
           
   public static final int PENDIENTE = 0;
   
+  public static final int REVISION_BANCO = 3;
+  
 }

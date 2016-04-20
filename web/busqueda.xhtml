@@ -10,12 +10,10 @@
     <title>SigerWeb - Busqueda</title>
   </h:head>
   <f:metadata>
-      <f:event listener="#{indexBean.verificarAcceso('busqueda')}" type="preRenderView" />
+    <f:event listener="#{indexBean.verificarAcceso('busqueda')}" type="preRenderView" />
   </f:metadata>
   <body>
     <p:growl id="growl" showDetail="true" sticky="true" />
-    <!-- Overlay Div -->
-    <div id="overlay" class="transparent" style="display: none"></div>
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
@@ -148,6 +146,43 @@
                 </p:column>
                 <p:column headerText="Meses vencidos" style="width:100px;">
                   <h:outputText value="#{busquedaBean.obtenerMesesVencidos(c.idCredito)}" />
+                </p:column>
+              </p:dataTable>
+            </p:tab>
+            <p:tab title="Busqueda por institucion/producto/subproducto">
+              Seleccione la institucion de la que quiere obtener los creditos:
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu value="#{busquedaBean.institucionSeleccionada.idInstitucion}">
+                <f:selectItems value="#{busquedaBean.listaInstituciones}" var="i" itemLabel="#{i.sujeto.nombreRazonSocial}" itemValue="#{i.idInstitucion}" />
+                <p:ajax update="productoBusqueda" listener="#{busquedaBean.preparaProductos()}" />
+              </p:selectOneMenu>
+              <br />
+              <br />
+              Seleccione el producto:
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu id="productoBusqueda" value="#{busquedaBean.productoSeleccionado.idProducto}">
+                <f:selectItems value="#{busquedaBean.listaProductos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idProducto}" />
+              </p:selectOneMenu>
+              <br />
+              <br />
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorProductos()}" update="busquedaPorProducto" />
+              <br />
+              <br />
+              <p:dataTable id="busquedaPorProducto" var="c" value="#{busquedaBean.listaCreditos2}" emptyMessage="No existen creditos de este producto." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:column headerText="Credito" style="width:100px;">
+                  <h:outputText value="#{c.numeroCredito}" />
+                </p:column>
+                <p:column headerText="Deudor" style="width:400px;">
+                  <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}" />
+                </p:column>
+                <p:column headerText="Institucion" style="width:100px;">
+                  <h:outputText value="#{c.producto.institucion.nombreCorto}" />
+                </p:column>
+                <p:column headerText="Producto" style="width:200px;">
+                  <h:outputText value="#{c.producto.nombre}" />
+                </p:column>
+                <p:column headerText="Gestor" style="width:100px;">
+                  <h:outputText value="#{c.gestor.usuario.nombreLogin}" />
                 </p:column>
               </p:dataTable>
             </p:tab>

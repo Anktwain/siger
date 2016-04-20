@@ -1,31 +1,32 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
-      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
-    <h:outputScript library="primefaces" name="jquery.js" />
   </h:head>
   <h:body>
-    <div class="main-header clearfix">
+    <div class="main-container">
       <h:form id="formCuentasGestor">
         <p:contextMenu for="campanasGestor" style="width:200px;">
           <p:menuitem value="Gestionar campaña" icon="ui-icon-check" actionListener="#{cuentasGestorBean.preparaCampana()}" update=":growl" />
         </p:contextMenu>
-        <p:dataTable id="campanasGestor" var="l" value="#{cuentasGestorBean.listaCreditosCampanas}" selectionMode="single" selection="#{cuentasGestorBean.seleccion}" rowKey="#{l.idCampana}" emptyMessage="No existen campañas disponibles." style="width: 600px;">
-          <p:column headerText="Campaña" style="width:400px;">
+        <p:dataTable id="campanasGestor" var="l" value="#{cuentasGestorBean.listaCreditosCampanas}" selectionMode="single" selection="#{cuentasGestorBean.seleccion}" rowKey="#{l.idCampana}" emptyMessage="No existen campañas disponibles." style="width: 850px; padding-left: 50px;">
+          <p:column headerText="Campaña" style="width:380px;">
             <h:outputText value="#{l.nombreCampana}" />
           </p:column>
-          <p:column headerText="Cuentas" style="width:70px;">
-            <h:outputText value="#{l.cuentasEnCampana}"/>
+          <p:column headerText="Estatus" style="width:100px;">
+            <h:outputText value="#{cuentasGestorBean.verificarCampanaEnCurso(l)}" />
           </p:column>
-          <p:column headerText="Gestion hoy" style="width:100px;">
-            <h:outputText value="#{l.progresoCampana}"/>
+          <p:column headerText="Progreso" style="width:100px;">
+            <h:outputText value="#{l.progresoCampana} / #{l.cuentasEnCampana}" style="float: right;" />
           </p:column>
-          <f:facet name="footer">
-            <p:button value="Actualizar" icon="ui-icon-refresh" outcome="panelGestor.xhtml" />
-          </f:facet>
+          <p:column headerText="Cuentas" style="width:100px;">
+            <h:outputText value="#{l.cuentasEnCampana}" />
+          </p:column>
+          <p:column headerText="Recibidas" style="width:100px;">
+              <h:outputText value="#{l.nuevasEnCampana}" />
+          </p:column>
         </p:dataTable>
       </h:form>
     </div>

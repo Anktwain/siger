@@ -579,10 +579,7 @@ public class FilaBean implements Serializable {
   }
 
   private boolean estaVacio(String campo) {
-    if (campo == null || campo.equals("-") || campo.equals("")) {
-      return true;
-    }
-    return false;
+    return (campo == null || campo.equals("-") || campo.equals("")); 
   }
 
   public void validarDespacho() throws Exception {

@@ -51,6 +51,22 @@ public class DescripcionGestionIMPL implements DescripcionGestionDAO{
     return descripcion;
   }
 
+  @Override
+  public DescripcionGestion buscarPorAbreviatura(String abreviatura) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    DescripcionGestion descripcion;
+    try {
+      descripcion = (DescripcionGestion) sesion.createSQLQuery("SELECT * FROM descripcion_gestion WHERE abreviatura = '" + abreviatura + "';").addEntity(DescripcionGestion.class).uniqueResult();
+    } catch (HibernateException he) {
+      descripcion = null;
+      Logs.log.error("No se pudo hacer la consulta");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return descripcion;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

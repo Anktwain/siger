@@ -28,7 +28,7 @@
               Campaña: <h:outputText value="#{cuentasGestorBean.seleccion.nombreCampana}" />
             </li>
             <li>
-              <a href="vistaCampanaActual.xhtml">Detalle credito <p:outputLabel value="#{cuentasGestorBean.creditoActual.numeroCredito}" /></a>
+              <a href="vistaCampanaActual.xhtml">Detalle credito <p:outputLabel value="#{creditoActualBean.creditoActual.numeroCredito}" /></a>
             </li>
             <li class="active">
               Convenios de pago
@@ -64,14 +64,11 @@
                     <p:contextMenu for="promesasEnCurso" style="width:200px;">
                       <p:menuitem value="Agregar pago" icon="ui-icon-folder-collapsed" oncomplete="PF('agregarPagoDialog').show();" />
                     </p:contextMenu>
-                    <p:dataTable id="promesasEnCurso" var="p" value="#{conveniosBean.listaPromesas}" rowKey="#{p.idPromesaPago}" selection="#{conveniosBean.promesaSeleccionada}" emptyMessage="No existen promesas de pago." selectionMode="single" paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width:330px;">
-                      <p:column headerText="Numero" style="width:70px;">
-                        <h:outputText value="#{p.idPromesaPago}"/>
-                      </p:column>
+                    <p:dataTable id="promesasEnCurso" var="p" value="#{conveniosBean.listaPromesas}" rowKey="#{p.idPromesaPago}" selection="#{conveniosBean.promesaSeleccionada}" emptyMessage="No existen promesas de pago." selectionMode="single" paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width:270px;">
                       <p:column headerText="Fecha de pago" style="width:100px;">
                         <h:outputText value="#{p.fechaPrometida}"/>
                       </p:column>
-                      <p:column headerText="Saldo negociado" style="width:140px;"> 
+                      <p:column headerText="Saldo negociado" style="width:150px;"> 
                           <h:outputText value="#{p.cantidadPrometida}"/>
                       </p:column>
                     </p:dataTable>
@@ -126,6 +123,8 @@
                 </p:accordionPanel>
               </div>
               <div class="pull-right">
+                  <!-- TO DO: -->
+                  <!-- reparar la consulta, puesto que trae todos los pagos no solo los de este crtedito -->
                 <h3>Historial de pagos</h3>
                 <br />
                 <p:accordionPanel activeIndex="-1" style="width:660px;">

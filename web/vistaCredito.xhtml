@@ -7,7 +7,6 @@
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
-    <title>SigerWeb - Detalle de credito</title>
   </h:head>
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
@@ -17,14 +16,14 @@
           <div class="pull-left">
             <div class="pull-left m-left-sm">
               <h3 class="m-bottom-xs m-top-xs">
-                <p:outputLabel value="#{vistaCreditoBean.nombreDeudor}" style="font-size: 28px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                <p:outputLabel value="#{vistaCreditoBean.creditoActual.deudor.sujeto.nombreRazonSocial}" style="font-size: 28px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               </h3>
             </div>
           </div>
           <div class="pull-right">
             <h5>
               <strong>
-                Numero de credito: <p:outputLabel value="#{vistaCreditoBean.numeroCredito}" style="font-size: 24px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                Numero de credito: <p:outputLabel value="#{vistaCreditoBean.creditoActual.numeroCredito}" style="font-size: 24px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               </strong>
             </h5>
           </div>
@@ -57,14 +56,14 @@
             <h:form id="barraDetalleCreditoForm">
               <p:button value="Editar datos del deudor" outcome="deudores" />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:button value="Convenios de pago" outcome="vistaConvenio" rendered="#{!indexBean.adminVisible}" />
+              <p:button value="Convenios de pago" outcome="vistaConvenio" />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:button value="Impresion de visitas" outcome="vistaVisitas"  />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:commandButton value="Devolucion" oncomplete="PF('dialogoDevolucionVistaCredito').show();" />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px" rendered="#{indexBean.adminVisible}">
-                <f:selectItem itemValue="#{vistaCreditoBean.gestorActual.idGestor}" itemLabel="#{vistaCreditoBean.gestorActual.usuario.nombreLogin}" />
+                <f:selectItem itemValue="#{vistaCreditoBean.creditoActual.gestor.idGestor}" itemLabel="#{vistaCreditoBean.creditoActual.gestor.usuario.nombreLogin}" />
                 <f:selectItems value="#{vistaCreditoBean.listaGestores}" var="g" itemLabel="#{g.usuario.nombreLogin}" itemValue="#{g.idGestor}" />
                 <p:ajax listener="#{vistaCreditoBean.confirmar()}" />
               </p:selectOneMenu>
@@ -89,7 +88,7 @@
             <br />
             <strong>Mensualidad:</strong>
             &nbsp;
-            <h:outputText value="#{vistaCreditoBean.mensualidad}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
+            <h:outputText value="#{vistaCreditoBean.creditoActual.mensualidad}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
               <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
             </h:outputText>
             <br />
@@ -111,7 +110,7 @@
           <ui:include src="nuevaGestion.xhtml" />
           <hr />
           <h:form id="DetalleCredito">
-            <p:accordionPanel multiple="true" activeIndex="-  1">
+            <p:accordionPanel multiple="true" activeIndex="0">
               <p:tab title="Gestiones anteriores">
                 <p:dataTable id="tablaGestionesAnteriores" var="g" value="#{vistaCreditoBean.listaGestiones}" emptyMessage="No existen gestiones anteriores." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                   <p:column headerText="Fecha" style="width: 200px;">
@@ -198,7 +197,30 @@
                 </p:dataTable>
               </p:tab>
               <p:tab title="Actualizaciones de este adeudo">
-                <!-- FAC POR, FAC MES, ETC... -->
+                <p:dataTable id="tablaActualizacionCredito" var="fac" value="#{vistaCreditoBean.actualizaciones}" emptyMessage="El credito no cuenta con actualizaciones." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width: 900px;" >
+                  <p:column headerText="Mes" style="width:100px;"> 
+                    <h:outputText value="#{vistaCreditoBean.etiquetarMes(fac.mes)}"/>
+                  </p:column>
+                  <p:column headerText="Año" style="width:50px;"> 
+                    <h:outputText value="#{fac.anio}"/>
+                  </p:column>
+                  <p:column headerText="Pagos(Fac por)" style="width:150px;">
+                    <h:outputText value="#{fac.facPor}" style="float:right">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </p:column>
+                  <p:column headerText="Estatus(Fac mes)" style="width:250px;"> 
+                    <h:outputText value="#{fac.facMes}"/>
+                  </p:column>
+                  <p:column headerText="Meses vencidos" style="width:150px;"> 
+                    <h:outputText value="#{fac.actualizacion.mesesVencidos}" style="float:right" />
+                  </p:column>
+                  <p:column headerText="Saldo vencido" style="width:150px;"> 
+                    <h:outputText value="#{fac.actualizacion.saldoVencido}" style="float:right">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </p:column>
+                </p:dataTable>
               </p:tab>
               <p:tab title="Historial de este credito">
                 <p:dataTable id="tablaHistorialCredito" var="h" value="#{vistaCreditoBean.historial}" emptyMessage="El credito no cuenta con historial." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
@@ -212,56 +234,56 @@
               </p:tab>
             </p:accordionPanel>
           </h:form>
-          <!-- DIALOGO CONFIRMAR REASIGNACION -->
-          <p:dialog id="dlgConfirmacion" widgetVar="confirmacionDialog2" modal="true" header="Confirme esta reasignacion">
-            <h:form>
-              <h:outputText value="Esta seguro de que desea reasignar este credito?" />
-              <br />
-              <br />
-              <h:outputText value="Esta accion hara que se finalicen todos los convenios de pago en curso." />
-              <br />
-              <br />
-              <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{vistaCreditoBean.reasignarGestor()}" update="growl" />
-              <p:commandButton value="No" icon="ui-icon-close" actionListener="#{vistaCreditoBean.cerrar()}" />
-            </h:form>
-          </p:dialog>
-          <!-- DIALOGO DEVOLUCION CREDITO -->
-          <p:dialog id="dlgDevolucionVistaCredito" widgetVar="dialogoDevolucionVistaCredito" modal="true" resizable="false" header="Confirme la solicitud de devolucion">
-            <h:form>
-              Esta seguro de que desea devolver este credito?
-              <br />
-              <br />
-              Esta accion hara que el credito ya no se pueda gestionar.
-              <br />
-              <br />
-              Seleccione el concepto de devolucion:
-              <br />
-              <p:selectOneMenu id="conceptoVistaCredito" value="#{vistaCreditoBean.conceptoSeleccionado.idConceptoDevolucion}" style="width:200px">
-                <f:selectItem itemLabel="" itemValue="0" />
-                <f:selectItems value="#{vistaCreditoBean.listaConceptos}" var="c" itemLabel="#{c.concepto}" itemValue="#{c.idConceptoDevolucion}" />
-                <p:ajax update="motivoVistaCredito" listener="#{vistaCreditoBean.preparaMotivos()}" />
-              </p:selectOneMenu>
-              <br />
-              <br />
-              Seleccione el motivo de la devolucion:
-              <br />
-              <p:selectOneMenu id="motivoVistaCredito" value="#{vistaCreditoBean.motivoSeleccionado.idMotivoDevolucion}" style="width:200px">
-                <f:selectItem itemLabel="" itemValue="0" />
-                <f:selectItems value="#{vistaCreditoBean.listaMotivos}" var="m" itemLabel="#{m.motivo}" itemValue="#{m.idMotivoDevolucion}" />
-              </p:selectOneMenu>
-              <br />
-              <br />
-              Observaciones:
-              <br />
-              <p:inputText value="#{vistaCreditoBean.observaciones}" style="width:300px" />
-              <br />
-              <br />
-              <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.devolverCredito()}" update=":growl" />
-              <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoDevolucionVistaCredito').hide();" />
-            </h:form>
-          </p:dialog>
         </div>
       </div>
     </div>
   </h:body>
+  <!-- DIALOGO CONFIRMAR REASIGNACION -->
+  <p:dialog id="dlgConfirmacion" widgetVar="confirmacionDialog2" modal="true" header="Confirme esta reasignacion">
+    <h:form>
+      <h:outputText value="Esta seguro de que desea reasignar este credito?" />
+      <br />
+      <br />
+      <h:outputText value="Esta accion hara que se finalicen todos los convenios de pago en curso." />
+      <br />
+      <br />
+      <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{vistaCreditoBean.reasignarGestor()}" update="growl" />
+      <p:commandButton value="No" icon="ui-icon-close" actionListener="#{vistaCreditoBean.cerrar()}" />
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO DEVOLUCION CREDITO -->
+  <p:dialog id="dlgDevolucionVistaCredito" widgetVar="dialogoDevolucionVistaCredito" modal="true" resizable="false" header="Confirme la solicitud de devolucion">
+    <h:form>
+      Esta seguro de que desea devolver este credito?
+      <br />
+      <br />
+      Esta accion hara que el credito ya no se pueda gestionar.
+      <br />
+      <br />
+      Seleccione el concepto de devolucion:
+      <br />
+      <p:selectOneMenu id="conceptoVistaCredito" value="#{vistaCreditoBean.conceptoSeleccionado.idConceptoDevolucion}" style="width:200px">
+        <f:selectItem itemLabel="" itemValue="0" />
+        <f:selectItems value="#{vistaCreditoBean.listaConceptos}" var="c" itemLabel="#{c.concepto}" itemValue="#{c.idConceptoDevolucion}" />
+        <p:ajax update="motivoVistaCredito" listener="#{vistaCreditoBean.preparaMotivos()}" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Seleccione el motivo de la devolucion:
+      <br />
+      <p:selectOneMenu id="motivoVistaCredito" value="#{vistaCreditoBean.motivoSeleccionado.idMotivoDevolucion}" style="width:200px">
+        <f:selectItem itemLabel="" itemValue="0" />
+        <f:selectItems value="#{vistaCreditoBean.listaMotivos}" var="m" itemLabel="#{m.motivo}" itemValue="#{m.idMotivoDevolucion}" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Observaciones:
+      <br />
+      <p:inputText value="#{vistaCreditoBean.observaciones}" style="width:300px" />
+      <br />
+      <br />
+      <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.devolverCredito()}" update=":growl" />
+      <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoDevolucionVistaCredito').hide();" />
+    </h:form>
+  </p:dialog>
 </html>

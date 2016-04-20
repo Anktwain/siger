@@ -11,6 +11,7 @@ import dao.PagoDAO;
 import impl.CreditoIMPL;
 import impl.GestionIMPL;
 import impl.PagoIMPL;
+import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -23,7 +24,7 @@ import javax.faces.context.FacesContext;
 @ManagedBean(name = "progresoGestorBean")
 @SessionScoped
 
-public class ProgresoGestorBean {
+public class ProgresoGestorBean implements Serializable{
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -59,5 +60,13 @@ public class ProgresoGestorBean {
     return "0";
     //return pagoDao.calcularRecuperacionGestor(indexBean.getUsuario().getIdUsuario()).toString();
   }
-
+  
+  public String gestionesHoy(){
+    return "";
+  }
+  
+  public String saldoAprobadoHoy(){
+    return "";
+  }
+  
 }

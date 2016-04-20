@@ -8,6 +8,8 @@ package beans;
 import dao.CampanaDAO;
 import dao.CreditoDAO;
 import dao.GestionDAO;
+import dao.HistorialDAO;
+import dao.MarcajeDAO;
 import dao.PagoDAO;
 import dao.PromesaPagoDAO;
 import dto.Campana;
@@ -18,12 +20,15 @@ import dto.PromesaPago;
 import impl.CampanaIMPL;
 import impl.CreditoIMPL;
 import impl.GestionIMPL;
+import impl.HistorialIMPL;
+import impl.MarcajeIMPL;
 import impl.PagoIMPL;
 import impl.PromesaPagoIMPL;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -43,24 +48,24 @@ public class CuentasGestorBean implements Serializable {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
 
   // VARIABLES DE CLASE
-  private final int idUsuario;
   private List<CreditoCampana> listaCreditosCampanas;
   List<Credito> creditosCampana;
   private CreditoCampana seleccion;
-  private Credito creditoActual;
   private final CreditoDAO creditoDao;
   private final CampanaDAO campanaDao;
   private final GestionDAO gestionDao;
   private final PagoDAO pagoDao;
   private final PromesaPagoDAO promesaPagoDao;
+  private final MarcajeDAO marcajeDao;
+  private final HistorialDAO historialDao;
   private int posicion;
 
   //CONSTRUCTOR
   public CuentasGestorBean() {
     posicion = 0;
-    idUsuario = indexBean.getUsuario().getIdUsuario();
     seleccion = new CreditoCampana();
     listaCreditosCampanas = new ArrayList();
     creditosCampana = new ArrayList();
@@ -69,7 +74,14 @@ public class CuentasGestorBean implements Serializable {
     gestionDao = new GestionIMPL();
     pagoDao = new PagoIMPL();
     promesaPagoDao = new PromesaPagoIMPL();
-    verificarCampanas();
+    marcajeDao = new MarcajeIMPL();
+    historialDao = new HistorialIMPL();
+  }
+
+  // POST CONSTRUCTOR
+  @PostConstruct
+  public void cargar() {
+    cambiarCampanas();
     obtenerListas();
   }
 
@@ -77,14 +89,26 @@ public class CuentasGestorBean implements Serializable {
   public final void obtenerListas() {
     List<Campana> listaCampanas = campanaDao.buscarTodas();
     for (int i = 0; i < (listaCampanas.size()); i++) {
-      List<Credito> listaCredito = creditoDao.buscarCreditosPorCampanaGestor(listaCampanas.get(i).getIdCampana(), idUsuario);
+      List<Credito> listaCredito = creditoDao.buscarCreditosPorCampanaGestor(listaCampanas.get(i).getIdCampana(), indexBean.getUsuario().getIdUsuario());
       CreditoCampana c = new CreditoCampana();
       c.setIdCampana(listaCampanas.get(i).getIdCampana());
       c.setNombreCampana(listaCampanas.get(i).getNombre());
       c.setCuentasEnCampana(listaCredito.size());
+      c.setNuevasEnCampana(checarCambiosCampana(listaCredito));
       c.setProgresoCampana(checarProgresoCampana(listaCredito));
       listaCreditosCampanas.add(c);
     }
+  }
+
+  //METODO QUE CALCULA LOS CREDITOS QUE CAMBIARON DE CAMPAÑA HOY
+  public int checarCambiosCampana(List<Credito> creditos) {
+    int cambios = 0;
+    for (int i = 0; i < (creditos.size()); i++) {
+      if (historialDao.verificarCampioCampañaCredito(creditos.get(i).getIdCredito())) {
+        cambios = cambios + 1;
+      }
+    }
+    return cambios;
   }
 
   // METODO QUE CALCULA EL PROGRESO DE UNA CAMPAÑA
@@ -98,13 +122,23 @@ public class CuentasGestorBean implements Serializable {
     return progreso;
   }
 
+  // METODO QUE VERIFICA SI LA CAMPAÑA EN LA LISTA ES LA CAMPAÑA QUE SE ESTA GESTIONANDO
+  public String verificarCampanaEnCurso(CreditoCampana campana) {
+    if (campana == seleccion) {
+      return "En curso";
+    } else {
+      return "";
+    }
+  }
+
   // METODO QUE CAMBIA LAS CUENTAS DE CAMPAÑA SEGUN CORRESPONDA
-  public final void verificarCampanas() {
+  public final void cambiarCampanas() {
     // SE OBTIENE TODOS LOS CREDITOS ASIGNADOS A ESTE GESTOR
-    List<Credito> creditosEnGestion = creditoDao.buscarCreditosPorGestor(idUsuario);
+    List<Credito> creditosEnGestion = creditoDao.buscarCreditosPorGestor(indexBean.getUsuario().getIdUsuario());
     for (int i = 0; i < (creditosEnGestion.size()); i++) {
       Credito c = creditosEnGestion.get(i);
       int campana = c.getCampana().getIdCampana();
+      int campanaActual = campana;
       List<Gestion> gestionesCredito = gestionDao.buscarGestionesCredito(c.getIdCredito());
       // CASO 7: EL CREDITO TIENE UNA PROMESA DE PAGO PARA EL DIA DE HOY
       if (promesaPagoDao.buscarPromesasHoy(c.getIdCredito())) {
@@ -149,14 +183,24 @@ public class CuentasGestorBean implements Serializable {
       else if (sinContactoTotal(gestionesCredito)) {
         campana = 5;
       } // CASO 16: EL MARCAJE DE LAS CUENTAS ES LOCALIZACION
-      else if (c.getMarcaje() == Marcajes.LOCALIZACION) {
+      else if (c.getMarcaje() == marcajeDao.buscarMarcajePorId(Marcajes.LOCALIZACION)) {
         campana = 16;
+      } else {
+        campana = campanaActual;
       }
-      Campana camp;
-      camp = campanaDao.buscarPorId(campana);
-      c.setCampana(camp);
-      if (!creditoDao.editar(c)) {
-        Logs.log.error("CREDITO " + c.getNumeroCredito() + " NO CAMBIO DE CAMPAÑA");
+      if (campana != campanaActual) {
+        Campana camp;
+        camp = campanaDao.buscarPorId(campana);
+        c.setCampana(camp);
+        if (creditoDao.editar(c)) {
+          if (historialDao.insertarHistorial(c.getIdCredito(), "Automatico. Cambio de campaña.")) {
+            Logs.log.info("Credito " + c.getNumeroCredito() + " cambio de campaña.");
+          } else {
+            Logs.log.error("El cambio de campaña no fue registrado en el historial");
+          }
+        } else {
+          Logs.log.error("Credito " + c.getNumeroCredito() + " no cambio de campaña");
+        }
       }
     }
   }
@@ -236,12 +280,29 @@ public class CuentasGestorBean implements Serializable {
     return ok;
   }
 
-  // METODO QUE VERIFICA SI ANTERIORMENTE SE CUMPLIO UNA PROMESA DE PAGO
   // METODO QUE OBTIENE LA LISTA DE CREDITOS SEGUN LA CAMPAÑA ELEGIDA
   public void preparaCampana() {
     posicion = 0;
-    creditosCampana = creditoDao.buscarCreditosPorCampanaGestor(seleccion.getIdCampana(), idUsuario);
+    creditosCampana = creditoDao.buscarCreditosPorCampanaGestor(seleccion.getIdCampana(), indexBean.getUsuario().getIdUsuario());
     if (!creditosCampana.isEmpty()) {
+      List<Integer> posiciones = new ArrayList();
+      for (int i = 0; i < (creditosCampana.size()); i++) {
+        if (gestionDao.buscarGestionHoy(creditosCampana.get(i).getIdCredito())) {
+          posiciones.add(i);
+        }
+      }
+      if (posiciones.isEmpty()) {
+        posicion = 0;
+      } else {
+        if (posiciones.size() < creditosCampana.size()) {
+          if (posiciones.get(posiciones.size() - 1) >= creditosCampana.size()) {
+            posicion = 0;
+          } else {
+            posicion = posiciones.get(posiciones.size() - 1) + 1;
+          }
+        }
+      }
+      creditoActualBean.setCreditoActual(creditosCampana.get(posicion));
       try {
         FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCampanaActual.xhtml");
       } catch (IOException e) {
@@ -286,14 +347,6 @@ public class CuentasGestorBean implements Serializable {
     this.posicion = posicion;
   }
 
-  public Credito getCreditoActual() {
-    return creditoActual;
-  }
-
-  public void setCreditoActual(Credito creditoActual) {
-    this.creditoActual = creditoActual;
-  }
-
   // CLASE MIEMBRO PARA PODER LLENAR LA TABLA
   public static class CreditoCampana {
 
@@ -301,6 +354,7 @@ public class CuentasGestorBean implements Serializable {
     private int idCampana;
     private String nombreCampana;
     private int cuentasEnCampana;
+    private int nuevasEnCampana;
     private int progresoCampana;
 
     // CONSTRUCTOR
@@ -338,6 +392,14 @@ public class CuentasGestorBean implements Serializable {
 
     public void setProgresoCampana(int progresoCampana) {
       this.progresoCampana = progresoCampana;
+    }
+
+    public int getNuevasEnCampana() {
+      return nuevasEnCampana;
+    }
+
+    public void setNuevasEnCampana(int nuevasEnCampana) {
+      this.nuevasEnCampana = nuevasEnCampana;
     }
 
   }

@@ -7,6 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.Perfiles;
 import util.log.Logs;
 
 /**
@@ -67,7 +68,6 @@ public class GestorIMPL implements GestorDAO {
   public List<Gestor> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Gestor> gestores;
-
     try { // Buscamos a todos los usuarios que no hayan sido eliminados, un usuario eliminado tiene perfil = 0.
       gestores = sesion.createSQLQuery("SELECT u.*, g.* FROM usuario u JOIN gestor g ON u.id_usuario = g.id_usuario;").addEntity(Gestor.class).list();
     } catch (HibernateException he) {
@@ -84,7 +84,7 @@ public class GestorIMPL implements GestorDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Gestor> gestores;
     try {
-      gestores = sesion.createSQLQuery("SELECT g.* FROM usuario u JOIN gestor g ON u.id_usuario = g.id_usuario AND u.id_despacho = " + idDespacho + ";").addEntity(Gestor.class).list();
+      gestores = sesion.createSQLQuery("SELECT g.* FROM usuario u JOIN gestor g ON u.id_usuario = g.id_usuario AND u.id_despacho = " + idDespacho + " AND u.perfil NOT IN (" + Perfiles.ADMINISTRADOR_NO_CONFIRMADO + ", " + Perfiles.ELIMINADO + ", " + Perfiles.GESTOR_NO_CONFIRMADO + ");").addEntity(Gestor.class).list();
     } catch (HibernateException he) {
       gestores = null;
       Logs.log.error(he.getMessage());
@@ -94,21 +94,6 @@ public class GestorIMPL implements GestorDAO {
     return gestores;
   }
 
-  @Override
-  public Gestor buscarGestorDelCredito(int idCredito) {
-    Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Gestor gestor;
-    try {
-      gestor = (Gestor) sesion.createSQLQuery("SELECT * FROM gestor WHERE id_gestor = (SELECT id_gestor FROM credito WHERE id_credito = " + idCredito + ");").addEntity(Gestor.class).uniqueResult();
-    } catch (HibernateException he) {
-      gestor = null;
-      Logs.log.error(he.getMessage());
-    } finally {
-      cerrar(sesion);
-    }
-    return gestor;
-  }
-  
   @Override
   public List<Gestor> buscarPorDespachoExceptoEste(int idDespacho, int idGestor) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
