@@ -285,21 +285,10 @@ public class CuentasGestorBean implements Serializable {
     posicion = 0;
     creditosCampana = creditoDao.buscarCreditosPorCampanaGestor(seleccion.getIdCampana(), indexBean.getUsuario().getIdUsuario());
     if (!creditosCampana.isEmpty()) {
-      List<Integer> posiciones = new ArrayList();
       for (int i = 0; i < (creditosCampana.size()); i++) {
-        if (gestionDao.buscarGestionHoy(creditosCampana.get(i).getIdCredito())) {
-          posiciones.add(i);
-        }
-      }
-      if (posiciones.isEmpty()) {
-        posicion = 0;
-      } else {
-        if (posiciones.size() < creditosCampana.size()) {
-          if (posiciones.get(posiciones.size() - 1) >= creditosCampana.size()) {
-            posicion = 0;
-          } else {
-            posicion = posiciones.get(posiciones.size() - 1) + 1;
-          }
+        if (!gestionDao.buscarGestionHoy(creditosCampana.get(i).getIdCredito())) {
+          posicion = i;
+          break;
         }
       }
       creditoActualBean.setCreditoActual(creditosCampana.get(posicion));

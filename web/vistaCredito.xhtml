@@ -58,7 +58,7 @@
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:button value="Convenios de pago" outcome="vistaConvenio" />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:button value="Impresion de visitas" outcome="vistaVisitas"  />
+              <p:commandButton value="Impresion de visitas" oncomplete="PF('dialogoImpresionVisitas').show();" />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:commandButton value="Devolucion" oncomplete="PF('dialogoDevolucionVistaCredito').show();" />
               &nbsp;&nbsp;&nbsp;&nbsp;
@@ -284,6 +284,51 @@
       <br />
       <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.devolverCredito()}" update=":growl" />
       <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoDevolucionVistaCredito').hide();" />
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO DEVOLUCION CREDITOIMPRESION DE VISITAS -->
+  <p:dialog id="dlgImpresionVisitas" widgetVar="dialogoImpresionVisitas" modal="true" resizable="false" header="Impresion de visitas">
+    <h:form id="visitasForm">
+      <!-- TO DO: -->
+      <!-- CREAR UN COMBOBOX CON LAS DIRECCIONES PARA QUE SE ELIJA CON CUAL SE VA A IMPRIMIR LA VISITA -->
+      <table>
+        <tr>
+          <td>
+            <h:outputText value="Periodo de impresion de correo ordinario" style="color: #00CC00; font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+          </td>
+          <td style="padding-left: 10px;">
+            <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="#{visitasBean.generarCorreo()}" rendered="#{visitasBean.periodoSepomexActivo}" update=":growl, visitasForm" />
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-bottom: 20px;">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <h:outputText value="Periodo de impresion para visita domiciliaria" style="color: #00CC00; font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+          </td>
+          <td style="padding-left: 10px;">
+            <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="#{visitasBean.generarVisita()}" rendered="#{visitasBean.periodoVisitasActivo}" update=":growl, visitasForm" />
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-bottom: 20px;">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <h:outputText value="Generar carta para correo electronico" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+          </td>
+          <td style="padding-left: 10px;">
+            <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="#{visitasBean.generarNormal()}" update=":growl, visitasForm" />
+          </td>
+        </tr>
+      </table>
+      <br />
+      <div align="center">
+        <p:button value="Descargar" icon="ui-icon-arrowthick-1-s" rendered="#{visitasBean.descargarPdf}" href="#{visitasBean.rutaPdf}" target="_blank" />
+      </div>
     </h:form>
   </p:dialog>
 </html>

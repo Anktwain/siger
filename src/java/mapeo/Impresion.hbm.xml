@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 20/04/2016 12:24:34 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Impresion" optimistic-lock="version" table="impresion">
+    <id name="idImpresion" type="java.lang.Integer">
+      <column name="id_impresion"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Credito" fetch="select" name="credito">
+      <column name="id_credito" not-null="true"/>
+    </many-to-one>
+    <property name="fechaImpresion" type="timestamp">
+      <column length="19" name="fecha_impresion" not-null="true"/>
+    </property>
+    <property name="tipoImpresion" type="int">
+      <column name="tipo_impresion" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="detalleVisitas" table="detalle_visita">
+      <key>
+        <column name="id_impresion" not-null="true"/>
+      </key>
+      <one-to-many class="dto.DetalleVisita"/>
+    </set>
+  </class>
+</hibernate-mapping>

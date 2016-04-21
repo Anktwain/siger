@@ -28,6 +28,7 @@ import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Devoluciones;
@@ -37,7 +38,7 @@ import util.constantes.Devoluciones;
  * @author Eduardo
  */
 @ManagedBean(name = "cuentasBean")
-@SessionScoped
+@ViewScoped
 public class CuentasBean implements Serializable {
 
   // LLAMADA A OTROS BEANS

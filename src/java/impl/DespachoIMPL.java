@@ -24,7 +24,6 @@ public class DespachoIMPL implements DespachoDAO {
   @Override
   public Despacho buscar(String nombreCorto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Despacho despacho;
 
     try {
@@ -57,7 +56,6 @@ public class DespachoIMPL implements DespachoDAO {
   @Override
   public List<Despacho> getAll() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Despacho> listaDeudors;
     String hql = "from Despacho";
 

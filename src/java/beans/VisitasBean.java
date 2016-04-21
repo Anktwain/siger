@@ -7,10 +7,13 @@ package beans;
 
 import dao.CreditoDAO;
 import dao.DireccionDAO;
+import dao.ImpresionDAO;
 import dto.Credito;
 import dto.Direccion;
+import dto.Impresion;
 import impl.CreditoIMPL;
 import impl.DireccionIMPL;
+import impl.ImpresionIMPL;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,9 +29,10 @@ import javax.faces.view.ViewScoped;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import util.GeneradorPdf;
-import util.GestionAutomatica;
 import util.ManejadorArchivosDeTexto;
 import util.constantes.Directorios;
+import util.constantes.Impresiones;
+import util.log.Logs;
 
 /**
  *
@@ -46,28 +50,40 @@ public class VisitasBean {
   // VARIABLES DE CLASE
   private final CreditoDAO creditoDao;
   private final DireccionDAO direccionDao;
-  private Credito creditoActual;
+  private final ImpresionDAO impresionDao;
+  private final Credito creditoActual;
   private boolean periodoSepomexActivo;
   private boolean periodoVisitasActivo;
-  private boolean periodoEmailActivo;
   private boolean descargarPdf;
   private String rutaPdf;
   StreamedContent archivo;
+  private Direccion direccion;
 
   // CONSTRUCTOR
   public VisitasBean() {
     direccionDao = new DireccionIMPL();
     creditoDao = new CreditoIMPL();
+    impresionDao = new ImpresionIMPL();
     creditoActual = creditoActualBean.getCreditoActual();
+    direccion = obtenerDireccion();
     periodoSepomexActivo = false;
     periodoVisitasActivo = false;
-    periodoEmailActivo = false;
     descargarPdf = false;
     verificarPeriodoSepomex();
     verificarPeriodoVisitas();
-    verificarPeriodoEmail();
   }
 
+  // METODO QUE OBTINE LA PRIMER DIRECCION DEL CREDITO
+  public final Direccion obtenerDireccion(){
+    List<Direccion> direcciones = direccionDao.buscarPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
+    if(direcciones.isEmpty()){
+      return new Direccion();
+    }
+    else{
+      return direcciones.get(0);
+    }
+  }
+  
   // METODO QUE VERIFICA SI EL PERIODODE IMPRESIONES PARA CORREO ESTA ACTIVO
   public final void verificarPeriodoSepomex() {
     Date fechaActual = new Date();
@@ -83,6 +99,8 @@ public class VisitasBean {
         }
       }
     } catch (IOException ioe) {
+      Logs.log.error("No se pudo leer el archivo en la ruta " + Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES + "CORREO_ORDINARIO.txt");
+      Logs.log.error(ioe);
     }
   }
 
@@ -101,45 +119,8 @@ public class VisitasBean {
         }
       }
     } catch (IOException ioe) {
-    }
-  }
-
-  // METODO QUE VERIFICA SI EL PERIODODE IMPRESIONES PARA VISITAS ESTA ACTIVO
-  public final void verificarPeriodoEmail() {
-    Date fechaActual = new Date();
-    try {
-      String cadena = ManejadorArchivosDeTexto.leerArchivo(Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES, "CORREO_ELECTRONICO.txt");
-      if (!cadena.isEmpty()) {
-        String[] arreglo = cadena.split(";");
-        Date fechaInicial, fechaFinal;
-        fechaInicial = new Date(Long.parseLong(arreglo[0]));
-        fechaFinal = new Date(Long.parseLong(arreglo[1]));
-        if (fechaActual.after(fechaInicial) && (fechaActual.before(fechaFinal))) {
-          periodoEmailActivo = true;
-        }
-      }
-    } catch (IOException ioe) {
-    }
-  }
-
-  // METODO QUE GENERA EL PDF
-  public void generarPdf() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
-    List<Direccion> direcciones = direccionDao.buscarPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
-    if (direcciones.isEmpty()) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El credito no tiene ninguna direccion asociada."));
-    } else {
-      try {
-        InputStream stream = new FileInputStream(GeneradorPdf.crearPdf(nombrarPdf(), creditoActual, direcciones.get(0), creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito())));
-        archivo = new DefaultStreamedContent(stream, "application/pdf", nombrarPdf());
-        rutaPdf = "http://localhost:8080/pdfs/" + archivo.getName();
-        descargarPdf = true;
-        GestionAutomatica.generarGestionAutomatica("32RUVD", creditoActual, indexBean.getUsuario(), "CREDITO " + creditoActual.getNumeroCredito());
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero un archivo PDF con la visita."));
-      } catch (Exception e) {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
-        e.printStackTrace();
-      }
+      Logs.log.error("No se pudo leer el archivo en la ruta " + Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES + "CORREO_ORDINARIO.txt");
+      Logs.log.error(ioe);
     }
   }
 
@@ -149,53 +130,116 @@ public class VisitasBean {
     return creditoActual.getNumeroCredito() + "_" + df.format(new Date()) + ".pdf";
   }
 
+  // METODO QUE GENERA UN ARCHIVO PDF PARA CORREO ORDINARIO
+  public void generarCorreo() {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    if (direccion.getIdDireccion() == null) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El credito no tiene ninguna direccion asociada."));
+    } else {
+      Impresion imp = new Impresion();
+      imp.setCredito(creditoActual);
+      imp.setFechaImpresion(new Date());
+      imp.setTipoImpresion(Impresiones.CORREO_ORDINARIO);
+      if (impresionDao.insertar(imp)) {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
+      }
+    }
+  }
+
+// METODO QUE GENERA UN ARCHIVO PDF PARA VISITA DOMICILIARIA
+  public void generarVisita() {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    if (direccion.getIdDireccion() == null) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El credito no tiene ninguna direccion asociada."));
+    } else {
+      Impresion imp = new Impresion();
+      imp.setCredito(creditoActual);
+      imp.setFechaImpresion(new Date());
+      imp.setTipoImpresion(Impresiones.VISITA_DOMICILIARIA);
+      if (impresionDao.insertar(imp)) {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
+      }
+    }
+  }
+
+  // METODO QUE GENERA UNA IMPRESION NORMAL
+  public void generarNormal() {
+    FacesContext contexto = FacesContext.getCurrentInstance();
+    if (direccion.getIdDireccion() == null) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El credito no tiene ninguna direccion asociada."));
+    } else {
+      Impresion imp = new Impresion();
+      imp.setCredito(creditoActual);
+      imp.setFechaImpresion(new Date());
+      imp.setTipoImpresion(Impresiones.IMPRESION_NORMAL);
+      if (impresionDao.insertar(imp)) {
+        if (generarPdf()) {
+          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
+        } else {
+          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
+        }
+      }
+    }
+  }
+
+  // METODO QUE GENERA EL PDF
+  public boolean generarPdf() {
+    try {
+      InputStream stream = new FileInputStream(GeneradorPdf.crearPdf(nombrarPdf(), creditoActual, direccion, creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito())));
+      archivo = new DefaultStreamedContent(stream, "application/pdf", nombrarPdf());
+      rutaPdf = "http://localhost:8080/pdfs/" + archivo.getName();
+      descargarPdf = true;
+      return true;
+    } catch (Exception e) {
+      Logs.log.error("No se genero el pdf de la visita");
+      Logs.log.error(e);
+      return false;
+    }
+  }
+
   // GETTERS & SETTERS
   public boolean isPeriodoSepomexActivo() {
     return periodoSepomexActivo;
   }
-
+  
   public void setPeriodoSepomexActivo(boolean periodoSepomexActivo) {
     this.periodoSepomexActivo = periodoSepomexActivo;
   }
-
+  
   public boolean isPeriodoVisitasActivo() {
     return periodoVisitasActivo;
   }
-
+  
   public void setPeriodoVisitasActivo(boolean periodoVisitasActivo) {
     this.periodoVisitasActivo = periodoVisitasActivo;
   }
-
-  public boolean isPeriodoEmailActivo() {
-    return periodoEmailActivo;
-  }
-
-  public void setPeriodoEmailActivo(boolean periodoEmailActivo) {
-    this.periodoEmailActivo = periodoEmailActivo;
-  }
-
+  
   public String getRutaPdf() {
     return rutaPdf;
   }
-
+  
   public void setRutaPdf(String rutaPdf) {
     this.rutaPdf = rutaPdf;
   }
-
+  
   public boolean isDescargarPdf() {
     return descargarPdf;
   }
-
+  
   public void setDescargarPdf(boolean descargarPdf) {
     this.descargarPdf = descargarPdf;
   }
-
+  
   public StreamedContent getArchivo() {
     return archivo;
   }
-
+  
   public void setArchivo(StreamedContent archivo) {
     this.archivo = archivo;
   }
-
+  
 }

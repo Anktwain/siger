@@ -36,6 +36,26 @@
           </ul>
         </div>
       </h:form>
+      <h:form rendered="#{indexBean.adminVisible}">
+        <div id="breadcrumb">
+          <ul class="breadcrumb">
+            <li>
+              <i class="fa fa-home">
+              </i>
+              <a href="#{indexBean.vista}">Inicio</a>
+            </li>
+            <li>
+              <a href="cuentas.xhtml">Cuentas</a>
+            </li>
+            <li>
+              <a href="vistaCreditoAdmin.xhtml">Detalle credito <p:outputLabel value="#{creditoActualBean.creditoActual.numeroCredito}" /></a>
+            </li>
+            <li class="active">
+              Convenios de pago
+            </li>
+          </ul>
+        </div>
+      </h:form>  
       <div class="padding-md">
         <h:form id="formConvenios">
           <div>
