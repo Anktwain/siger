@@ -14,7 +14,7 @@ import impl.PagoIMPL;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
@@ -22,7 +22,7 @@ import javax.faces.context.FacesContext;
  * @author Eduardo
  */
 @ManagedBean(name = "progresoGestorBean")
-@SessionScoped
+@ViewScoped
 
 public class ProgresoGestorBean implements Serializable{
 
@@ -47,17 +47,17 @@ public class ProgresoGestorBean implements Serializable{
   }
 
   public String calcularVisitasPorGestor() {
-    return gestionDao.calcularVisitasDomiciliariasPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
-
+    //return gestionDao.calcularVisitasDomiciliariasPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
+    return "";
   }
 
   public String calcularPagosPorAprobarPorGestor() {
-    return "0";
+    return "";
     //return pagoDao.calcularPagosPorAprobarGestor(indexBean.getUsuario().getIdUsuario()).toString();
   }
 
   public String calcularRecuperacionPorGestor() {
-    return "0";
+    return "";
     //return pagoDao.calcularRecuperacionGestor(indexBean.getUsuario().getIdUsuario()).toString();
   }
   

@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Cercanias</title>
+    <script src="http://maps.googleapis.com/maps/api/js" />
+    <script>
+      var google;
+      function initialize() {
+        var saldoVencido = Math.round(#{cercaniasBean.obtenerSaldoVencido(listaVisitasBean.visitaSeleccionada.credito.idCredito)}*100)/100;
+        var contenido = '#{listaVisitasBean.visitaSeleccionada.credito.deudor.sujeto.nombreRazonSocial}' +
+                '<br />Credito: #{listaVisitasBean.visitaSeleccionada.credito.numeroCredito}' +
+                '<br />Adeudo: $' + saldoVencido;
+            var mapProp = {
+              center: new google.maps.LatLng(#{listaVisitasBean.latitud}, #{listaVisitasBean.longitud}), zoom: 14, mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var mapa = new google.maps.Map(document.getElementById("mapaCercanias"), mapProp);
+            var marcador = new google.maps.Marker({
+              position: {lat: #{listaVisitasBean.latitud}, lng: #{listaVisitasBean.longitud}},
+              map: mapa
+            });
+            var informacion = new google.maps.InfoWindow({
+              content: contenido
+            });
+            marcador.addListener('click', function () {
+              informacion.open(mapa, marcador);
+            });
+          }
+          google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('cercanias')}" type="preRenderView" />
+  </f:metadata>
+  <body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div class="col-sm-6" id="mapaCercanias" style="width:450px;height:380px; margin-left: 50px; margin-right: 70px;" />
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </body>
+</html>

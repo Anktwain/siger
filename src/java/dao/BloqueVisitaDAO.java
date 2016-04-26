@@ -5,7 +5,7 @@
  */
 package dao;
 
-import dto.BloqueVisitas;
+import dto.BloqueVisita;
 import java.util.Date;
 import java.util.List;
 
@@ -15,12 +15,12 @@ import java.util.List;
  */
 public interface BloqueVisitaDAO {
   
-  public boolean insertar(BloqueVisitas bloque);
+  public boolean insertar(BloqueVisita bloque);
   
-  public boolean editar(BloqueVisitas bloque);
+  public boolean editar(BloqueVisita bloque);
   
-  public List<BloqueVisitas> buscarPorGestor(int idGestor);
+  public List<BloqueVisita> buscarPorGestor(int idGestor);
   
-  public List<BloqueVisitas> buscarPorFechaAsignada(Date fechaAsignada);
+  public List<BloqueVisita> buscarPorFechaAsignada(Date fechaAsignada);
   
 }

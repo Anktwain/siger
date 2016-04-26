@@ -7,14 +7,16 @@ package beans;
 
 import dao.CreditoDAO;
 import dao.GestionDAO;
+import dao.ImpresionDAO;
 import dao.PagoDAO;
 import impl.CreditoIMPL;
 import impl.GestionIMPL;
+import impl.ImpresionIMPL;
 import impl.PagoIMPL;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
@@ -22,13 +24,14 @@ import javax.faces.context.FacesContext;
  * @author Eduardo
  */
 @ManagedBean(name = "progresoAdminBean")
-@SessionScoped
+@ViewScoped
 
 public class ProgresoAdminBean implements Serializable {
 
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
   private final PagoDAO pagoDao;
+  private final ImpresionDAO impresionDao;
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -38,6 +41,7 @@ public class ProgresoAdminBean implements Serializable {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     pagoDao = new PagoIMPL();
+    impresionDao = new ImpresionIMPL();
   }
 
   public String calcularCreditos() {
@@ -45,8 +49,7 @@ public class ProgresoAdminBean implements Serializable {
   }
 
   public String calcularVisitas() {
-    return "";
-    //return gestionDao.calcularVisitasDomiciliariasPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
+    return impresionDao.calcularVisitasDomiciliariasPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
 
   public String calcularPagosPorAprobar() {

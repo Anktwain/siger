@@ -1,5 +1,5 @@
 package dto;
-// Generated 20/04/2016 12:24:33 PM by Hibernate Tools 4.3.1
+// Generated 21/04/2016 03:48:27 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -36,8 +36,8 @@ public class Credito  implements java.io.Serializable {
      private Set gestions = new HashSet(0);
      private Set autos = new HashSet(0);
      private Set convenioPagos = new HashSet(0);
-     private Set impresions = new HashSet(0);
      private Set lineas = new HashSet(0);
+     private Set impresions = new HashSet(0);
 
     public Credito() {
     }
@@ -53,7 +53,7 @@ public class Credito  implements java.io.Serializable {
         this.numeroCredito = numeroCredito;
         this.tipoCredito = tipoCredito;
     }
-    public Credito(Campana campana, Despacho despacho, Deudor deudor, Gestor gestor, Marcaje marcaje, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set devolucions, Set historials, Set actualizacions, Set gestions, Set autos, Set convenioPagos, Set impresions, Set lineas) {
+    public Credito(Campana campana, Despacho despacho, Deudor deudor, Gestor gestor, Marcaje marcaje, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set devolucions, Set historials, Set actualizacions, Set gestions, Set autos, Set convenioPagos, Set lineas, Set impresions) {
        this.campana = campana;
        this.despacho = despacho;
        this.deudor = deudor;
@@ -77,8 +77,8 @@ public class Credito  implements java.io.Serializable {
        this.gestions = gestions;
        this.autos = autos;
        this.convenioPagos = convenioPagos;
-       this.impresions = impresions;
        this.lineas = lineas;
+       this.impresions = impresions;
     }
    
     public Integer getIdCredito() {
@@ -249,19 +249,19 @@ public class Credito  implements java.io.Serializable {
     public void setConvenioPagos(Set convenioPagos) {
         this.convenioPagos = convenioPagos;
     }
-    public Set getImpresions() {
-        return this.impresions;
-    }
-    
-    public void setImpresions(Set impresions) {
-        this.impresions = impresions;
-    }
     public Set getLineas() {
         return this.lineas;
     }
     
     public void setLineas(Set lineas) {
         this.lineas = lineas;
+    }
+    public Set getImpresions() {
+        return this.impresions;
+    }
+    
+    public void setImpresions(Set impresions) {
+        this.impresions = impresions;
     }
 
 

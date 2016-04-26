@@ -6,128 +6,248 @@
 package beans;
 
 import dao.ImpresionDAO;
+import dto.EstadoRepublica;
 import dto.Impresion;
+import dto.Municipio;
+import impl.EstadoRepublicaIMPL;
 import impl.ImpresionIMPL;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import util.QuickSort;
 import util.constantes.Impresiones;
+import util.log.Logs;
 
 /**
  *
  * @author Eduardo
  */
 @ManagedBean(name = "listaVisitasBean")
-@ViewScoped
-public class ListaVisitasBean implements Serializable{
-  
+@SessionScoped
+public class ListaVisitasBean implements Serializable {
+
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
-  
+
   // VARIABLES DE CLASE
-  private List<Visitas> listaVisitas;
-  private List<Visitas> listaCorreo;
-  private Visitas visitaSeleccionada;
+  private List<Impresion> listaVisitas;
+  private List<Impresion> listaCorreo;
+  private List<VisitasEstado> listaVisitasEstado;
+  private Impresion visitaSeleccionada;
   private final ImpresionDAO impresionDao;
-  
+  private JSONObject obj;
+  private String latitud;
+  private String longitud;
+
   // CONSTRUCTOR
   public ListaVisitasBean() {
     impresionDao = new ImpresionIMPL();
     obtenerListas();
   }
-  
+
   // METODO QUE CARGA LAS LISTAS INICIALES
-  public final void obtenerListas(){
-    List<Impresion> impresiones = obtenerVisitasOrdenadas();
-    for (int i = 0; i <(impresiones.size()); i++) {
-      Visitas v = new Visitas();
-      v.setIdImpresion(impresiones.get(i).getIdImpresion());
-      v.setNumeroCredito(impresiones.get(i).getCredito().getNumeroCredito());
-      v.setDeudor(impresiones.get(i).getCredito().getDeudor().getSujeto().getNombreRazonSocial());
+  public final void obtenerListas() {
+    listaVisitas = ordenarVisitas(impresionDao.buscarPorTipoImpresion(Impresiones.VISITA_DOMICILIARIA, indexBean.getUsuario().getDespacho().getIdDespacho()));
+    listaCorreo = impresionDao.buscarPorTipoImpresion(Impresiones.CORREO_ORDINARIO, indexBean.getUsuario().getDespacho().getIdDespacho());
+    listaVisitasEstado = obtenerVisitasEstado();
+  }
+
+  // METODO QUE ORDENARA LAS VISITAS
+  public List<Impresion> ordenarVisitas(List<Impresion> listaSinOrdenar) {
+    List<Impresion> cdmx = new ArrayList();
+    List<Impresion> zmvm = new ArrayList();
+    List<Impresion> interior = new ArrayList();
+    for (int i = 0; i < (listaSinOrdenar.size()); i++) {
+      int idMun = listaSinOrdenar.get(i).getDireccion().getMunicipio().getIdMunicipio();
+      if (listaSinOrdenar.get(i).getDireccion().getEstadoRepublica().getIdEstado() == 9) {
+        cdmx.add(listaSinOrdenar.get(i));
+      } else if ((idMun == 669) || (idMun == 676) || (idMun == 680) || (idMun == 777) || (idMun == 681) || (idMun == 685) || (idMun == 687) || (idMun == 689) || (idMun == 693) || (idMun == 695) || (idMun == 713) || (idMun == 714) || (idMun == 716) || (idMun == 726) || (idMun == 737) || (idMun == 760) || (idMun == 765) || (idMun == 778)) {
+        zmvm.add(listaSinOrdenar.get(i));
+      } else {
+        interior.add(listaSinOrdenar.get(i));
+      }
+    }
+    List<Impresion> ordenada = new ArrayList();
+    ordenada.addAll(QuickSort.quickSortCp(cdmx));
+    ordenada.addAll(QuickSort.quickSortCp(zmvm));
+    ordenada.addAll(QuickSort.quickSortCp(interior));
+    return ordenada;
+  }
+
+  // METODO QUE REGRESA EL VALOR DE COLOR PARA ESA FILA
+  public String obtenerEstilo(Municipio m) {
+    if (m.getEstadoRepublica().getIdEstado() == 9) {
+      return "background: #65CEA7;";
+    } else if ((m.getIdMunicipio() == 669) || (m.getIdMunicipio() == 676) || (m.getIdMunicipio() == 680) || (m.getIdMunicipio() == 777) || (m.getIdMunicipio() == 681) || (m.getIdMunicipio() == 685) || (m.getIdMunicipio() == 687) || (m.getIdMunicipio() == 689) || (m.getIdMunicipio() == 693) || (m.getIdMunicipio() == 695) || (m.getIdMunicipio() == 713) || (m.getIdMunicipio() == 714) || (m.getIdMunicipio() == 716) || (m.getIdMunicipio() == 726) || (m.getIdMunicipio() == 737) || (m.getIdMunicipio() == 760) || (m.getIdMunicipio() == 765) || (m.getIdMunicipio() == 778)) {
+      return "background: #F3CE85;";
+    } else {
+      return "background: #6BAFBD;";
     }
   }
-  
-  // METODO QUE CARGA LA LISTA DE VISITAS DOMICILIARIAS Y LAS ORDENA DE LA SIGUIENTE FORMA:
-  // PRIMERO LAS DE LA CIUDAD DE MEXICO ORDENADAS POR NOMBRE DE DELEGACION
-  // DESPUES LAS DE LOS 18 MUNICIPIOS CONURBADOS ORDENADAS POR NOMBRE DEL MUNICIPIO
-  public List<Impresion> obtenerVisitasOrdenadas(){
-    List<Impresion> total = new ArrayList();
-    total.addAll(impresionDao.buscarImpresionesAreaMetropolitana(indexBean.getUsuario().getDespacho().getIdDespacho()));
-    total.addAll(impresionDao.buscarImpresionesInteriorRepublica(indexBean.getUsuario().getDespacho().getIdDespacho()));
-    return total;
+
+  // METODO QUE OBTIENE LA CANTIDAD DE VISITAS POR ESTADO
+  public List<VisitasEstado> obtenerVisitasEstado() {
+    List<VisitasEstado> visitas = new ArrayList();
+    List<EstadoRepublica> estados = new EstadoRepublicaIMPL().buscarTodo();
+    for (int i = 0; i < (estados.size()); i++) {
+      VisitasEstado ve = new VisitasEstado();
+      ve.setEstado(estados.get(i).getNombre());
+      ve.setVisitas(impresionDao.calcularVisitasPorEstado(indexBean.getUsuario().getDespacho().getIdDespacho(), estados.get(i).getIdEstado()).intValue());
+      ve.setCorreo(impresionDao.calcularCorreoPorEstado(indexBean.getUsuario().getDespacho().getIdDespacho(), estados.get(i).getIdEstado()).intValue());
+      visitas.add(ve);
+    }
+    return visitas;
   }
-  
+
+  //METODO QUE PREPARA LA DIRECCION Y ABRE LA VISTA DE VISITAS
+  public void prepararDireccion() {
+    String inicio = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+    String direccion = visitaSeleccionada.getDireccion().getCalle().toLowerCase() + ",";
+    direccion = direccion + visitaSeleccionada.getDireccion().getColonia().getNombre() + ",";
+    direccion = direccion + visitaSeleccionada.getDireccion().getMunicipio().getNombre() + ",";
+    direccion = direccion + visitaSeleccionada.getDireccion().getEstadoRepublica().getNombre() + ",";
+    direccion = direccion + visitaSeleccionada.getDireccion().getColonia().getCodigoPostal();
+    direccion = direccion.replace("á", "a");
+    direccion = direccion.replace("é", "e");
+    direccion = direccion.replace("í", "i");
+    direccion = direccion.replace("ó", "o");
+    direccion = direccion.replace("ú", "u");
+    direccion = direccion.replace("Á", "A");
+    direccion = direccion.replace("É", "E");
+    direccion = direccion.replace("Í", "I");
+    direccion = direccion.replace("Ó", "O");
+    direccion = direccion.replace("Ú", "U");
+    direccion = direccion.replace(" ", "+");
+    String llave = "&key=AIzaSyC7C46yifMZK01ibR2C7EfjM-OGBuKqFKA";
+    String cadena = inicio + direccion + llave;
+    try {
+      URL url = new URL(cadena);
+      String respuesta;
+      try (Scanner scan = new Scanner(url.openStream())) {
+        respuesta = new String();
+        while (scan.hasNext()) {
+          respuesta += scan.nextLine();
+        }
+      }
+      obj = new JSONObject(respuesta);
+      JSONArray resultados = obj.getJSONArray("results");
+      if (resultados.length() == 1) {
+        System.out.println("SE ENCONTRO UNA DIRECCION:");
+        if (resultados.getJSONObject(0).getBoolean("partial_match")) {
+          System.out.println("RESULTADO APROXIMADO");
+        }
+        resultados.getJSONObject(0).getString("formatted_address");
+        System.out.println(URLDecoder.decode(resultados.getJSONObject(0).get("formatted_address").toString(), "UTF-8"));
+        latitud = resultados.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lat").toString();
+        longitud = resultados.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng").toString();
+        try {
+          FacesContext.getCurrentInstance().getExternalContext().redirect("cercanias.xhtml");
+        } catch (IOException ioe) {
+          Logs.log.error("No se pudo redirigir a la cista cercanias.");
+          Logs.log.error(ioe);
+        }
+      } else if (resultados.length() > 1) {
+        System.out.println("SE ENCONTRARON ESTAS DIRECCIONES:");
+        for (int i = 0; i < (resultados.length()); i++) {
+          if (resultados.getJSONObject(i).getBoolean("partial_match")) {
+            System.out.println("RESULTADO APROXIMADO");
+          }
+          System.out.println(URLDecoder.decode(resultados.getJSONObject(i).get("formatted_address").toString(), "UTF-8"));
+        }
+      } else {
+        System.out.println("NO SE ENCONTRO NINGUNA DIRECCION PARA ESTA BUSQUEDA");
+        System.out.println(obj.getJSONObject("status").toString().replace("_", " "));
+      }
+    } catch (MalformedURLException mue) {
+      Logs.log.error("No se pudo formar la url: " + cadena);
+      Logs.log.error(mue);
+    } catch (IOException ioe) {
+      Logs.log.error("No existe la url: " + cadena);
+      Logs.log.error(ioe);
+    } catch (JSONException je) {
+      Logs.log.error("No se pudo crear el objeto JSON de la url: " + cadena);
+      Logs.log.error(je);
+    }
+  }
+
   // GETTERS & SETTERS
-  
-  // CLASE MIEMBRO QUE SERVIRA PARA MOSTRAR LOS DATOS DE LA DIRECCION DEL DEUDOR
-  public static class Visitas {
-    
-    // VARIABLES DE CLASE
-    private int idImpresion;
-    private String numeroCredito;
-    private String deudor;
-    private String calleNum;
-    private String colonia;
-    private String municipio;
+  public List<Impresion> getListaVisitas() {
+    return listaVisitas;
+  }
+
+  public void setListaVisitas(List<Impresion> listaVisitas) {
+    this.listaVisitas = listaVisitas;
+  }
+
+  public List<Impresion> getListaCorreo() {
+    return listaCorreo;
+  }
+
+  public void setListaCorreo(List<Impresion> listaCorreo) {
+    this.listaCorreo = listaCorreo;
+  }
+
+  public Impresion getVisitaSeleccionada() {
+    return visitaSeleccionada;
+  }
+
+  public void setVisitaSeleccionada(Impresion visitaSeleccionada) {
+    this.visitaSeleccionada = visitaSeleccionada;
+  }
+
+  public List<VisitasEstado> getListaVisitasEstado() {
+    return listaVisitasEstado;
+  }
+
+  public void setListaVisitasEstado(List<VisitasEstado> listaVisitasEstado) {
+    this.listaVisitasEstado = listaVisitasEstado;
+  }
+
+  public JSONObject getObj() {
+    return obj;
+  }
+
+  public void setObj(JSONObject obj) {
+    this.obj = obj;
+  }
+
+  public String getLatitud() {
+    return latitud;
+  }
+
+  public void setLatitud(String latitud) {
+    this.latitud = latitud;
+  }
+
+  public String getLongitud() {
+    return longitud;
+  }
+
+  public void setLongitud(String longitud) {
+    this.longitud = longitud;
+  }
+
+  // CLASE MIEMBRO PARA VISUALIZAR LA CANTIDAD DE VISITAS POR ESTADO
+  public static class VisitasEstado {
+
     private String estado;
-    private String cp;
-    
-    // CONSTRUCTOR
-    public Visitas() {
-    }
-    
-    // GETTERS & SETTERS
-    public int getIdImpresion() {
-      return idImpresion;
-    }
+    private int visitas;
+    private int correo;
 
-    public void setIdImpresion(int idImpresion) {
-      this.idImpresion = idImpresion;
-    }
-
-    public String getNumeroCredito() {
-      return numeroCredito;
-    }
-
-    public void setNumeroCredito(String numeroCredito) {
-      this.numeroCredito = numeroCredito;
-    }
-
-    public String getDeudor() {
-      return deudor;
-    }
-
-    public void setDeudor(String deudor) {
-      this.deudor = deudor;
-    }
-
-    public String getCalleNum() {
-      return calleNum;
-    }
-
-    public void setCalleNum(String calleNum) {
-      this.calleNum = calleNum;
-    }
-
-    public String getColonia() {
-      return colonia;
-    }
-
-    public void setColonia(String colonia) {
-      this.colonia = colonia;
-    }
-
-    public String getMunicipio() {
-      return municipio;
-    }
-
-    public void setMunicipio(String municipio) {
-      this.municipio = municipio;
+    public VisitasEstado() {
     }
 
     public String getEstado() {
@@ -138,14 +258,22 @@ public class ListaVisitasBean implements Serializable{
       this.estado = estado;
     }
 
-    public String getCp() {
-      return cp;
+    public int getVisitas() {
+      return visitas;
     }
 
-    public void setCp(String cp) {
-      this.cp = cp;
+    public void setVisitas(int visitas) {
+      this.visitas = visitas;
     }
-    
+
+    public int getCorreo() {
+      return correo;
+    }
+
+    public void setCorreo(int correo) {
+      this.correo = correo;
+    }
+
   }
-  
+
 }

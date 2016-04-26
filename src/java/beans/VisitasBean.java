@@ -17,6 +17,7 @@ import impl.ImpresionIMPL;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,7 +41,7 @@ import util.log.Logs;
  */
 @ManagedBean(name = "visitasBean")
 @ViewScoped
-public class VisitasBean {
+public class VisitasBean implements Serializable{
 
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
@@ -140,6 +141,7 @@ public class VisitasBean {
       imp.setCredito(creditoActual);
       imp.setFechaImpresion(new Date());
       imp.setTipoImpresion(Impresiones.CORREO_ORDINARIO);
+      imp.setDireccion(direccion);
       if (impresionDao.insertar(imp)) {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
       } else {
@@ -158,6 +160,7 @@ public class VisitasBean {
       imp.setCredito(creditoActual);
       imp.setFechaImpresion(new Date());
       imp.setTipoImpresion(Impresiones.VISITA_DOMICILIARIA);
+      imp.setDireccion(direccion);
       if (impresionDao.insertar(imp)) {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
       } else {
@@ -176,6 +179,7 @@ public class VisitasBean {
       imp.setCredito(creditoActual);
       imp.setFechaImpresion(new Date());
       imp.setTipoImpresion(Impresiones.IMPRESION_NORMAL);
+      imp.setDireccion(direccion);
       if (impresionDao.insertar(imp)) {
         if (generarPdf()) {
           contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
@@ -240,6 +244,14 @@ public class VisitasBean {
   
   public void setArchivo(StreamedContent archivo) {
     this.archivo = archivo;
+  }
+
+  public Direccion getDireccion() {
+    return direccion;
+  }
+
+  public void setDireccion(Direccion direccion) {
+    this.direccion = direccion;
   }
   
 }

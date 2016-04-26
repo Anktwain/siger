@@ -3,7 +3,7 @@ package beans;
 import java.io.Serializable;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 /**
@@ -16,7 +16,7 @@ import javax.faces.context.FacesContext;
  * @since SigerWeb2.0
  */
 @ManagedBean(name = "barraSuperiorBean")
-@SessionScoped
+@ViewScoped
 public class BarraSuperiorBean implements Serializable {
 
   // LLAMADA A OTROS BEANS

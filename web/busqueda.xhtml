@@ -53,7 +53,7 @@
               <br />
               <br />
               <p:contextMenu for="busquedaPorZona" style="width:200px;">
-                <p:menuitem value="Ver en Google Maps®" icon="ui-icon-flag" actionListener="#{busquedaBean.obtenerDireccionCredito()}" />
+                <p:menuitem value="Ver en Google Maps ®" icon="ui-icon-flag" actionListener="#{busquedaBean.obtenerDireccionCredito()}" />
               </p:contextMenu>
               <p:dataTable id="busquedaPorZona" var="c" value="#{busquedaBean.listaCreditos}" selection="#{busquedaBean.creditoSeleccionado}" selectionMode="single" rowKey="#{c.numeroCredito}" emptyMessage="No existen creditos en la zona seleccionada." paginator="true" rows="15" paginatorPosition="bottom">
                 <p:column headerText="Credito" style="width:300px;">

@@ -30,38 +30,6 @@ import util.log.Logs;
 public class GestionIMPL implements GestionDAO {
   
   @Override
-  public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho) {
-    Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Number visitas;
-    String consulta = "SELECT COUNT(*) FROM gestion WHERE id_tipo_gestion = 1 AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
-    try {
-      visitas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
-    } catch (HibernateException he) {
-      visitas = -1;
-      Logs.log.error(he.getStackTrace());
-    } finally {
-      cerrar(sesion);
-    }
-    return visitas;
-  }
-  
-  @Override
-  public Number calcularVisitasDomiciliariasPorGestor(int idUsuario) {
-    Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Number visitas;
-    String consulta = "SELECT COUNT(*) FROM gestion WHERE id_tipo_gestion = 1 AND id_usuario = " + idUsuario + " AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
-    try {
-      visitas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
-    } catch (HibernateException he) {
-      visitas = -1;
-      Logs.log.error(he.getStackTrace());
-    } finally {
-      cerrar(sesion);
-    }
-    return visitas;
-  }
-  
-  @Override
   public boolean insertarGestion(Gestion gestion) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();

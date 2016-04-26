@@ -14,10 +14,6 @@ import java.util.List;
  */
 public interface GestionDAO {
 
-  public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho);
-  
-  public Number calcularVisitasDomiciliariasPorGestor(int idusuario);
-  
   public boolean insertarGestion(Gestion gestion);
   
   public List<Gestion> busquedaReporteGestiones (String consulta);

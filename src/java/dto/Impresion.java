@@ -1,5 +1,5 @@
 package dto;
-// Generated 20/04/2016 12:24:33 PM by Hibernate Tools 4.3.1
+// Generated 21/04/2016 03:48:27 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -14,6 +14,7 @@ public class Impresion  implements java.io.Serializable {
 
      private Integer idImpresion;
      private Credito credito;
+     private Direccion direccion;
      private Date fechaImpresion;
      private int tipoImpresion;
      private Set detalleVisitas = new HashSet(0);
@@ -22,13 +23,15 @@ public class Impresion  implements java.io.Serializable {
     }
 
 	
-    public Impresion(Credito credito, Date fechaImpresion, int tipoImpresion) {
+    public Impresion(Credito credito, Direccion direccion, Date fechaImpresion, int tipoImpresion) {
         this.credito = credito;
+        this.direccion = direccion;
         this.fechaImpresion = fechaImpresion;
         this.tipoImpresion = tipoImpresion;
     }
-    public Impresion(Credito credito, Date fechaImpresion, int tipoImpresion, Set detalleVisitas) {
+    public Impresion(Credito credito, Direccion direccion, Date fechaImpresion, int tipoImpresion, Set detalleVisitas) {
        this.credito = credito;
+       this.direccion = direccion;
        this.fechaImpresion = fechaImpresion;
        this.tipoImpresion = tipoImpresion;
        this.detalleVisitas = detalleVisitas;
@@ -47,6 +50,13 @@ public class Impresion  implements java.io.Serializable {
     
     public void setCredito(Credito credito) {
         this.credito = credito;
+    }
+    public Direccion getDireccion() {
+        return this.direccion;
+    }
+    
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
     }
     public Date getFechaImpresion() {
         return this.fechaImpresion;

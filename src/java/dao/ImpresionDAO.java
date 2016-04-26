@@ -27,8 +27,12 @@ public interface ImpresionDAO {
   
   public List<Impresion> buscarPorTipoImpresion(int tipoImpresion, int idDespacho);
   
-  public List<Impresion> buscarImpresionesAreaMetropolitana(int idDespacho);
+  public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho);
   
-  public List<Impresion> buscarImpresionesInteriorRepublica(int idDespacho);
+  public Number calcularVisitasDomiciliariasPorGestor(int idDespacho, int idGestor);
+  
+  public Number calcularVisitasPorEstado(int idDespacho, int idEstado);
+  
+  public Number calcularCorreoPorEstado(int idDespacho, int idEstado);
   
 }

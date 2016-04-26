@@ -1,5 +1,5 @@
 package dto;
-// Generated 20/04/2016 12:24:33 PM by Hibernate Tools 4.3.1
+// Generated 21/04/2016 03:48:27 PM by Hibernate Tools 4.3.1
 
 
 
@@ -10,14 +10,14 @@ public class DetalleVisita  implements java.io.Serializable {
 
 
      private Integer idDetalleVisita;
-     private BloqueVisitas bloqueVisitas;
+     private BloqueVisita bloqueVisita;
      private Impresion impresion;
 
     public DetalleVisita() {
     }
 
-    public DetalleVisita(BloqueVisitas bloqueVisitas, Impresion impresion) {
-       this.bloqueVisitas = bloqueVisitas;
+    public DetalleVisita(BloqueVisita bloqueVisita, Impresion impresion) {
+       this.bloqueVisita = bloqueVisita;
        this.impresion = impresion;
     }
    
@@ -28,12 +28,12 @@ public class DetalleVisita  implements java.io.Serializable {
     public void setIdDetalleVisita(Integer idDetalleVisita) {
         this.idDetalleVisita = idDetalleVisita;
     }
-    public BloqueVisitas getBloqueVisitas() {
-        return this.bloqueVisitas;
+    public BloqueVisita getBloqueVisita() {
+        return this.bloqueVisita;
     }
     
-    public void setBloqueVisitas(BloqueVisitas bloqueVisitas) {
-        this.bloqueVisitas = bloqueVisitas;
+    public void setBloqueVisita(BloqueVisita bloqueVisita) {
+        this.bloqueVisita = bloqueVisita;
     }
     public Impresion getImpresion() {
         return this.impresion;
