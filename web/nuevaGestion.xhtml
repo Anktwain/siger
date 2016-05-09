@@ -37,7 +37,7 @@
           <p:selectOneMenu id="asuntoGestion" value="#{gestionBean.asuntoSeleccionado.idAsuntoGestion}" style="width:250px" required="true" requiredMessage="Seleccione el asunto de la gestion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaAsuntos}" var="asuntos" itemLabel="#{asuntos.tipoAsuntoGestion.asunto}" itemValue="#{asuntos.idAsuntoGestion}" />
-            <p:ajax update="descripcionGestion" listener="#{gestionBean.preparaDescripcion()}" />
+            <p:ajax update="descripcionGestion, tipoSujetoGestion" listener="#{gestionBean.preparaDescripcion()}" />
           </p:selectOneMenu>
           <br />
           <br />
@@ -47,7 +47,7 @@
           <p:selectOneMenu id="descripcionGestion" value="#{gestionBean.descripcionSeleccionada.idDescripcionGestion}" style="width:800px" required="true"  requiredMessage="Seleccione una descripcion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaDescripciones}" var="descripciones" itemLabel="#{descripciones.textoGestion}" itemValue="#{descripciones.idDescripcionGestion}" />
-            <p:ajax update="tipoSujetoGestion, sujetoGestion, estatusInformativoGestion" listener="#{gestionBean.preparaTipoSujeto()}" />
+            <p:ajax update="tipoSujetoGestion, sujetoGestion, estatusInformativoGestion, gestion" listener="#{gestionBean.preparaTipoSujeto()}" />
           </p:selectOneMenu>
           <br />
           <br />
@@ -84,7 +84,7 @@
             Gestion:
           </strong>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:inputTextarea rows="2" cols="100" id="gestion" value="#{gestionBean.gestion}" required="true"  requiredMessage="Ingrese la gestion">
+          <p:inputTextarea id="gestion" rows="2" cols="100" value="#{gestionBean.gestion}" required="true"  requiredMessage="Ingrese la gestion">
             <p:ajax event="keyup" />
           </p:inputTextarea>
           <br />

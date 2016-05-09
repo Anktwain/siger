@@ -9,13 +9,13 @@ import dao.CampanaDAO;
 import dao.CreditoDAO;
 import dao.GestionDAO;
 import dao.HistorialDAO;
-import dao.ProductoDAO;
+import dao.SubproductoDAO;
 import dto.Credito;
 import impl.CampanaIMPL;
 import impl.CreditoIMPL;
 import impl.GestionIMPL;
 import impl.HistorialIMPL;
-import impl.ProductoIMPL;
+import impl.SubproductoIMPL;
 import java.io.Serializable;
 import java.util.List;
 import javax.el.ELContext;
@@ -42,7 +42,7 @@ public class ChecarMarcajesBean implements Serializable {
   private final CampanaDAO campanaDao;
   private final GestionDAO gestionDao;
   private final CreditoDAO creditoDao;
-  private final ProductoDAO productoDao;
+  private final SubproductoDAO subproductoDao;
   private final HistorialDAO historialDao;
 
   //CONSTRUCTOR
@@ -50,7 +50,7 @@ public class ChecarMarcajesBean implements Serializable {
     campanaDao = new CampanaIMPL();
     gestionDao = new GestionIMPL();
     creditoDao = new CreditoIMPL();
-    productoDao = new ProductoIMPL();
+    subproductoDao = new SubproductoIMPL();
     historialDao = new HistorialIMPL();
     creditoActual = creditoActualBean.getCreditoActual();
   }
@@ -106,8 +106,7 @@ public class ChecarMarcajesBean implements Serializable {
 
   // METODO QUE VERIFICA SI UNA CUENTA ES DE SOFOM
   public String verificaSOFOM() {
-    String producto = productoDao.buscarProductoDelCredito(creditoActual.getIdCredito());
-    if (producto.contains("CREDITO EXPRESS CT")) {
+    if (creditoActual.getSubproducto().getNombre().contains("CREDITO EXPRESS CT")) {
       return "SOFOM CT";
     } else {
       return "";

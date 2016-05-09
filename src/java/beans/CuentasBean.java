@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -31,6 +33,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Devoluciones;
+import util.log.Logs;
 
 /**
  *
@@ -89,13 +92,17 @@ public class CuentasBean implements Serializable {
   }
 
   // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO
-  public void selectorDeVista() throws IOException {
-    FacesContext contexto = FacesContext.getCurrentInstance();
+  public void selectorDeVista(){
     if (creditoSeleccionado != null) {
       creditoActualBean.setCreditoActual(creditoSeleccionado);
-      FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
+      try {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
+      } catch (IOException ioe) {
+        Logs.log.error("No se pudo redirigir a la vista de credito del administrador.");
+        Logs.log.error(ioe);
+      }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
     }
   }
 

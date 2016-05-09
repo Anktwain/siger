@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
+<html xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Visitas</title>
@@ -12,7 +12,7 @@
   <f:metadata>
     <f:event listener="#{indexBean.verificarAcceso('visitas')}" type="preRenderView" />
   </f:metadata>
-  <body>
+  <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
     <!-- Overlay Div -->
     <div id="overlay" class="transparent" style="display: none"></div>
@@ -43,7 +43,7 @@
         <div class="padding-md">
           <div class="col-lg-12">
             <h:form id="listaVisitasForm">
-              <p:accordionPanel multiple="false" activeIndex="0">
+              <p:accordionPanel multiple="false" activeIndex="1">
                 <p:tab title="Estadisticas">
                   <div class="col-sm-6" style="padding-left: 50px; padding-right: 40px;">
                     <p:graphicImage library="img" name="mexicoMap.png" width="900" height="450" />
@@ -71,8 +71,7 @@
                 </p:tab>
                 <p:tab title="Visita domiciliaria">
                   <p:contextMenu for="listaVisitas" style="width:250px;">
-                      <p:menuitem value="Ver en Google Maps ®" icon="ui-icon-flag" actionListener="#{listaVisitasBean.prepararDireccion()}" />
-                    <p:menuitem value="Cercanias" icon="ui-icon-zoomout" actionListener="#{listaVisitasBean.prepararDireccion()}" />
+                    <p:menuitem value="Ver en Google Maps ®" icon="ui-icon-flag" actionListener="#{listaVisitasBean.prepararDireccion()}" />
                   </p:contextMenu>
                   <p:dataTable id="listaVisitas" var="v" value="#{listaVisitasBean.listaVisitas}" selection="#{listaVisitasBean.visitaSeleccionada}" selectionMode="single" rowKey="#{v.idImpresion}" emptyMessage="No se han generado visitas." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false">
                     <p:column headerText="Credito" style="width:100px;">
@@ -84,7 +83,7 @@
                     <p:column headerText="Calle y numero" style="width:200px">
                       <h:outputText value="#{v.direccion.calle}" />
                     </p:column>
-                    <p:column headerText="Colonia" style="width:300px;">
+                    <p:column headerText="Asentamiento" style="width:300px;">
                       <h:outputText value="#{v.direccion.colonia.tipo} #{v.direccion.colonia.nombre}" />
                     </p:column>
                     <p:column headerText="Municipio" style="width:150px;">
@@ -109,7 +108,7 @@
                     <p:column headerText="Calle y numero" style="width:200px">
                       <h:outputText value="#{c.direccion.calle}" />
                     </p:column>
-                    <p:column headerText="Colonia" style="width:300px;">
+                    <p:column headerText="Asentamiento" style="width:300px;">
                       <h:outputText value="#{c.direccion.colonia.tipo} #{c.direccion.colonia.nombre}" />
                     </p:column>
                     <p:column headerText="Municipio" style="width:150px;">
@@ -131,5 +130,5 @@
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
-  </body>
+  </h:body>
 </html>

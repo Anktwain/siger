@@ -149,9 +149,6 @@ public class CuentasGestorBean implements Serializable {
       } // CASO 9: EL CREDITO TIENE UNA PROMESA DE PAGO EN UN PLAZO MAYOR A 5 DIAS
       else if (promesaPagoDao.buscarPromesasPorCumplirse(c.getIdCredito())) {
         campana = 9;
-      } // CASO 12: EL CREDITO CUMPLIO SU PROMESA DE PAGO HOY
-      else if (buscarPromesaCumplida(c.getIdCredito())) {
-        campana = 12;
       } // CASO 13: EL CREDITO CUMPLIO SU PROMESA DE PAGO Y TIENE OTRA PARA EL DIA DE HOY
       else if ((promesaPagoDao.buscarPromesasHoy(c.getIdCredito())) && (buscarPromesaCumplida(c.getIdCredito()))) {
         campana = 13;
@@ -161,17 +158,20 @@ public class CuentasGestorBean implements Serializable {
       } // CASO 15: EL CREDITO CUMPLIO SU PROMESA DE PAGO Y TIENE OTRA EN UN PLAZO MAYOR A 5 DIAS
       else if ((promesaPagoDao.buscarPromesasPorCumplirse(c.getIdCredito())) && (buscarPromesaCumplida(c.getIdCredito()))) {
         campana = 15;
+      } // CASO 12: EL CREDITO CUMPLIO SU PROMESA DE PAGO HOY
+      else if (buscarPromesaCumplida(c.getIdCredito())) {
+        campana = 12;
       } // CASO 10: EL CREDITO REPORTA UN PAGO EL DIA DE HOY PERO ES POR UNA CANTIDAD MENOR
       else if (buscarConvenioIncompleto(c.getIdCredito())) {
         campana = 10;
-      } // CASO 11: EL CREDITO TIENE UNA PROMESA DE PAGO HOY PERO NO HA REPORTADO NINGUN PAGO
-      else if ((promesaPagoDao.buscarPromesasHoy(c.getIdCredito())) && (pagoDao.buscarPagoHoy(c.getIdCredito()) == null)) {
+      } // CASO 11: EL CREDITO TIENE UNA PROMESAS DE PAGO PERO NO HA REPORTADO NINGUN PAGO
+      else if (buscarPromesaIncumplida(c.getIdCredito())) {
         campana = 11;
       } // CASO 3: ULTIMA GESTION TIENE CONTACTO (CALIFICACION 2) Y HA REALIZADO PAGOS
       else if ((!gestionesCredito.isEmpty()) && (gestionesCredito.get(gestionesCredito.size() - 1).getDescripcionGestion().getCalificacion() != null) && (gestionesCredito.get(gestionesCredito.size() - 1).getDescripcionGestion().getCalificacion() == 2) && (!pagoDao.buscarPagosPorCredito(c.getIdCredito()).isEmpty())) {
         campana = 3;
-      } // CASO 2: ULTIMA GESTION TIENE CONTACTO (CALIFICACION 2)
-      else if ((!gestionesCredito.isEmpty()) && (gestionesCredito.get(gestionesCredito.size() - 1).getDescripcionGestion().getCalificacion() != null) && (gestionesCredito.get(gestionesCredito.size() - 1).getDescripcionGestion().getCalificacion() == 2)) {
+      } // CASO 2: HA TENIDO CONTACTO (CALIFICACION 2)
+      else if ((!gestionesCredito.isEmpty()) && (buscarHaTenidoContacto(gestionesCredito))) {
         campana = 2;
       } // CASO 6: NO HAY CONTACTO PERO HA REALIZADO PAGOS
       else if ((sinContactoTotal(gestionesCredito)) && (!pagoDao.buscarPagosPorCredito(c.getIdCredito()).isEmpty())) {
@@ -179,7 +179,7 @@ public class CuentasGestorBean implements Serializable {
       } // CASO 4: ULTIMA GESTION NO TIENE CONTACTO (CALIFICACION 3) PERO HA TENIDO GESTIONES CON CONTACTO (CALIFICACION 2)
       else if ((!gestionesCredito.isEmpty()) && (gestionesCredito.get(gestionesCredito.size() - 1).getDescripcionGestion().getCalificacion() != null) && (gestionesCredito.get(gestionesCredito.size() - 1).getDescripcionGestion().getCalificacion() == 3) && (buscarHaTenidoContacto(gestionesCredito))) {
         campana = 4;
-      } // CASO 5: EN NINGUNA GESTION HA TENIDO CONTACTO (CALIFICACION 2) O LAS ULTIMAS 7 GESTIONES NO HA TENIDO CONTACTO
+      } // CASO 5: EN LAS ULTIMAS 7 GESTIONES NO HA TENIDO CONTACTO
       else if (sinContactoTotal(gestionesCredito)) {
         campana = 5;
       } // CASO 16: EL MARCAJE DE LAS CUENTAS ES LOCALIZACION
@@ -211,9 +211,11 @@ public class CuentasGestorBean implements Serializable {
     boolean ok = false;
     if (!gestiones.isEmpty()) {
       for (int i = 0; i < (gestiones.size()); i++) {
-        if ((gestiones.get(i).getDescripcionGestion().getCalificacion() != null) && (gestiones.get(i).getDescripcionGestion().getCalificacion() == 2)) {
-          ok = true;
-          break;
+        if (gestiones.get(i).getDescripcionGestion().getCalificacion() != null) {
+          if (gestiones.get(i).getDescripcionGestion().getCalificacion() == 2) {
+            ok = true;
+            break;
+          }
         }
       }
     }
@@ -222,21 +224,15 @@ public class CuentasGestorBean implements Serializable {
 
   // METODO QUE VERIFICA SI EN LAS ULTIMAS 7 O EN TODAS LAS GESTIONES NO HA EXISTIDO CONTACTO
   public boolean sinContactoTotal(List<Gestion> gestiones) {
-    boolean ok = false;
     if (!gestiones.isEmpty()) {
       if (gestiones.size() >= 7) {
         List<Gestion> lista = gestiones.subList(gestiones.size() - 8, gestiones.size() - 1);
-        if (!buscarHaTenidoContacto(lista)) {
-          ok = true;
-        } else {
-          if (!buscarHaTenidoContacto(gestiones)) {
-            ok = true;
-          }
-        }
+        return !buscarHaTenidoContacto(lista);
+      } else {
+        return false;
       }
-      return ok;
     } else {
-      return ok;
+      return false;
     }
   }
 
@@ -280,6 +276,23 @@ public class CuentasGestorBean implements Serializable {
     return ok;
   }
 
+  // METODO QUE VERIFICA SI UN CREDITO INCUMPLIO SU PROMESA DE PAGO
+  public boolean buscarPromesaIncumplida(int idCredito) {
+    boolean ok = false;
+    if ((promesaPagoDao.buscarPromesasHoy(idCredito)) && (pagoDao.buscarPagoHoy(idCredito) == null)) {
+      ok = true;
+    } else {
+      List<PromesaPago> promesas = promesaPagoDao.buscarPromesasAnterioresCredito(idCredito);
+      for (int i = 0; i < (promesas.size()); i++) {
+        if (pagoDao.buscarPagoFechaCredito(promesas.get(i).getFechaPrometida(), idCredito) == null) {
+          ok = true;
+          break;
+        }
+      }
+    }
+    return ok;
+  }
+
   // METODO QUE OBTIENE LA LISTA DE CREDITOS SEGUN LA CAMPAÑA ELEGIDA
   public void preparaCampana() {
     posicion = 0;
@@ -294,8 +307,9 @@ public class CuentasGestorBean implements Serializable {
       creditoActualBean.setCreditoActual(creditosCampana.get(posicion));
       try {
         FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCampanaActual.xhtml");
-      } catch (IOException e) {
-        e.printStackTrace();
+      } catch (IOException ioe) {
+        Logs.log.error("No se pudo redirigir a la vista de la campaña actual.");
+        Logs.log.error(ioe);
       }
     } else {
       FacesContext contexto = FacesContext.getCurrentInstance();

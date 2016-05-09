@@ -100,7 +100,7 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number saldoConvenio, saldo = 0;
     float cantidadPromesas = 0;
-    List<PromesaPago> promesas = new ArrayList();
+    List<PromesaPago> promesas;
     String consulta = "SELECT saldo_negociado FROM convenio_pago WHERE id_convenio_pago = " + idConvenio + ";";
     String consulta2 = "SELECT * FROM promesa_pago WHERE id_convenio_pago = " + idConvenio + ";";
     try {

@@ -6,6 +6,7 @@
 package dao;
 
 import dto.Actualizacion;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,4 +22,5 @@ public interface ActualizacionDAO {
   public boolean editar(Actualizacion actualizacion);
   
   public float obtenerMontoPrometidoGestor(int idGestor);
+    
 }

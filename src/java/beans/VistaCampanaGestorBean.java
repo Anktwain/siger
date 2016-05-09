@@ -113,9 +113,8 @@ public class VistaCampanaGestorBean implements Serializable {
     RequestContext.getCurrentInstance().update("datosPrimariosVistaCreditoGestorForm");
     RequestContext.getCurrentInstance().update("formTablaMarcajesGestor");
     RequestContext.getCurrentInstance().update("dlgNuevaPromesaForm");
-    FacesContext context = FacesContext.getCurrentInstance();
     try {
-      context.getExternalContext().redirect("vistaCampanaActual.xhtml");
+      FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCampanaActual.xhtml");
     } catch (IOException ioe) {
       Logs.log.error("No se pudo redirigir a la vista de campaña actual");
       Logs.log.error(ioe);

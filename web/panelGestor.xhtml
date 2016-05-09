@@ -24,9 +24,13 @@
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-      <ui:include src="barraEstadisticasGestor.xhtml" />
-      <ui:include src="barraProgresoGestor.xhtml" />
-      <ui:include src="cuentasGestor.xhtml" />
+      <div class="row">
+        <div class="padding-md">
+          <ui:include src="barraEstadisticasGestor.xhtml" />
+          <ui:include src="barraProgresoGestor.xhtml" />
+          <ui:include src="cuentasGestor.xhtml" />
+        </div>
+      </div>
     </div> <!-- main-container -->
     <!-- FOOTER ========================== -->
     <ui:include src="barraInferior.xhtml" />

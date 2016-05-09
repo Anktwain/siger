@@ -16,6 +16,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.Convenios;
 import util.log.Logs;
 
 /**
@@ -54,7 +55,8 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
     try {
       promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
     } catch (HibernateException he) {
-      promesas = null;
+      Logs.log.error(consulta);
+      Logs.log.error(he);
     } finally {
       cerrar(sesion);
     }
@@ -66,10 +68,7 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<PromesaPago> promesas = new ArrayList();
     boolean ok = false;
-    Date f = new Date();
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String fecha = df.format(f);
-    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago IN (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + ") AND fecha_prometida = '" + fecha + "' LIMIT 1;";
+    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago IN (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus != " + Convenios.FINALIZADO + ") AND fecha_prometida = CURDATE();";
     try {
       promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
     } catch (HibernateException he) {
@@ -89,13 +88,7 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<PromesaPago> promesas = new ArrayList();
     boolean ok = false;
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.add(Calendar.DATE, 4);
-    Date f = cal.getTime();
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String fecha = df.format(f);
-    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago IN (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + ") AND fecha_prometida <= '" + fecha + "';";
+    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago IN (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus != " + Convenios.FINALIZADO + ") AND fecha_prometida BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 4 DAY);";
     try {
       promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
     } catch (HibernateException he) {
@@ -115,19 +108,12 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<PromesaPago> promesas = new ArrayList();
     boolean ok = false;
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.add(Calendar.DATE, 4);
-    Date f = cal.getTime();
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String fecha = df.format(f);
-    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago IN (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + ") AND fecha_prometida > '" + fecha + "';";
+    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago IN (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus != " + Convenios.FINALIZADO + ") AND fecha_prometida > DATE_ADD(CURDATE(), INTERVAL 4 DAY);";
     try {
       promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
     } catch (HibernateException he) {
       Logs.log.error(consulta);
       Logs.log.error(he);
-      promesas = null;
     } finally {
       cerrar(sesion);
       if (!promesas.isEmpty()) {
@@ -141,14 +127,26 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
   public List<PromesaPago> promesasPagoHoy(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<PromesaPago> promesas = new ArrayList();
-    Date f = new Date();
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String fecha = df.format(f);
-    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago = (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + ") AND fecha_prometida > '" + fecha + "';";
+    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago = (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus != " + Convenios.FINALIZADO + ") AND fecha_prometida = CURDATE();";
     try {
       promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
     } catch (HibernateException he) {
-      promesas = null;
+      Logs.log.error(consulta);
+      Logs.log.error(he);
+    } finally {
+      cerrar(sesion);
+    }
+    return promesas;
+  }
+
+  @Override
+  public List<PromesaPago> buscarPromesasAnterioresCredito(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<PromesaPago> promesas = new ArrayList();
+    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago = (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus != " + Convenios.FINALIZADO + ") AND fecha_prometida < CURDATE();";
+    try {
+      promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
+    } catch (HibernateException he) {
       Logs.log.error(consulta);
       Logs.log.error(he);
     } finally {

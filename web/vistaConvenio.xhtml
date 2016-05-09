@@ -3,7 +3,8 @@
 <html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-      xmlns="http://www.w3.org/1999/xhtml">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Convenios</title>
@@ -55,7 +56,7 @@
             </li>
           </ul>
         </div>
-      </h:form>  
+      </h:form>
       <div class="padding-md">
         <h:form id="formConvenios">
           <div>
@@ -76,26 +77,24 @@
                 <br />
                 <p:commandButton id="botonNuevoConvenio" value="Agregar convenio" oncomplete="PF('agregarConvenioDialog').show();" disabled="#{conveniosBean.habilitaConvenios}"/>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:commandButton id="botonFinalizarConvenio" value="Finalizar convenio" actionListener="#{conveniosBean.finalizarConvenio()}" disabled="#{conveniosBean.habilitaPromesas}" update=":growl, convenioEnCurso, botonNuevoConvenio, pagosConvenioEnCurso" />
+                <p:commandButton id="botonFinalizarConvenio" value="Finalizar convenio" actionListener="#{conveniosBean.finalizarConvenio()}" disabled="#{!conveniosBean.habilitaConvenios}" update=":growl, convenioEnCurso, botonNuevoConvenio, pagosConvenioEnCurso, formConvenios" />
                 <br />
                 <br />
-                <p:accordionPanel activeIndex="-1" style="width:420px;">
+                <p:accordionPanel activeIndex="0" style="width:420px;">
                   <p:tab title="Promesas en este convenio">
                     <p:contextMenu for="promesasEnCurso" style="width:200px;">
                       <p:menuitem value="Agregar pago" icon="ui-icon-folder-collapsed" oncomplete="PF('agregarPagoDialog').show();" />
                     </p:contextMenu>
-                    <p:dataTable id="promesasEnCurso" var="p" value="#{conveniosBean.listaPromesas}" rowKey="#{p.idPromesaPago}" selection="#{conveniosBean.promesaSeleccionada}" emptyMessage="No existen promesas de pago." selectionMode="single" paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width:270px;">
+                    <p:dataTable id="promesasEnCurso" var="promesa" value="#{conveniosBean.listaPromesas}" rowKey="#{promesa.idPromesaPago}" selection="#{conveniosBean.promesaSeleccionada}" emptyMessage="No existen promesas de pago." selectionMode="single" paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width:270px;">
                       <p:column headerText="Fecha de pago" style="width:100px;">
-                        <h:outputText value="#{p.fechaPrometida}"/>
+                        <h:outputText value="#{promesa.fechaPrometida}"/>
                       </p:column>
                       <p:column headerText="Saldo negociado" style="width:150px;"> 
-                          <h:outputText value="#{p.cantidadPrometida}"/>
+                        <h:outputText value="#{promesa.cantidadPrometida}"/>
                       </p:column>
                     </p:dataTable>
                   </p:tab>
                 </p:accordionPanel>
-                <br />
-                <p:commandButton id="botonNuevaPromesa" value="Agregar promesa de pago" oncomplete="PF('agregarPromesaDialog').show();" disabled="#{conveniosBean.habilitaPromesas}"/>
               </div>
               <div class="pull-right">
                 <h3>Pagos realizados en este convenio</h3>
@@ -143,8 +142,8 @@
                 </p:accordionPanel>
               </div>
               <div class="pull-right">
-                  <!-- TO DO: -->
-                  <!-- reparar la consulta, puesto que trae todos los pagos no solo los de este crtedito -->
+                <!-- TO DO: -->
+                <!-- reparar la consulta, puesto que trae todos los pagos no solo los de este crtedito -->
                 <h3>Historial de pagos</h3>
                 <br />
                 <p:accordionPanel activeIndex="-1" style="width:660px;">
@@ -186,7 +185,10 @@
             <br />
             Numero de cuenta:
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:inputText value="#{conveniosBean.cuentaPago}" required="true" requiredMessage="Debe ingresar un numero de cuenta." />
+            <p:selectOneMenu value="#{conveniosBean.cuentaPago}">
+                <f:selectItem itemLabel="" itemValue="" />
+                <f:selectItems value="#{conveniosBean.listaCuentasPago}" />
+              </p:selectOneMenu>
             <br />
             <br />
             Observaciones:
@@ -196,47 +198,149 @@
             <br />
             <p:fileUpload fileUploadListener="#{conveniosBean.eventoDeCarga}" mode="advanced" auto="true" label="Seleccionar archivo" style="width: 200px;" required="true" sizeLimit="3000000" fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png|pdf)$/" update=":growl" />
             <br />
-            <p:commandButton id="botonEnviarPago" value="Enviar" actionListener="#{conveniosBean.agregarPago()}" update=":growl, formConvenios:pagosConvenioEnCurso, @([id$=revisionPagos])" />
+            <div align="center">
+              <p:commandButton value="Enviar" icon="ui-icon-check" actionListener="#{conveniosBean.agregarPago()}" update=":growl, formConvenios:pagosConvenioEnCurso" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Cancelar" icon="ui-icon-close" actionListener="#{conveniosBean.cancelarPago()}" process="@this" />
+            </div>
           </h:form>
         </p:dialog>
-        <p:dialog id="dlgNuevoConvenio" widgetVar="agregarConvenioDialog" modal="true" header="Agregar convenio">
+          <p:dialog id="dlgNuevoConvenio" widgetVar="agregarConvenioDialog" modal="true" header="Agregar convenio" position="top">
           <h:form>
-            Monto maximo:
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:outputLabel value="#{conveniosBean.saldoMaximo}" />
+            <p:outputPanel style="text-align:center;">
+              <p:panelGrid columns="2">
+                Monto maximo:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:outputLabel value="#{conveniosBean.saldoMaximo}" />
+                <br />
+                Monto negociado:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:inputText value="#{conveniosBean.saldoNuevoConvenio}" required="true" requiredMessage="Debe ingresar una cantidad." />
+                <br />
+                Pagos pactados:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:inputText value="#{conveniosBean.pagosPrometidos}" />
+                <br />
+                El convenio se realizo con:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:selectOneMenu id="tipoGestion" value="#{conveniosBean.sujetoConvenio}" style="width:200px">
+                  <f:selectItems value="#{conveniosBean.listaSujetos}" var="s" itemLabel="#{s}" itemValue="#{s}" />
+                </p:selectOneMenu>
+              </p:panelGrid>
+            </p:outputPanel>
             <br />
-            Monto negociado:
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:inputText value="#{conveniosBean.saldoNuevoConvenio}" required="true" requiredMessage="Debe ingresar una cantidad." />
+            <div align="center">
+              Con quita de capital
+              &nbsp;&nbsp;
+              <p:selectBooleanCheckbox value="#{conveniosBean.quitaCapital}" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              Sin contacto
+              &nbsp;&nbsp;
+              <p:selectBooleanCheckbox value="#{conveniosBean.sinContacto}" />
+            </div>
             <br />
-            Pagos pactados:
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:inputText value="#{conveniosBean.pagosPrometidos}" />
+            <div align="center">
+              <p:commandButton value="Agregar convenio" icon="ui-icon-check" actionListener="#{conveniosBean.agregarConvenio()}" update=":growl, formConvenios:convenioEnCurso, formConvenios:botonNuevoConvenio, :nuevaPromesaForm" rendered="#{!conveniosBean.habilitaPromesas}" disabled="#{conveniosBean.habilitaConvenios}" />
+            </div>
             <br />
-            <br />
-            Con quita de capital
-            &nbsp;&nbsp;
-            <p:selectBooleanCheckbox value="#{conveniosBean.quitaCapital}" />
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            Sin contacto
-            &nbsp;&nbsp;
-            <p:selectBooleanCheckbox value="#{conveniosBean.sinContacto}" />
-            <br />
-            <br />
-            <p:commandButton value="Ok" actionListener="#{conveniosBean.agregarConvenio()}" update=":growl, formConvenios:convenioEnCurso, formConvenios:botonNuevoConvenio" />
           </h:form>
-        </p:dialog>
-        <p:dialog id="dlgNuevaPromesa" widgetVar="agregarPromesaDialog" modal="true" header="Agregar promesa">
-          <h:form id="dlgNuevaPromesaForm">
-            Monto negociado:
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:inputText value="#{conveniosBean.saldoNuevaPromesa}" required="true" requiredMessage="Debe ingresar una cantidad." />
+          <h:form id="nuevaPromesaForm">
+            <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita1}">
+              <p:panelGrid columns="2">
+                <f:facet name="header">
+                  Promesa de pago # 1
+                </f:facet>
+                Monto negociado:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:inputText value="#{conveniosBean.saldosNuevasPromesas[0]}" required="true" requiredMessage="Debe ingresar una cantidad." />
+                Fecha pactada:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[0]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+              </p:panelGrid>
+            </p:outputPanel>
+            <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita2}">
+              <p:panelGrid columns="2">
+                <f:facet name="header">
+                  Promesa de pago # 2
+                </f:facet>
+                Monto negociado:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:inputText value="#{conveniosBean.saldosNuevasPromesas[1]}" required="true" requiredMessage="Debe ingresar una cantidad." />
+                Fecha pactada:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[1]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+              </p:panelGrid>
+            </p:outputPanel>
+            <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita3}">
+              <p:panelGrid columns="2">
+                <f:facet name="header">
+                  Promesa de pago # 3
+                </f:facet>
+                Monto negociado:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:inputText value="#{conveniosBean.saldosNuevasPromesas[2]}" required="true" requiredMessage="Debe ingresar una cantidad." />
+                Fecha pactada:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[2]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+              </p:panelGrid>
+            </p:outputPanel>
+            <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita4}">
+              <p:panelGrid columns="2">
+                <f:facet name="header">
+                  Promesa de pago # 4
+                </f:facet>
+                Monto negociado:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:inputText value="#{conveniosBean.saldosNuevasPromesas[3]}" required="true" requiredMessage="Debe ingresar una cantidad." />
+                Fecha pactada:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[3]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+              </p:panelGrid>
+            </p:outputPanel>
+            <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita5}">
+              <p:panelGrid columns="2">
+                <f:facet name="header">
+                  Promesa de pago # 5
+                </f:facet>
+                Monto negociado:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:inputText value="#{conveniosBean.saldosNuevasPromesas[4]}" required="true" requiredMessage="Debe ingresar una cantidad." />
+                Fecha pactada:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[4]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+              </p:panelGrid>
+            </p:outputPanel>
+            <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita6}">
+              <p:panelGrid columns="2">
+                <f:facet name="header">
+                  Promesa de pago # 6
+                </f:facet>
+                Monto negociado:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:inputText value="#{conveniosBean.saldosNuevasPromesas[5]}" required="true" requiredMessage="Debe ingresar una cantidad." />
+                Fecha pactada:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[5]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+              </p:panelGrid>
+            </p:outputPanel>
+            <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita7}">
+              <p:panelGrid columns="2">
+                <f:facet name="header">
+                  Promesa de pago # 7
+                </f:facet>
+                Monto negociado:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:inputText value="#{conveniosBean.saldosNuevasPromesas[6]}" required="true" requiredMessage="Debe ingresar una cantidad." />
+                Fecha pactada:
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[6]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+              </p:panelGrid>
+            </p:outputPanel>
             <br />
-            Fecha pactada:
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:calendar id="startDate" value="#{conveniosBean.fechaNuevaPromesa}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
             <br />
-            <p:commandButton value="Ok" actionListener="#{conveniosBean.agregarPromesa()}" update="growl" />
+            <div align="center">
+              <p:commandButton value="Agregar promesas" icon="ui-icon-check" actionListener="#{conveniosBean.agregarPromesas()}" update="growl" rendered="#{conveniosBean.habilitaPromesas}" />
+            </div>
           </h:form>
         </p:dialog>
       </div>

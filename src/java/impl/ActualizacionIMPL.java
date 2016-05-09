@@ -8,6 +8,7 @@ package impl;
 import dao.ActualizacionDAO;
 import dto.Actualizacion;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -40,11 +41,12 @@ public class ActualizacionIMPL implements ActualizacionDAO {
   @Override
   public Actualizacion buscarUltimaActualizacion(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Actualizacion actualizacion;
+    Actualizacion actualizacion = new Actualizacion();
+    String consulta = "SELECT * FROM actualizacion WHERE id_credito = " + idCredito + " ORDER BY id_actualizacion DESC LIMIT 1;";
     try {
-      actualizacion = (Actualizacion) sesion.createSQLQuery("SELECT * FROM actualizacion WHERE id_credito = " + idCredito + " ORDER BY id_actualizacion DESC LIMIT 1;").addEntity(Actualizacion.class).uniqueResult();
+      actualizacion = (Actualizacion) sesion.createSQLQuery(consulta).addEntity(Actualizacion.class).uniqueResult();
     } catch (HibernateException he) {
-      actualizacion = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getStackTrace());
     } finally {
       cerrar(sesion);

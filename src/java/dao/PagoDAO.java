@@ -6,6 +6,7 @@
 package dao;
 
 import dto.Pago;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,5 +40,7 @@ public interface PagoDAO {
   public List<Pago> pagosPorRevisarBanco(int idDespacho);
   
   public float calcularMontoGestor(int idGestor);
+  
+  public Pago buscarPagoFechaCredito(Date fecha, int idCredito);
           
 }

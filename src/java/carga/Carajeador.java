@@ -270,10 +270,12 @@ public class Carajeador {
         }
 
         idActualizacion = idActualizacion + 1;
-
+        // ESTIMADO TIO:
+        // ME HE TOMADO EL ATREVIMIENTO DE AGREGAR A ESTA CONSULTA LOS CAMPOS QUE FALTAN
+        // DISCULPA MI OSADIA
         if (f.getIdColonia() != 0) {
-          query += "INSERT INTO `sigerbd`.`direccion` (`calle`, `id_sujeto`, `id_municipio`, `id_estado`, `id_colonia`) "
-                  + "VALUES ('" + f.getCalle() + "', '" + sujeto.getIdSujeto() + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "');";
+          query += "INSERT INTO `sigerbd`.`direccion` (`calle`, `id_sujeto`, `id_municipio`, `id_estado`, `id_colonia`, `exterior` , `latitud`, `longitud`) "
+                  + "VALUES ('" + f.getCalle() + "', '" + sujeto.getIdSujeto() + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "', 'S/N', '0.000000', '0.000000');";
           guardarQueryEnArchivo(query, archivoSql);
           query = "";
         } else {

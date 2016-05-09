@@ -137,17 +137,27 @@ public class GestionBean implements Serializable {
   public void preparaDescripcion() {
     asuntoSeleccionado = asuntoGestionDao.buscarPorId(asuntoSeleccionado.getIdAsuntoGestion());
     listaDescripciones = descripcionGestionDao.buscarPorAsuntoTipo(tipoSeleccionado.getIdTipoGestion(), asuntoSeleccionado.getIdAsuntoGestion());
+    if (listaDescripciones.size() == 1) {
+      descripcionSeleccionada = listaDescripciones.get(0);
+      preparaTipoSujeto();
+    }
   }
 
   // METODO QUE PREPARA EL COMBOBOX TIPO SUJETO GESTION
   public void preparaTipoSujeto() {
     descripcionSeleccionada = descripcionGestionDao.buscarPorId(descripcionSeleccionada.getIdDescripcionGestion());
     listaTipoSujetos = tipoQuienGestionDao.buscarPorAsuntoDescripcion(asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto(), descripcionSeleccionada.getAbreviatura());
-    if(listaTipoSujetos.get(0).getDescripcion().equals("NO APLICA")){
+    if (listaTipoSujetos.get(0).getDescripcion().equals("NO APLICA")) {
       tipoSujetoSeleccionado = tipoQuienGestionDao.buscarPorId(12);
       preparaSujetos();
       sujetoSeleccionado = quienGestionDao.buscarPorId(89);
       preparaEstatus();
+    }
+    if (descripcionSeleccionada.getTextoGestion().equals("NO CONTESTA")) {
+      gestion = descripcionSeleccionada.getTextoGestion();
+    }
+    else if(descripcionSeleccionada.getTextoGestion().equals("GRABACION INDICA QUE NO EXISTE")){
+      gestion = "NO EXISTE";
     }
   }
 
@@ -161,7 +171,7 @@ public class GestionBean implements Serializable {
   public void preparaEstatus() {
     sujetoSeleccionado = quienGestionDao.buscarPorId(sujetoSeleccionado.getIdQuienGestion());
     listaEstatus = seleccionadorEstatus();
-    if(listaEstatus.size()==1){
+    if (listaEstatus.size() == 1) {
       estatusSeleccionado = listaEstatus.get(0);
     }
   }
@@ -202,10 +212,14 @@ public class GestionBean implements Serializable {
             }
             break;
           case 8:
-            if (descripcionSeleccionada.getAbreviatura().equals("1CONV")) {
-              estatusPosibles.add(estatusInformativoDao.buscar(1));
-            } else if ((descripcionSeleccionada.getAbreviatura().equals("2CONV")) || (descripcionSeleccionada.getAbreviatura().equals("3CONV"))) {
-              estatusPosibles.add(estatusInformativoDao.buscar(2));
+            switch (descripcionSeleccionada.getAbreviatura()) {
+              case "1CONV":
+                estatusPosibles.add(estatusInformativoDao.buscar(1));
+                break;
+              case "2CONV":
+              case "3CONV":
+                estatusPosibles.add(estatusInformativoDao.buscar(2));
+                break;
             }
             break;
         }
@@ -213,19 +227,29 @@ public class GestionBean implements Serializable {
       case 2:
         switch (asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto()) {
           case 1:
-            if ((descripcionSeleccionada.getAbreviatura().equals("1PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("2PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("3PRTE"))) {
-              estatusPosibles.add(estatusInformativoDao.buscar(13));
-            } else if (descripcionSeleccionada.getAbreviatura().equals("5PRTE")) {
-              estatusPosibles.add(estatusInformativoDao.buscar(14));
-            } else if ((descripcionSeleccionada.getAbreviatura().equals("4PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("6PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("9PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("10PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("11PRTE"))) {
-              estatusPosibles.add(estatusInformativoDao.buscar(15));
-            } else if ((descripcionSeleccionada.getAbreviatura().equals("1PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("2PRTE")) || (descripcionSeleccionada.getAbreviatura().equals("3PRTE"))) {
-              estatusPosibles.add(estatusInformativoDao.buscar(13));
-            } else if (descripcionSeleccionada.getAbreviatura().equals("15PRTE")) {
-              estatusPosibles.add(estatusInformativoDao.buscar(20));
-            } else {
-              estatusPosibles.add(estatusInformativoDao.buscar(9));
-              estatusPosibles.add(estatusInformativoDao.buscar(19));
+            switch (descripcionSeleccionada.getAbreviatura()) {
+              case "1PRTE":
+              case "2PRTE":
+              case "3PRTE":
+                estatusPosibles.add(estatusInformativoDao.buscar(13));
+                break;
+              case "5PRTE":
+                estatusPosibles.add(estatusInformativoDao.buscar(14));
+                break;
+              case "4PRTE":
+              case "6PRTE":
+              case "9PRTE":
+              case "10PRTE":
+              case "11PRTE":
+                estatusPosibles.add(estatusInformativoDao.buscar(15));
+                break;
+              case "15PRTE":
+                estatusPosibles.add(estatusInformativoDao.buscar(20));
+                break;
+              default:
+                estatusPosibles.add(estatusInformativoDao.buscar(9));
+                estatusPosibles.add(estatusInformativoDao.buscar(19));
+                break;
             }
             break;
           case 2:
@@ -257,10 +281,14 @@ public class GestionBean implements Serializable {
             }
             break;
           case 8:
-            if (descripcionSeleccionada.getAbreviatura().equals("1CONV")) {
-              estatusPosibles.add(estatusInformativoDao.buscar(1));
-            } else if ((descripcionSeleccionada.getAbreviatura().equals("2CONV")) || (descripcionSeleccionada.getAbreviatura().equals("3CONV"))) {
-              estatusPosibles.add(estatusInformativoDao.buscar(2));
+            switch (descripcionSeleccionada.getAbreviatura()) {
+              case "1CONV":
+                estatusPosibles.add(estatusInformativoDao.buscar(1));
+                break;
+              case "2CONV":
+              case "3CONV":
+                estatusPosibles.add(estatusInformativoDao.buscar(2));
+                break;
             }
             break;
         }
@@ -297,10 +325,14 @@ public class GestionBean implements Serializable {
             }
             break;
           case 8:
-            if (descripcionSeleccionada.getAbreviatura().equals("1CONV")) {
-              estatusPosibles.add(estatusInformativoDao.buscar(1));
-            } else if ((descripcionSeleccionada.getAbreviatura().equals("2CONV")) || (descripcionSeleccionada.getAbreviatura().equals("3CONV"))) {
-              estatusPosibles.add(estatusInformativoDao.buscar(2));
+            switch (descripcionSeleccionada.getAbreviatura()) {
+              case "1CONV":
+                estatusPosibles.add(estatusInformativoDao.buscar(1));
+                break;
+              case "2CONV":
+              case "3CONV":
+                estatusPosibles.add(estatusInformativoDao.buscar(2));
+                break;
             }
             break;
         }

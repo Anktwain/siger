@@ -8,45 +8,112 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Cercanias</title>
-    <script src="http://maps.googleapis.com/maps/api/js" />
-    <script>
-      var google;
-      function initialize() {
-        var saldoVencido = Math.round(#{cercaniasBean.obtenerSaldoVencido(listaVisitasBean.visitaSeleccionada.credito.idCredito)}*100)/100;
-        var contenido = '#{listaVisitasBean.visitaSeleccionada.credito.deudor.sujeto.nombreRazonSocial}' +
-                '<br />Credito: #{listaVisitasBean.visitaSeleccionada.credito.numeroCredito}' +
-                '<br />Adeudo: $' + saldoVencido;
-            var mapProp = {
-              center: new google.maps.LatLng(#{listaVisitasBean.latitud}, #{listaVisitasBean.longitud}), zoom: 14, mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            var mapa = new google.maps.Map(document.getElementById("mapaCercanias"), mapProp);
-            var marcador = new google.maps.Marker({
-              position: {lat: #{listaVisitasBean.latitud}, lng: #{listaVisitasBean.longitud}},
-              map: mapa
-            });
-            var informacion = new google.maps.InfoWindow({
-              content: contenido
-            });
-            marcador.addListener('click', function () {
-              informacion.open(mapa, marcador);
-            });
-          }
-          google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
   </h:head>
   <f:metadata>
     <f:event listener="#{indexBean.verificarAcceso('cercanias')}" type="preRenderView" />
   </f:metadata>
-  <body>
+  <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
-    <!-- Overlay Div -->
     <div id="overlay" class="transparent" style="display: none"></div>
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
-      <div class="col-sm-6" id="mapaCercanias" style="width:450px;height:380px; margin-left: 50px; margin-right: 70px;" />
+      <br />
+      <br />
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="col-sm-6" id="mapaCercanias" style="width:600px;height:450px; margin-left: 50px; margin-right: 70px;" />
+        </div>
+        <div class="col-lg-6">
+          <!-- DIRECCIONES ENCONTRADAS -->
+          <h:form id="direccionesEncontradasForm" rendered="#{cercaniasBean.habilitaDirecciones}" >
+            No se pudo localizar la direccion:
+            <br />
+            <h:outputText value="#{listaVisitasBean.visitaSeleccionada.direccion.calle}, #{listaVisitasBean.visitaSeleccionada.direccion.colonia.nombre}, #{listaVisitasBean.visitaSeleccionada.direccion.municipio.nombre}, #{listaVisitasBean.visitaSeleccionada.direccion.estadoRepublica.abreviatura}, #{listaVisitasBean.visitaSeleccionada.direccion.colonia.codigoPostal}" />
+            <br />
+            <br />
+            Por favor elija una de las siguientes direcciones encontradas:
+            <br />
+            <p:selectOneMenu value="#{listaVisitasBean.direccionSeleccionada.idResultado}">
+              <f:selectItems value="#{listaVisitasBean.listaDireccionesEncontradas}" var="d" itemLabel="#{d.direccionEncontrada}" itemValue="#{d.idResultado}" />
+            </p:selectOneMenu>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:commandButton value="Seleccionar" icon="ui-icon-check" actionListener="#{cercaniasBean.recargar()}" process="@this" />
+          </h:form>
+          <h:form rendered="#{!cercaniasBean.habilitaDirecciones}">
+            Direccion del deudor:
+            <br />
+            <h:outputText value="#{listaVisitasBean.visitaSeleccionada.direccion.calle}, #{listaVisitasBean.visitaSeleccionada.direccion.colonia.nombre}, #{listaVisitasBean.visitaSeleccionada.direccion.municipio.nombre}, #{listaVisitasBean.visitaSeleccionada.direccion.estadoRepublica.abreviatura}, #{listaVisitasBean.visitaSeleccionada.direccion.colonia.codigoPostal}" />
+            <br />
+            <br />
+            Buscar los primeros
+            &nbsp;
+            <p:inputText value="#{cercaniasBean.cantidadCercanias}" type="number" />
+            &nbsp;
+            creditos
+            &nbsp;
+            <p:selectOneMenu value="#{cercaniasBean.radio}">
+              <f:selectItem itemLabel="3" itemValue="3" />
+              <f:selectItem itemLabel="5" itemValue="5" />
+              <f:selectItem itemLabel="10" itemValue="10" />
+            </p:selectOneMenu>
+            &nbsp;
+            kilometros a la redonda.
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:commandButton value="Buscar" icon="ui-icon-zoomin" actionListener="#{cercaniasBean.cargarCercanias()}" />
+          </h:form>          
+        </div>
+      </div>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
-  </body>
+    <!-- SCRIPT DE LA API DE GOOGLE MAPS PARA JS -->
+    <script src="http://maps.googleapis.com/maps/api/js" />
+    <script>
+      var mapa;
+      var google;
+      function initialize() {
+        var mapProp = {
+          center: new google.maps.LatLng(#{listaVisitasBean.latitud}, #{listaVisitasBean.longitud}),
+          zoom: 15,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        mapa = new google.maps.Map(document.getElementById("mapaCercanias"), mapProp);
+        var saldoVencido = Math.round(#{cercaniasBean.obtenerSaldoVencido(listaVisitasBean.visitaSeleccionada.credito.idCredito)} * 100) / 100;
+        var contenido = '#{listaVisitasBean.visitaSeleccionada.credito.deudor.sujeto.nombreRazonSocial}' +
+                '<br />Credito: #{listaVisitasBean.visitaSeleccionada.credito.numeroCredito}' +
+                '<br />Adeudo: $' + saldoVencido;
+        var informacion = new google.maps.InfoWindow({
+          content: contenido
+        });
+        var marcador = new google.maps.Marker({
+          position: {lat: #{listaVisitasBean.latitud}, lng: #{listaVisitasBean.longitud}},
+          map: mapa
+        });
+        marcador.addListener('click', function () {
+          informacion.open(mapa, marcador);
+        });
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      function agregarCercania(latitud, longitud, contenido) {
+        cercania = new google.maps.Marker({
+          icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+          position: {lat: latitud, lng: longitud},
+          map: mapa
+        });
+        createMarker(cercania, contenido);
+        /*
+        var informacion = new google.maps.InfoWindow({
+          content: contenido
+        });
+        */
+        function createMarker(cercania, contenido) {
+          GEvent.addListener(cercania, "click", function () {
+            cercania.openInfoWindowHtml(contenido);
+          });
+        }
+      }
+    </script>
+  </h:body>
 </html>

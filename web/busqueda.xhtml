@@ -149,10 +149,11 @@
                 </p:column>
               </p:dataTable>
             </p:tab>
-            <p:tab title="Busqueda por institucion/producto/subproducto">
+            <p:tab title="Busqueda por institucion/producto/campana">
               Seleccione la institucion de la que quiere obtener los creditos:
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:selectOneMenu value="#{busquedaBean.institucionSeleccionada.idInstitucion}">
+                <f:selectItem itemLabel="" itemValue="0" />
                 <f:selectItems value="#{busquedaBean.listaInstituciones}" var="i" itemLabel="#{i.sujeto.nombreRazonSocial}" itemValue="#{i.idInstitucion}" />
                 <p:ajax update="productoBusqueda" listener="#{busquedaBean.preparaProductos()}" />
               </p:selectOneMenu>
@@ -165,7 +166,15 @@
               </p:selectOneMenu>
               <br />
               <br />
-              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorProductos()}" update="busquedaPorProducto" />
+              Seleccione la campaña:
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu id="campanaBusqueda" value="#{busquedaBean.campanaSeleccionada.idCampana}">
+                <f:selectItem itemLabel="Todas las campañas" itemValue="0" />
+                <f:selectItems value="#{busquedaBean.listaCampanas}" var="ca" itemLabel="#{ca.nombre}" itemValue="#{ca.idCampana}" />
+              </p:selectOneMenu>
+              <br />
+              <br />
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorProductosCampana()}" update=":growl, busquedaPorProducto" />
               <br />
               <br />
               <p:dataTable id="busquedaPorProducto" var="c" value="#{busquedaBean.listaCreditos2}" emptyMessage="No existen creditos de este producto." paginator="true" rows="15" paginatorPosition="bottom">

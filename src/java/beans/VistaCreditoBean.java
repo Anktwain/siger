@@ -5,6 +5,7 @@
  */
 package beans;
 
+import dao.ActualizacionDAO;
 import dao.ConceptoDevolucionDAO;
 import dao.ContactoDAO;
 import dao.ConvenioPagoDAO;
@@ -16,8 +17,10 @@ import dao.FacDAO;
 import dao.GestionDAO;
 import dao.GestorDAO;
 import dao.HistorialDAO;
+import dao.MarcajeDAO;
 import dao.MotivoDevolucionDAO;
 import dao.TelefonoDAO;
+import dto.Actualizacion;
 import dto.ConceptoDevolucion;
 import dto.Contacto;
 import dto.ConvenioPago;
@@ -31,6 +34,7 @@ import dto.Gestor;
 import dto.Historial;
 import dto.MotivoDevolucion;
 import dto.Telefono;
+import impl.ActualizacionIMPL;
 import impl.ConceptoDevolucionIMPL;
 import impl.ContactoIMPL;
 import impl.ConvenioPagoIMPL;
@@ -42,8 +46,10 @@ import impl.FacIMPL;
 import impl.GestionIMPL;
 import impl.GestorIMPL;
 import impl.HistorialIMPL;
+import impl.MarcajeIMPL;
 import impl.MotivoDevolucionIMPL;
 import impl.TelefonoIMPL;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -58,8 +64,8 @@ import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.GestionAutomatica;
 import util.constantes.Devoluciones;
+import util.constantes.Marcajes;
 import util.constantes.Perfiles;
-import util.constantes.TipoCreditos;
 import util.log.Logs;
 
 /**
@@ -76,24 +82,34 @@ public class VistaCreditoBean implements Serializable {
   CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
 
   // VARIABLES DE CLASE
-  
+  private boolean habilitaUrgente;
+  private boolean habilitaFacs;
+  private boolean habilitaCredsRelacionados;
+  private boolean habilitaHistorial;
   private String observaciones;
   private String numeroCreditos;
   private String calleNumero;
   private String coloniaMunicipio;
   private String estadoCP;
   private String telefono;
+  private String telefonoPrincipal;
   private String correo;
+  private String estatusUltimaGestion;
   private String fechaInicio;
   private String fechaFin;
   private String fup;
   private String fvp;
+  private String fechaQuebranto;
+  private String numeroCuenta;
   private float saldoVencido;
   private int mesesVencidos;
   private Credito creditoActual;
+  private Credito creditoRelacionadoSeleccionado;
   private Gestor gestorSeleccionado;
   private ConceptoDevolucion conceptoSeleccionado;
   private MotivoDevolucion motivoSeleccionado;
+  private Telefono telefonoSeleccionado;
+  private Email correoSeleccionado;
   private final CreditoDAO creditoDao;
   private final DireccionDAO direccionDAO;
   private final TelefonoDAO telefonoDAO;
@@ -107,10 +123,11 @@ public class VistaCreditoBean implements Serializable {
   private final MotivoDevolucionDAO motivoDevolucionDao;
   private final DevolucionDAO devolucionDao;
   private final FacDAO facDao;
+  private final MarcajeDAO marcajeDao;
+  private final ActualizacionDAO actualizacionDao;
   private List<Gestion> listaGestiones;
   private List<Gestor> listaGestores;
   private List<Credito> creditosRelacionados;
-  private List<Credito> credsRelacionados;
   private List<Direccion> listaDirecciones;
   private List<Telefono> listaTelefonos;
   private List<Email> listaCorreos;
@@ -121,9 +138,12 @@ public class VistaCreditoBean implements Serializable {
   private List<Fac> actualizaciones;
 
   public VistaCreditoBean() {
+    telefonoSeleccionado = new Telefono();
+    correoSeleccionado = new Email();
     conceptoSeleccionado = new ConceptoDevolucion();
     motivoSeleccionado = new MotivoDevolucion();
     creditoActual = new Credito();
+    creditoRelacionadoSeleccionado = new Credito();
     gestorSeleccionado = new Gestor();
     creditoDao = new CreditoIMPL();
     direccionDAO = new DireccionIMPL();
@@ -138,22 +158,33 @@ public class VistaCreditoBean implements Serializable {
     conceptoDevolucionDao = new ConceptoDevolucionIMPL();
     motivoDevolucionDao = new MotivoDevolucionIMPL();
     facDao = new FacIMPL();
+    actualizacionDao = new ActualizacionIMPL();
+    marcajeDao = new MarcajeIMPL();
     listaMotivos = new ArrayList();
     creditosRelacionados = new ArrayList();
-    credsRelacionados = new ArrayList();
     listaDirecciones = new ArrayList();
     historial = new ArrayList();
     listaGestiones = new ArrayList();
     listaGestores = new ArrayList();
     actualizaciones = new ArrayList();
-    listaGestores = gestorDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     listaConceptos = conceptoDevolucionDao.obtenerConceptos();
     obtenerDatos();
   }
 
   // METODO QUE OBTENDRA TODOS LOS DATOS PRIMARIOS SEGUN EL CREDITO SELECCIONADO EN LA VISTA cuentas.xhtml
-  private void obtenerDatos() {
+  public final void obtenerDatos() {
     creditoActual = creditoActualBean.getCreditoActual();
+    // HABILITAR BOTON DE MARCAR URGENTE
+    habilitaUrgente = creditoActual.getMarcaje().getIdMarcaje() == Marcajes.URGENTE;
+    // SE OBTIENE EL NUMERO DE CUENTA DEL CREDITO
+    if(creditoActual.getNumeroCuenta() == null){
+      numeroCuenta = "N/D";
+    }
+    else{
+      numeroCuenta = creditoActual.getNumeroCuenta();
+    }
+    // SE OBTIENE LA LISTA DE GESTORES PARA REASIGNAR
+    listaGestores = gestorDao.buscarPorDespachoExceptoEste(indexBean.getUsuario().getDespacho().getIdDespacho(), creditoActual.getGestor().getIdGestor());
     // OBTENEMOS EL ID DEL SUJETO PARA TODAS LAS OPERACIONES
     int idSujeto = creditoActual.getDeudor().getSujeto().getIdSujeto();
     // OBTENER LA PRIMER DIRECCION DEL DEUDOR
@@ -164,9 +195,9 @@ public class VistaCreditoBean implements Serializable {
       coloniaMunicipio = d.getColonia().getNombre() + ",  " + d.getMunicipio().getNombre() + ",";
       estadoCP = d.getEstadoRepublica().getNombre() + ",  C.P. " + d.getColonia().getCodigoPostal();
     } catch (Exception e) {
+      Logs.log.error("No se pudo obtener la primer direccion del deudor.");
+      Logs.log.error(e);
     }
-    // OBTENEMOS EL NUMERO DE CREDITOS PARA ESTE CLIENTE
-    numeroCreditos = Integer.toString(creditoDao.buscarCreditosRelacionados(creditoActual).size() + 1);
     // OBTENEMOS LAS DIFERENTES FECHAS QUE SE REQUIEREN
     try {
       // OBTENER EL PRIMER TELEFONO DEL DEUDOR
@@ -177,22 +208,45 @@ public class VistaCreditoBean implements Serializable {
       // OBTENER EL PRIMER CORREO DEL DEUDOR
       Email mail;
       mail = emailDAO.buscarPorSujeto(idSujeto).get(0);
-      correo = mail.getDireccion();
-      DateFormat df = new SimpleDateFormat("dd de MM del yyyy");
-      fechaInicio = df.format(creditoActual.getFechaInicio());
-      fechaFin = df.format(creditoActual.getFechaFin());
-      fup = "";
-      fvp = "";
+      correo = mail.getDireccion().toLowerCase();
     } catch (Exception e) {
+      Logs.log.error("No se pudo obtener el primer email del deudor.");
+      Logs.log.error(e);
+    }
+    // SE OBTIENEN LAS FECHAS DE INTERES DEL CREDITO
+    DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+    fechaInicio = df.format(creditoActual.getFechaInicio());
+    fechaFin = df.format(creditoActual.getFechaFin());
+    Actualizacion a = actualizacionDao.buscarUltimaActualizacion(creditoActual.getIdCredito());
+    // FECHA ULTIMO PAGO
+    if (a.getFechaUltimoPago() == null) {
+      fup = "N/D";
+    } else {
+      fup = df.format(a.getFechaUltimoPago());
+    }
+    // FECHA ULTIMO VENCIMIENTO PAGADO
+    if (a.getFechaUltimoVencimientoPagado() == null) {
+      fvp = "N/D";
+    } else {
+      fvp = df.format(a.getFechaUltimoVencimientoPagado());
+    }
+    // FECHA DE QUEBRANTO
+    if (creditoActual.getFechaQuebranto() == null) {
+      fechaQuebranto = "N/D";
+    } else {
+      fechaQuebranto = df.format(creditoActual.getFechaQuebranto());
     }
     mesesVencidos = creditoDao.buscarMesesVencidosCredito(creditoActual.getIdCredito());
-    saldoVencido = creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito());
+    saldoVencido = obtenerSaldoVencido(creditoActual.getIdCredito());
     // OBTENEMOS LA LISTA DE GESTIONES PREVIAS
     obtenerGestionesAnteriores();
     // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
     listaDirecciones = direccionDAO.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CREDITOS RELACIONADOS
-    creditosRelacionados = creditoDao.buscarCreditosRelacionados(creditoActual);
+    creditosRelacionados = creditoDao.buscarCreditosRelacionados(creditoActual.getIdCredito(), creditoActual.getDeudor().getNumeroDeudor());
+    habilitaCredsRelacionados = !creditosRelacionados.isEmpty();
+    // OBTENEMOS EL NUMERO DE CREDITOS PARA ESTE CLIENTE
+    numeroCreditos = String.valueOf(creditosRelacionados.size() + 1);
     // OBTENEMOS LA LISTA DE TELEFONOS DEL DEUDOR
     listaTelefonos = telefonoDAO.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CORREOS ELECTRONICOS DEL DEUDOR
@@ -201,8 +255,10 @@ public class VistaCreditoBean implements Serializable {
     listaContactos = contactoDAO.buscarContactoPorSujeto(idSujeto);
     // OBTENEMOS EL HISTORIAL DEL CREDITO
     historial = historialDao.buscarHistorialPorIdCredito(creditoActual.getIdCredito());
+    habilitaHistorial = !historial.isEmpty();
     // OBTENEMOS LA LISTA DE ACTUALIZACIONES DEL CREDITO
     actualizaciones = facDao.buscarPorCredito(creditoActual.getIdCredito());
+    habilitaFacs = !actualizaciones.isEmpty();
   }
 
   // METODO PARA ABRIR EL DIALOGO
@@ -223,8 +279,8 @@ public class VistaCreditoBean implements Serializable {
     // GESTION AUTOMATICA 1
     // SI EXISTE UN CONVENIO
     ConvenioPago c = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
-    if(c!=null){
-    GestionAutomatica.generarGestionAutomatica("13CONRE", creditoActual, indexBean.getUsuario(), "SE REASIGNA CONVENIO");
+    if (c != null) {
+      GestionAutomatica.generarGestionAutomatica("13CONRE", creditoActual, indexBean.getUsuario(), "SE REASIGNA CONVENIO");
     }
     // CAMBIAMOS EL GESTOR ASIGNADO ACTUALMENTE
     Credito cred = creditoActual;
@@ -254,15 +310,6 @@ public class VistaCreditoBean implements Serializable {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
     }
     cerrar();
-  }
-
-  // METODO QUE LE DA UNA ETIQUETA A LOS VALORES NUMERICOS DEL TIPO DE CREDITO
-  public String etiquetarTipoCredito(int tipoCredito) {
-    String tipo = null;
-    if (tipoCredito == TipoCreditos.LINEA_TELEFONICA) {
-      tipo = "Linea telefonica";
-    }
-    return tipo;
   }
 
   // METODO QUE LE DA UNA ETIQUETA AL MES DE LA ACTUALIZACION FAC
@@ -311,10 +358,9 @@ public class VistaCreditoBean implements Serializable {
 
   // METODO QUE OBTIENE LA LISTA DE GESTIONES
   public void obtenerGestionesAnteriores() {
-    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      listaGestiones = gestionDao.buscarGestionesCreditoGestor(indexBean.getUsuario().getIdUsuario(), creditoActual.getIdCredito());
-    } else {
-      listaGestiones = gestionDao.buscarGestionesCredito(creditoActual.getIdCredito());
+    listaGestiones = gestionDao.buscarGestionesCredito(creditoActual.getIdCredito());
+    if (!listaGestiones.isEmpty()) {
+      estatusUltimaGestion = listaGestiones.get(0).getEstatusInformativo().getEstatus();
     }
   }
 
@@ -358,6 +404,42 @@ public class VistaCreditoBean implements Serializable {
       } else {
         contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
       }
+    }
+  }
+
+  // METODO PARA OBTENER EL SALDO VENCIDO
+  public float obtenerSaldoVencido(int idCredito) {
+    return creditoDao.buscarSaldoVencidoCredito(idCredito);
+  }
+
+  // METODO QUE PREPARA EL CREDITO RELACIONADO Y LO MUESTRA EN PANTALLA
+  public void abrirCreditoRelacionado() {
+    creditoActualBean.setCreditoActual(creditoRelacionadoSeleccionado);
+    if (indexBean.getUsuario().getPerfil() == Perfiles.ADMINISTRADOR) {
+      try {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
+      } catch (IOException ioe) {
+        Logs.log.error("No se pudo redirigir a la vista del credito del administrador");
+        Logs.log.error(ioe);
+      }
+    } else {
+      try {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoGestor.xhtml");
+      } catch (IOException ioe) {
+        Logs.log.error("No se pudo redirigir a la vista del credito del gestor");
+        Logs.log.error(ioe);
+      }
+    }
+  }
+
+  // METODO QUE MARCA UNA CUENTA COMO URGENTE
+  public void marcarUrgente() {
+    creditoActual.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.URGENTE));
+    if (creditoDao.editar(creditoActual)) {
+      habilitaUrgente = true;
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se marco la cuenta como urgente."));
+    } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se marco la cuenta. Contacte al equipo de sistemas."));
     }
   }
 
@@ -493,14 +575,6 @@ public class VistaCreditoBean implements Serializable {
     this.creditosRelacionados = creditosRelacionados;
   }
 
-  public List<Credito> getCredsRelacionados() {
-    return credsRelacionados;
-  }
-
-  public void setCredsRelacionados(List<Credito> credsRelacionados) {
-    this.credsRelacionados = credsRelacionados;
-  }
-
   public List<Direccion> getListaDirecciones() {
     return listaDirecciones;
   }
@@ -595,6 +669,94 @@ public class VistaCreditoBean implements Serializable {
 
   public void setActualizaciones(List<Fac> actualizaciones) {
     this.actualizaciones = actualizaciones;
+  }
+
+  public String getFechaQuebranto() {
+    return fechaQuebranto;
+  }
+
+  public void setFechaQuebranto(String fechaQuebranto) {
+    this.fechaQuebranto = fechaQuebranto;
+  }
+
+  public String getEstatusUltimaGestion() {
+    return estatusUltimaGestion;
+  }
+
+  public void setEstatusUltimaGestion(String estatusUltimaGestion) {
+    this.estatusUltimaGestion = estatusUltimaGestion;
+  }
+
+  public Credito getCreditoRelacionadoSeleccionado() {
+    return creditoRelacionadoSeleccionado;
+  }
+
+  public void setCreditoRelacionadoSeleccionado(Credito creditoRelacionadoSeleccionado) {
+    this.creditoRelacionadoSeleccionado = creditoRelacionadoSeleccionado;
+  }
+
+  public boolean isHabilitaUrgente() {
+    return habilitaUrgente;
+  }
+
+  public void setHabilitaUrgente(boolean habilitaUrgente) {
+    this.habilitaUrgente = habilitaUrgente;
+  }
+
+  public boolean isHabilitaFacs() {
+    return habilitaFacs;
+  }
+
+  public void setHabilitaFacs(boolean habilitaFacs) {
+    this.habilitaFacs = habilitaFacs;
+  }
+
+  public boolean isHabilitaCredsRelacionados() {
+    return habilitaCredsRelacionados;
+  }
+
+  public void setHabilitaCredsRelacionados(boolean habilitaCredsRelacionados) {
+    this.habilitaCredsRelacionados = habilitaCredsRelacionados;
+  }
+
+  public boolean isHabilitaHistorial() {
+    return habilitaHistorial;
+  }
+
+  public void setHabilitaHistorial(boolean habilitaHistorial) {
+    this.habilitaHistorial = habilitaHistorial;
+  }
+
+  public Telefono getTelefonoSeleccionado() {
+    return telefonoSeleccionado;
+  }
+
+  public void setTelefonoSeleccionado(Telefono telefonoSeleccionado) {
+    this.telefonoSeleccionado = telefonoSeleccionado;
+  }
+
+  public Email getCorreoSeleccionado() {
+    return correoSeleccionado;
+  }
+
+  public void setCorreoSeleccionado(Email correoSeleccionado) {
+    this.correoSeleccionado = correoSeleccionado;
+  }
+
+  public String getTelefonoPrincipal() {
+    return telefonoPrincipal;
+  }
+
+  public void setTelefonoPrincipal(String telefonoPrincipal) {
+    this.telefonoPrincipal = telefonoPrincipal;
+  }
+
+  public String getNumeroCuenta() {
+    return numeroCuenta;
+  }
+
+  public void setNumeroCuenta(String numeroCuenta) {
+    this.numeroCuenta = numeroCuenta;
   }
 
 }

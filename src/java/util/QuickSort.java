@@ -28,18 +28,18 @@ public class QuickSort {
     if (inicio >= fin) {
       return;
     }
-    int middle = inicio + (fin - inicio) / 2;
-    int pivot = Integer.parseInt(arreglo.get(middle).getDireccion().getColonia().getCodigoPostal());
+    int mitad = (inicio + fin) / 2;
+    int pivote = Integer.parseInt(arreglo.get(mitad).getDireccion().getColonia().getCodigoPostal());
     int i = inicio, j = fin;
     while (i <= j) {
-      while (Integer.parseInt(arreglo.get(i).getDireccion().getColonia().getCodigoPostal()) < pivot) {
+      while (Integer.parseInt(arreglo.get(i).getDireccion().getColonia().getCodigoPostal()) < pivote) {
         i++;
       }
-      while (Integer.parseInt(arreglo.get(j).getDireccion().getColonia().getCodigoPostal()) > pivot) {
+      while (Integer.parseInt(arreglo.get(j).getDireccion().getColonia().getCodigoPostal()) > pivote) {
         j--;
       }
       if (i <= j) {
-        int temp = Integer.parseInt(arreglo.get(middle).getDireccion().getColonia().getCodigoPostal());
+        int temp = Integer.parseInt(arreglo.get(i).getDireccion().getColonia().getCodigoPostal());
         arreglo.get(i).getDireccion().getColonia().setCodigoPostal(arreglo.get(j).getDireccion().getColonia().getCodigoPostal());
         arreglo.get(j).getDireccion().getColonia().setCodigoPostal(String.valueOf(temp));
         i++;

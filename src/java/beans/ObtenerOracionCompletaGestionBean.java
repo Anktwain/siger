@@ -25,12 +25,34 @@ public class ObtenerOracionCompletaGestionBean implements Serializable {
   // METODO QUE CREA UNA ORACION A PARTIR DE LOS OBJETOS RELACIONADOS CON LA GESTION RECIBIDOS
   public String obtenerOracion(Gestion gestion) {
     if (gestion != null) {
+      /*
       if (gestion.getTipoQuienGestion().getDescripcion().equals("NO APLICA")) {
         return gestion.getTipoGestion().getNombre() + ". " + gestion.getDondeGestion().getNombre() + ", " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ": " + gestion.getDescripcionGestion().getTextoGestion() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
       } else {
-        return gestion.getTipoGestion().getNombre() + ". " + gestion.getDondeGestion().getNombre() + ", " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ": " + gestion.getDescripcionGestion().getTextoGestion() + " " +  gestion.getQuienGestion().getQuien() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
+        return gestion.getTipoGestion().getNombre() + ". " + gestion.getDondeGestion().getNombre() + ", " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ": " + gestion.getDescripcionGestion().getTextoGestion() + " " + gestion.getQuienGestion().getQuien() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
       }
+      */
+      String completa = "";
+      switch(gestion.getTipoGestion().getNombre()){
+        case "VISITA DOMICILIARIA":
+          completa = gestion.getTipoGestion().getNombre() + ", " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
+          break;
+        case "TELEFONIA":
+          completa = gestion.getTipoGestion().getAbreviatura() + ", " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
+          break;
+        case "LLAMADA ENTRANTE":
+          completa = gestion.getTipoGestion().getNombre() + ", " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
+          break;
+        case "CORPORATIVO":
+          completa = gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
+          break;
+        case "AUTOMATICA":
+          completa = gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
+          break;
+      }
+      return completa;
+    } else {
+      return "";
     }
-    return "";
   }
 }

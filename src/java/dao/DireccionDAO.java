@@ -1,6 +1,7 @@
 package dao;
 
 import dto.Direccion;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -51,4 +52,6 @@ public interface DireccionDAO {
     public List<Direccion> buscarPorSujeto(int idSujeto);
     
     public Direccion obtenerDireccionCompleta(int idDireccion);
+    
+    public List<Direccion> obtenerDireccionesPorRadio(BigDecimal latitudCentro, BigDecimal longitudCentro, int radio, int cantidad, int idDespacho);
 }

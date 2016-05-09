@@ -1,7 +1,8 @@
 package dto;
-// Generated 21/04/2016 03:48:27 PM by Hibernate Tools 4.3.1
+// Generated 27/04/2016 09:32:53 AM by Hibernate Tools 4.3.1
 
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,27 +18,36 @@ public class Direccion  implements java.io.Serializable {
      private Municipio municipio;
      private Sujeto sujeto;
      private String calle;
-     private String tipo;
+     private String exterior;
+     private String interior;
+     private BigDecimal latitud;
+     private BigDecimal longitud;
      private Set impresions = new HashSet(0);
 
     public Direccion() {
     }
 
 	
-    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle) {
+    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle, String exterior, BigDecimal latitud, BigDecimal longitud) {
         this.colonia = colonia;
         this.estadoRepublica = estadoRepublica;
         this.municipio = municipio;
         this.sujeto = sujeto;
         this.calle = calle;
+        this.exterior = exterior;
+        this.latitud = latitud;
+        this.longitud = longitud;
     }
-    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle, String tipo, Set impresions) {
+    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle, String exterior, String interior, BigDecimal latitud, BigDecimal longitud, Set impresions) {
        this.colonia = colonia;
        this.estadoRepublica = estadoRepublica;
        this.municipio = municipio;
        this.sujeto = sujeto;
        this.calle = calle;
-       this.tipo = tipo;
+       this.exterior = exterior;
+       this.interior = interior;
+       this.latitud = latitud;
+       this.longitud = longitud;
        this.impresions = impresions;
     }
    
@@ -83,12 +93,33 @@ public class Direccion  implements java.io.Serializable {
     public void setCalle(String calle) {
         this.calle = calle;
     }
-    public String getTipo() {
-        return this.tipo;
+    public String getExterior() {
+        return this.exterior;
     }
     
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setExterior(String exterior) {
+        this.exterior = exterior;
+    }
+    public String getInterior() {
+        return this.interior;
+    }
+    
+    public void setInterior(String interior) {
+        this.interior = interior;
+    }
+    public BigDecimal getLatitud() {
+        return this.latitud;
+    }
+    
+    public void setLatitud(BigDecimal latitud) {
+        this.latitud = latitud;
+    }
+    public BigDecimal getLongitud() {
+        return this.longitud;
+    }
+    
+    public void setLongitud(BigDecimal longitud) {
+        this.longitud = longitud;
     }
     public Set getImpresions() {
         return this.impresions;

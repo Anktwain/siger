@@ -13,9 +13,9 @@ import impl.EstadoRepublicaIMPL;
 import impl.ImpresionIMPL;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import util.QuickSort;
+import util.constantes.GoogleMaps;
 import util.constantes.Impresiones;
 import util.log.Logs;
 
@@ -46,6 +47,8 @@ public class ListaVisitasBean implements Serializable {
   private List<Impresion> listaVisitas;
   private List<Impresion> listaCorreo;
   private List<VisitasEstado> listaVisitasEstado;
+  private List<DireccionesResultado> listaDireccionesEncontradas;
+  DireccionesResultado direccionSeleccionada;
   private Impresion visitaSeleccionada;
   private final ImpresionDAO impresionDao;
   private JSONObject obj;
@@ -55,6 +58,7 @@ public class ListaVisitasBean implements Serializable {
   // CONSTRUCTOR
   public ListaVisitasBean() {
     impresionDao = new ImpresionIMPL();
+    direccionSeleccionada = new DireccionesResultado();
     obtenerListas();
   }
 
@@ -63,6 +67,7 @@ public class ListaVisitasBean implements Serializable {
     listaVisitas = ordenarVisitas(impresionDao.buscarPorTipoImpresion(Impresiones.VISITA_DOMICILIARIA, indexBean.getUsuario().getDespacho().getIdDespacho()));
     listaCorreo = impresionDao.buscarPorTipoImpresion(Impresiones.CORREO_ORDINARIO, indexBean.getUsuario().getDespacho().getIdDespacho());
     listaVisitasEstado = obtenerVisitasEstado();
+    listaDireccionesEncontradas = new ArrayList();
   }
 
   // METODO QUE ORDENARA LAS VISITAS
@@ -114,72 +119,97 @@ public class ListaVisitasBean implements Serializable {
 
   //METODO QUE PREPARA LA DIRECCION Y ABRE LA VISTA DE VISITAS
   public void prepararDireccion() {
-    String inicio = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-    String direccion = visitaSeleccionada.getDireccion().getCalle().toLowerCase() + ",";
-    direccion = direccion + visitaSeleccionada.getDireccion().getColonia().getNombre() + ",";
-    direccion = direccion + visitaSeleccionada.getDireccion().getMunicipio().getNombre() + ",";
-    direccion = direccion + visitaSeleccionada.getDireccion().getEstadoRepublica().getNombre() + ",";
-    direccion = direccion + visitaSeleccionada.getDireccion().getColonia().getCodigoPostal();
-    direccion = direccion.replace("á", "a");
-    direccion = direccion.replace("é", "e");
-    direccion = direccion.replace("í", "i");
-    direccion = direccion.replace("ó", "o");
-    direccion = direccion.replace("ú", "u");
-    direccion = direccion.replace("Á", "A");
-    direccion = direccion.replace("É", "E");
-    direccion = direccion.replace("Í", "I");
-    direccion = direccion.replace("Ó", "O");
-    direccion = direccion.replace("Ú", "U");
-    direccion = direccion.replace(" ", "+");
-    String llave = "&key=AIzaSyC7C46yifMZK01ibR2C7EfjM-OGBuKqFKA";
-    String cadena = inicio + direccion + llave;
-    try {
-      URL url = new URL(cadena);
-      String respuesta;
-      try (Scanner scan = new Scanner(url.openStream())) {
-        respuesta = new String();
-        while (scan.hasNext()) {
-          respuesta += scan.nextLine();
-        }
+    if ((visitaSeleccionada.getDireccion().getLatitud() != BigDecimal.ZERO) && (visitaSeleccionada.getDireccion().getLongitud() != BigDecimal.ZERO)) {
+      latitud = visitaSeleccionada.getDireccion().getLatitud().toString();
+      longitud = visitaSeleccionada.getDireccion().getLongitud().toString();
+      try {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("cercanias.xhtml");
+      } catch (IOException ioe) {
+        Logs.log.error("No se pudo redirigir a la vista cercanias.");
+        Logs.log.error(ioe);
       }
-      obj = new JSONObject(respuesta);
-      JSONArray resultados = obj.getJSONArray("results");
-      if (resultados.length() == 1) {
-        System.out.println("SE ENCONTRO UNA DIRECCION:");
-        if (resultados.getJSONObject(0).getBoolean("partial_match")) {
-          System.out.println("RESULTADO APROXIMADO");
-        }
-        resultados.getJSONObject(0).getString("formatted_address");
-        System.out.println(URLDecoder.decode(resultados.getJSONObject(0).get("formatted_address").toString(), "UTF-8"));
-        latitud = resultados.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lat").toString();
-        longitud = resultados.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng").toString();
-        try {
-          FacesContext.getCurrentInstance().getExternalContext().redirect("cercanias.xhtml");
-        } catch (IOException ioe) {
-          Logs.log.error("No se pudo redirigir a la cista cercanias.");
-          Logs.log.error(ioe);
-        }
-      } else if (resultados.length() > 1) {
-        System.out.println("SE ENCONTRARON ESTAS DIRECCIONES:");
-        for (int i = 0; i < (resultados.length()); i++) {
-          if (resultados.getJSONObject(i).getBoolean("partial_match")) {
-            System.out.println("RESULTADO APROXIMADO");
+    } else {
+      String direccion = visitaSeleccionada.getDireccion().getCalle().toLowerCase() + ",";
+      direccion = direccion + visitaSeleccionada.getDireccion().getColonia().getNombre() + ",";
+      direccion = direccion + visitaSeleccionada.getDireccion().getMunicipio().getNombre() + ",";
+      direccion = direccion + visitaSeleccionada.getDireccion().getEstadoRepublica().getNombre() + ",";
+      direccion = direccion + visitaSeleccionada.getDireccion().getColonia().getCodigoPostal();
+      direccion = direccion.replace("á", "a");
+      direccion = direccion.replace("é", "e");
+      direccion = direccion.replace("í", "i");
+      direccion = direccion.replace("ó", "o");
+      direccion = direccion.replace("ú", "u");
+      direccion = direccion.replace("Á", "A");
+      direccion = direccion.replace("É", "E");
+      direccion = direccion.replace("Í", "I");
+      direccion = direccion.replace("Ó", "O");
+      direccion = direccion.replace("Ú", "U");
+      direccion = direccion.replace(" ", "+");
+      String cadena = GoogleMaps.RUTA_GEOCODING + direccion + GoogleMaps.CLAVE_API;
+      try {
+        URL url = new URL(cadena);
+        String respuesta;
+        try (Scanner scan = new Scanner(url.openStream())) {
+          respuesta = new String();
+          while (scan.hasNext()) {
+            respuesta += scan.nextLine();
           }
-          System.out.println(URLDecoder.decode(resultados.getJSONObject(i).get("formatted_address").toString(), "UTF-8"));
         }
-      } else {
-        System.out.println("NO SE ENCONTRO NINGUNA DIRECCION PARA ESTA BUSQUEDA");
-        System.out.println(obj.getJSONObject("status").toString().replace("_", " "));
+        obj = new JSONObject(respuesta);
+        JSONArray resultados = obj.getJSONArray("results");
+        if (resultados.length() == 1) {
+          latitud = resultados.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lat").toString();
+          longitud = resultados.getJSONObject(0).getJSONObject("geometry").getJSONObject("location").get("lng").toString();
+          try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("cercanias.xhtml");
+          } catch (IOException ioe) {
+            Logs.log.error("No se pudo redirigir a la vista cercanias.");
+            Logs.log.error(ioe);
+          }
+        } else if (resultados.length() > 1) {
+          listaDireccionesEncontradas = new ArrayList();
+          for (int i = 0; i < (resultados.length()); i++) {
+            DireccionesResultado d = new DireccionesResultado();
+            d.setIdResultado(i + 1);
+            String formateada = resultados.getJSONObject(i).get("formatted_address").toString();
+            formateada = formateada.replace("Ã¡", "á");
+            formateada = formateada.replace("Ã©", "é");
+            // falta la í
+            formateada = formateada.replace("Ã³", "ó");
+            // falta la ú
+            d.setDireccionEncontrada(formateada);
+            d.setLat(resultados.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").get("lat").toString());
+            d.setLon(resultados.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").get("lng").toString());
+            d.setObjetoDevuelto(resultados.getJSONObject(i));
+            listaDireccionesEncontradas.add(d);
+          }
+          abrirCercanias();
+        } else {
+          System.out.println("NO SE ENCONTRO NINGUNA DIRECCION PARA ESTA BUSQUEDA");
+          System.out.println(obj.getJSONObject("status").toString().replace("_", " "));
+        }
+      } catch (MalformedURLException mue) {
+        Logs.log.error("No se pudo formar la url: " + cadena);
+        Logs.log.error(mue);
+      } catch (IOException ioe) {
+        Logs.log.error("No existe la url: " + cadena);
+        Logs.log.error(ioe);
+      } catch (JSONException je) {
+        Logs.log.error("No se pudo crear el objeto JSON de la url: " + cadena);
+        Logs.log.error(je);
       }
-    } catch (MalformedURLException mue) {
-      Logs.log.error("No se pudo formar la url: " + cadena);
-      Logs.log.error(mue);
+    }
+  }
+
+  // METODO QUE ABRE LA VISTA DE CERCANIAS Y PREPARA LA DIRECCION SELECCIONADA
+  public void abrirCercanias() {
+    latitud = listaDireccionesEncontradas.get(0).getLat();
+    longitud = listaDireccionesEncontradas.get(0).getLon();
+    try {
+      FacesContext.getCurrentInstance().getExternalContext().redirect("cercanias.xhtml");
     } catch (IOException ioe) {
-      Logs.log.error("No existe la url: " + cadena);
+      Logs.log.error("No se pudo redirigir a la vista cercanias.");
       Logs.log.error(ioe);
-    } catch (JSONException je) {
-      Logs.log.error("No se pudo crear el objeto JSON de la url: " + cadena);
-      Logs.log.error(je);
     }
   }
 
@@ -240,6 +270,22 @@ public class ListaVisitasBean implements Serializable {
     this.longitud = longitud;
   }
 
+  public List<DireccionesResultado> getListaDireccionesEncontradas() {
+    return listaDireccionesEncontradas;
+  }
+
+  public void setListaDireccionesEncontradas(List<DireccionesResultado> listaDireccionesEncontradas) {
+    this.listaDireccionesEncontradas = listaDireccionesEncontradas;
+  }
+
+  public DireccionesResultado getDireccionSeleccionada() {
+    return direccionSeleccionada;
+  }
+
+  public void setDireccionSeleccionada(DireccionesResultado direccionSeleccionada) {
+    this.direccionSeleccionada = direccionSeleccionada;
+  }
+
   // CLASE MIEMBRO PARA VISUALIZAR LA CANTIDAD DE VISITAS POR ESTADO
   public static class VisitasEstado {
 
@@ -272,6 +318,60 @@ public class ListaVisitasBean implements Serializable {
 
     public void setCorreo(int correo) {
       this.correo = correo;
+    }
+
+  }
+
+  // CLASE MIEMBRO PARA ALOJAR LAS DIRECCIONES ENCONTRADAS POR GOOGLE MAPS
+  public static class DireccionesResultado {
+
+    private int idResultado;
+    private JSONObject objetoDevuelto;
+    private String direccionEncontrada;
+    private String lat;
+    private String lon;
+
+    public DireccionesResultado() {
+    }
+
+    public int getIdResultado() {
+      return idResultado;
+    }
+
+    public void setIdResultado(int idResultado) {
+      this.idResultado = idResultado;
+    }
+
+    public JSONObject getObjetoDevuelto() {
+      return objetoDevuelto;
+    }
+
+    public void setObjetoDevuelto(JSONObject objetoDevuelto) {
+      this.objetoDevuelto = objetoDevuelto;
+    }
+
+    public String getDireccionEncontrada() {
+      return direccionEncontrada;
+    }
+
+    public void setDireccionEncontrada(String direccionEncontrada) {
+      this.direccionEncontrada = direccionEncontrada;
+    }
+
+    public String getLat() {
+      return lat;
+    }
+
+    public void setLat(String lat) {
+      this.lat = lat;
+    }
+
+    public String getLon() {
+      return lon;
+    }
+
+    public void setLon(String lon) {
+      this.lon = lon;
     }
 
   }

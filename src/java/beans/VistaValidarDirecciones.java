@@ -23,6 +23,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,7 +76,7 @@ public class VistaValidarDirecciones implements Serializable {
   // CONSTRUCTOR
   public VistaValidarDirecciones() {
     tiposAsentamiento = Arrays.asList("Aeropuerto", "Ampliación", "Barrio", "Campamento", "Ciudad", "Club de golf", "Colonia", "Condominio", "Congregación", "Conjunto habitacional", "Ejido", "Equipamiento", "Estación", "Exhacienda", "Finca", "Fraccionamiento", "Gran usuario", "Granja", "Hacienda", "Ingenio", "Paraje", "Parque industrial", "Poblado comunal", "Pueblo", "Puerto", "Ranchería", "Rancho", "Residencial", "Unidad habitacional", "Villa", "Zona comercial", "Zona federal", "Zona industrial", "Zona militar");
-    nombreArchivo = "direccionar2016212123737.txt";
+    nombreArchivo = "direccionar201653105250.txt";
     nuevaColonia = new Colonia();
     nuevoMunicipio = new Municipio();
     nuevoEstado = new EstadoRepublica();
@@ -101,6 +102,8 @@ public class VistaValidarDirecciones implements Serializable {
     String lineaActual;
     List<String> lineas = new ArrayList();
     List<DirsPorValidar> lista = new ArrayList();
+    // TO FIX:
+    // CAMBIAR EL ARCHIVO PARA QUE NO SIEMPRE ABRA EL MISMO
     try (BufferedReader buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_REMESAS + nombreArchivo))) {
       while ((lineaActual = buferLectura.readLine()) != null) {
         lineas.add(lineaActual);
@@ -175,6 +178,11 @@ public class VistaValidarDirecciones implements Serializable {
     nuevoMunicipio = municipioDao.buscar(nuevoMunicipio.getIdMunicipio());
     nuevoEstado = estadoRepublicaDao.buscar(nuevoEstado.getIdEstado());
     Direccion d = new Direccion();
+    // TO FIX
+    // SE DEBERAN CARGAR DESDE LA REMESA
+    d.setExterior("S/N");
+    d.setLatitud(BigDecimal.ZERO);
+    d.setLongitud(BigDecimal.ZERO);
     d.setCalle(direccionSeleccionada.getCalle());
     d.setColonia(nuevaColonia);
     d.setEstadoRepublica(nuevoEstado);

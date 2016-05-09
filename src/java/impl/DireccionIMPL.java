@@ -2,11 +2,14 @@ package impl;
 
 import dao.DireccionDAO;
 import dto.Direccion;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.GoogleMaps;
 import util.log.Logs;
 
 /**
@@ -151,6 +154,27 @@ public class DireccionIMPL implements DireccionDAO {
       cerrar(sesion);
     }
     return completa;
+  }
+
+  @Override
+  public List<Direccion> obtenerDireccionesPorRadio(BigDecimal latitudCentro, BigDecimal longitudCentro, int radio, int cantidad, int idDespacho) {
+    BigDecimal constanteLatitud = new BigDecimal(GoogleMaps.CONSTANTE_KILOMETRO * radio);
+    BigDecimal latitudMinima = latitudCentro.min(constanteLatitud);
+    BigDecimal latitudMaxima = latitudCentro.add(constanteLatitud);
+    BigDecimal longitudMinima = longitudCentro.min(constanteLatitud);
+    BigDecimal longitudMaxima = longitudCentro.add(constanteLatitud);
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Direccion> listaDirecciones = new ArrayList();
+    String consulta = "SELECT * FROM direccion WHERE latitud BETWEEN " + latitudMinima + " AND " + latitudMaxima + " AND longitud BETWEEN " + longitudMinima + " AND " + longitudMaxima + " AND latitud != " + latitudCentro + " AND longitud != " + longitudCentro + " AND id_sujeto IN (SELECT id_sujeto FROM deudor WHERE id_deudor IN (SELECT id_deudor FROM credito WHERE id_despacho = " + idDespacho + ")) LIMIT " + cantidad + ";";
+    try {
+      listaDirecciones = sesion.createSQLQuery(consulta).addEntity(Direccion.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he);
+    } finally {
+      cerrar(sesion);
+    }
+    return listaDirecciones;
   }
 
   /**

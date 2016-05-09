@@ -77,7 +77,6 @@ public class DireccionBean implements Serializable {
       direccion.setColonia(colonia);
       direccion.setEstadoRepublica(estado);
       direccion.setMunicipio(municipio);
-      direccion.setTipo(tipo);
       direccion.setSujeto(sujeto);
 
       return direccionDao.insertar(direccion);

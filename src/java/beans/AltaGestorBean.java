@@ -9,6 +9,8 @@ import impl.UsuarioIMPL;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
@@ -20,6 +22,7 @@ import util.MD5;
 import util.constantes.Directorios;
 import util.constantes.Patrones;
 import util.constantes.Perfiles;
+import util.log.Logs;
 
 /**
  * La clase {@code AltaGestorBean} almacena la información de la vista
@@ -128,7 +131,7 @@ public class AltaGestorBean implements Serializable {
    *
    *
    */
-  private void insertarUsuario() throws IOException {
+  private void insertarUsuario(){
     // Crea objeto de tipo Usuario:
     usuario = new Usuario();
     usuario.setNombre(nombre);
@@ -151,7 +154,12 @@ public class AltaGestorBean implements Serializable {
       context.addMessage(null, new FacesMessage("Operacion exitosa",
               "Se agrego el usuario correctamente al sistema. Espere instrucciones del administrador."));
       externalContext.getFlash().setKeepMessages(true);
-      FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+      try {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+      } catch (IOException ioe) {
+        Logs.log.error("No se pudo redirigir al index");
+        Logs.log.error(ioe);
+      }
     }
   }
 

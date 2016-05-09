@@ -65,6 +65,7 @@ public class CreadorSQL {
    * consumar la carga.
    *
    * @param filas La lista de objetos Fila para las cuales se generarán las sentencias.
+   * @return 
    */
   public static String crearSQL(List<Fila> filas) {
     String query = "";
@@ -87,11 +88,13 @@ public class CreadorSQL {
           query += "INSERT INTO `sigerbd`.`telefono` (`numero`, `id_sujeto`) VALUES ('" + tel + "', '" + s + "');\n";
         }
       }
-
+      // ESTIMADO TIO:
+      // ME HE TOMADO EL ATREVIMIENTO DE AGREGAR A ESTA CONSULTA LOS CAMPOS QUE FALTAN
+      // DISCULPA MI OSADIA
       // Sea la dirección del deudor:
       if (f.getIdColonia() != 0) {
-        query += "INSERT INTO `sigerbd`.`direccion` (`calle`, `id_sujeto`, `id_municipio`, `id_estado`, `id_colonia`) "
-                + "VALUES ('" + f.getCalle() + "', '" + s + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "');\n";
+        query += "INSERT INTO `sigerbd`.`direccion` (`calle`, `id_sujeto`, `id_municipio`, `id_estado`, `id_colonia`, `exterior` , `latitud`, `longitud`) "
+                + "VALUES ('" + f.getCalle() + "', '" + s + "', '" + f.getIdMunicipio() + "', '" + f.getIdEstado() + "', '" + f.getIdColonia() + "', 'S/N', '0.000000', '0.000000');\n";
       } else {
         linea = s + ";" + f.getCredito() + ";" + f.getCalle() + ";" + f.getColonia()
                 + ";" + f.getMunicipio() + ";" + f.getEstado() + ";" + f.getCp() + "\n";

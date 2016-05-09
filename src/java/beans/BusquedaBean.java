@@ -5,18 +5,21 @@
  */
 package beans;
 
+import dao.CampanaDAO;
 import dao.CreditoDAO;
 import dao.DireccionDAO;
 import dao.InstitucionDAO;
 import dao.ProductoDAO;
 import dao.SubproductoDAO;
 import dao.ZonaDAO;
+import dto.Campana;
 import dto.Credito;
 import dto.Direccion;
 import dto.Institucion;
 import dto.Producto;
 import dto.Subproducto;
 import dto.Zona;
+import impl.CampanaIMPL;
 import impl.CreditoIMPL;
 import impl.DireccionIMPL;
 import impl.InstitucionIMPL;
@@ -27,6 +30,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.el.ELContext;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -46,17 +50,18 @@ public class BusquedaBean implements Serializable {
   private final DireccionDAO direccionDao;
   private final InstitucionDAO institucionDao;
   private final ProductoDAO productoDao;
-  private final SubproductoDAO subproductoDao;
+  private final CampanaDAO campanaDao;
   private Zona zonaSeleccionada;
   private CreditoDireccion creditoSeleccionado;
   private Institucion institucionSeleccionada;
   private Producto productoSeleccionado;
+  private Campana campanaSeleccionada;
   private List<Zona> listaZonas;
   private List<CreditoDireccion> listaCreditos;
   private List<Credito> listaCreditos2;
   private List<Institucion> listaInstituciones;
   private List<Producto> listaProductos;
-  private List<Subproducto> listaSubproductos;
+  private List<Campana> listaCampanas;
   private Direccion direccionCredito;
   private float saldoInferior;
   private float saldoSuperior;
@@ -73,18 +78,19 @@ public class BusquedaBean implements Serializable {
     listaCreditos2 = new ArrayList();
     listaInstituciones = new ArrayList();
     listaProductos = new ArrayList();
-    listaSubproductos = new ArrayList();
+    listaCampanas = new ArrayList();
     zonaSeleccionada = new Zona();
     direccionCredito = new Direccion();
     creditoSeleccionado = new CreditoDireccion();
     institucionSeleccionada = new Institucion();
     productoSeleccionado = new Producto();
+    campanaSeleccionada = new Campana();
     creditoDao = new CreditoIMPL();
     zonaDao = new ZonaIMPL();
     direccionDao = new DireccionIMPL();
     institucionDao = new InstitucionIMPL();
     productoDao = new ProductoIMPL();
-    subproductoDao = new SubproductoIMPL();
+    campanaDao = new CampanaIMPL();
     obtenerListas();
   }
 
@@ -92,6 +98,7 @@ public class BusquedaBean implements Serializable {
   public final void obtenerListas() {
     listaZonas = zonaDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     listaInstituciones = institucionDao.buscarInstitucionesPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
+    listaCampanas = campanaDao.buscarTodas();
   }
 
   // METODO QUE BUSCA LOS CREDITOS DE LA ZONA SELECCIONADA
@@ -125,44 +132,52 @@ public class BusquedaBean implements Serializable {
     RequestContext.getCurrentInstance().update("detalleDireccionesForm");
     RequestContext.getCurrentInstance().execute("PF('dlgDetalleDirecciones').show()");
   }
-  
+
   // METODO QUE OBTIENE LOS CREDITOS POR UN RANGO ESPECIFICO DE SU SALDO VENCIDO
-  public void obtenerCreditosPorSaldoVencido(){
+  public void obtenerCreditosPorSaldoVencido() {
     listaCreditos2.clear();
     listaCreditos2 = creditoDao.buscarCreditosPorSaldoVencido(saldoInferior, saldoSuperior);
   }
-  
-  public void obtenerCreditosPorMesesVencidos(){
+
+  public void obtenerCreditosPorMesesVencidos() {
     listaCreditos2.clear();
     listaCreditos2 = creditoDao.buscarCreditosPorMesesVencidos(mesesVencidos);
   }
-  
+
   // METODO QUE OBTIENE EL SALDO VENCIDO DE UN CREDITO
-  public float obtenerSaldoVencido(int idCredito){
+  public float obtenerSaldoVencido(int idCredito) {
     return creditoDao.buscarSaldoVencidoCredito(idCredito);
   }
-  
+
   // METODO QUE OBTIENE LOS MESES VENCIDOS DEL CREDITO
-  public int obtenerMesesVencidos(int idCredito){
+  public int obtenerMesesVencidos(int idCredito) {
     return creditoDao.buscarMesesVencidosCredito(idCredito);
   }
 
   // METODO QUE PREPARA LOS COMBOS CON LOS PRODUCTOS SEGUN LA INSTITUCION SELECCIONADA
-  public void preparaProductos(){
+  public void preparaProductos() {
     listaProductos = productoDao.buscarProductosPorInstitucion(institucionSeleccionada.getIdInstitucion());
   }
-  
-  // METODO QUE PREPARA LA LISTA DE SUBPRODUCTOS SEGUN EL PRODUCTO SELECCIONADO
-  public void preparaSubproductos(){
-  listaSubproductos = subproductoDao.buscarSubproductosPorProducto(productoSeleccionado.getIdProducto());
-  }
-  
+
   // METODO QUE OBTIENE LOS CREDITOS DE LOS PRODUCTOS SELECCIONADOS
-  public void obtenerCreditosPorProductos(){
+  public void obtenerCreditosPorProductosCampana() {
     listaCreditos2.clear();
-    listaCreditos2 = creditoDao.buscarCreditosPorProducto(productoSeleccionado.getIdProducto());
+    if (institucionSeleccionada.getIdInstitucion() == 0) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una institucion."));
+    } else {
+      List<Credito> lista = creditoDao.buscarCreditosPorProducto(productoSeleccionado.getIdProducto());
+      if (campanaSeleccionada.getIdCampana() == 0) {
+        listaCreditos2 = lista;
+      } else {
+        for (int i = 0; i < (lista.size()); i++) {
+          if (lista.get(i).getCampana().getIdCampana().intValue() == campanaSeleccionada.getIdCampana()) {
+            listaCreditos2.add(lista.get(i));
+          }
+        }
+      }
+    }
   }
-  
+
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
   // ***********************************************************************************************************************
@@ -271,12 +286,20 @@ public class BusquedaBean implements Serializable {
     this.listaProductos = listaProductos;
   }
 
-  public List<Subproducto> getListaSubproductos() {
-    return listaSubproductos;
+  public Campana getCampanaSeleccionada() {
+    return campanaSeleccionada;
   }
 
-  public void setListaSubproductos(List<Subproducto> listaSubproductos) {
-    this.listaSubproductos = listaSubproductos;
+  public void setCampanaSeleccionada(Campana campanaSeleccionada) {
+    this.campanaSeleccionada = campanaSeleccionada;
+  }
+
+  public List<Campana> getListaCampanas() {
+    return listaCampanas;
+  }
+
+  public void setListaCampanas(List<Campana> listaCampanas) {
+    this.listaCampanas = listaCampanas;
   }
 
   // CLASE MIEMBRO PARA PODER MOSTRAR EL CREDITO Y SU DIRECCION

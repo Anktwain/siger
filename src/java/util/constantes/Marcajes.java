@@ -29,4 +29,6 @@ public interface Marcajes {
   
   public static final int SIN_MARCAJE = 9;
  
+  public static final int URGENTE = 10;
+  
 }

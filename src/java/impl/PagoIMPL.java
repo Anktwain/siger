@@ -17,6 +17,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.Convenios;
 import util.constantes.Pagos;
 import util.log.Logs;
 
@@ -89,12 +90,11 @@ public class PagoIMPL implements PagoDAO {
   @Override
   public List<Pago> buscarPagosPorCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Pago> pagos;
+    List<Pago> pagos = new ArrayList();
     String consulta = "SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM promesa_pago WHERE id_convenio_pago IN (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + "));";
     try {
       pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
     } catch (HibernateException he) {
-      pagos = null;
       Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
@@ -137,10 +137,7 @@ public class PagoIMPL implements PagoDAO {
   public Pago buscarPagoHoy(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Pago pago = new Pago();
-    Date f = new Date();
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String fecha = df.format(f);
-    String consulta = "SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito = " + idCredito + ") AND fecha_registro = '" + fecha + "';";
+    String consulta = "SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito = " + idCredito + ") AND fecha_registro = CURDATE() AND estatus = " + Pagos.APROBADO + ";";
     try {
       pago = (Pago) sesion.createSQLQuery(consulta).addEntity(Pago.class).uniqueResult();
     } catch (HibernateException he) {
@@ -213,11 +210,12 @@ public class PagoIMPL implements PagoDAO {
   public Number calcularRecuperacionDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number rec;
-    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String fecha = df.format(new Date());
     String consulta = "SELECT ROUND((((SELECT SUM(monto) FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + " AND id_credito NOT IN (SELECT id_credito FROM devolucion))))*100)/(SELECT SUM(monto) FROM credito WHERE id_despacho = " + idDespacho + " AND id_credito NOT IN (SELECT id_credito FROM devolucion))),4);";
     try {
       rec = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+      if(rec == null){
+        rec = 0;
+      }
     } catch (HibernateException he) {
       rec = -1;
       Logs.log.error(he.getStackTrace());
@@ -262,6 +260,25 @@ public class PagoIMPL implements PagoDAO {
     } else {
       return 0;
     }
+  }
+
+  @Override
+  public Pago buscarPagoFechaCredito(Date fecha, int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Pago pago = new Pago();
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String f = df.format(fecha);
+    String consulta = "SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito = " + idCredito + " AND estatus != " + Convenios.FINALIZADO + ") AND fecha_registro = '" + f + "' AND estatus = " + Pagos.APROBADO + ";";
+    try {
+      pago = (Pago) sesion.createSQLQuery(consulta).addEntity(Pago.class).uniqueResult();
+    } catch (HibernateException he) {
+      pago = null;
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return pago;
   }
 
   private void cerrar(Session sesion) {

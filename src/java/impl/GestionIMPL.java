@@ -73,7 +73,6 @@ public class GestionIMPL implements GestionDAO {
     try {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
     } catch (HibernateException he) {
-      gestiones = null;
       Logs.log.error(consulta);
       Logs.log.error(he.getStackTrace());
     } finally {

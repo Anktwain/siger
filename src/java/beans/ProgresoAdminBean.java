@@ -27,7 +27,7 @@ import javax.faces.context.FacesContext;
 @ViewScoped
 
 public class ProgresoAdminBean implements Serializable {
-
+  
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
   private final PagoDAO pagoDao;
@@ -36,38 +36,38 @@ public class ProgresoAdminBean implements Serializable {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
-
+  
   public ProgresoAdminBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     pagoDao = new PagoIMPL();
     impresionDao = new ImpresionIMPL();
   }
-
+  
   public String calcularCreditos() {
     return creditoDao.contarCreditosActivos(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
-
+  
   public String calcularVisitas() {
     return impresionDao.calcularVisitasDomiciliariasPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
-
+  
   public String calcularPagosPorAprobar() {
     return pagoDao.calcularPagosPendientes(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
-
+  
   public String calcularRecuperacion() {
-    return pagoDao.calcularRecuperacionDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString() + " %";
+    return String.format("%,2.6f", pagoDao.calcularRecuperacionDespacho(indexBean.getUsuario().getDespacho().getIdDespacho())) + " %";
   }
-
+  
   public String gestionesHoy() {
     return gestionDao.calcularGestionesHoyPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
-
+  
   public String saldoAprobadoHoy() {
     return pagoDao.calcularSaldoAprobadoHoy(indexBean.getUsuario().getDespacho().getIdDespacho()).toString();
   }
-
+  
   public String gestorDelDiaPagos() {
     try {
       return pagoDao.obtenerGestorDelDia(indexBean.getUsuario().getDespacho().getIdDespacho());
@@ -75,7 +75,7 @@ public class ProgresoAdminBean implements Serializable {
       return "";
     }
   }
-
+  
   public String gestorDelDiaGestiones() {
     try {
       return gestionDao.obtenerGestorDelDia(indexBean.getUsuario().getDespacho().getIdDespacho());
@@ -83,5 +83,5 @@ public class ProgresoAdminBean implements Serializable {
       return "";
     }
   }
-
+  
 }
