@@ -7,6 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.Correos;
 import util.log.Logs;
 
 /**
@@ -28,7 +29,6 @@ public class EmailIMPL implements EmailDAO {
   public Email insertar(Email email) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
-
     try {
       sesion.save(email);
       tx.commit();
@@ -57,7 +57,6 @@ public class EmailIMPL implements EmailDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       sesion.update(email);
       tx.commit();
@@ -67,11 +66,10 @@ public class EmailIMPL implements EmailDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
-
     return ok;
   }
 
@@ -85,7 +83,6 @@ public class EmailIMPL implements EmailDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       sesion.delete(email);
       tx.commit();
@@ -95,7 +92,7 @@ public class EmailIMPL implements EmailDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -126,10 +123,8 @@ public class EmailIMPL implements EmailDAO {
   @Override
   public List<Email> buscarPorSujeto(int idSujeto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Email> listaEmails;
     String consulta = "select e.* from email e join sujeto s on s.id_sujeto=e.id_sujeto where s.id_sujeto=" + idSujeto + ";";
-
     try {
       listaEmails = sesion.createSQLQuery(consulta).addEntity(Email.class).list();
     } catch (HibernateException he) {
@@ -138,8 +133,23 @@ public class EmailIMPL implements EmailDAO {
     } finally {
       cerrar(sesion);
     }
-
     return listaEmails;
+  }
+
+  @Override
+  public Email buscarPrincipalPorSujeto(int idSujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Email correo = new Email();
+    String consulta = "SELECT * FROM email WHERE id_sujeto = " + idSujeto + " AND principal = " + Correos.PRINCIPAL + ";";
+    try {
+      correo = (Email) sesion.createSQLQuery(consulta).addEntity(Email.class).uniqueResult();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return correo;
   }
 
   /**

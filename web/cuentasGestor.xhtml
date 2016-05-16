@@ -7,28 +7,63 @@
   </h:head>
   <h:body>
     <div class="main-container">
-      <h:form id="formCuentasGestor">
-        <p:contextMenu for="campanasGestor" style="width:200px;">
-          <p:menuitem value="Gestionar campaña" icon="ui-icon-check" actionListener="#{cuentasGestorBean.preparaCampana()}" update=":growl" />
-        </p:contextMenu>
-        <p:dataTable id="campanasGestor" var="l" value="#{cuentasGestorBean.listaCreditosCampanas}" selectionMode="single" selection="#{cuentasGestorBean.seleccion}" rowKey="#{l.idCampana}" emptyMessage="No existen campañas disponibles." style="width: 850px; padding-left: 50px;">
-          <p:column headerText="Campaña" style="width:380px;">
-            <h:outputText value="#{l.nombreCampana}" />
-          </p:column>
-          <p:column headerText="Estatus" style="width:100px;">
-            <h:outputText value="#{cuentasGestorBean.verificarCampanaEnCurso(l)}" />
-          </p:column>
-          <p:column headerText="Progreso" style="width:100px;">
-            <h:outputText value="#{l.progresoCampana} / #{l.cuentasEnCampana}" style="float: right;" />
-          </p:column>
-          <p:column headerText="Cuentas" style="width:100px;">
-            <h:outputText value="#{l.cuentasEnCampana}" />
-          </p:column>
-          <p:column headerText="Recibidas" style="width:100px;">
-            <h:outputText value="#{l.nuevasEnCampana}" />
-          </p:column>
-        </p:dataTable>
-      </h:form>
+      <div class="pull-right" style="padding-right: 200px;">
+        <h:form id="formCuentasGestor">
+          <p:contextMenu for="campanasGestor" style="width:200px;">
+            <p:menuitem value="Gestionar campaña" icon="ui-icon-check" actionListener="#{cuentasGestorBean.preparaCampana()}" update=":growl" />
+          </p:contextMenu>
+          <p:dataTable id="campanasGestor" var="l" value="#{cuentasGestorBean.listaCreditosCampanas}" selectionMode="single" selection="#{cuentasGestorBean.seleccion}" rowKey="#{l.idCampana}" emptyMessage="No existen campañas disponibles." style="width: 850px; padding-left: 50px;" rendered="#{cuentasGestorBean.habilitaCampanas}">
+            <p:column headerText="Campaña" style="width:380px;">
+              <h:outputText value="#{l.nombreCampana}" />
+            </p:column>
+            <p:column headerText="Estatus" style="width:100px;">
+              <h:outputText value="#{cuentasGestorBean.verificarCampanaEnCurso(l)}" />
+            </p:column>
+            <p:column headerText="Progreso" style="width:100px;">
+              <h:outputText value="#{l.progresoCampana} / #{l.cuentasEnCampana}" style="float: right;" />
+            </p:column>
+            <p:column headerText="Cuentas" style="width:100px;">
+              <h:outputText value="#{l.cuentasEnCampana}" />
+            </p:column>
+            <p:column headerText="Recibidas" style="width:100px;">
+              <h:outputText value="#{l.nuevasEnCampana}" />
+            </p:column>
+          </p:dataTable>
+        </h:form>
+      </div>
+      <div class="pull-left" style="padding-left: 100px;">
+        <h:form id="menuGestorForm">
+          <p:commandButton value="Calcular campañas" icon="ui-icon fa fa-briefcase fa-2x" actionListener="#{cuentasGestorBean.cargar()}" style="width: 200px; height: 100px;" update="formCuentasGestor, menuGestorForm" rendered="#{!cuentasGestorBean.habilitaCampanas}" />
+          <div align="center" class="grey-container" style="width: 200px;">
+            <a href="progresoGestor.xhtml" class="shortcut-link">
+              <span class="shortcut-icon">
+                <i class="fa fa-area-chart fa-2x"></i>
+              </span>
+              <span class="text">Ver progreso del dia</span>
+            </a>
+          </div>
+          <div align="center" class="grey-container" style="width: 200px;">
+            <a href="progresoGestor.xhtml" class="shortcut-link">
+              <span class="shortcut-icon">
+                <i class="fa fa-usd fa-2x"></i>
+                <span class="shortcut-alert">
+                  <p:outputLabel value="#{progresoTotalGestorBean.pagosPendientesHoy()}" />
+                </span>
+              </span>
+              <span class="text">Ver pagos quincena</span>
+            </a>
+          </div>
+        </h:form>
+      </div>
     </div>
+    <!-- DIALOGO BARRA DE CARGA -->
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+      <p:outputLabel value="Espere por favor..."/>
+      <br />
+      <div align="center">
+        <p:graphicImage library="img" name="loadingBarra.gif" />
+      </div>
+    </p:dialog>
   </h:body>
 </html>

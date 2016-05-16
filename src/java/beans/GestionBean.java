@@ -153,11 +153,13 @@ public class GestionBean implements Serializable {
       sujetoSeleccionado = quienGestionDao.buscarPorId(89);
       preparaEstatus();
     }
-    if (descripcionSeleccionada.getTextoGestion().equals("NO CONTESTA")) {
-      gestion = descripcionSeleccionada.getTextoGestion();
-    }
-    else if(descripcionSeleccionada.getTextoGestion().equals("GRABACION INDICA QUE NO EXISTE")){
-      gestion = "NO EXISTE";
+    switch (descripcionSeleccionada.getTextoGestion()) {
+      case "NO CONTESTA":
+        gestion = descripcionSeleccionada.getTextoGestion();
+        break;
+      case "GRABACION INDICA QUE NO EXISTE":
+        gestion = "NUMERO NO EXISTE";
+        break;
     }
   }
 

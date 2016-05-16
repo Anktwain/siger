@@ -33,6 +33,7 @@ import dto.Gestion;
 import dto.Gestor;
 import dto.Historial;
 import dto.MotivoDevolucion;
+import dto.QuienGestion;
 import dto.Telefono;
 import impl.ActualizacionIMPL;
 import impl.ConceptoDevolucionIMPL;
@@ -48,6 +49,7 @@ import impl.GestorIMPL;
 import impl.HistorialIMPL;
 import impl.MarcajeIMPL;
 import impl.MotivoDevolucionIMPL;
+import impl.QuienGestionIMPL;
 import impl.TelefonoIMPL;
 import java.io.IOException;
 import java.io.Serializable;
@@ -63,9 +65,12 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.GestionAutomatica;
+import util.constantes.Correos;
 import util.constantes.Devoluciones;
 import util.constantes.Marcajes;
+import util.constantes.Patrones;
 import util.constantes.Perfiles;
+import util.constantes.Telefonos;
 import util.log.Logs;
 
 /**
@@ -86,6 +91,8 @@ public class VistaCreditoBean implements Serializable {
   private boolean habilitaFacs;
   private boolean habilitaCredsRelacionados;
   private boolean habilitaHistorial;
+  private boolean principalNuevoTelefono;
+  private boolean principalNuevoCorreo;
   private String observaciones;
   private String numeroCreditos;
   private String calleNumero;
@@ -101,6 +108,15 @@ public class VistaCreditoBean implements Serializable {
   private String fvp;
   private String fechaQuebranto;
   private String numeroCuenta;
+  private String ladaNuevoTelefono;
+  private String nuevoTelefono;
+  private String tipoNuevoTelefono;
+  private String horarioNuevoTelefono;
+  private String nuevoCorreo;
+  private String tipoNuevoCorreo;
+  private String nuevoContacto;
+  private String tipoNuevoContacto;
+  private String observacionesContacto;
   private float saldoVencido;
   private int mesesVencidos;
   private Credito creditoActual;
@@ -111,10 +127,10 @@ public class VistaCreditoBean implements Serializable {
   private Telefono telefonoSeleccionado;
   private Email correoSeleccionado;
   private final CreditoDAO creditoDao;
-  private final DireccionDAO direccionDAO;
-  private final TelefonoDAO telefonoDAO;
-  private final EmailDAO emailDAO;
-  private final ContactoDAO contactoDAO;
+  private final DireccionDAO direccionDao;
+  private final TelefonoDAO telefonoDao;
+  private final EmailDAO emailDao;
+  private final ContactoDAO contactoDao;
   private final HistorialDAO historialDao;
   private final GestionDAO gestionDao;
   private final GestorDAO gestorDao;
@@ -136,6 +152,7 @@ public class VistaCreditoBean implements Serializable {
   private List<ConceptoDevolucion> listaConceptos;
   private List<MotivoDevolucion> listaMotivos;
   private List<Fac> actualizaciones;
+  private List<String> listaSujetos;
 
   public VistaCreditoBean() {
     telefonoSeleccionado = new Telefono();
@@ -146,10 +163,10 @@ public class VistaCreditoBean implements Serializable {
     creditoRelacionadoSeleccionado = new Credito();
     gestorSeleccionado = new Gestor();
     creditoDao = new CreditoIMPL();
-    direccionDAO = new DireccionIMPL();
-    telefonoDAO = new TelefonoIMPL();
-    emailDAO = new EmailIMPL();
-    contactoDAO = new ContactoIMPL();
+    direccionDao = new DireccionIMPL();
+    telefonoDao = new TelefonoIMPL();
+    emailDao = new EmailIMPL();
+    contactoDao = new ContactoIMPL();
     historialDao = new HistorialIMPL();
     gestionDao = new GestionIMPL();
     gestorDao = new GestorIMPL();
@@ -167,6 +184,7 @@ public class VistaCreditoBean implements Serializable {
     listaGestiones = new ArrayList();
     listaGestores = new ArrayList();
     actualizaciones = new ArrayList();
+    listaSujetos = new ArrayList();
     listaConceptos = conceptoDevolucionDao.obtenerConceptos();
     obtenerDatos();
   }
@@ -177,10 +195,9 @@ public class VistaCreditoBean implements Serializable {
     // HABILITAR BOTON DE MARCAR URGENTE
     habilitaUrgente = creditoActual.getMarcaje().getIdMarcaje() == Marcajes.URGENTE;
     // SE OBTIENE EL NUMERO DE CUENTA DEL CREDITO
-    if(creditoActual.getNumeroCuenta() == null){
+    if ((creditoActual.getNumeroCuenta() == null) || (creditoActual.getNumeroCuenta().length() == 0)) {
       numeroCuenta = "N/D";
-    }
-    else{
+    } else {
       numeroCuenta = creditoActual.getNumeroCuenta();
     }
     // SE OBTIENE LA LISTA DE GESTORES PARA REASIGNAR
@@ -190,8 +207,8 @@ public class VistaCreditoBean implements Serializable {
     // OBTENER LA PRIMER DIRECCION DEL DEUDOR
     Direccion d;
     try {
-      d = direccionDAO.buscarPorSujeto(idSujeto).get(0);
-      calleNumero = d.getCalle() + ",";
+      d = direccionDao.buscarPorSujeto(idSujeto).get(0);
+      calleNumero = d.getCalle() + " " + d.getExterior() + " " + d.getInterior() + ",";
       coloniaMunicipio = d.getColonia().getNombre() + ",  " + d.getMunicipio().getNombre() + ",";
       estadoCP = d.getEstadoRepublica().getNombre() + ",  C.P. " + d.getColonia().getCodigoPostal();
     } catch (Exception e) {
@@ -201,17 +218,17 @@ public class VistaCreditoBean implements Serializable {
     // OBTENEMOS LAS DIFERENTES FECHAS QUE SE REQUIEREN
     try {
       // OBTENER EL PRIMER TELEFONO DEL DEUDOR
-      Telefono tel;
-      tel = telefonoDAO.buscarPorSujeto(idSujeto).get(0);
-      String fon = tel.getNumero();
-      telefono = "(" + fon.substring(0, (fon.length()) - 7) + ") - " + fon.substring((fon.length()) - 7, fon.length() - 4) + " - " + fon.substring(fon.length() - 4, fon.length());
-      // OBTENER EL PRIMER CORREO DEL DEUDOR
-      Email mail;
-      mail = emailDAO.buscarPorSujeto(idSujeto).get(0);
-      correo = mail.getDireccion().toLowerCase();
+      telefono = formatoTelefono(telefonoDao.buscarPorSujeto(idSujeto).get(0).getNumero());
     } catch (Exception e) {
-      Logs.log.error("No se pudo obtener el primer email del deudor.");
+      Logs.log.error("No se pudo obtener el primer telefono del deudor.");
       Logs.log.error(e);
+    }
+    // SE OBTIENE EL CORREO PRINCIPAL DEL DEUDOR
+    Email mail = emailDao.buscarPrincipalPorSujeto(idSujeto);
+    if (mail != null) {
+      correo = mail.getDireccion().toLowerCase();
+    } else {
+      correo = "";
     }
     // SE OBTIENEN LAS FECHAS DE INTERES DEL CREDITO
     DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
@@ -241,24 +258,49 @@ public class VistaCreditoBean implements Serializable {
     // OBTENEMOS LA LISTA DE GESTIONES PREVIAS
     obtenerGestionesAnteriores();
     // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
-    listaDirecciones = direccionDAO.buscarPorSujeto(idSujeto);
+    listaDirecciones = direccionDao.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CREDITOS RELACIONADOS
     creditosRelacionados = creditoDao.buscarCreditosRelacionados(creditoActual.getIdCredito(), creditoActual.getDeudor().getNumeroDeudor());
     habilitaCredsRelacionados = !creditosRelacionados.isEmpty();
     // OBTENEMOS EL NUMERO DE CREDITOS PARA ESTE CLIENTE
     numeroCreditos = String.valueOf(creditosRelacionados.size() + 1);
+    //OBTENEMOS EL TELEFONO PRINCIPAL DEL DEUDOR
+    Telefono p = telefonoDao.buscarTelefonoPrincipal(creditoActual.getDeudor().getSujeto().getIdSujeto());
+    if (p != null) {
+      telefonoPrincipal = formatoTelefono(p.getNumero());
+    } else {
+      telefonoPrincipal = "";
+    }
     // OBTENEMOS LA LISTA DE TELEFONOS DEL DEUDOR
-    listaTelefonos = telefonoDAO.buscarPorSujeto(idSujeto);
+    listaTelefonos = telefonoDao.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CORREOS ELECTRONICOS DEL DEUDOR
-    listaCorreos = emailDAO.buscarPorSujeto(idSujeto);
+    listaCorreos = emailDao.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CONTACTOS DEL DEUDOR
-    listaContactos = contactoDAO.buscarContactoPorSujeto(idSujeto);
+    listaContactos = contactoDao.buscarContactoPorSujeto(idSujeto);
     // OBTENEMOS EL HISTORIAL DEL CREDITO
     historial = historialDao.buscarHistorialPorIdCredito(creditoActual.getIdCredito());
     habilitaHistorial = !historial.isEmpty();
     // OBTENEMOS LA LISTA DE ACTUALIZACIONES DEL CREDITO
     actualizaciones = facDao.buscarPorCredito(creditoActual.getIdCredito());
     habilitaFacs = !actualizaciones.isEmpty();
+    // SE OBTIENE LA LISTA DE SUJETOS QUE PODRIAN SER NUEVOS CONTACTOS
+    List< QuienGestion> sujetos = new QuienGestionIMPL().buscarTodo();
+    for (int i = 1; i < (sujetos.size()); i++) {
+      if (sujetos.get(i).getTipoQuienGestion().getIdTipoQuienGestion() < 7) {
+        listaSujetos.add(sujetos.get(i).getQuien());
+      }
+    }
+  }
+
+  // METODO QUE DA FORMATO A LOS TELEFONOS
+  public String formatoTelefono(String telefono) {
+    if (telefono.length() >= 7) {
+      return "(" + telefono.substring(0, (telefono.length()) - 7) + ") - " + telefono.substring((telefono.length()) - 7, telefono.length() - 4) + " - " + telefono.substring(telefono.length() - 4, telefono.length());
+    } else if (telefono.length() > 7) {
+      return telefono.substring(0, 2) + " - " + telefono.substring(3, 7);
+    } else {
+      return telefono;
+    }
   }
 
   // METODO PARA ABRIR EL DIALOGO
@@ -440,6 +482,122 @@ public class VistaCreditoBean implements Serializable {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se marco la cuenta como urgente."));
     } else {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se marco la cuenta. Contacte al equipo de sistemas."));
+    }
+  }
+
+  // METODO QUE AGREGA UN TELEFONO A LA BASE DE DATOS
+  public void agregarTelefono() {
+    Telefono t = new Telefono();
+    t.setSujeto(creditoActual.getDeudor().getSujeto());
+    t.setNumero(nuevoTelefono);
+    t.setLada(ladaNuevoTelefono);
+    t.setTipo(tipoNuevoTelefono);
+    t.setHorario(horarioNuevoTelefono);
+    t = telefonoDao.insertar(t);
+    if (t != null) {
+      if (principalNuevoTelefono) {
+        establecerTelefonoPrincipal(t);
+      }
+      nuevoTelefono = "";
+      ladaNuevoTelefono = "";
+      horarioNuevoTelefono = "";
+      tipoNuevoTelefono = "";
+      principalNuevoTelefono = false;
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el nuevo telefono."));
+    } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el nuevo telefono. Contacte al equipo de sistemas."));
+    }
+  }
+
+  // METODO QUE DETERMINA UN NUMERO TELEFONICO COMO PRINCIPAL
+  public void establecerTelefonoPrincipal(Telefono telefono) {
+    List<Telefono> telefonos = telefonoDao.buscarPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
+    boolean ok = true;
+    for (int i = 0; i < (telefonos.size()); i++) {
+      telefonos.get(i).setPrincipal(Telefonos.NORMAL);
+      ok = ok & (telefonoDao.editar(telefonos.get(i)));
+    }
+    if (ok) {
+      telefono.setPrincipal(Telefonos.PRINCIPAL);
+      if (telefonoDao.editar(telefono)) {
+        telefonoPrincipal = formatoTelefono(telefono.getLada() + telefono.getNumero());
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se establecio el telefono como principal."));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo establecer el telefono como principal. Contacte al equipo de sistemas."));
+      }
+    } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo establecer el telefono como principal. Contacte al equipo de sistemas."));
+    }
+  }
+
+  // METODO QUE AGREGA UN EMAIL A LA BASE DE DATOS
+  public void agregarEmail() {
+    if (!nuevoCorreo.matches(Patrones.PATRON_EMAIL)) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La direccion de correo proporcionada no tiene un formato valido."));
+    } else {
+      Email e = new Email();
+      e.setSujeto(creditoActual.getDeudor().getSujeto());
+      e.setDireccion(nuevoCorreo);
+      e.setTipo(tipoNuevoCorreo);
+      e = emailDao.insertar(e);
+      if (e != null) {
+        if (principalNuevoCorreo) {
+          establecerCorreoPrincipal(e);
+        }
+        nuevoCorreo = "";
+        tipoNuevoCorreo = "";
+        principalNuevoCorreo = false;
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el nuevo correo."));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el nuevo correo. Contacte al equipo de sistemas."));
+      }
+    }
+  }
+
+  // METODO QUE DETERMINA UN CORREO ELECTRONICO COMO PRINCIPAL
+  public void establecerCorreoPrincipal(Email c) {
+    List<Email> correos = emailDao.buscarPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
+    boolean ok = true;
+    for (int i = 0; i < (correos.size()); i++) {
+      correos.get(i).setPrincipal(Correos.NORMAL);
+      ok = ok & (emailDao.editar(correos.get(i)));
+    }
+    if (ok) {
+      c.setPrincipal(Correos.PRINCIPAL);
+      if (emailDao.editar(c)) {
+        correo = c.getDireccion();
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se establecio el correo electronico como principal."));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo establecer el correo electronico como principal. Contacte al equipo de sistemas."));
+      }
+    } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo establecer el correo electronico como principal. Contacte al equipo de sistemas."));
+    }
+  }
+
+  // METODO QUE AGREGA UN NUEVO CONTACTO
+  public void agregarContacto() {
+    if (nuevoContacto.equals("")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe escribir un nombre para el nuevo contacto."));
+    } else if (tipoNuevoContacto.equals("")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar el tipo de contacto."));
+    } else {
+      Contacto c = new Contacto();
+      c.setDeudor(creditoActual.getDeudor());
+      c.setSujeto(creditoActual.getDeudor().getSujeto());
+      c.setNombre(nuevoContacto);
+      c.setTipo(tipoNuevoContacto);
+      c.setObservaciones(observacionesContacto);
+      c = contactoDao.insertar(c);
+      if (c != null) {
+        listaContactos = contactoDao.buscarContactoPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
+        nuevoContacto = "";
+        tipoNuevoContacto = "";
+        observacionesContacto = "";
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el nuevo contacto."));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el nuevo contacto. Contacte al equipo de sistemas."));
+      }
     }
   }
 
@@ -757,6 +915,102 @@ public class VistaCreditoBean implements Serializable {
 
   public void setNumeroCuenta(String numeroCuenta) {
     this.numeroCuenta = numeroCuenta;
+  }
+
+  public boolean isPrincipalNuevoTelefono() {
+    return principalNuevoTelefono;
+  }
+
+  public void setPrincipalNuevoTelefono(boolean principalNuevoTelefono) {
+    this.principalNuevoTelefono = principalNuevoTelefono;
+  }
+
+  public String getLadaNuevoTelefono() {
+    return ladaNuevoTelefono;
+  }
+
+  public void setLadaNuevoTelefono(String ladaNuevoTelefono) {
+    this.ladaNuevoTelefono = ladaNuevoTelefono;
+  }
+
+  public String getNuevoTelefono() {
+    return nuevoTelefono;
+  }
+
+  public void setNuevoTelefono(String nuevoTelefono) {
+    this.nuevoTelefono = nuevoTelefono;
+  }
+
+  public String getTipoNuevoTelefono() {
+    return tipoNuevoTelefono;
+  }
+
+  public void setTipoNuevoTelefono(String tipoNuevoTelefono) {
+    this.tipoNuevoTelefono = tipoNuevoTelefono;
+  }
+
+  public String getHorarioNuevoTelefono() {
+    return horarioNuevoTelefono;
+  }
+
+  public void setHorarioNuevoTelefono(String horarioNuevoTelefono) {
+    this.horarioNuevoTelefono = horarioNuevoTelefono;
+  }
+
+  public boolean isPrincipalNuevoCorreo() {
+    return principalNuevoCorreo;
+  }
+
+  public void setPrincipalNuevoCorreo(boolean principalNuevoCorreo) {
+    this.principalNuevoCorreo = principalNuevoCorreo;
+  }
+
+  public String getNuevoCorreo() {
+    return nuevoCorreo;
+  }
+
+  public void setNuevoCorreo(String nuevoCorreo) {
+    this.nuevoCorreo = nuevoCorreo;
+  }
+
+  public String getTipoNuevoCorreo() {
+    return tipoNuevoCorreo;
+  }
+
+  public void setTipoNuevoCorreo(String tipoNuevoCorreo) {
+    this.tipoNuevoCorreo = tipoNuevoCorreo;
+  }
+
+  public String getNuevoContacto() {
+    return nuevoContacto;
+  }
+
+  public void setNuevoContacto(String nuevoContacto) {
+    this.nuevoContacto = nuevoContacto;
+  }
+
+  public String getTipoNuevoContacto() {
+    return tipoNuevoContacto;
+  }
+
+  public void setTipoNuevoContacto(String tipoNuevoContacto) {
+    this.tipoNuevoContacto = tipoNuevoContacto;
+  }
+
+  public List<String> getListaSujetos() {
+    return listaSujetos;
+  }
+
+  public void setListaSujetos(List<String> listaSujetos) {
+    this.listaSujetos = listaSujetos;
+  }
+
+  public String getObservacionesContacto() {
+    return observacionesContacto;
+  }
+
+  public void setObservacionesContacto(String observacionesContacto) {
+    this.observacionesContacto = observacionesContacto;
   }
 
 }

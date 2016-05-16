@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 27/04/2016 09:32:54 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 11/05/2016 10:38:31 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Pago" optimistic-lock="version" table="pago">
     <id name="idPago" type="java.lang.Integer">
@@ -25,8 +25,11 @@
     <property name="estatus" type="int">
       <column name="estatus" not-null="true"/>
     </property>
-    <property name="monto" type="float">
-      <column name="monto" not-null="true" precision="12" scale="0"/>
+    <property name="montoPago" type="float">
+      <column name="monto_pago" not-null="true" precision="12" scale="0"/>
+    </property>
+    <property name="montoAprobado" type="float">
+      <column name="monto_aprobado" not-null="true" precision="12" scale="0"/>
     </property>
     <property name="numeroCuenta" type="string">
       <column length="50" name="numero_cuenta" not-null="true"/>

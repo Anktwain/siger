@@ -178,12 +178,32 @@ public class Carajeador {
 
         /* Asigna todos los emails encontrados para ese sujeto */
         for (String email : f.getCorreos()) {
-          emailDao.insert(session, new Email(sujeto, email, "Remesa"));
+          // ESTIMADO TIO:
+          // ME HE TOMADO EL ATREVIMIENTO DE UTILIZAR EL CONSTRUCTOR POR DEFECTO
+          // Y DESPUES ESTABLECERLE LOS ATRIBUTOS
+          // ESTO CON LA FINALIDAD DE QUE EN LOS NUEVOS POJOS NO MARQUE ERROR
+          // DISCULPA MI OSADIA
+          Email e = new Email();
+          e.setSujeto(sujeto);
+          e.setDireccion(email);
+          e.setTipo("Remesa");
+          emailDao.insert(session, e);
         }
 
         /* Asigna todos los teléfonos encontrados para ese sujeto */
         for (String telefono : f.getTelsAdicionales()) {
-          telefonoDao.insert(session, new Telefono(sujeto, telefono, "Remesa", null, null, "ND"));
+          // ESTIMADO TIO:
+          // ME HE TOMADO EL ATREVIMIENTO DE UTILIZAR EL CONSTRUCTOR POR DEFECTO
+          // Y DESPUES ESTABLECERLE LOS ATRIBUTOS
+          // ESTO CON LA FINALIDAD DE QUE EN LOS NUEVOS POJOS NO MARQUE ERROR
+          // DISCULPA MI OSADIA
+          Telefono t = new Telefono();
+          t.setSujeto(sujeto);
+          t.setNumero(telefono);
+          t.setTipo("Remesa");
+          t.setHorario("ND");
+          t.setPrincipal(0);
+          telefonoDao.insert(session, t);
         }
 
         /* Gestor al cual se asignará el crédito */

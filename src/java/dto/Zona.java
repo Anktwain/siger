@@ -1,5 +1,5 @@
 package dto;
-// Generated 27/04/2016 09:32:53 AM by Hibernate Tools 4.3.1
+// Generated 11/05/2016 10:38:30 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;

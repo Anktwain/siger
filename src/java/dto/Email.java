@@ -1,5 +1,5 @@
 package dto;
-// Generated 27/04/2016 09:32:53 AM by Hibernate Tools 4.3.1
+// Generated 11/05/2016 10:38:30 AM by Hibernate Tools 4.3.1
 
 
 
@@ -13,19 +13,22 @@ public class Email  implements java.io.Serializable {
      private Sujeto sujeto;
      private String direccion;
      private String tipo;
+     private int principal;
 
     public Email() {
     }
 
 	
-    public Email(Sujeto sujeto, String direccion) {
+    public Email(Sujeto sujeto, String direccion, int principal) {
         this.sujeto = sujeto;
         this.direccion = direccion;
+        this.principal = principal;
     }
-    public Email(Sujeto sujeto, String direccion, String tipo) {
+    public Email(Sujeto sujeto, String direccion, String tipo, int principal) {
        this.sujeto = sujeto;
        this.direccion = direccion;
        this.tipo = tipo;
+       this.principal = principal;
     }
    
     public Integer getIdEmail() {
@@ -55,6 +58,13 @@ public class Email  implements java.io.Serializable {
     
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+    public int getPrincipal() {
+        return this.principal;
+    }
+    
+    public void setPrincipal(int principal) {
+        this.principal = principal;
     }
 
 

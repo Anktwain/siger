@@ -13,177 +13,179 @@
     <div class="padding-md">
       <div class="clearfix" style="width: 1200px;">
         <div class="clearfix">
-          <h3 class="m-bottom-xs m-top-xs">
-            <p:outputLabel value="#{vistaCreditoBean.creditoActual.deudor.sujeto.nombreRazonSocial}" style="font-size: 28px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-          </h3>
-          <div class="pull-left">
-            <h4 class="m-bottom-xs m-top-xs">
-              <strong>
-                R.F.C: <p:outputLabel value="#{vistaCreditoBean.creditoActual.deudor.sujeto.rfc}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-              </strong>
-            </h4>
-            <h4 class="m-bottom-xs m-top-xs">
-              <strong>
-                Subproducto: <p:outputLabel value="#{vistaCreditoBean.creditoActual.subproducto.nombre}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-              </strong>
-            </h4>
-            <h5>
-              <strong>
-                Direccion:
-              </strong>
-            </h5>
-            <p:outputLabel value="#{vistaCreditoBean.calleNumero}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-            &nbsp;
-            <p:outputLabel value="#{vistaCreditoBean.coloniaMunicipio}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-            &nbsp;
-            <p:outputLabel value="#{vistaCreditoBean.estadoCP}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-            <br />
-            <h5>
-              <strong>
-                Telefono asociado al credito:
-              </strong>
-            </h5>
-            <p:outputLabel value="#{vistaCreditoBean.telefono}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-            <br />
-            <h5>
-              <strong>
-                Telefono principal:
-              </strong>
-            </h5>
-            <p:outputLabel value="#{vistaCreditoBean.telefonoPrincipal}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-            <br />
-            <h5>
-              <strong>
-                Correo electronico principal:
-              </strong>
-            </h5>
-            <p:outputLabel value="#{vistaCreditoBean.correo}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-            <br />
-            <h5>
-              <strong>
-                Informacion ultima gestion:
-              </strong>
-            </h5>
-            <p:outputLabel value="#{vistaCreditoBean.estatusUltimaGestion}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-          </div>
-          <div class="pull-right text-right">
-            <table border="1">
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Numero de credito:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <p:outputLabel value="#{vistaCreditoBean.creditoActual.numeroCredito}" style="font-size: 24px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Numero de cuenta:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <p:outputLabel value="#{vistaCreditoBean.numeroCuenta}" style="font-size: 24px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Fecha de inicio:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Fecha Ultimo Pago:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <p:outputLabel value="#{vistaCreditoBean.fup}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Fecha Ultimo Vencimiento Pagado:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <p:outputLabel value="#{vistaCreditoBean.fvp}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Fecha Fin del credito:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <p:outputLabel value="#{vistaCreditoBean.fechaFin}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Fecha Quebranto:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <p:outputLabel value="#{vistaCreditoBean.fechaQuebranto}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Mensualidad:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <h:outputText value="#{vistaCreditoBean.creditoActual.mensualidad}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
-                    <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                  </h:outputText>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Meses vencidos:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <p:outputLabel value="#{vistaCreditoBean.mesesVencidos}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Saldo vencido:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <h:outputText value="#{vistaCreditoBean.saldoVencido}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
-                    <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                  </h:outputText>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <strong>
-                    Creditos de este cliente:
-                  </strong>
-                </td>
-                <td style="padding-left: 10px; padding-right: 10px;">
-                  <p:outputLabel value="#{vistaCreditoBean.numeroCreditos}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                </td>
-              </tr>
-            </table>
-          </div>
+          <h:form id="datosCreditoForm">
+            <h3 class="m-bottom-xs m-top-xs">
+              <p:outputLabel value="#{vistaCreditoBean.creditoActual.deudor.sujeto.nombreRazonSocial}" style="font-size: 28px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            </h3>
+            <div class="pull-left">
+              <h4 class="m-bottom-xs m-top-xs">
+                <strong>
+                  R.F.C: <p:outputLabel value="#{vistaCreditoBean.creditoActual.deudor.sujeto.rfc}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                </strong>
+              </h4>
+              <h4 class="m-bottom-xs m-top-xs">
+                <strong>
+                  Subproducto: <p:outputLabel value="#{vistaCreditoBean.creditoActual.subproducto.nombre}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                </strong>
+              </h4>
+              <h5>
+                <strong>
+                  Direccion:
+                </strong>
+              </h5>
+              <p:outputLabel value="#{vistaCreditoBean.calleNumero}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              &nbsp;
+              <p:outputLabel value="#{vistaCreditoBean.coloniaMunicipio}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              &nbsp;
+              <p:outputLabel value="#{vistaCreditoBean.estadoCP}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <br />
+              <h5>
+                <strong>
+                  Telefono asociado al credito:
+                </strong>
+              </h5>
+              <p:outputLabel value="#{vistaCreditoBean.telefono}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <br />
+              <h5>
+                <strong>
+                  Telefono principal:
+                </strong>
+              </h5>
+              <p:outputLabel value="#{vistaCreditoBean.telefonoPrincipal}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <br />
+              <h5>
+                <strong>
+                  Correo electronico principal:
+                </strong>
+              </h5>
+              <p:outputLabel value="#{vistaCreditoBean.correo}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <br />
+              <h5>
+                <strong>
+                  Informacion ultima gestion:
+                </strong>
+              </h5>
+              <p:outputLabel value="#{vistaCreditoBean.estatusUltimaGestion}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            </div>
+            <div class="pull-right text-right">
+              <table border="1">
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Numero de credito:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <p:outputLabel value="#{vistaCreditoBean.creditoActual.numeroCredito}" style="font-size: 24px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Numero de cuenta:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <p:outputLabel value="#{vistaCreditoBean.numeroCuenta}" style="font-size: 24px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Fecha de inicio:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <p:outputLabel value="#{vistaCreditoBean.fechaInicio}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Fecha Ultimo Pago:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <p:outputLabel value="#{vistaCreditoBean.fup}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Fecha Ultimo Vencimiento Pagado:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <p:outputLabel value="#{vistaCreditoBean.fvp}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Fecha Fin del credito:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <p:outputLabel value="#{vistaCreditoBean.fechaFin}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Fecha Quebranto:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <p:outputLabel value="#{vistaCreditoBean.fechaQuebranto}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Mensualidad:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <h:outputText value="#{vistaCreditoBean.creditoActual.mensualidad}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Meses vencidos:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <p:outputLabel value="#{vistaCreditoBean.mesesVencidos}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Saldo vencido:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <h:outputText value="#{vistaCreditoBean.saldoVencido}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Creditos de este cliente:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <p:outputLabel value="#{vistaCreditoBean.numeroCreditos}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </h:form>
         </div>
         <hr />
         <h:form id="barraDetalleCreditoForm">
@@ -257,7 +259,7 @@
                   </p:tab>
                   <p:tab title="Telefonos">
                     <p:contextMenu for="tablaTelefonosDetalleCredito" style="width:250px;">
-                      <p:menuitem value="Establecer como principal" icon="ui-icon-star" />
+                      <p:menuitem value="Establecer como principal" icon="ui-icon-star" actionListener="#{vistaCreditoBean.establecerTelefonoPrincipal(vistaCreditoBean.telefonoSeleccionado)}" update=":growl, datosCreditoForm" />
                     </p:contextMenu>
                     <p:dataTable id="tablaTelefonosDetalleCredito" var="t" value="#{vistaCreditoBean.listaTelefonos}" selection="#{vistaCreditoBean.telefonoSeleccionado}" selectionMode="single" rowKey="#{t.idTelefono}" emptyMessage="No existen numeros telefonicos asociados a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Telefono" > 
@@ -279,7 +281,7 @@
                   </p:tab>
                   <p:tab title="Correos">
                     <p:contextMenu for="tablaCorreosDetalleCredito" style="width:250px;">
-                      <p:menuitem value="Establecer como principal" icon="ui-icon-star" />
+                      <p:menuitem value="Establecer como principal" icon="ui-icon-star" actionListener="#{vistaCreditoBean.establecerCorreoPrincipal(vistaCreditoBean.correoSeleccionado)}" update=":growl, datosCreditoForm" />
                     </p:contextMenu>
                     <p:dataTable id="tablaCorreosDetalleCredito" var="co" value="#{vistaCreditoBean.listaCorreos}" selection="#{vistaCreditoBean.correoSeleccionado}" selectionMode="single" rowKey="#{co.idEmail}" emptyMessage="No existen correos electronicos asociados a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Direccion" > 
@@ -296,13 +298,16 @@
                   <p:tab title="Contactos">
                     <p:dataTable id="tablaContactosDetalleCredito" var="con" value="#{vistaCreditoBean.listaContactos}" emptyMessage="No existen contactos de credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Nombre del contacto" > 
-                        <h:outputText value="#{con.sujeto.nombreRazonSocial}" />
+                        <h:outputText value="#{con.nombre}" />
                       </p:column>
-                      <p:column headerText="Descripcion" > 
+                      <p:column headerText="Tipo de contacto" > 
+                        <h:outputText value="#{con.tipo}" />
+                      </p:column>
+                      <p:column headerText="Observaciones" > 
                         <h:outputText value="#{con.observaciones}" />
                       </p:column>
                       <f:facet name="footer">
-                        <p:commandButton value="Agregar nuevo contacto" icon="ui-icon-plus" />
+                        <p:commandButton value="Agregar nuevo contacto" icon="ui-icon-plus" oncomplete="PF('dialogoNuevoContacto').show();" />
                       </f:facet>
                     </p:dataTable>
                   </p:tab>
@@ -424,7 +429,7 @@
       <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoDevolucionVistaCredito').hide();" />
     </h:form>
   </p:dialog>
-  <!-- DIALOGO DEVOLUCION CREDITOIMPRESION DE VISITAS -->
+  <!-- DIALOGO DEVOLUCION CREDITO IMPRESION DE VISITAS -->
   <p:dialog id="dlgImpresionVisitas" widgetVar="dialogoImpresionVisitas" modal="true" resizable="false" header="Impresion de visitas">
     <h:form id="visitasForm">
       <!-- TO DO: -->
@@ -490,11 +495,54 @@
   <!-- DIALOGO PARA AGREGAR UN NUEVO TELEFONO -->
   <p:dialog id="dlgNuevoTelefono" widgetVar="dialogoNuevoTelefono" modal="true" resizable="false" header="Dar de alta un telefono">
     <h:form id="nuevoTelefonoForm">
-
+      <br />
+      <table align="center">
+        <tr>
+          <td>
+            (
+          </td>
+          <td>
+            <p:inputText value="#{vistaCreditoBean.ladaNuevoTelefono}" size="5" maxlength="3" />
+          </td>
+          <td>
+            ) - &nbsp;
+          </td>
+          <td>
+            <p:inputText value="#{vistaCreditoBean.nuevoTelefono}" size="15" maxlength="15" required="true" requiredMessage="Debe introducir un numero telefonico." />
+          </td>
+        </tr>
+        <tr>
+          <td>
+          </td>
+          <td align="center">
+            Clave lada
+          </td>
+          <td>
+          </td>
+          <td align="center">
+            Numero
+          </td>
+        </tr>
+      </table>
+      <br />
+      <br />
+      Tipo de telefono:
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.tipoNuevoTelefono}" size="30" maxlength="50" required="true" requiredMessage="Indique de que tipo de telefono se trata." />
+      <br />
+      <br />
+      Horario de atencion:
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.horarioNuevoTelefono}" size="26" maxlength="40" />
+      <br />
+      <br />
+      Convertir en principal
+      &nbsp;&nbsp;
+      <p:selectBooleanCheckbox value="#{vistaCreditoBean.principalNuevoTelefono}" />
       <br />
       <br />
       <div align="center">
-        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('dialogoNuevoTelefono').hide();" />
+        <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.agregarTelefono()}" update=":growl, datosCreditoForm, nuevoTelefonoForm" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoNuevoTelefono').hide();" />
       </div>
@@ -503,13 +551,58 @@
   <!-- DIALOGO PARA AGREGAR UN NUEVO CORREO ELECTRONICO -->
   <p:dialog id="dlgNuevoCorreo" widgetVar="dialogoNuevoCorreo" modal="true" resizable="false" header="Dar de alta un nuevo email">
     <h:form id="nuevoCorreoForm">
-
+      <br />
+      Direccion de correo electronico:
+      <br />
+      <br />
+      <p:inputText value="#{vistaCreditoBean.nuevoCorreo}" size="30" maxlength="60" />
+      <br />
+      <br />
+      Tipo de correo:
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.tipoNuevoCorreo}" size="20" maxlength="15" required="true" requiredMessage="Indique de que tipo de telefono se trata." />
+      <br />
+      <br />
+      Convertir en principal
+      &nbsp;&nbsp;
+      <p:selectBooleanCheckbox value="#{vistaCreditoBean.principalNuevoCorreo}" />
       <br />
       <br />
       <div align="center">
-        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('dialogoNuevoCorreo').hide();" />
+        <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.agregarEmail()}" oncomplete="PF('dialogoNuevoCorreo').hide();" update=":growl, datosCreditoForm, nuevoCorreoForm" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoNuevoCorreo').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA AGREGAR UN NUEVO CORREO ELECTRONICO -->
+  <p:dialog id="dlgNuevoContacto" widgetVar="dialogoNuevoContacto" modal="true" resizable="false" header="Dar de alta un contacto para este credito">
+    <h:form id="nuevoContactoForm">
+      <br />
+      Nombre del contacto:
+      <br />
+      <br />
+      <p:inputText value="#{vistaCreditoBean.nuevoContacto}" size="30" maxlength="60" />
+      <br />
+      <br />
+      Tipo de contacto:
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <p:selectOneMenu value="#{vistaCreditoBean.tipoNuevoContacto}" style="width:200px">
+        <f:selectItems value="#{vistaCreditoBean.listaSujetos}" var="s" itemLabel="#{s}" itemValue="#{s}" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Observaciones:
+      <br />
+      <p:inputTextarea id="gestion" rows="2" cols="30" value="#{vistaCreditoBean.observacionesContacto}">
+        <p:ajax event="keyup" />
+      </p:inputTextarea>
+      <br />
+      <br />
+      <div align="center">
+        <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.agregarContacto()}" oncomplete="PF('dialogoNuevoContacto').hide();" update=":growl, :DetalleCredito, nuevoContactoForm" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoNuevoContacto').hide();" />
       </div>
     </h:form>
   </p:dialog>

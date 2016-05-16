@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Progreso diario</title>
+    <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('progreso diario')}" type="preRenderView" />
+  </f:metadata>
+  <h:body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Progreso gestor
+          </li>
+        </ul>
+      </div>
+      <br />
+      <div class="panel panel-default">
+        <div class="panel-tab clearfix">
+          <ul class="tab-bar">
+            <li><a href="#pestanaGestionesHoy" data-toggle="tab" title="Click aqui si desea ver estadisticas de su gestion"><h2><i class="fa fa-list-alt"></i> Gestiones hoy</h2></a></li>
+            &nbsp;
+            <li><a href="#pestanaPagosHoy" data-toggle="tab" title="Click aqui si desea ver informacion de pagos de hoy"><h2><i class="fa fa-usd"></i> Pagos hoy</h2></a></li>
+            &nbsp;
+            <li><a href="#pestanaPagosQuincena" data-toggle="tab" title="Click aqui si desea ver estadisticas de pagos de esta quincena"><h2><i class="fa fa-calendar-o"></i> Pagos quincena</h2></a></li>
+          </ul>
+        </div>
+        <div class="panel-body">
+          <div class="tab-content">
+            <!-- AQUI VA LA TABLA QUE MUESTRA LAS ESTADISTICAS DE LA GESTION HOY -->
+            <div class="tab-pane fade" id="pestanaGestionesHoy">
+              <h:form id="gestionesHoyForm">
+                <h3>
+                  En construcci&oacute;n!
+                </h3>
+                <h:graphicImage library="img" name="construccion.png" />
+                <p:chart type="pie" model="#{progresoTotalGestorBean.graficaGestionesHoy}" style="width:500px;height:300px" />
+              </h:form>
+            </div>
+            <!-- AQUI VA LA TABLA QUE MUESTRA INFORMACION DE LOS PAGOS DE HOY -->
+            <div class="tab-pane fade" id="pestanaPagosHoy">
+              <h:form id="pagosHoyForm">
+                <h3>
+                  En construcci&oacute;n!
+                </h3>
+                <h:graphicImage library="img" name="construccion.png" />
+                <p:chart type="pie" model="#{progresoTotalGestorBean.graficaPagosHoy}" style="width:500px;height:300px" />
+              </h:form>
+            </div>
+            <!-- AQUI VA LA TABLA QUE MUESTRA LOS PAGOS DE LA QUINCENA -->
+            <div class="tab-pane fade" id="pestanaPagosQuincena">
+              <h:form id="pagosQuincenaForm">
+                <div class="pull-left">
+                  <p:dataTable id="pagosQuincenaGestor" var="p" value="#{progresoTotalGestorBean.listaPagosQuincena}" rowKey="#{p.idPago}" emptyMessage="No existen pagos en esta quincena." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1270px;">
+                    <p:column headerText="Credito" style="width:100px;"> 
+                      <h:outputText value="#{p.promesaPago.convenioPago.credito.numeroCredito}" />
+                    </p:column>
+                    <p:column headerText="Deudor" style="width:250px;"> 
+                      <h:outputText value="#{p.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
+                    </p:column>
+                    <p:column headerText="Fecha revision" style="width:100px;"> 
+                      <h:outputText value="#{p.fechaRegistro}" />
+                    </p:column>
+                    <p:column headerText="Revisor" style="width:100px;"> 
+                      <h:outputText value="#{p.revisor}" />
+                    </p:column>
+                    <p:column headerText="Monto pago" style="width:120px;"> 
+                      <h:outputText value="#{p.montoPago}">
+                        <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      </h:outputText>
+                    </p:column>
+                    <p:column headerText="Monto aprobado" style="width:120px;"> 
+                      <h:outputText value="#{p.montoAprobado}">
+                        <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      </h:outputText>
+                    </p:column>
+                    <p:column headerText="Estatus" style="width:100px;"> 
+                      <h:outputText value="#{pagosBean.etiquetarEstatus(p.estatus)}" />
+                    </p:column>
+                    <p:column headerText="Observaciones" style="width:200px;">
+                      <h:outputText value="#{p.observaciones}"/>
+                    </p:column>
+                    <f:facet name="footer">
+                      <div align="right">
+                        <h:commandLink>
+                          <p:graphicImage name="/img/iconos/excel.png" width="40" rendered="#{progresoTotalGestorBean.permitirExport}" />
+                          <p:dataExporter type="xls" target="pagosQuincenaGestor" fileName="Reporte pagos" />
+                        </h:commandLink>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <h:commandLink>
+                          <p:graphicImage name="/img/iconos/pdf.png" width="40" rendered="#{progresoTotalGestorBean.permitirExport}" />
+                          <p:dataExporter type="pdf" preProcessor="#{progresoTotalGestorBean.preparaPdf}" target="pagosQuincenaGestor" fileName="Reporte pagos"/>
+                        </h:commandLink>
+                      </div>
+                    </f:facet>
+                  </p:dataTable>
+                </div>
+                <p:chart type="pie" model="#{progresoTotalGestorBean.graficaPagosQuincena}" style="width:500px;height:300px" />
+              </h:form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /main-container -->
+    <!-- Footer ================================================== -->
+    <ui:include src="barraInferior.xhtml" />
+  </h:body>
+</html>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 27/04/2016 09:32:54 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 11/05/2016 10:38:31 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Contacto" optimistic-lock="version" table="contacto">
     <id name="idContacto" type="int">
       <column name="id_contacto"/>
-      <generator class="assigned"/>
+      <generator class="identity"/>
     </id>
     <many-to-one class="dto.Deudor" fetch="select" name="deudor">
       <column name="id_deudor" not-null="true"/>
@@ -13,6 +13,12 @@
     <many-to-one class="dto.Sujeto" fetch="select" name="sujeto">
       <column name="id_sujeto" not-null="true"/>
     </many-to-one>
+    <property name="nombre" type="string">
+      <column length="100" name="nombre" not-null="true"/>
+    </property>
+    <property name="tipo" type="string">
+      <column length="50" name="tipo" not-null="true"/>
+    </property>
     <property name="observaciones" type="string">
       <column length="300" name="observaciones"/>
     </property>

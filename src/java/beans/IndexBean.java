@@ -180,7 +180,7 @@ public class IndexBean implements Serializable {
   // ESTO CON LA FINALIDAD DE EVITAR ACCESOS NO PERMITIDOS QUE PUEDEN VULNERAR LA INTEGRIDAD DE LOS DATOS
   public void verificarIntrusion(String modulo) {
     try {
-      FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+      FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
       Logs.log.warn("Se intento entrar al modulo '" + modulo + "' sin haber ingresado al sistema. Ha sido redirigido");
     } catch (IOException ioe) {
       Logs.log.error("Intrusion en el modulo: '" + modulo + "'. El intruso no logro ser redirigido");

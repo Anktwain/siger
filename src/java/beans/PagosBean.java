@@ -85,6 +85,8 @@ public class PagosBean implements Serializable {
   private Date fechaFin;
   private String mensajeCorreo;
   private String observacionParaBanco;
+  private String observacionRechazo;
+  private float montoAprobado;
 
   // CONSTRUCTOR
   public PagosBean() {
@@ -120,30 +122,40 @@ public class PagosBean implements Serializable {
     RequestContext.getCurrentInstance().execute("PF('detallePagoDialog').show();");
   }
 
-// METODO QUE APRUEBA UN PAGO
+  // METODO QUE PREPARA EL MONTO POR APROBAR DEL PAGO A VALIDAR
+  public void prepararMontoAprobado() {
+    montoAprobado = pagoSeleccionado.getMontoPago();
+  }
+
+  // METODO QUE APRUEBA UN PAGO
   public void aprobarPago() {
     FacesContext contexto = FacesContext.getCurrentInstance();
-    Actualizacion act = actualizacionDao.buscarUltimaActualizacion(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getIdCredito());
-    if (act != null) {
-      float saldoVencido = act.getSaldoVencido();
-      saldoVencido = saldoVencido - pagoSeleccionado.getMonto();
-      act.setSaldoVencido(saldoVencido);
-      if (!actualizacionDao.editar(act)) {
-        Logs.log.error("No se pudo aplicar la actualizacion al saldo vencido.");
+    if (montoAprobado > pagoSeleccionado.getMontoPago()) {
+      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El monto a aprobar es mayor al monto del pago."));
+    } else {
+      pagoSeleccionado.setEstatus(Pagos.APROBADO);
+      pagoSeleccionado.setRevisor(indexBean.getUsuario().getNombreLogin());
+      pagoSeleccionado.setMontoAprobado(montoAprobado);
+      boolean ok = pagoDao.editar(pagoSeleccionado);
+      if (ok) {
+        Actualizacion act = actualizacionDao.buscarUltimaActualizacion(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getIdCredito());
+        if (act != null) {
+          float saldoVencido = act.getSaldoVencido();
+          saldoVencido = saldoVencido - pagoSeleccionado.getMontoAprobado();
+          act.setSaldoVencido(saldoVencido);
+          if (!actualizacionDao.editar(act)) {
+            Logs.log.error("No se pudo aplicar la actualizacion al saldo vencido.");
+          }
+        } else {
+          Logs.log.error("No existe actualizacion para este credito.");
+        }
+        cargarListas();
+        Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " aprobo un pago por $" + pagoSeleccionado.getMontoAprobado() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
+        GestionAutomatica.generarGestionAutomatica("16PAGSI", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE APRUEBA PAGO POR $" + pagoSeleccionado.getMontoAprobado());
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se aprobo el pago."));
+      } else {
+        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo aprobar el pago. Contacte al equipo de sistemas."));
       }
-    } else {
-      Logs.log.error("No se pudo aplicar la actualizacion al saldo vencido.");
-    }
-    pagoSeleccionado.setEstatus(Pagos.APROBADO);
-    pagoSeleccionado.setRevisor(indexBean.getUsuario().getNombreLogin());
-    boolean ok = pagoDao.editar(pagoSeleccionado);
-    if (ok) {
-      cargarListas();
-      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " aprobo un pago por $" + pagoSeleccionado.getMonto() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
-      GestionAutomatica.generarGestionAutomatica("16PAGSI", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE APRUEBA PAGO POR $" + pagoSeleccionado.getMonto());
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se aprobo el pago."));
-    } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo aprobar el pago. Contacte al equipo de sistemas."));
     }
   }
 
@@ -152,11 +164,12 @@ public class PagosBean implements Serializable {
     FacesContext contexto = FacesContext.getCurrentInstance();
     pagoSeleccionado.setEstatus(Pagos.RECHAZADO);
     pagoSeleccionado.setRevisor(indexBean.getUsuario().getNombreLogin());
+    pagoSeleccionado.setObservaciones(observacionRechazo);
     boolean ok = pagoDao.editar(pagoSeleccionado);
     if (ok) {
       cargarListas();
-      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " rechazo un pago por $" + pagoSeleccionado.getMonto() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
-      GestionAutomatica.generarGestionAutomatica("17PAGNO", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE RECHAZA PAGO POR $" + pagoSeleccionado.getMonto());
+      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " rechazo un pago por $" + pagoSeleccionado.getMontoAprobado() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
+      GestionAutomatica.generarGestionAutomatica("17PAGNO", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE RECHAZA PAGO POR $" + pagoSeleccionado.getMontoPago());
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se rechazo el pago."));
     } else {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo rechazar el pago. Contacte al equipo de sistemas."));
@@ -259,7 +272,7 @@ public class PagosBean implements Serializable {
           mensaje.addRecipient(Message.RecipientType.CC, new InternetAddress(destinatarios.get(i)));
         }
       }
-      mensaje.setSubject(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre() + " " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getDeudor().getSujeto().getNombreRazonSocial() + " $" + pagoSeleccionado.getMonto());
+      mensaje.setSubject(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre() + " " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getDeudor().getSujeto().getNombreRazonSocial() + " $" + pagoSeleccionado.getMontoAprobado());
       mensajeCorreo = mensajeCorreo + ". " + observacionParaBanco + "\n\nSALUDOS CORDIALES.\n\n";
       MimeMultipart multiParte = new MimeMultipart();
       BodyPart texto = new MimeBodyPart();
@@ -328,18 +341,18 @@ public class PagosBean implements Serializable {
     }
     return p;
   }
-  
+
   // METODO QUE GNERA LA TABLA DE PAGOS POR GESTOR
-  public List<PagoGestor> generarPagosGestor(){
+  public List<PagoGestor> generarPagosGestor() {
     List<PagoGestor> lista = new ArrayList();
     List<Gestor> gestores = gestorDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
-    for (int i = 0; i <(gestores.size()); i++) {
+    for (int i = 0; i < (gestores.size()); i++) {
       PagoGestor pg = new PagoGestor();
       pg.setIdGestor(gestores.get(i).getIdGestor());
       pg.setGestor(gestores.get(i).getUsuario().getNombreLogin());
       pg.setMontoPagos(pagoDao.calcularMontoGestor(gestores.get(i).getIdGestor()));
       pg.setMontoPrometido(actualizacionDao.obtenerMontoPrometidoGestor(gestores.get(i).getIdGestor()));
-      pg.setEficiencia((pg.getMontoPagos()*100)/pg.getMontoPrometido());
+      pg.setEficiencia((pg.getMontoPagos() * 100) / pg.getMontoPrometido());
       lista.add(pg);
     }
     return lista;
@@ -498,6 +511,22 @@ public class PagosBean implements Serializable {
     this.listaPagosGestor = listaPagosGestor;
   }
 
+  public float getMontoAprobado() {
+    return montoAprobado;
+  }
+
+  public void setMontoAprobado(float montoAprobado) {
+    this.montoAprobado = montoAprobado;
+  }
+
+  public String getObservacionRechazo() {
+    return observacionRechazo;
+  }
+
+  public void setObservacionRechazo(String observacionRechazo) {
+    this.observacionRechazo = observacionRechazo;
+  }
+
   // CLASE MIEMBRO QUE RELACIONA AL GESTOR CON SUS PAGOS
   // MOSTRARA TODOS LOS DATOS RELACIONADOS CON LA COBRANZA Y EL DESEMPEÑO DE CADA GESTOR
   public static class PagoGestor {
@@ -550,7 +579,7 @@ public class PagosBean implements Serializable {
     public void setEficiencia(float eficiencia) {
       this.eficiencia = eficiencia;
     }
-    
+
   }
 
 }

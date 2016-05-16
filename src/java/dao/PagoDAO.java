@@ -35,12 +35,14 @@ public interface PagoDAO {
   
   public Number calcularSaldoAprobadoHoy(int idDespacho);
   
-  public Number calcularRecuperacionDespacho(int idDespacho);
+  public double calcularRecuperacionDespacho(int idDespacho);
   
   public List<Pago> pagosPorRevisarBanco(int idDespacho);
   
   public float calcularMontoGestor(int idGestor);
   
   public Pago buscarPagoFechaCredito(Date fecha, int idCredito);
+  
+  public List<Pago> buscarTodosPagosGestor(int idUsuario);
           
 }

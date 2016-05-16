@@ -1,5 +1,5 @@
 package dto;
-// Generated 27/04/2016 09:32:53 AM by Hibernate Tools 4.3.1
+// Generated 11/05/2016 10:38:30 AM by Hibernate Tools 4.3.1
 
 
 
@@ -16,6 +16,7 @@ public class Telefono  implements java.io.Serializable {
      private String extension;
      private String lada;
      private String horario;
+     private Integer principal;
 
     public Telefono() {
     }
@@ -25,13 +26,14 @@ public class Telefono  implements java.io.Serializable {
         this.sujeto = sujeto;
         this.numero = numero;
     }
-    public Telefono(Sujeto sujeto, String numero, String tipo, String extension, String lada, String horario) {
+    public Telefono(Sujeto sujeto, String numero, String tipo, String extension, String lada, String horario, Integer principal) {
        this.sujeto = sujeto;
        this.numero = numero;
        this.tipo = tipo;
        this.extension = extension;
        this.lada = lada;
        this.horario = horario;
+       this.principal = principal;
     }
    
     public Integer getIdTelefono() {
@@ -82,6 +84,13 @@ public class Telefono  implements java.io.Serializable {
     
     public void setHorario(String horario) {
         this.horario = horario;
+    }
+    public Integer getPrincipal() {
+        return this.principal;
+    }
+    
+    public void setPrincipal(Integer principal) {
+        this.principal = principal;
     }
 
 

@@ -7,6 +7,7 @@ package impl;
 
 import dao.PagoDAO;
 import dto.Pago;
+import dto.Quincena;
 import dto.Usuario;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -191,7 +192,7 @@ public class PagoIMPL implements PagoDAO {
     Number saldo;
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String fecha = df.format(new Date());
-    String consulta = "SELECT ROUND(SUM(monto), 2) FROM pago WHERE estatus = " + Pagos.APROBADO + " AND fecha_deposito = '" + fecha + "' AND id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + idDespacho + "));";
+    String consulta = "SELECT ROUND(SUM(monto_aprobado), 2) FROM pago WHERE estatus = " + Pagos.APROBADO + " AND fecha_deposito = '" + fecha + "' AND id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + idDespacho + "));";
     try {
       saldo = (Number) sesion.createSQLQuery(consulta).uniqueResult();
       if (saldo == null) {
@@ -199,7 +200,8 @@ public class PagoIMPL implements PagoDAO {
       }
     } catch (HibernateException he) {
       saldo = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(consulta);
+      Logs.log.error(he);
     } finally {
       cerrar(sesion);
     }
@@ -207,18 +209,16 @@ public class PagoIMPL implements PagoDAO {
   }
 
   @Override
-  public Number calcularRecuperacionDespacho(int idDespacho) {
+  public double calcularRecuperacionDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Number rec;
-    String consulta = "SELECT ROUND((((SELECT SUM(monto) FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + " AND id_credito NOT IN (SELECT id_credito FROM devolucion))))*100)/(SELECT SUM(monto) FROM credito WHERE id_despacho = " + idDespacho + " AND id_credito NOT IN (SELECT id_credito FROM devolucion))),4);";
+    double rec;
+    String consulta = "SELECT ROUND((((SELECT SUM(monto_aprobado) FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + " AND id_credito NOT IN (SELECT id_credito FROM devolucion))))*100)/(SELECT SUM(monto) FROM credito WHERE id_despacho = " + idDespacho + " AND id_credito NOT IN (SELECT id_credito FROM devolucion))),4);";
     try {
-      rec = (Number) sesion.createSQLQuery(consulta).uniqueResult();
-      if(rec == null){
-        rec = 0;
-      }
+      rec = (double) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
       rec = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(consulta);
+      Logs.log.error(he);
     } finally {
       cerrar(sesion);
     }
@@ -254,7 +254,7 @@ public class PagoIMPL implements PagoDAO {
     if (!pagos.isEmpty()) {
       float monto = 0;
       for (int i = 0; i < (pagos.size()); i++) {
-        monto = monto + pagos.get(i).getMonto();
+        monto = monto + pagos.get(i).getMontoAprobado();
       }
       return monto;
     } else {
@@ -279,6 +279,23 @@ public class PagoIMPL implements PagoDAO {
       cerrar(sesion);
     }
     return pago;
+  }
+
+  @Override
+  public List<Pago> buscarTodosPagosGestor(int idUsuario) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Pago> pagos = new ArrayList();
+    Quincena q = new QuincenaIMPL().obtenerQuincenaActual();
+    String consulta = "SELECT * FROM pago WHERE id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND fecha_deposito BETWEEN '" + q.getFechaInicio() + "' AND '" + q.getFechaFin() + "';";
+    try {
+      pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
+    } catch (HibernateException he) {
+      pagos = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return pagos;
   }
 
   private void cerrar(Session sesion) {

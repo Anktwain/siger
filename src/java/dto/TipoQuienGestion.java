@@ -1,5 +1,5 @@
 package dto;
-// Generated 27/04/2016 09:32:53 AM by Hibernate Tools 4.3.1
+// Generated 11/05/2016 10:38:30 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -14,6 +14,7 @@ public class TipoQuienGestion  implements java.io.Serializable {
      private Integer idTipoQuienGestion;
      private String tipo;
      private String descripcion;
+     private Set quienGestions = new HashSet(0);
      private Set gestions = new HashSet(0);
 
     public TipoQuienGestion() {
@@ -24,9 +25,10 @@ public class TipoQuienGestion  implements java.io.Serializable {
         this.tipo = tipo;
         this.descripcion = descripcion;
     }
-    public TipoQuienGestion(String tipo, String descripcion, Set gestions) {
+    public TipoQuienGestion(String tipo, String descripcion, Set quienGestions, Set gestions) {
        this.tipo = tipo;
        this.descripcion = descripcion;
+       this.quienGestions = quienGestions;
        this.gestions = gestions;
     }
    
@@ -50,6 +52,13 @@ public class TipoQuienGestion  implements java.io.Serializable {
     
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+    public Set getQuienGestions() {
+        return this.quienGestions;
+    }
+    
+    public void setQuienGestions(Set quienGestions) {
+        this.quienGestions = quienGestions;
     }
     public Set getGestions() {
         return this.gestions;

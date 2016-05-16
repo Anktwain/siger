@@ -28,7 +28,6 @@ public class TelefonoIMPL implements TelefonoDAO {
     public Telefono insertar(Telefono telefono) {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
-
         try {
             sesion.save(telefono);
             tx.commit();
@@ -57,7 +56,6 @@ public class TelefonoIMPL implements TelefonoDAO {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
-
         try {
             sesion.update(telefono);
             tx.commit();
@@ -71,7 +69,6 @@ public class TelefonoIMPL implements TelefonoDAO {
         } finally {
             cerrar(sesion);
         }
-
         return ok;
     }
 
@@ -85,7 +82,6 @@ public class TelefonoIMPL implements TelefonoDAO {
         Session sesion = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = sesion.beginTransaction();
         boolean ok;
-
         try {
             sesion.delete(telefono);
             tx.commit();
@@ -99,7 +95,6 @@ public class TelefonoIMPL implements TelefonoDAO {
         } finally {
             cerrar(sesion);
         }
-
         return ok;
     }
 
@@ -131,10 +126,8 @@ public class TelefonoIMPL implements TelefonoDAO {
   @Override
     public List<Telefono> buscarPorSujeto(int idSujeto) {
       Session sesion = HibernateUtil.getSessionFactory().openSession();
-      Transaction tx = sesion.beginTransaction();
       List<Telefono> listaTelefonos;
       String consulta = "select t.* from telefono t join sujeto s on s.id_sujeto=t.id_sujeto where s.id_sujeto=" + idSujeto + ";";
-      
       try {
         listaTelefonos = sesion.createSQLQuery(consulta).addEntity(Telefono.class).list();
       } catch (HibernateException he) {
@@ -143,10 +136,25 @@ public class TelefonoIMPL implements TelefonoDAO {
       } finally {
         cerrar(sesion);
       }
-      
       return listaTelefonos;
     }
 
+  @Override
+  public Telefono buscarTelefonoPrincipal(int idSujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+      Telefono principal = new Telefono();
+      String consulta = "SELECT * FROM telefono WHERE id_sujeto = " + idSujeto + " AND principal = " + 1 + " LIMIT 1;";
+      try {
+        principal = (Telefono) sesion.createSQLQuery(consulta).addEntity(Telefono.class).uniqueResult();
+      } catch (HibernateException he) {
+        Logs.log.error("No se ha podido encontrar el numero principal.");
+        Logs.log.error(he);
+      } finally {
+        cerrar(sesion);
+      }
+      return principal;
+  }
+    
     /**
      *
      *

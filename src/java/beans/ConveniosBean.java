@@ -36,15 +36,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -140,7 +136,7 @@ public class ConveniosBean implements Serializable {
     listaCuentasPago = Arrays.asList("50010911552", "50010911556", "50015025745", "50015025741", "50015025905", "50015025902", "RECIBO TELMEX", "ACTA DEFUNCION");
     List< QuienGestion> sujetos = new QuienGestionIMPL().buscarTodo();
     for (int i = 0; i < (sujetos.size()); i++) {
-      if (sujetos.get(i).getIdTipoQuienGestion() < 7) {
+      if (sujetos.get(i).getTipoQuienGestion().getIdTipoQuienGestion() < 7) {
         listaSujetos.add(sujetos.get(i).getQuien());
       }
     }
@@ -309,7 +305,8 @@ public class ConveniosBean implements Serializable {
     float montoMaximo = promesaSeleccionada.getCantidadPrometida();
     if ((saldoNuevoPago > 0) && (saldoNuevoPago <= montoMaximo)) {
       Pago p = new Pago();
-      p.setMonto(saldoNuevoPago);
+      p.setMontoPago(saldoNuevoPago);
+      p.setMontoAprobado(0);
       p.setPromesaPago(promesaSeleccionada);
       p.setEstatus(Pagos.PENDIENTE);
       p.setFechaDeposito(fechaDeposito);

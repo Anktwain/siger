@@ -1,5 +1,5 @@
 package dto;
-// Generated 27/04/2016 09:32:53 AM by Hibernate Tools 4.3.1
+// Generated 11/05/2016 10:38:30 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -12,7 +12,7 @@ public class QuienGestion  implements java.io.Serializable {
 
 
      private Integer idQuienGestion;
-     private int idTipoQuienGestion;
+     private TipoQuienGestion tipoQuienGestion;
      private String quien;
      private Set gestions = new HashSet(0);
 
@@ -20,12 +20,12 @@ public class QuienGestion  implements java.io.Serializable {
     }
 
 	
-    public QuienGestion(int idTipoQuienGestion, String quien) {
-        this.idTipoQuienGestion = idTipoQuienGestion;
+    public QuienGestion(TipoQuienGestion tipoQuienGestion, String quien) {
+        this.tipoQuienGestion = tipoQuienGestion;
         this.quien = quien;
     }
-    public QuienGestion(int idTipoQuienGestion, String quien, Set gestions) {
-       this.idTipoQuienGestion = idTipoQuienGestion;
+    public QuienGestion(TipoQuienGestion tipoQuienGestion, String quien, Set gestions) {
+       this.tipoQuienGestion = tipoQuienGestion;
        this.quien = quien;
        this.gestions = gestions;
     }
@@ -37,12 +37,12 @@ public class QuienGestion  implements java.io.Serializable {
     public void setIdQuienGestion(Integer idQuienGestion) {
         this.idQuienGestion = idQuienGestion;
     }
-    public int getIdTipoQuienGestion() {
-        return this.idTipoQuienGestion;
+    public TipoQuienGestion getTipoQuienGestion() {
+        return this.tipoQuienGestion;
     }
     
-    public void setIdTipoQuienGestion(int idTipoQuienGestion) {
-        this.idTipoQuienGestion = idTipoQuienGestion;
+    public void setTipoQuienGestion(TipoQuienGestion tipoQuienGestion) {
+        this.tipoQuienGestion = tipoQuienGestion;
     }
     public String getQuien() {
         return this.quien;

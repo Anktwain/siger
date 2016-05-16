@@ -1,5 +1,5 @@
 package dto;
-// Generated 27/04/2016 09:32:53 AM by Hibernate Tools 4.3.1
+// Generated 11/05/2016 10:38:30 AM by Hibernate Tools 4.3.1
 
 
 
@@ -12,21 +12,27 @@ public class Contacto  implements java.io.Serializable {
      private int idContacto;
      private Deudor deudor;
      private Sujeto sujeto;
+     private String nombre;
+     private String tipo;
      private String observaciones;
 
     public Contacto() {
     }
 
 	
-    public Contacto(int idContacto, Deudor deudor, Sujeto sujeto) {
+    public Contacto(int idContacto, Deudor deudor, Sujeto sujeto, String nombre, String tipo) {
         this.idContacto = idContacto;
         this.deudor = deudor;
         this.sujeto = sujeto;
+        this.nombre = nombre;
+        this.tipo = tipo;
     }
-    public Contacto(int idContacto, Deudor deudor, Sujeto sujeto, String observaciones) {
+    public Contacto(int idContacto, Deudor deudor, Sujeto sujeto, String nombre, String tipo, String observaciones) {
        this.idContacto = idContacto;
        this.deudor = deudor;
        this.sujeto = sujeto;
+       this.nombre = nombre;
+       this.tipo = tipo;
        this.observaciones = observaciones;
     }
    
@@ -50,6 +56,20 @@ public class Contacto  implements java.io.Serializable {
     
     public void setSujeto(Sujeto sujeto) {
         this.sujeto = sujeto;
+    }
+    public String getNombre() {
+        return this.nombre;
+    }
+    
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    public String getTipo() {
+        return this.tipo;
+    }
+    
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
     public String getObservaciones() {
         return this.observaciones;

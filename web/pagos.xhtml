@@ -56,15 +56,15 @@
                 <p:contextMenu for="revisionPagos" style="width:230px;">
                   <p:menuitem value="Visualizar comprobante" icon="ui-icon-search" actionListener="#{pagosBean.visualizar()}" />
                   <p:menuitem value="Enviar a revision" icon="ui-icon-mail-closed" actionListener="#{pagosBean.verificarCorreoRevision()}" update="growl, mailPagoForm" />
-                  <p:menuitem value="Aprobar pago" icon="ui-icon-check" actionListener="#{pagosBean.aprobarPago()}" update="growl, revisionPagos, formTodosPagos:todosPagos" />
-                  <p:menuitem value="Rechazar pago" icon="ui-icon-cancel" actionListener="#{pagosBean.rechazarPago()}" update="growl, revisionPagos, formTodosPagos:todosPagos" />
+                  <p:menuitem value="Aprobar pago" icon="ui-icon-check" oncomplete="PF('confirmacionAprobarPagoDialog').show()" actionListener="#{pagosBean.prepararMontoAprobado()}" update="confirmacionAprobarPagoForm" />
+                  <p:menuitem value="Rechazar pago" icon="ui-icon-cancel" oncomplete="PF('confirmacionRechazarPagoDialog').show()" />
                 </p:contextMenu>
                 <p:dataTable id="revisionPagos" var="pen" value="#{pagosBean.pagosPorRevisar}" rowKey="#{pen.idPago}" selection="#{pagosBean.pagoSeleccionado}" selectionMode="single" emptyMessage="No existen pagos por revisar." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1360px;">
                   <p:column headerText="Fecha deposito" style="width:100px;"> 
                     <h:outputText value="#{pen.fechaDeposito}" />
                   </p:column>
                   <p:column headerText="Monto" style="width:100px;"> 
-                    <h:outputText value="#{pen.monto}" style="float:right">
+                    <h:outputText value="#{pen.montoPago}" style="float:right">
                       <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
@@ -126,16 +126,17 @@
                   </tr>
                 </table>
                 <br />
-                <p:contextMenu for="todosPagos" style="width:230px;">
-                  <p:menuitem value="Aprobar pago" icon="ui-icon-check" oncomplete="PF('confirmacionAprobarPagoDialog').show()" />
-                  <p:menuitem value="Rechazar pago" icon="ui-icon-cancel" oncomplete="PF('confirmacionRechazarPagoDialog').show()" />
-                </p:contextMenu>
-                <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1300px;" rendered="#{pagosBean.habilitaTabla}">
+                <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1500px;" rendered="#{pagosBean.habilitaTabla}">
                   <p:column headerText="Fecha deposito" style="width:100px;"> 
                     <h:outputText value="#{p.fechaDeposito}" />
                   </p:column>
-                  <p:column headerText="Monto" style="width:100px;"> 
-                    <h:outputText value="#{p.monto}">
+                  <p:column headerText="Monto pago" style="width:150px;"> 
+                    <h:outputText value="#{p.montoPago}">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </p:column>
+                  <p:column headerText="Monto aprobado" style="width:150px;"> 
+                    <h:outputText value="#{p.montoAprobado}">
                       <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
@@ -260,6 +261,11 @@
             Esta seguro de aprobar este pago?
             <br />
             <br />
+            Monto aprobado:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText value="#{pagosBean.montoAprobado}" type="number" />
+            <br />
+            <br />
             <div align="center">
               <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('confirmacionAprobarPagoDialog').hide()" actionListener="#{pagosBean.aprobarPago()}" update="growl, formRevisionPagos, formTodosPagos:todosPagos" />
               &nbsp;&nbsp;&nbsp;&nbsp;
@@ -271,6 +277,11 @@
         <p:dialog id="dlgConfirmacionRechazarPago" widgetVar="confirmacionRechazarPagoDialog" modal="true" resizable="false" header="Confirme esta accion">
           <h:form id="confirmacionRechazarPagoForm">
             Esta seguro de rechazar este pago?
+            <br />
+            <br />
+            Motivo del rechazo:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText value="#{pagosBean.observacionRechazo}" type="text" size="30" maxlength="30" />
             <br />
             <br />
             <div align="center">

@@ -35,9 +35,7 @@ public class ContactoIMPL implements ContactoDAO {
         try {
             sesion.save(contacto);
             tx.commit();
-            Logs.log.info("Se insertó un nuevo Contacto: id = " + contacto.getIdContacto()
-            + " asociado al Sujeto: id = " + contacto.getSujeto().getIdSujeto() + " que a la vez se asocia con el sujeto: id = " 
-            + contacto.getDeudor().getSujeto().getIdSujeto());
+            Logs.log.info("Se insertó un nuevo Contacto asociado al Sujeto: id = " + contacto.getSujeto().getIdSujeto());
         } catch (HibernateException he) {
             contacto = null;
             if (tx != null) {

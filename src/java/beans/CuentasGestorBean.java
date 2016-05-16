@@ -51,6 +51,7 @@ public class CuentasGestorBean implements Serializable {
   CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
 
   // VARIABLES DE CLASE
+  private boolean habilitaCampanas;
   private List<CreditoCampana> listaCreditosCampanas;
   List<Credito> creditosCampana;
   private CreditoCampana seleccion;
@@ -65,6 +66,7 @@ public class CuentasGestorBean implements Serializable {
 
   //CONSTRUCTOR
   public CuentasGestorBean() {
+    habilitaCampanas = false;
     posicion = 0;
     seleccion = new CreditoCampana();
     listaCreditosCampanas = new ArrayList();
@@ -78,11 +80,11 @@ public class CuentasGestorBean implements Serializable {
     historialDao = new HistorialIMPL();
   }
 
-  // POST CONSTRUCTOR
-  @PostConstruct
+  // METODO QUE CARGA LAS CAMPAÑAS DESPUES DE INICIAR SESION
   public void cargar() {
     cambiarCampanas();
     obtenerListas();
+    habilitaCampanas = true;
   }
 
   // METODO QUE OBTIENE LAS LISTAS INICIALES
@@ -249,7 +251,7 @@ public class CuentasGestorBean implements Serializable {
           break;
         }
       }
-      if (p.getMonto() < promesa.getCantidadPrometida()) {
+      if (p.getMontoPago()< promesa.getCantidadPrometida()) {
         ok = true;
       }
     }
@@ -269,7 +271,7 @@ public class CuentasGestorBean implements Serializable {
           break;
         }
       }
-      if (p.getMonto() == promesa.getCantidadPrometida()) {
+      if (p.getMontoPago()== promesa.getCantidadPrometida()) {
         ok = true;
       }
     }
@@ -348,6 +350,14 @@ public class CuentasGestorBean implements Serializable {
 
   public void setPosicion(int posicion) {
     this.posicion = posicion;
+  }
+
+  public boolean isHabilitaCampanas() {
+    return habilitaCampanas;
+  }
+
+  public void setHabilitaCampanas(boolean habilitaCampanas) {
+    this.habilitaCampanas = habilitaCampanas;
   }
 
   // CLASE MIEMBRO PARA PODER LLENAR LA TABLA
