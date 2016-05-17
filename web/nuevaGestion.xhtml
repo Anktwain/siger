@@ -19,7 +19,7 @@
           <p:selectOneMenu id="tipoGestion" value="#{gestionBean.tipoSeleccionado.idTipoGestion}" style="width:200px" required="true" requiredMessage="Seleccione el tipo de gestion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaTipos}" var="tipos" itemLabel="#{tipos.nombre}" itemValue="#{tipos.idTipoGestion}" />
-            <p:ajax update="dondeGestion" listener="#{gestionBean.preparaDonde()}" />
+            <p:ajax update="dondeGestion, asuntoGestion" listener="#{gestionBean.preparaDonde()}" />
           </p:selectOneMenu>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <strong>
@@ -28,7 +28,7 @@
           <p:selectOneMenu id="dondeGestion" value="#{gestionBean.dondeSeleccionado.idDondeGestion}" style="width:250px" required="true" requiredMessage="Seleccione el lugar de la gestion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaDonde}" var="dondes" itemLabel="#{dondes.nombre}" itemValue="#{dondes.idDondeGestion}" />
-            <p:ajax update="asuntoGestion" listener="#{gestionBean.preparaAsunto()}" />
+            <p:ajax update="asuntoGestion, descripcionGestion" listener="#{gestionBean.preparaAsunto()}" />
           </p:selectOneMenu>
           &nbsp;&nbsp;&nbsp;&nbsp;
           <strong>
@@ -37,7 +37,7 @@
           <p:selectOneMenu id="asuntoGestion" value="#{gestionBean.asuntoSeleccionado.idAsuntoGestion}" style="width:250px" required="true" requiredMessage="Seleccione el asunto de la gestion">
             <f:selectItem itemLabel="" itemValue="" />
             <f:selectItems value="#{gestionBean.listaAsuntos}" var="asuntos" itemLabel="#{asuntos.tipoAsuntoGestion.asunto}" itemValue="#{asuntos.idAsuntoGestion}" />
-            <p:ajax update="descripcionGestion, tipoSujetoGestion" listener="#{gestionBean.preparaDescripcion()}" />
+            <p:ajax update="descripcionGestion, tipoSujetoGestion, sujetoGestion" listener="#{gestionBean.preparaDescripcion()}" />
           </p:selectOneMenu>
           <br />
           <br />

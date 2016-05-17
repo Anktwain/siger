@@ -72,6 +72,7 @@ public class TipoQuienGestionIMPL implements TipoQuienGestionDAO {
       case 12:
       case 13:
       case 17:
+      case 19:
         consulta = personasTodos();
         break;
       // CASO PERSONAS(NO TITULAR)
@@ -82,28 +83,35 @@ public class TipoQuienGestionIMPL implements TipoQuienGestionDAO {
         break;
       // POSITIVOS
       case 9:
-        if (abreviatura.equals("1POSI")) {
-          consulta = localizaTelefonos();
-        }
-        else if (abreviatura.equals("2POSI")) {
-          consulta = localizaDomicilio();
-        } else {
-          consulta = noExiste();
-        }
+    switch (abreviatura) {
+      case "1POSI":
+        consulta = localizaTelefonos();
+        break;
+      case "2POSI":
+        consulta = localizaDomicilio();
+        break;
+      default:
+        consulta = noExiste();
+        break;
+    }
         break;
       // NEGATIVOS
       case 10:
-        if ((abreviatura.equals("1NEGA")) || (abreviatura.equals("4NEGA"))) {
-          consulta = noAplica();
-        }
-        else if (abreviatura.equals("2NEGA")) {
-          consulta = personasTodos();
-        }
-        else if (abreviatura.equals("3NEGA")) {
-          consulta = domicilioEstado();
-        } else {
-          consulta = noExiste();
-        }
+    switch (abreviatura) {
+      case "1NEGA":
+      case "4NEGA":
+        consulta = noAplica();
+        break;
+      case "2NEGA":
+        consulta = personasTodos();
+        break;
+      case "3NEGA":
+        consulta = domicilioEstado();
+        break;
+      default:
+        consulta = noExiste();
+        break;
+    }
         break;
       // DIVERSO IBR
       case 14:

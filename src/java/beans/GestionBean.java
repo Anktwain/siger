@@ -125,12 +125,20 @@ public class GestionBean implements Serializable {
   public void preparaDonde() {
     tipoSeleccionado = tipoGestionDao.buscarPorId(tipoSeleccionado.getIdTipoGestion());
     listaDonde = dondeGestionDao.buscarPorTipoGestion(tipoSeleccionado.getIdTipoGestion());
+    if (listaDonde.size() == 1) {
+      dondeSeleccionado = listaDonde.get(0);
+      preparaAsunto();
+    }
   }
 
   // METODO QUE PREPARA EL COMBOBOX ASUNTO GESTION
   public void preparaAsunto() {
     dondeSeleccionado = dondeGestionDao.buscarPorId(dondeSeleccionado.getIdDondeGestion());
     listaAsuntos = asuntoGestionDao.buscarPorTipoGestion(tipoSeleccionado.getIdTipoGestion());
+    if (listaAsuntos.size() == 1) {
+      asuntoSeleccionado = listaAsuntos.get(0);
+      preparaDescripcion();
+    }
   }
 
   // METODO QUE PREPARA EL COMBOBOX DESCRIPCION GESTION
@@ -146,6 +154,8 @@ public class GestionBean implements Serializable {
   // METODO QUE PREPARA EL COMBOBOX TIPO SUJETO GESTION
   public void preparaTipoSujeto() {
     descripcionSeleccionada = descripcionGestionDao.buscarPorId(descripcionSeleccionada.getIdDescripcionGestion());
+    tipoSujetoSeleccionado = new TipoQuienGestion();
+    sujetoSeleccionado = new QuienGestion();
     listaTipoSujetos = tipoQuienGestionDao.buscarPorAsuntoDescripcion(asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto(), descripcionSeleccionada.getAbreviatura());
     if (listaTipoSujetos.get(0).getDescripcion().equals("NO APLICA")) {
       tipoSujetoSeleccionado = tipoQuienGestionDao.buscarPorId(12);
@@ -368,6 +378,34 @@ public class GestionBean implements Serializable {
           case 18:
             estatusPosibles.add(estatusInformativoDao.buscar(12));
             break;
+          case 19:
+            switch (descripcionSeleccionada.getAbreviatura()) {
+              case "1WHCOMP":
+                if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+                  estatusPosibles.add(estatusInformativoDao.buscar(5));
+                } else {
+                  estatusPosibles.add(estatusInformativoDao.buscar(18));
+                }
+                break;
+              case "2WHREC":
+                if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+                  estatusPosibles.add(estatusInformativoDao.buscar(5));
+                } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
+                  estatusPosibles.add(estatusInformativoDao.buscar(10));
+                } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+                  estatusPosibles.add(estatusInformativoDao.buscar(11));
+                } else {
+                  estatusPosibles.add(estatusInformativoDao.buscar(6));
+                }
+                break;
+              case "3WHREPA":
+                if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
+                  estatusPosibles.add(estatusInformativoDao.buscar(5));
+                } else {
+                  estatusPosibles.add(estatusInformativoDao.buscar(6));
+                }
+                break;
+            }
         }
         break;
     }
