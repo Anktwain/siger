@@ -96,7 +96,7 @@ public class ProgresoTotalGestorBean implements Serializable {
   
   // METODO QUE LE DA UNA ETIQUETA A LOS VALORES NUMERICOS DEL ESTATUS DE PAGOS
   public String etiquetarEstatus(int estatus) {
-    String estado = null;
+    String estado = "";
     if (estatus == Pagos.APROBADO) {
       estado = "Aprobado";
     }
@@ -108,6 +108,18 @@ public class ProgresoTotalGestorBean implements Serializable {
     }
     if (estatus == Pagos.REVISION_BANCO) {
       estado = "Revision banco";
+    }
+    return estado;
+  }
+  
+  // METODO QUE LE DA UNA ETIQUETA AL ESTATUS DE PAGO
+  public String etiquetarEstatusPago(int pagado){
+    String estado = "";
+    if(pagado == Pagos.PAGADO){
+      estado = "Pagado";
+    }
+    if(pagado == Pagos.NO_PAGADO){
+      estado = "Por pagar";
     }
     return estado;
   }

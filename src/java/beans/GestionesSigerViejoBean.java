@@ -36,8 +36,11 @@ public class GestionesSigerViejoBean implements Serializable{
   
   // METODO QUE BUSCARA LAS GESTIONES ANTERIORES
   public void obtenerGestionesAnteriores(String credito) {
+    // TO FIX:
+    // LA CONEXION A BINAH YA NO EXISTE
+    // REEMPLAZARLA POR LA QUE VAYA A QUEDAR VIGENTE
     final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    final String DB_URL = "jdbc:mysql://10.0.0.26:3306/sigerweb";
+    final String DB_URL = "jdbc:mysql://10.0.0.52:3306/sigerweb";
     final String USER = "root";
     final String PASS = "root";
     Connection conn;

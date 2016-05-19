@@ -19,4 +19,8 @@ public interface Pagos {
   
   public static final int REVISION_BANCO = 3;
   
+  public static final int PAGADO = 1;
+  
+  public static final int NO_PAGADO = 0;
+  
 }

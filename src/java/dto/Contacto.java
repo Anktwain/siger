@@ -1,5 +1,5 @@
 package dto;
-// Generated 11/05/2016 10:38:30 AM by Hibernate Tools 4.3.1
+// Generated 17/05/2016 10:10:16 AM by Hibernate Tools 4.3.1
 
 
 
@@ -9,7 +9,7 @@ package dto;
 public class Contacto  implements java.io.Serializable {
 
 
-     private int idContacto;
+     private Integer idContacto;
      private Deudor deudor;
      private Sujeto sujeto;
      private String nombre;
@@ -20,15 +20,13 @@ public class Contacto  implements java.io.Serializable {
     }
 
 	
-    public Contacto(int idContacto, Deudor deudor, Sujeto sujeto, String nombre, String tipo) {
-        this.idContacto = idContacto;
+    public Contacto(Deudor deudor, Sujeto sujeto, String nombre, String tipo) {
         this.deudor = deudor;
         this.sujeto = sujeto;
         this.nombre = nombre;
         this.tipo = tipo;
     }
-    public Contacto(int idContacto, Deudor deudor, Sujeto sujeto, String nombre, String tipo, String observaciones) {
-       this.idContacto = idContacto;
+    public Contacto(Deudor deudor, Sujeto sujeto, String nombre, String tipo, String observaciones) {
        this.deudor = deudor;
        this.sujeto = sujeto;
        this.nombre = nombre;
@@ -36,11 +34,11 @@ public class Contacto  implements java.io.Serializable {
        this.observaciones = observaciones;
     }
    
-    public int getIdContacto() {
+    public Integer getIdContacto() {
         return this.idContacto;
     }
     
-    public void setIdContacto(int idContacto) {
+    public void setIdContacto(Integer idContacto) {
         this.idContacto = idContacto;
     }
     public Deudor getDeudor() {

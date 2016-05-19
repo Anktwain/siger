@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 11/05/2016 10:38:31 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 17/05/2016 10:10:17 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Pago" optimistic-lock="version" table="pago">
     <id name="idPago" type="java.lang.Integer">
@@ -34,14 +34,26 @@
     <property name="numeroCuenta" type="string">
       <column length="50" name="numero_cuenta" not-null="true"/>
     </property>
-    <property name="nombreComprobante" type="string">
-      <column length="200" name="nombre_comprobante" not-null="true" unique="true"/>
-    </property>
     <property name="revisor" type="string">
       <column length="50" name="revisor" not-null="true"/>
     </property>
-    <property name="observaciones" type="string">
-      <column length="200" name="observaciones"/>
+    <property name="observacionGestor" type="string">
+      <column length="200" name="observacion_gestor"/>
     </property>
+    <property name="observacionRevisor" type="string">
+      <column length="200" name="observacion_revisor"/>
+    </property>
+    <property name="informacionRevision" type="string">
+      <column length="100" name="informacion_revision"/>
+    </property>
+    <property name="pagado" type="int">
+      <column name="pagado" not-null="true"/>
+    </property>
+    <set fetch="select" inverse="true" lazy="true" name="comprobantePagos" table="comprobante_pago">
+      <key>
+        <column name="id_pago" not-null="true"/>
+      </key>
+      <one-to-many class="dto.ComprobantePago"/>
+    </set>
   </class>
 </hibernate-mapping>

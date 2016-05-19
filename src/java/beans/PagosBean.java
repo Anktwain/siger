@@ -8,17 +8,23 @@ package beans;
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
 import dao.ActualizacionDAO;
+import dao.ComprobantePagoDAO;
 import dao.CreditoDAO;
+import dao.EmailDAO;
 import dao.GestorDAO;
 import dao.PagoDAO;
 import dto.Actualizacion;
+import dto.ComprobantePago;
+import dto.Email;
 import dto.Gestor;
 import dto.Pago;
 import impl.ActualizacionIMPL;
+import impl.ComprobantePagoIMPL;
 import impl.CreditoIMPL;
+import impl.EmailIMPL;
 import impl.GestorIMPL;
 import impl.PagoIMPL;
-import java.io.IOException;
+import impl.SujetoIMPL;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,9 +50,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.primefaces.context.RequestContext;
 import util.GestionAutomatica;
-import util.ManejadorArchivosDeTexto;
-import util.constantes.Directorios;
 import util.constantes.Pagos;
+import util.constantes.Patrones;
 import util.log.Logs;
 
 /**
@@ -64,28 +69,36 @@ public class PagosBean implements Serializable {
   // VARIABLES DE CLASE
   private boolean habilitaTabla;
   private boolean permitirExport;
+  private boolean habilitaVisualizador;
   private String urlImagen;
   private String nombreArchivo;
   private Pago pagoSeleccionado;
+  ComprobantePago comprobanteSeleccionado;
   private final PagoDAO pagoDao;
   private final CreditoDAO creditoDao;
   private final ActualizacionDAO actualizacionDao;
   private final GestorDAO gestorDao;
+  private final EmailDAO emailDao;
+  private final ComprobantePagoDAO comprobantePagoDao;
   private List<Pago> pagosPorRevisar;
   private List<Pago> listaPagos;
   private List<String> listaRemitentes;
   private List<String> listaDestinatarios;
   private List<String> listaCorreos;
   private List<PagoGestor> listaPagosGestor;
+  private List<ComprobantePago> listaComprobantes;
   private String remitente;
   private List<String> destinatarios;
   private List<String> listaObservacionesPago;
   private String copia;
+  private String asunto;
   private Date fechaInicio;
   private Date fechaFin;
   private String mensajeCorreo;
   private String observacionParaBanco;
   private String observacionRechazo;
+  private String nuevoCorreo;
+  private String tipoNuevoCorreo;
   private float montoAprobado;
 
   // CONSTRUCTOR
@@ -93,10 +106,13 @@ public class PagosBean implements Serializable {
     remitente = indexBean.getUsuario().getCorreo();
     permitirExport = false;
     habilitaTabla = false;
+    habilitaVisualizador = false;
     pagoDao = new PagoIMPL();
     creditoDao = new CreditoIMPL();
     actualizacionDao = new ActualizacionIMPL();
     gestorDao = new GestorIMPL();
+    emailDao = new EmailIMPL();
+    comprobantePagoDao = new ComprobantePagoIMPL();
     pagosPorRevisar = new ArrayList();
     listaPagos = new ArrayList();
     listaRemitentes = new ArrayList();
@@ -105,21 +121,40 @@ public class PagosBean implements Serializable {
     destinatarios = new ArrayList();
     listaObservacionesPago = new ArrayList();
     listaPagosGestor = new ArrayList();
+    listaComprobantes = new ArrayList();
+    comprobanteSeleccionado = new ComprobantePago();
     cargarListas();
   }
 
   // METODO QUE GENERA LAS LISTAS CON INFORMACION DE LA BASE DE DATOS
   public final void cargarListas() {
+    cargarCorreos();
     pagosPorRevisar = pagoDao.pagosPorRevisarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     listaObservacionesPago = Arrays.asList("1 MES", "2 O MAS MESES", "QUITA DE CAPITAL", "CASTIGO", "QUEBRANTO", "NO HACER PAGO(S)", "NO ENVIAR A BANCO", "ACTA DEFUNCION", "LIQUIDADA", "REGULARIZADA");
     listaPagosGestor = generarPagosGestor();
   }
 
+  // METODO QUE CARGA LAS LISTAS DE CORREO
+  public void cargarCorreos() {
+    listaRemitentes = new ArrayList();
+    listaDestinatarios = new ArrayList();
+    listaCorreos = new ArrayList();
+    List<Email> lista = emailDao.buscarPorSujeto(2);
+    for (int i = 0; i < (lista.size()); i++) {
+      listaRemitentes.add(lista.get(i).getDireccion());
+    }
+    lista = emailDao.buscarPorSujeto(3);
+    for (int i = 0; i < (lista.size()); i++) {
+      listaDestinatarios.add(lista.get(i).getDireccion());
+    }
+    listaCorreos.addAll(listaRemitentes);
+    listaCorreos.addAll(listaDestinatarios);
+  }
+
   // METODO QUE TRAE LOS DATOS DEL PAGO SELECCIONADO
-  public void visualizar() {
-    urlImagen = Directorios.RUTA_SERVIDOR_WEB_COMPROBANTES + pagoSeleccionado.getNombreComprobante();
-    RequestContext.getCurrentInstance().update("formVisorPago");
-    RequestContext.getCurrentInstance().execute("PF('detallePagoDialog').show();");
+  public void visualizarListaComprobantes(Pago pago) {
+    listaComprobantes = comprobantePagoDao.buscarPorPago(pago.getIdPago());
+    habilitaVisualizador = true;
   }
 
   // METODO QUE PREPARA EL MONTO POR APROBAR DEL PAGO A VALIDAR
@@ -136,6 +171,7 @@ public class PagosBean implements Serializable {
       pagoSeleccionado.setEstatus(Pagos.APROBADO);
       pagoSeleccionado.setRevisor(indexBean.getUsuario().getNombreLogin());
       pagoSeleccionado.setMontoAprobado(montoAprobado);
+      pagoSeleccionado.setInformacionRevision(observacionParaBanco);
       boolean ok = pagoDao.editar(pagoSeleccionado);
       if (ok) {
         Actualizacion act = actualizacionDao.buscarUltimaActualizacion(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getIdCredito());
@@ -164,7 +200,7 @@ public class PagosBean implements Serializable {
     FacesContext contexto = FacesContext.getCurrentInstance();
     pagoSeleccionado.setEstatus(Pagos.RECHAZADO);
     pagoSeleccionado.setRevisor(indexBean.getUsuario().getNombreLogin());
-    pagoSeleccionado.setObservaciones(observacionRechazo);
+    pagoSeleccionado.setObservacionRevisor(observacionRechazo);
     boolean ok = pagoDao.editar(pagoSeleccionado);
     if (ok) {
       cargarListas();
@@ -231,23 +267,21 @@ public class PagosBean implements Serializable {
     if (pagoSeleccionado.getEstatus() == Pagos.REVISION_BANCO) {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Este pago ya fue enviado a revision."));
     } else {
-      try {
-        String[] arr;
-        arr = ManejadorArchivosDeTexto.leerArchivo(Directorios.RUTA_CORREOS, "remitentes.txt").split(";");
-        for (int i = 0; i < (arr.length); i++) {
-          listaRemitentes.add(arr[i]);
-        }
-        arr = ManejadorArchivosDeTexto.leerArchivo(Directorios.RUTA_CORREOS, "destinatarios.txt").split(";");
-        for (int i = 0; i < (arr.length); i++) {
-          listaDestinatarios.add(arr[i]);
-        }
-        listaCorreos.addAll(listaRemitentes);
-        listaCorreos.addAll(listaDestinatarios);
-        copia = "1ctexpress_ibr@corporativodelrio.com";
-        mensajeCorreo = "TE MANDO PAGO PARA SU VALIDACION";
-      } catch (IOException ioe) {
-        Logs.log.error(ioe);
+      copia = "1ctexpress_ibr@corporativodelrio.com";
+      String producto;
+      if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("CT EXPRESS")) {
+        producto = "CT EXPRESS";
+      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("EXPRESS CT")) {
+        producto = "SOFOM CT";
+      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("TELMEX")) {
+        producto = "CREDITO TELMEX";
+      } else {
+        producto = "CREDITO TELMEX";
       }
+      String credito = pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito();
+      String deudor = pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getDeudor().getSujeto().getNombreRazonSocial();
+      asunto = producto + " " + credito + " " + deudor + " $" + pagoSeleccionado.getMontoPago() + " " + pagoSeleccionado.getFechaDeposito() + " " + pagoSeleccionado.getNumeroCuenta();
+      mensajeCorreo = pagoSeleccionado.getObservacionGestor() + "\n\nSALUDOS CORDIALES.\n\n";
       RequestContext.getCurrentInstance().execute("PF('mailPagoDialog').show()");
     }
   }
@@ -272,16 +306,18 @@ public class PagosBean implements Serializable {
           mensaje.addRecipient(Message.RecipientType.CC, new InternetAddress(destinatarios.get(i)));
         }
       }
-      mensaje.setSubject(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre() + " " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getDeudor().getSujeto().getNombreRazonSocial() + " $" + pagoSeleccionado.getMontoAprobado());
-      mensajeCorreo = mensajeCorreo + ". " + observacionParaBanco + "\n\nSALUDOS CORDIALES.\n\n";
+      mensaje.setSubject(asunto);
       MimeMultipart multiParte = new MimeMultipart();
       BodyPart texto = new MimeBodyPart();
       texto.setText(mensajeCorreo);
       multiParte.addBodyPart(texto);
-      BodyPart adjunto = new MimeBodyPart();
-      adjunto.setDataHandler(new DataHandler(new FileDataSource(Directorios.RUTA_WINDOWS_CARGA_COMPROBANTES + pagoSeleccionado.getNombreComprobante())));
-      adjunto.setFileName(pagoSeleccionado.getNombreComprobante());
-      multiParte.addBodyPart(adjunto);
+      List<ComprobantePago> comprobantes = comprobantePagoDao.buscarPorPago(pagoSeleccionado.getIdPago());
+      for(int i = 0; i<(comprobantes.size()); i++){
+        BodyPart adjunto = new MimeBodyPart();
+        adjunto.setDataHandler(new DataHandler(new FileDataSource(comprobantes.get(i).getNombreComprobante())));
+        adjunto.setFileName("Comprobante " + (i+1));
+        multiParte.addBodyPart(adjunto);
+      }
       mensaje.setContent(multiParte);
       Transport t = sesion.getTransport("smtp");
       t.connect(remitente, buscaP(remitente));
@@ -295,7 +331,7 @@ public class PagosBean implements Serializable {
       contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se envio el pago a revision. Contacte al equipo de sistemas."));
       Logs.log.error("No se pudo enviar pago a revision con el banco");
       Logs.log.error("Remitente: " + remitente + ", destinatario: " + destinatarios + ", cco: " + copia);
-      Logs.log.error(e);
+      Logs.log.error(e.getStackTrace());
     } finally {
       RequestContext.getCurrentInstance().execute("PF('mailPagoDialog').hide()");
     }
@@ -358,6 +394,36 @@ public class PagosBean implements Serializable {
     return lista;
   }
 
+  // METODO QUE AGREGA UNA NUEVA DIRECCION DE CORREO A LA BASE DE DATOS
+  public void agregarCorreo() {
+    if (!nuevoCorreo.matches(Patrones.PATRON_EMAIL)) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La direccion de correo proporcionada no tiene un formato valido."));
+    } else {
+      Email e = new Email();
+      if (tipoNuevoCorreo.equals("Remitente")) {
+        e.setSujeto(new SujetoIMPL().buscar(2));
+        e.setTipo("Bufete Del Rio");
+      } else {
+        e.setSujeto(new SujetoIMPL().buscar(3));
+        e.setTipo("Inbursa");
+      }
+      e.setDireccion(nuevoCorreo);
+      e = emailDao.insertar(e);
+      if (e != null) {
+        nuevoCorreo = "";
+        cargarCorreos();
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el nuevo correo."));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el nuevo correo. Contacte al equipo de sistemas."));
+      }
+    }
+  }
+
+  // METODO QUE ABRE EL VISUALIZADOR PARA EL COMPROBANTE SELECCIONADO
+  public void visualizar(ComprobantePago comprobante){
+    
+  }
+  
   // GETTERS & SETTERS
   public List<Pago> getPagosPorRevisar() {
     return pagosPorRevisar;
@@ -525,6 +591,54 @@ public class PagosBean implements Serializable {
 
   public void setObservacionRechazo(String observacionRechazo) {
     this.observacionRechazo = observacionRechazo;
+  }
+
+  public boolean isHabilitaVisualizador() {
+    return habilitaVisualizador;
+  }
+
+  public void setHabilitaVisualizador(boolean habilitaVisualizador) {
+    this.habilitaVisualizador = habilitaVisualizador;
+  }
+
+  public String getAsunto() {
+    return asunto;
+  }
+
+  public void setAsunto(String asunto) {
+    this.asunto = asunto;
+  }
+
+  public String getNuevoCorreo() {
+    return nuevoCorreo;
+  }
+
+  public void setNuevoCorreo(String nuevoCorreo) {
+    this.nuevoCorreo = nuevoCorreo;
+  }
+
+  public String getTipoNuevoCorreo() {
+    return tipoNuevoCorreo;
+  }
+
+  public void setTipoNuevoCorreo(String tipoNuevoCorreo) {
+    this.tipoNuevoCorreo = tipoNuevoCorreo;
+  }
+
+  public List<ComprobantePago> getListaComprobantes() {
+    return listaComprobantes;
+  }
+
+  public void setListaComprobantes(List<ComprobantePago> listaComprobantes) {
+    this.listaComprobantes = listaComprobantes;
+  }
+
+  public ComprobantePago getComprobanteSeleccionado() {
+    return comprobanteSeleccionado;
+  }
+
+  public void setComprobanteSeleccionado(ComprobantePago comprobanteSeleccionado) {
+    this.comprobanteSeleccionado = comprobanteSeleccionado;
   }
 
   // CLASE MIEMBRO QUE RELACIONA AL GESTOR CON SUS PAGOS

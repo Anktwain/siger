@@ -29,15 +29,13 @@ import util.log.Logs;
 public class PagoIMPL implements PagoDAO {
 
   @Override
-  public boolean insertar(Pago pago) {
+  public Pago insertar(Pago pago) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
-    boolean ok;
     try {
       sesion.save(pago);
       tx.commit();
       Logs.log.info("Se agrego un pago");
-      ok = true;
     } catch (HibernateException he) {
       pago = null;
       if (tx != null) {
@@ -45,11 +43,10 @@ public class PagoIMPL implements PagoDAO {
       }
       Logs.log.error("No se pudo insertar pago");
       Logs.log.error(he.getMessage());
-      ok = false;
     } finally {
       cerrar(sesion);
     }
-    return ok;
+    return pago;
   }
 
   @Override
@@ -67,6 +64,29 @@ public class PagoIMPL implements PagoDAO {
         tx.rollback();
       }
       he.printStackTrace();
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
+  }
+
+  @Override
+  public boolean eliminar(Pago pago) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
+    try {
+      sesion.delete(pago);
+      tx.commit();
+      Logs.log.info("Se elimino un pago");
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      Logs.log.error("No se pudo eliminar pago");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -214,7 +234,11 @@ public class PagoIMPL implements PagoDAO {
     double rec;
     String consulta = "SELECT ROUND((((SELECT SUM(monto_aprobado) FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + " AND id_credito NOT IN (SELECT id_credito FROM devolucion))))*100)/(SELECT SUM(monto) FROM credito WHERE id_despacho = " + idDespacho + " AND id_credito NOT IN (SELECT id_credito FROM devolucion))),4);";
     try {
-      rec = (double) sesion.createSQLQuery(consulta).uniqueResult();
+      if (sesion.createSQLQuery(consulta).uniqueResult() == null) {
+        rec = 0;
+      } else {
+        rec = (double) sesion.createSQLQuery(consulta).uniqueResult();
+      }
     } catch (HibernateException he) {
       rec = -1;
       Logs.log.error(consulta);

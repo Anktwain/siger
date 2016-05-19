@@ -1,5 +1,5 @@
 package dto;
-// Generated 11/05/2016 10:38:30 AM by Hibernate Tools 4.3.1
+// Generated 17/05/2016 10:10:16 AM by Hibernate Tools 4.3.1
 
 
 import java.math.BigDecimal;

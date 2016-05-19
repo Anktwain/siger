@@ -54,45 +54,50 @@
             <div class="tab-pane fade" id="pestanaRevisionPagos">
               <h:form id="formRevisionPagos">
                 <p:contextMenu for="revisionPagos" style="width:230px;">
-                  <p:menuitem value="Visualizar comprobante" icon="ui-icon-search" actionListener="#{pagosBean.visualizar()}" />
+                  <p:menuitem value="Visualizar comprobantes" icon="ui-icon-zoomin" actionListener="#{pagosBean.visualizarListaComprobantes(pagosBean.pagoSeleccionado)}" update=":formVisualizarPagos" />
                   <p:menuitem value="Enviar a revision" icon="ui-icon-mail-closed" actionListener="#{pagosBean.verificarCorreoRevision()}" update="growl, mailPagoForm" />
                   <p:menuitem value="Aprobar pago" icon="ui-icon-check" oncomplete="PF('confirmacionAprobarPagoDialog').show()" actionListener="#{pagosBean.prepararMontoAprobado()}" update="confirmacionAprobarPagoForm" />
                   <p:menuitem value="Rechazar pago" icon="ui-icon-cancel" oncomplete="PF('confirmacionRechazarPagoDialog').show()" />
                 </p:contextMenu>
-                <p:dataTable id="revisionPagos" var="pen" value="#{pagosBean.pagosPorRevisar}" rowKey="#{pen.idPago}" selection="#{pagosBean.pagoSeleccionado}" selectionMode="single" emptyMessage="No existen pagos por revisar." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1360px;">
-                  <p:column headerText="Fecha deposito" style="width:100px;"> 
-                    <h:outputText value="#{pen.fechaDeposito}" />
+                <p:dataTable id="revisionPagos" var="pr" value="#{pagosBean.pagosPorRevisar}" rowKey="#{pr.idPago}" selection="#{pagosBean.pagoSeleccionado}" selectionMode="single" emptyMessage="No existen pagos por revisar." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false">
+                  <p:column headerText="Deudor" style="width:300px;">
+                    <h:outputText value="#{pr.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
                   </p:column>
                   <p:column headerText="Monto" style="width:100px;"> 
-                    <h:outputText value="#{pen.montoPago}" style="float:right">
+                    <h:outputText value="#{pr.montoPago}" style="float:right">
                       <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
+                  </p:column>
+                  <p:column headerText="Fecha deposito" style="width:100px;"> 
+                    <h:outputText value="#{pr.fechaDeposito}" />
                   </p:column>
                   <p:column headerText="Credito" style="width:100px;">
-                    <h:outputText value="#{pen.promesaPago.convenioPago.credito.numeroCredito}" />
+                    <h:outputText value="#{pr.promesaPago.convenioPago.credito.numeroCredito}" />
                   </p:column>
-                  <p:column headerText="Deudor" style="width:250px;">
-                    <h:outputText value="#{pen.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
+                  <p:column headerText="Estatus" style="width:150px;"> 
+                    <h:outputText value="#{pagosBean.etiquetarEstatus(pr.estatus)}" />
                   </p:column>
-                  <p:column headerText="Producto" style="width:150px;">
-                    <h:outputText value="#{pen.promesaPago.convenioPago.credito.producto.nombre}" />
+                  <p:column headerText="Gestor" style="width:100px;" > 
+                    <h:outputText value="#{pr.gestor.usuario.nombreLogin}" />
                   </p:column>
-                  <p:column headerText="Meses vencidos" style="width:100px;">
-                    <h:outputText value="#{pagosBean.obtenerMesesVencidos(pen.promesaPago.convenioPago.credito.idCredito)}" style="float:right" />
+                  <p:column headerText="Producto" style="width:300px;">
+                    <h:outputText value="#{pr.promesaPago.convenioPago.credito.subproducto.nombre}" />
                   </p:column>
                   <p:column headerText="Mensualidad" style="width:100px;">
-                    <h:outputText value="#{pen.promesaPago.convenioPago.credito.mensualidad}" style="float:right">
+                    <h:outputText value="#{pr.promesaPago.convenioPago.credito.mensualidad}" style="float:right">
                       <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
-                  <p:column headerText="Gestor" style="width:100px;" > 
-                    <h:outputText value="#{pen.gestor.usuario.nombreLogin}" />
+                  <p:column headerText="Meses vencidos" style="width:100px;">
+                    <h:outputText value="#{pagosBean.obtenerMesesVencidos(pr.promesaPago.convenioPago.credito.idCredito)}" style="float:right" />
                   </p:column>
-                  <p:column headerText="Estatus" style="width:150px;"> 
-                    <h:outputText value="#{pagosBean.etiquetarEstatus(pen.estatus)}" />
-                  </p:column>
-                  <p:column headerText="Observaciones" style="width:200px;"> 
-                    <h:outputText value="#{pen.observaciones}"/>
+                </p:dataTable>
+              </h:form>
+              <hr />
+              <h:form id="formVisualizarPagos">
+                <p:dataTable id="comprobantesPagos" var="c" value="#{pagosBean.listaComprobantes}" rowKey="#{c.idComprobante}" selection="#{pagosBean.comprobanteSeleccionado}" selectionMode="single" emptyMessage="No existen comprobantes para este pago." rendered="#{pagosBean.habilitaVisualizador}" style="width: 300px;">
+                  <p:column headerText="Comprobantes para este pago">
+                    <p:commandLink value="Ver comprobante" actionListener="#{pagosBean.visualizar(c)}" />
                   </p:column>
                 </p:dataTable>
               </h:form>
@@ -127,6 +132,8 @@
                 </table>
                 <br />
                 <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1500px;" rendered="#{pagosBean.habilitaTabla}">
+                  <!-- TO FIX -->
+                  <!-- AGREGAR UN BOTON PARA QUE EL ADMINISTRADOR MARQUE SI YA PAGO LA COMISION DE ESTE PAGO AL GESTOR -->
                   <p:column headerText="Fecha deposito" style="width:100px;"> 
                     <h:outputText value="#{p.fechaDeposito}" />
                   </p:column>
@@ -159,7 +166,7 @@
                     <h:outputText value="#{p.gestor.usuario.nombreLogin}" />
                   </p:column>
                   <p:column headerText="Observaciones" style="width:200px;">
-                    <h:outputText value="#{p.observaciones}"/>
+                    <h:outputText value="#{p.observacionRevisor}"/>
                   </p:column>
                   <f:facet name="footer">
                     <div align="right">
@@ -218,21 +225,16 @@
         <!-- DIALOGO DE CORREO ELECTRONICO -->
         <p:dialog id="dlgMailPago" widgetVar="mailPagoDialog" resizable="false" width="500" header="Enviar pago a revision">
           <h:form id="mailPagoForm">
-            Informacion para el banco:
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:selectOneMenu value="#{pagosBean.observacionParaBanco}">
-              <f:selectItems value="#{pagosBean.listaObservacionesPago}" />
-            </p:selectOneMenu>
-            <br />
-            <br />
             Remitente:
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <h:outputText value="#{pagosBean.remitente}" />
+            <p:selectOneMenu value="#{pagosBean.remitente}">
+              <f:selectItems value="#{pagosBean.listaRemitentes}" />
+            </p:selectOneMenu>
             <br />
             <br />
             Destinatario(s):
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:selectCheckboxMenu value="#{pagosBean.destinatarios}" label="Correos" style="width: 250px;">
+            <p:selectCheckboxMenu value="#{pagosBean.destinatarios}" label="Seleccione" style="width: 250px; font-size: 16px; font-family: 'Open Sans',sans-serif;">
               <f:selectItems value="#{pagosBean.listaDestinatarios}" />
             </p:selectCheckboxMenu>
             <br />
@@ -245,20 +247,36 @@
             <br />
             <br />
             <br />
+            Asunto
+            <br />
+            <p:inputTextarea value="#{pagosBean.asunto}" rows="2" cols="50" />
+            <br />
+            <br />
             Cuerpo del mensaje:
             <br />
-            <p:inputTextarea value="#{pagosBean.mensajeCorreo}" rows="3" cols="50" />
+            <p:inputTextarea value="#{pagosBean.mensajeCorreo}" rows="4" cols="50" />
             <br />
             <br />
             <div align="center">
-              <p:commandButton value="Enviar a revision" icon="ui-icon-mail-closed" actionListener="#{pagosBean.enviarCorreoBanco()}" update="growl, formRevisionPagos" />
+              <p:commandButton value="Enviar a revision" icon="ui-icon-mail-closed" actionListener="#{pagosBean.enviarCorreoBanco()}" oncomplete="PF('mailPagoDialog').hide()" update="growl, formRevisionPagos" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Agregar correos" icon="ui-icon-plus" oncomplete="PF('agregarCorreoDialog').show()"/>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('mailPagoDialog').hide()" />
             </div>
           </h:form>
         </p:dialog>
         <!-- DIALOGO DE CONFIRMACION APROBAR PAGO -->
         <p:dialog id="dlgConfirmacionAprobarPago" widgetVar="confirmacionAprobarPagoDialog" modal="true" resizable="false" header="Confirme esta accion">
           <h:form id="confirmacionAprobarPagoForm">
-            Esta seguro de aprobar este pago?
+            Realmente desea aprobar este pago?
+            <br />
+            <br />
+            Informacion del pago:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:selectOneMenu value="#{pagosBean.observacionParaBanco}">
+              <f:selectItems value="#{pagosBean.listaObservacionesPago}" />
+            </p:selectOneMenu>
             <br />
             <br />
             Monto aprobado:
@@ -276,7 +294,7 @@
         <!-- DIALOGO DE CONFIRMACION RECHAZAR PAGO -->
         <p:dialog id="dlgConfirmacionRechazarPago" widgetVar="confirmacionRechazarPagoDialog" modal="true" resizable="false" header="Confirme esta accion">
           <h:form id="confirmacionRechazarPagoForm">
-            Esta seguro de rechazar este pago?
+            Realmente desea rechazar este pago?
             <br />
             <br />
             Motivo del rechazo:
@@ -285,10 +303,40 @@
             <br />
             <br />
             <div align="center">
-              <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('confirmacionRechazarPagoDialog').hide()" actionListener="#{pagosBean.rechazarPago()}" update="growl, formRevisionPagos, formTodosPagos:todosPagos" />
+              <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('confirmacionRechazarPagoDialog').hide()" actionListener="#{pagosBean.rechazarPago()}" update=":growl, formRevisionPagos, formTodosPagos:todosPagos" />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('confirmacionRechazarPagoDialog').hide()" />
             </div>
+          </h:form>
+        </p:dialog>
+        <p:dialog id="dlgAgregarCorreo" widgetVar="agregarCorreoDialog" modal="true" resizable="false" draggable="false" header="Agregue una direccion de correo">
+          <h:form id="agregarCorreoForm">
+            Direccion de correo electronico:
+            <br />
+            <p:inputText value="#{pagosBean.nuevoCorreo}" type="email" required="true" requiredMessage="Debe indicar una direccion de correo" size="30" maxlength="60" />
+            <br />
+            <br />
+            Tipo:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:selectOneMenu value="#{pagosBean.tipoNuevoCorreo}">
+              <f:selectItem itemLabel="Remitente" itemValue="Remitente" />
+              <f:selectItem itemLabel="Destinatario" itemValue="Destinatario" />
+            </p:selectOneMenu>
+            <br />
+            <br />
+            <div align="center">
+              <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('agregarCorreoDialog').hide()" actionListener="#{pagosBean.agregarCorreo()}" update=":growl, mailPagoForm" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('agregarCorreoDialog').hide()" />
+            </div>
+          </h:form>
+        </p:dialog>
+        <p:dialog id="dlgRevisionPago" widgetVar="comprobantePagoDialog" position="right top" resizable="false" width="500" height="850" header="Revisar comprobante">
+          <h:form id="formVisorPago">
+            <h:outputText value="#{pagosBean.comprobanteSeleccionado.nombreComprobante}" />
+            <br />
+            <br />
+            <h:graphicImage url="#{pagosBean.urlImagen}" height="790" width="490"/>
           </h:form>
         </p:dialog>
       </div>

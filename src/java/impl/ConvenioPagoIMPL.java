@@ -24,24 +24,23 @@ import util.log.Logs;
 public class ConvenioPagoIMPL implements ConvenioPagoDAO {
 
   @Override
-  public boolean insertar(ConvenioPago convenio) {
+  public ConvenioPago insertar(ConvenioPago convenio) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
-    boolean ok;
     try {
       sesion.save(convenio);
       tx.commit();
-      ok = true;
     } catch (HibernateException he) {
-      ok = false;
+      convenio = null;
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo insertar el nuevo convenio");
+      Logs.log.error(he.getStackTrace());
     } finally {
       cerrar(sesion);
     }
-    return ok;
+    return convenio;
   }
 
   @Override
@@ -58,7 +57,30 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar el convenio");
+      Logs.log.error(he.getStackTrace());
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
+  }
+
+  @Override
+  public boolean eliminar(ConvenioPago convenio) {
+   Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
+    try {
+      sesion.delete(convenio);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      Logs.log.error("No se pudo eliminar el convenio");
+      Logs.log.error(he.getStackTrace());
     } finally {
       cerrar(sesion);
     }

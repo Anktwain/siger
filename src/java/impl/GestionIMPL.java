@@ -195,7 +195,7 @@ public class GestionIMPL implements GestionDAO {
     gestor.setPaterno("");
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String fecha = df.format(new Date());
-    String consulta = "SELECT * FROM usuario WHERE id_usuario = (SELECT id_usuario FROM gestion WHERE DATE(fecha) = '" + fecha + "' GROUP BY id_usuario ORDER BY COUNT(*) DESC LIMIT 1) AND id_despacho = " + idDespacho + ";";
+    String consulta = "SELECT * FROM usuario WHERE id_usuario = (SELECT id_usuario FROM gestion WHERE DATE(fecha) = '" + fecha + "' AND id_tipo_gestion != 5 GROUP BY id_usuario ORDER BY COUNT(*) DESC LIMIT 1) AND id_despacho = " + idDespacho + ";";
     try {
       gestor = (Usuario) sesion.createSQLQuery(consulta).addEntity(Usuario.class).uniqueResult();
     } catch (HibernateException he) {

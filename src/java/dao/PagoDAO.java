@@ -15,9 +15,11 @@ import java.util.List;
  */
 public interface PagoDAO {
 
-  public boolean insertar(Pago pago);
+  public Pago insertar(Pago pago);
 
   public boolean editar(Pago pago);
+  
+  public boolean eliminar(Pago pago);
 
   public List<Pago> buscarPagosPorConvenioActivo(int idConvenio);
 

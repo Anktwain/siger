@@ -96,7 +96,10 @@
                       <h:outputText value="#{pagosBean.etiquetarEstatus(p.estatus)}" />
                     </p:column>
                     <p:column headerText="Observaciones" style="width:200px;">
-                      <h:outputText value="#{p.observaciones}"/>
+                        <h:outputText value="#{p.observacionRevisor}"/>
+                    </p:column>
+                    <p:column headerText="Pagado" style="width:200px;">
+                      <h:outputText value="#{progresoTotalGestorBean.etiquetarEstatusPago(p.pagado)}"/>
                     </p:column>
                     <f:facet name="footer">
                       <div align="right">

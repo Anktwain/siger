@@ -14,8 +14,9 @@ import java.util.List;
  */
 public interface ConvenioPagoDAO {
   
-  public boolean insertar(ConvenioPago convenio);
+  public ConvenioPago insertar(ConvenioPago convenio);
   public boolean editar(ConvenioPago convenio);
+  public boolean eliminar(ConvenioPago convenio);
   public ConvenioPago buscarConvenioEnCursoCredito(int idCredito);
   public List<ConvenioPago> buscarConveniosFinalizadosCredito(int idCredito);
   public Number calcularSaldoPendiente(int idConvenio);

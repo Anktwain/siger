@@ -83,7 +83,7 @@
                 <p:accordionPanel activeIndex="0" style="width:420px;">
                   <p:tab title="Promesas en este convenio">
                     <p:contextMenu for="promesasEnCurso" style="width:200px;">
-                      <p:menuitem value="Agregar pago" icon="ui-icon-folder-collapsed" oncomplete="PF('agregarPagoDialog').show();" />
+                      <p:menuitem value="Agregar pago" icon="ui-icon-folder-collapsed" actionListener="#{conveniosBean.inicializarMontoPago()}" oncomplete="PF('agregarPagoDialog').show();" update="agregarPagoForm" />
                     </p:contextMenu>
                     <p:dataTable id="promesasEnCurso" var="promesa" value="#{conveniosBean.listaPromesas}" rowKey="#{promesa.idPromesaPago}" selection="#{conveniosBean.promesaSeleccionada}" emptyMessage="No existen promesas de pago." selectionMode="single" paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width:270px;">
                       <p:column headerText="Fecha de pago" style="width:100px;">
@@ -103,13 +103,13 @@
                     <h:outputText value="#{p.fechaDeposito}"/>
                   </p:column>
                   <p:column headerText="Monto" style="width:100px;"> 
-                    <h:outputText value="#{p.monto}"/>
+                    <h:outputText value="#{p.montoPago}"/>
                   </p:column>
                   <p:column headerText="Revisor" style="width:100px;"> 
                     <h:outputText value="#{p.revisor}"/>
                   </p:column>
                   <p:column headerText="Observaciones" style="width:200px;"> 
-                    <h:outputText value="#{p.observaciones}"/>
+                    <h:outputText value="#{p.observacionRevisor}"/>
                   </p:column>
                   <p:column headerText="Estatus" style="width:100px;"> 
                     <h:outputText value="#{conveniosBean.etiquetarEstatus(p.estatus)}"/>
@@ -156,13 +156,13 @@
                         <h:outputText value="#{p.fechaDeposito}"/>
                       </p:column>
                       <p:column headerText="Monto" style="width:100px;"> 
-                        <h:outputText value="#{p.monto}"/>
+                        <h:outputText value="#{p.montoAprobado}"/>
                       </p:column>
                       <p:column headerText="Revisor" style="width:100px;"> 
                         <h:outputText value="#{p.revisor}"/>
                       </p:column>
                       <p:column headerText="Observaciones" style="width:180px;"> 
-                        <h:outputText value="#{p.observaciones}"/>
+                        <h:outputText value="#{p.informacionRevision}"/>
                       </p:column>
                     </p:dataTable>
                   </p:tab>
@@ -171,8 +171,32 @@
             </div>
           </div>
         </h:form>
-        <p:dialog id="dlgPago" widgetVar="agregarPagoDialog" modal="true" header="Agregar pago">
-          <h:form enctype="multipart/form-data">
+          <p:dialog id="dlgPago" widgetVar="agregarPagoDialog" modal="true" header="Agregar pago" closable="false">
+          <h:form id="agregarPagoForm" enctype="multipart/form-data">
+            Cargue los comprobantes:
+            <br />
+            <br />
+            <p:fileUpload 
+              value="#{conveniosBean.archivo}"
+              fileUploadListener="#{conveniosBean.eventoDeCarga}" 
+              multiple="true" 
+              mode="advanced" 
+              label="Seleccionar archivo" 
+              sizeLimit="5242880" invalidSizeMessage="Error. El archivo excede 5 MB" 
+              fileLimit="3" fileLimitMessage="Error. Se pueden cargar como maximo 3 archivos." 
+              allowTypes="/(\.|\/)(jpe?g|png|pdf|bmp)$/" invalidFileMessage="Error. Este formato de archivo no esta permitido." 
+              auto="true" 
+              update=":growl, agregarPagoForm" 
+              required="true" 
+              style="width: 400px;" 
+              rendered="#{conveniosBean.habilitaCarga}" 
+              />
+            <br />
+            Archivos cargados al servidor:
+            &nbsp;
+            <h:outputText value="#{conveniosBean.listaNombresComprobantes.size()}"  />
+            <br />
+            <br />
             Cantidad:
             &nbsp;&nbsp;&nbsp;&nbsp;
             <p:inputText value="#{conveniosBean.saldoNuevoPago}" required="true" requiredMessage="Debe ingresar una cantidad." />
@@ -185,18 +209,17 @@
             <br />
             Numero de cuenta:
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:selectOneMenu value="#{conveniosBean.cuentaPago}">
-                <f:selectItem itemLabel="" itemValue="" />
-                <f:selectItems value="#{conveniosBean.listaCuentasPago}" />
-              </p:selectOneMenu>
+            <p:selectOneMenu value="#{conveniosBean.cuentaPago}" required="true" requiredMessage="Debe indicar una cuenta de deposito.">
+              <f:selectItem itemLabel="" itemValue="" />
+              <f:selectItems value="#{conveniosBean.listaCuentasPago}" />
+            </p:selectOneMenu>
             <br />
             <br />
             Observaciones:
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:inputText value="#{conveniosBean.observacionesPago}" />
             <br />
             <br />
-            <p:fileUpload fileUploadListener="#{conveniosBean.eventoDeCarga}" mode="advanced" auto="true" label="Seleccionar archivo" style="width: 200px;" required="true" sizeLimit="3000000" fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png|pdf)$/" update=":growl" />
+            <p:inputText value="#{conveniosBean.observacionesPago}" size="40" maxlength="50" />
+            <br />
             <br />
             <div align="center">
               <p:commandButton value="Enviar" icon="ui-icon-check" actionListener="#{conveniosBean.agregarPago()}" update=":growl, formConvenios:pagosConvenioEnCurso" />
@@ -205,8 +228,8 @@
             </div>
           </h:form>
         </p:dialog>
-          <p:dialog id="dlgNuevoConvenio" widgetVar="agregarConvenioDialog" modal="true" header="Agregar convenio" position="top">
-          <h:form>
+        <p:dialog id="dlgNuevoConvenio" widgetVar="agregarConvenioDialog" modal="true" header="Agregar convenio" position="top" closable="false">
+          <h:form id="nuevoConvenioForm">
             <p:outputPanel style="text-align:center;">
               <p:panelGrid columns="2">
                 Monto maximo:
@@ -215,15 +238,15 @@
                 <br />
                 Monto negociado:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:inputText value="#{conveniosBean.saldoNuevoConvenio}" required="true" requiredMessage="Debe ingresar una cantidad." />
+                <p:inputText value="#{conveniosBean.saldoNuevoConvenio}" required="true" requiredMessage="Debe ingresar una cantidad." disabled="#{conveniosBean.habilitaPromesas}" />
                 <br />
                 Pagos pactados:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:inputText value="#{conveniosBean.pagosPrometidos}" />
+                <p:inputText value="#{conveniosBean.pagosPrometidos}" disabled="#{conveniosBean.habilitaPromesas}" />
                 <br />
                 El convenio se realizo con:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:selectOneMenu value="#{conveniosBean.sujetoConvenio}" style="width:200px">
+                <p:selectOneMenu value="#{conveniosBean.sujetoConvenio}" style="width:200px" disabled="#{conveniosBean.habilitaPromesas}">
                   <f:selectItems value="#{conveniosBean.listaSujetos}" var="s" itemLabel="#{s}" itemValue="#{s}" />
                 </p:selectOneMenu>
               </p:panelGrid>
@@ -240,7 +263,9 @@
             </div>
             <br />
             <div align="center">
-              <p:commandButton value="Agregar convenio" icon="ui-icon-check" actionListener="#{conveniosBean.agregarConvenio()}" update=":growl, formConvenios:convenioEnCurso, formConvenios:botonNuevoConvenio, :nuevaPromesaForm" rendered="#{!conveniosBean.habilitaPromesas}" disabled="#{conveniosBean.habilitaConvenios}" />
+              <p:commandButton value="Agregar convenio" icon="ui-icon-check" actionListener="#{conveniosBean.agregarConvenio()}" update=":growl, formConvenios:convenioEnCurso, formConvenios:botonNuevoConvenio, :nuevaPromesaForm, nuevoConvenioForm" rendered="#{!conveniosBean.habilitaPromesas}" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Cancelar" icon="ui-icon-close" actionListener="#{conveniosBean.cancelar()}" oncomplete="PF('agregarConvenioDialog').hide();" rendered="#{!conveniosBean.habilitaPromesas}" />
             </div>
             <br />
           </h:form>
@@ -340,6 +365,8 @@
             <br />
             <div align="center">
               <p:commandButton value="Agregar promesas" icon="ui-icon-check" actionListener="#{conveniosBean.agregarPromesas()}" update="growl" rendered="#{conveniosBean.habilitaPromesas}" />
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Cancelar" icon="ui-icon-close" actionListener="#{conveniosBean.borrarConvenio()}" process="@this" oncomplete="PF('agregarConvenioDialog').hide();" update=":formConvenios" rendered="#{conveniosBean.habilitaPromesas}" />
             </div>
           </h:form>
         </p:dialog>

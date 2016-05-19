@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17/05/2016 10:10:17 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.ComprobantePago" optimistic-lock="version" table="comprobante_pago">
+    <id name="idComprobante" type="java.lang.Integer">
+      <column name="id_comprobante"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Pago" fetch="select" name="pago">
+      <column name="id_pago" not-null="true"/>
+    </many-to-one>
+    <property name="nombreComprobante" type="string">
+      <column length="200" name="nombre_comprobante" not-null="true" unique="true"/>
+    </property>
+  </class>
+</hibernate-mapping>
