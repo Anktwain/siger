@@ -155,6 +155,22 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
     return promesas;
   }
 
+  @Override
+  public List<PromesaPago> buscarPromesasFuturas(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<PromesaPago> promesas = new ArrayList();
+    String consulta = "SELECT * FROM promesa_pago WHERE id_convenio_pago IN (SELECT id_convenio_pago FROM convenio_pago WHERE id_credito = " + idCredito + ") AND fecha_prometida > CURDATE();";
+    try {
+      promesas = sesion.createSQLQuery(consulta).addEntity(PromesaPago.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he);
+    } finally {
+      cerrar(sesion);
+    }
+    return promesas;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

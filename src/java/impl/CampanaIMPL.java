@@ -27,7 +27,7 @@ public class CampanaIMPL implements CampanaDAO {
       campanas = sesion.createSQLQuery("SELECT * FROM campana;").addEntity(Campana.class).list();
     } catch (HibernateException he) {
       campanas = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -42,7 +42,7 @@ public class CampanaIMPL implements CampanaDAO {
       campana = (Campana) sesion.createSQLQuery("SELECT * FROM campana WHERE id_campana = " + idCampana + ";").addEntity(Campana.class).uniqueResult();
     } catch (HibernateException he) {
       campana = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -57,7 +57,7 @@ public class CampanaIMPL implements CampanaDAO {
       campana = (Campana) sesion.createSQLQuery("SELECT * FROM campana WHERE id_campana IN (SELECT id_campana FROM credito WHERE id_credito = " + idCredito + ");").addEntity(Campana.class).uniqueResult();
     } catch (HibernateException he) {
       campana = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

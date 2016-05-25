@@ -30,7 +30,7 @@ public class QuincenaIMPL implements QuincenaDAO{
       quincena = (Quincena) sesion.createSQLQuery(consulta).addEntity(Quincena.class).uniqueResult();
     } catch (HibernateException he) {
       quincena = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

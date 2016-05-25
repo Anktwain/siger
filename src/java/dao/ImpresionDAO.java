@@ -35,4 +35,5 @@ public interface ImpresionDAO {
   
   public Number calcularCorreoPorEstado(int idDespacho, int idEstado);
   
+  public List<Impresion> buscarPorDireccion(int idDireccion);
 }

@@ -6,6 +6,7 @@
 package beans;
 
 import dao.ActualizacionDAO;
+import dao.ColoniaDAO;
 import dao.ConceptoDevolucionDAO;
 import dao.ContactoDAO;
 import dao.ConvenioPagoDAO;
@@ -13,14 +14,17 @@ import dao.CreditoDAO;
 import dao.DevolucionDAO;
 import dao.DireccionDAO;
 import dao.EmailDAO;
+import dao.EstadoRepublicaDAO;
 import dao.FacDAO;
 import dao.GestionDAO;
 import dao.GestorDAO;
 import dao.HistorialDAO;
 import dao.MarcajeDAO;
 import dao.MotivoDevolucionDAO;
+import dao.MunicipioDAO;
 import dao.TelefonoDAO;
 import dto.Actualizacion;
+import dto.Colonia;
 import dto.ConceptoDevolucion;
 import dto.Contacto;
 import dto.ConvenioPago;
@@ -28,14 +32,18 @@ import dto.Credito;
 import dto.Devolucion;
 import dto.Direccion;
 import dto.Email;
+import dto.EstadoRepublica;
 import dto.Fac;
 import dto.Gestion;
 import dto.Gestor;
 import dto.Historial;
+import dto.Impresion;
 import dto.MotivoDevolucion;
+import dto.Municipio;
 import dto.QuienGestion;
 import dto.Telefono;
 import impl.ActualizacionIMPL;
+import impl.ColoniaIMPL;
 import impl.ConceptoDevolucionIMPL;
 import impl.ContactoIMPL;
 import impl.ConvenioPagoIMPL;
@@ -43,16 +51,20 @@ import impl.CreditoIMPL;
 import impl.DevolucionIMPL;
 import impl.DireccionIMPL;
 import impl.EmailIMPL;
+import impl.EstadoRepublicaIMPL;
 import impl.FacIMPL;
 import impl.GestionIMPL;
 import impl.GestorIMPL;
 import impl.HistorialIMPL;
+import impl.ImpresionIMPL;
 import impl.MarcajeIMPL;
 import impl.MotivoDevolucionIMPL;
+import impl.MunicipioIMPL;
 import impl.QuienGestionIMPL;
 import impl.TelefonoIMPL;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,6 +105,7 @@ public class VistaCreditoBean implements Serializable {
   private boolean habilitaHistorial;
   private boolean principalNuevoTelefono;
   private boolean principalNuevoCorreo;
+  private String color;
   private String observaciones;
   private String numeroCreditos;
   private String calleNumero;
@@ -117,6 +130,12 @@ public class VistaCreditoBean implements Serializable {
   private String nuevoContacto;
   private String tipoNuevoContacto;
   private String observacionesContacto;
+  private String cpNuevaDireccion;
+  private String calleNuevaDireccion;
+  private String exteriorNuevaDireccion;
+  private String interiorNuevaDireccion;
+  private String latitudNuevaDireccion;
+  private String longitudNuevaDireccion;
   private float saldoVencido;
   private int mesesVencidos;
   private Credito creditoActual;
@@ -126,6 +145,10 @@ public class VistaCreditoBean implements Serializable {
   private MotivoDevolucion motivoSeleccionado;
   private Telefono telefonoSeleccionado;
   private Email correoSeleccionado;
+  private EstadoRepublica estadoNuevaDireccion;
+  private Municipio municipioNuevaDireccion;
+  private Colonia coloniaNuevaDireccion;
+  private Direccion direccionSeleccionada;
   private final CreditoDAO creditoDao;
   private final DireccionDAO direccionDao;
   private final TelefonoDAO telefonoDao;
@@ -141,6 +164,9 @@ public class VistaCreditoBean implements Serializable {
   private final FacDAO facDao;
   private final MarcajeDAO marcajeDao;
   private final ActualizacionDAO actualizacionDao;
+  private final EstadoRepublicaDAO estadoRepublicaDao;
+  private final MunicipioDAO municipioDao;
+  private final ColoniaDAO coloniaDao;
   private List<Gestion> listaGestiones;
   private List<Gestor> listaGestores;
   private List<Credito> creditosRelacionados;
@@ -153,6 +179,9 @@ public class VistaCreditoBean implements Serializable {
   private List<MotivoDevolucion> listaMotivos;
   private List<Fac> actualizaciones;
   private List<String> listaSujetos;
+  private List<EstadoRepublica> listaEstados;
+  private List<Municipio> listaMunicipios;
+  private List<Colonia> listaColonias;
 
   public VistaCreditoBean() {
     telefonoSeleccionado = new Telefono();
@@ -162,6 +191,10 @@ public class VistaCreditoBean implements Serializable {
     creditoActual = new Credito();
     creditoRelacionadoSeleccionado = new Credito();
     gestorSeleccionado = new Gestor();
+    estadoNuevaDireccion = new EstadoRepublica();
+    municipioNuevaDireccion = new Municipio();
+    coloniaNuevaDireccion = new Colonia();
+    direccionSeleccionada = new Direccion();
     creditoDao = new CreditoIMPL();
     direccionDao = new DireccionIMPL();
     telefonoDao = new TelefonoIMPL();
@@ -177,6 +210,9 @@ public class VistaCreditoBean implements Serializable {
     facDao = new FacIMPL();
     actualizacionDao = new ActualizacionIMPL();
     marcajeDao = new MarcajeIMPL();
+    estadoRepublicaDao = new EstadoRepublicaIMPL();
+    municipioDao = new MunicipioIMPL();
+    coloniaDao = new ColoniaIMPL();
     listaMotivos = new ArrayList();
     creditosRelacionados = new ArrayList();
     listaDirecciones = new ArrayList();
@@ -185,19 +221,27 @@ public class VistaCreditoBean implements Serializable {
     listaGestores = new ArrayList();
     actualizaciones = new ArrayList();
     listaSujetos = new ArrayList();
-    listaConceptos = conceptoDevolucionDao.obtenerConceptos();
+    listaEstados = new ArrayList();
+    listaMunicipios = new ArrayList();
+    listaColonias = new ArrayList();
     obtenerDatos();
   }
 
   // METODO QUE OBTENDRA TODOS LOS DATOS PRIMARIOS SEGUN EL CREDITO SELECCIONADO EN LA VISTA cuentas.xhtml
   public final void obtenerDatos() {
+    inicializarDireccion();
+    latitudNuevaDireccion = "0.000000";
+    longitudNuevaDireccion = "0.000000";
+    listaConceptos = conceptoDevolucionDao.obtenerConceptos();
+    listaEstados = estadoRepublicaDao.buscarTodo();
     creditoActual = creditoActualBean.getCreditoActual();
+    checarColor();
     // HABILITAR BOTON DE MARCAR URGENTE
     habilitaUrgente = creditoActual.getMarcaje().getIdMarcaje() == Marcajes.URGENTE;
-    // SE OBTIENE EL NUMERO DE CUENTA DEL CREDITO
     if ((creditoActual.getNumeroCuenta() == null) || (creditoActual.getNumeroCuenta().length() == 0)) {
       numeroCuenta = "N/D";
     } else {
+      //907 67
       numeroCuenta = creditoActual.getNumeroCuenta();
     }
     // SE OBTIENE LA LISTA DE GESTORES PARA REASIGNAR
@@ -291,6 +335,33 @@ public class VistaCreditoBean implements Serializable {
       }
     }
   }
+  
+  // METODO QUE CHECA LA FRECUENCIA DE GESTION DE LA CUENTA
+  public void checarColor(){
+    int dias = gestionDao.checarDiasSinGestionar(creditoActual.getIdCredito()).intValue();
+    if(dias <= 3){
+      color = "#04B404";
+    }
+    if((dias >3) && (dias < 7)){
+      color = "#F3CE85";
+    }
+    if(dias >= 7){
+      color = "#EC1010";
+    }
+  }
+
+  // METODO QUE PREPARA LA DIRECCION QUE SE PRETENDERA EDITAR
+  public void inicializarDireccion() {
+    direccionSeleccionada.setCalle("");
+    direccionSeleccionada.setColonia(coloniaDao.buscar(1));
+    direccionSeleccionada.setEstadoRepublica(estadoRepublicaDao.buscar(1));
+    direccionSeleccionada.setExterior("");
+    direccionSeleccionada.setIdDireccion(0);
+    direccionSeleccionada.setInterior("");
+    direccionSeleccionada.setLatitud(BigDecimal.ZERO);
+    direccionSeleccionada.setLongitud(BigDecimal.ZERO);
+    direccionSeleccionada.setMunicipio(municipioDao.buscar(1));
+  }
 
   // METODO QUE DA FORMATO A LOS TELEFONOS
   public String formatoTelefono(String telefono) {
@@ -317,7 +388,6 @@ public class VistaCreditoBean implements Serializable {
 
   // METODO QUE REASIGNARA AL GESTOR
   public void reasignarGestor() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     // GESTION AUTOMATICA 1
     // SI EXISTE UN CONVENIO
     ConvenioPago c = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
@@ -330,6 +400,7 @@ public class VistaCreditoBean implements Serializable {
     cred.setGestor(nuevoGestor);
     boolean ok = creditoDao.editar(cred);
     if (ok) {
+      // YA NO FALTA MUCHO
       // GUARDAMOS EN EL LOG EL DETALLE DE LA REASIGNACION
       Logs.log.info("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + creditoActual.getGestor().getUsuario().getNombreLogin() + " al gestor " + nuevoGestor.getUsuario().getNombreLogin());
       // ESCRIBIMOS EN EL HISTORIAL LA REASIGNACION
@@ -343,13 +414,13 @@ public class VistaCreditoBean implements Serializable {
       if (ok) {
         // GESTION AUTOMATICA 2
         GestionAutomatica.generarGestionAutomatica("15CTARE", creditoActual, indexBean.getUsuario(), "REASIGNACION DE CREDITO NO. " + creditoActual.getNumeroCredito());
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
         creditoActual.setGestor(nuevoGestor);
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
     }
     cerrar();
   }
@@ -414,7 +485,6 @@ public class VistaCreditoBean implements Serializable {
 
   // METODO QUE MANDA UN CREDITO A DEVOLUCION
   public void devolverCredito() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok = false;
     String evento;
     if ((conceptoSeleccionado.getIdConceptoDevolucion() != 0) && (motivoSeleccionado.getIdMotivoDevolucion() != 0)) {
@@ -442,9 +512,11 @@ public class VistaCreditoBean implements Serializable {
         RequestContext con = RequestContext.getCurrentInstance();
         con.execute("PF('dlgDevolucionVistaCredito').hide();");
         con.update("cuentas");
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se devolvio el credito seleccionado"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se devolvio el credito seleccionado"));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
+        // PERO LOS LUNES SON UN MARTIRIO PARA MI
+        // ESCRIBIRE ESTA FUNCION Y VAMONOS AL CARAJO
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
       }
     }
   }
@@ -597,6 +669,164 @@ public class VistaCreditoBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el nuevo contacto."));
       } else {
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el nuevo contacto. Contacte al equipo de sistemas."));
+      }
+    }
+  }
+
+  // TEST METHOD
+  public void actualizarColonia() {
+    direccionSeleccionada.setColonia(coloniaDao.buscar(direccionSeleccionada.getColonia().getIdColonia()));
+  }
+
+  // METODO QUE PREPARA LAS LISTAS PARA LLENAR LOS COMBOS DE LA DIRECCION A EDITAR
+  public void prepararDireccion() {
+    listaMunicipios = municipioDao.buscarMunicipiosPorEstado(direccionSeleccionada.getEstadoRepublica().getIdEstado());
+    listaColonias = coloniaDao.buscarColoniasPorMunicipio(direccionSeleccionada.getMunicipio().getIdMunicipio());
+  }
+
+  // METODO QUE GUARDA LOS CAMBIOS DE LA DIRECCION SELECCIONADA
+  public void editarDireccion() {
+    BigDecimal minLat = BigDecimal.valueOf(-90.000000);
+    BigDecimal maxLat = BigDecimal.valueOf(90.000000);
+    BigDecimal minLon = BigDecimal.valueOf(-180.000000);
+    BigDecimal maxLon = BigDecimal.valueOf(180.000000);
+    if (direccionSeleccionada.getCalle().equals("")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe ingresar una calle."));
+    } else if (direccionSeleccionada.getExterior().equals("")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe ingresar un numero exterior."));
+    } else if (!direccionSeleccionada.getLatitud().toString().matches("-?[0-9]{1,3}.[0-9]{6}")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de latitud ingresado no es valido."));
+    } else if ((direccionSeleccionada.getLatitud().compareTo(minLat) == -1) || (direccionSeleccionada.getLatitud().compareTo(maxLat) == 1)) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de latitud esta fuera de rango."));
+    } else if (!direccionSeleccionada.getLongitud().toString().matches("-?[0-9]{1,3}.[0-9]{6}")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de longitud ingresado no es valido."));
+    } else if ((direccionSeleccionada.getLongitud().compareTo(minLon) == -1) || (direccionSeleccionada.getLongitud().compareTo(maxLon) == 1)) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de longitud esta fuera de rango."));
+    } else {
+      if (direccionDao.editar(direccionSeleccionada)) {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se edito la direccion."));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se edito la direccion. Contacte al equipo de sistemas."));
+      }
+    }
+  }
+
+  // METODO QUE PREPARA LA DIRECCION DE ACUERDO AL CODIGO POSTAL INTRODUCIDO
+  public void detectarDireccionPorCP() {
+    if (!cpNuevaDireccion.matches("(\\d)+")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal se compone exclusivamente por numeros."));
+    } else if (cpNuevaDireccion.length() < 5) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal no tiene la longitud adecuada."));
+    } else {
+      listaColonias = coloniaDao.buscarPorCodigoPostal(cpNuevaDireccion);
+      if (listaColonias.isEmpty()) {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No existen colonias para el codigo postal proporcionado. Registre la direccion de forma normal."));
+      } else {
+        estadoNuevaDireccion = listaColonias.get(0).getMunicipio().getEstadoRepublica();
+        listaMunicipios = municipioDao.buscarMunicipiosPorEstado(estadoNuevaDireccion.getIdEstado());
+        municipioNuevaDireccion = listaColonias.get(0).getMunicipio();
+        if (listaColonias.size() == 1) {
+          coloniaNuevaDireccion = listaColonias.get(0);
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Colonia detectada.", "Se detecto la colonia."));
+        } else {
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Colonia no detectada.", "Seleccione la colonia del listado disponible."));
+        }
+      }
+    }
+  }
+
+  // METODO QUE PREPARA LA LISTA DE MUNICIPIOS DE ACUERDO AL ESTADO SELECCIONADO
+  public void obtenerMunicipios(EstadoRepublica estado) {
+    listaMunicipios = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
+  }
+
+  // METODO QUE PREPARA LA LISTA DE COLONIAS DE ACUERDO AL MUNICIPIO SELECCIONADO
+  public void obtenerColonias(Municipio municipio) {
+    listaColonias = coloniaDao.buscarColoniasPorMunicipio(municipio.getIdMunicipio());
+  }
+
+  // METODO QUE CAMBIA EL CODIGO POSTAL DEPENDIENDO DE LA SELECCION
+  public void completarCp() {
+    coloniaNuevaDireccion = coloniaDao.buscar(coloniaNuevaDireccion.getIdColonia());
+    cpNuevaDireccion = coloniaNuevaDireccion.getCodigoPostal();
+  }
+
+  // METODO QUE INSERTA LA NUEVA DIRECCION
+  public void agregarDireccion() {
+    BigDecimal minLat = BigDecimal.valueOf(-90.000000);
+    BigDecimal maxLat = BigDecimal.valueOf(90.000000);
+    BigDecimal minLon = BigDecimal.valueOf(-180.000000);
+    BigDecimal maxLon = BigDecimal.valueOf(180.000000);
+    if (!cpNuevaDireccion.matches("(\\d)+")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal se compone exclusivamente por numeros."));
+    } else if (cpNuevaDireccion.length() < 5) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal no tiene la longitud adecuada."));
+    } else if (estadoNuevaDireccion.getIdEstado() == 0) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar un estado."));
+    } else if (municipioNuevaDireccion.getIdMunicipio() == 0) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar un municipio."));
+    } else if (coloniaNuevaDireccion.getIdColonia() == 0) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una colonia."));
+    } else if (calleNuevaDireccion.equals("")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe ingresar una calle."));
+    } else if (exteriorNuevaDireccion.equals("")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe ingresar un numero exterior."));
+    } else if (!latitudNuevaDireccion.matches("-?[0-9]{1,3}.[0-9]{6}")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de latitud ingresado no es valido."));
+    } else if ((BigDecimal.valueOf(Double.valueOf(latitudNuevaDireccion)).compareTo(minLat) == -1) || (BigDecimal.valueOf(Double.valueOf(latitudNuevaDireccion)).compareTo(maxLat) == 1)) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de latitud esta fuera de rango."));
+    } else if (!longitudNuevaDireccion.matches("-?[0-9]{1,3}.[0-9]{6}")) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de longitud ingresado no es valido."));
+    } else if ((BigDecimal.valueOf(Double.valueOf(longitudNuevaDireccion)).compareTo(minLon) == -1) || (BigDecimal.valueOf(Double.valueOf(longitudNuevaDireccion)).compareTo(maxLon) == 1)) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de longitud esta fuera de rango."));
+    } else {
+      Direccion d = new Direccion();
+      d.setSujeto(creditoActual.getDeudor().getSujeto());
+      d.setEstadoRepublica(estadoNuevaDireccion);
+      d.setMunicipio(municipioNuevaDireccion);
+      d.setColonia(coloniaNuevaDireccion);
+      d.setCalle(calleNuevaDireccion);
+      d.setExterior(exteriorNuevaDireccion);
+      d.setInterior(interiorNuevaDireccion);
+      if (latitudNuevaDireccion.equals("")) {
+        d.setLatitud(BigDecimal.ZERO);
+      } else {
+        d.setLatitud(BigDecimal.valueOf(Double.valueOf(latitudNuevaDireccion)));
+      }
+      if (longitudNuevaDireccion.equals("")) {
+        d.setLongitud(BigDecimal.ZERO);
+      } else {
+        d.setLongitud(BigDecimal.valueOf(Double.valueOf(longitudNuevaDireccion)));
+      }
+      if (direccionDao.insertar(d) != null) {
+        listaDirecciones = direccionDao.buscarPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
+        cpNuevaDireccion = "";
+        calleNuevaDireccion = "";
+        exteriorNuevaDireccion = "";
+        interiorNuevaDireccion = "";
+        latitudNuevaDireccion = "0.000000";
+        longitudNuevaDireccion = "0.000000";
+        coloniaNuevaDireccion.setIdColonia(0);
+        municipioNuevaDireccion.setIdMunicipio(0);
+        estadoNuevaDireccion.setIdEstado(0);
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se registro la nueva direccion."));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se registro la nueva direccion. Contacte al equipo de sistemas."));
+      }
+    }
+  }
+
+  // METODO QUE ELIMINA LA DIRECCION SELECCIONADA
+  public void eliminarDireccion() {
+    List<Impresion> impresiones = new ImpresionIMPL().buscarPorDireccion(direccionSeleccionada.getIdDireccion());
+    if (!impresiones.isEmpty()) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Error.", "No se puede eliminar la direccion ya que existen impresiones asociadas a esta."));
+    } else {
+      if (direccionDao.eliminar(direccionSeleccionada)) {
+        listaDirecciones = direccionDao.buscarPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se elimino la direccion."));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se elimino la direccion. Contacte al equipo de sistemas"));
       }
     }
   }
@@ -1011,6 +1241,118 @@ public class VistaCreditoBean implements Serializable {
 
   public void setObservacionesContacto(String observacionesContacto) {
     this.observacionesContacto = observacionesContacto;
+  }
+
+  public String getCpNuevaDireccion() {
+    return cpNuevaDireccion;
+  }
+
+  public void setCpNuevaDireccion(String cpNuevaDireccion) {
+    this.cpNuevaDireccion = cpNuevaDireccion;
+  }
+
+  public String getCalleNuevaDireccion() {
+    return calleNuevaDireccion;
+  }
+
+  public void setCalleNuevaDireccion(String calleNuevaDireccion) {
+    this.calleNuevaDireccion = calleNuevaDireccion;
+  }
+
+  public String getExteriorNuevaDireccion() {
+    return exteriorNuevaDireccion;
+  }
+
+  public void setExteriorNuevaDireccion(String exteriorNuevaDireccion) {
+    this.exteriorNuevaDireccion = exteriorNuevaDireccion;
+  }
+
+  public String getInteriorNuevaDireccion() {
+    return interiorNuevaDireccion;
+  }
+
+  public void setInteriorNuevaDireccion(String interiorNuevaDireccion) {
+    this.interiorNuevaDireccion = interiorNuevaDireccion;
+  }
+
+  public String getLatitudNuevaDireccion() {
+    return latitudNuevaDireccion;
+  }
+
+  public void setLatitudNuevaDireccion(String latitudNuevaDireccion) {
+    this.latitudNuevaDireccion = latitudNuevaDireccion;
+  }
+
+  public String getLongitudNuevaDireccion() {
+    return longitudNuevaDireccion;
+  }
+
+  public void setLongitudNuevaDireccion(String longitudNuevaDireccion) {
+    this.longitudNuevaDireccion = longitudNuevaDireccion;
+  }
+
+  public List<EstadoRepublica> getListaEstados() {
+    return listaEstados;
+  }
+
+  public void setListaEstados(List<EstadoRepublica> listaEstados) {
+    this.listaEstados = listaEstados;
+  }
+
+  public List<Municipio> getListaMunicipios() {
+    return listaMunicipios;
+  }
+
+  public void setListaMunicipios(List<Municipio> listaMunicipios) {
+    this.listaMunicipios = listaMunicipios;
+  }
+
+  public List<Colonia> getListaColonias() {
+    return listaColonias;
+  }
+
+  public void setListaColonias(List<Colonia> listaColonias) {
+    this.listaColonias = listaColonias;
+  }
+
+  public EstadoRepublica getEstadoNuevaDireccion() {
+    return estadoNuevaDireccion;
+  }
+
+  public void setEstadoNuevaDireccion(EstadoRepublica estadoNuevaDireccion) {
+    this.estadoNuevaDireccion = estadoNuevaDireccion;
+  }
+
+  public Municipio getMunicipioNuevaDireccion() {
+    return municipioNuevaDireccion;
+  }
+
+  public void setMunicipioNuevaDireccion(Municipio municipioNuevaDireccion) {
+    this.municipioNuevaDireccion = municipioNuevaDireccion;
+  }
+
+  public Colonia getColoniaNuevaDireccion() {
+    return coloniaNuevaDireccion;
+  }
+
+  public void setColoniaNuevaDireccion(Colonia coloniaNuevaDireccion) {
+    this.coloniaNuevaDireccion = coloniaNuevaDireccion;
+  }
+
+  public Direccion getDireccionSeleccionada() {
+    return direccionSeleccionada;
+  }
+
+  public void setDireccionSeleccionada(Direccion direccionSeleccionada) {
+    this.direccionSeleccionada = direccionSeleccionada;
+  }
+
+  public String getColor() {
+    return color;
+  }
+
+  public void setColor(String color) {
+    this.color = color;
   }
 
 }

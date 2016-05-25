@@ -161,13 +161,12 @@ public class ConveniosBean implements Serializable {
 
   // METODO QUE AGREGA UN CONVENIO DE PAGO
   public void agregarConvenio() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     if (saldoNuevoConvenio > saldoMaximo) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser menor o igual al saldo vencido."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser menor o igual al saldo vencido."));
     } else if (saldoNuevoConvenio <= 0) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser mayor a cero."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser mayor a cero."));
     } else if (pagosPrometidos <= 0) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe prometer al menos un pago."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe prometer al menos un pago."));
     } else {
       ConvenioPago convenio = new ConvenioPago();
       convenio.setCredito(creditoActual);
@@ -189,7 +188,7 @@ public class ConveniosBean implements Serializable {
       convenio = convenioPagoDao.insertar(convenio);
       if (convenio != null) {
         convenioActivo = convenio;
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo un nuevo convenio."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo un nuevo convenio."));
         GestionAutomatica.generarGestionAutomatica("9APROB", creditoActual, indexBean.getUsuario(), "CONVENIO CON " + sujetoConvenio + " POR $" + saldoNuevoConvenio + " EN " + pagosPrometidos + " PARCIALIDAD(ES).");
         habilitaPromesas = true;
         switch (pagosPrometidos) {
@@ -239,7 +238,7 @@ public class ConveniosBean implements Serializable {
         RequestContext.getCurrentInstance().update("formConvenios");
         cargarListas();
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se creo el convenio. Contacte al equipo de sistemas."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se creo el convenio. Contacte al equipo de sistemas."));
       }
     }
   }
@@ -249,14 +248,13 @@ public class ConveniosBean implements Serializable {
     ConvenioPago c = convenioActivo;
     c.setEstatus(Convenios.FINALIZADO);
     boolean ok = convenioPagoDao.editar(c);
-    FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {
       GestionAutomatica.generarGestionAutomatica("14DELC", creditoActual, indexBean.getUsuario(), "SE FINALIZA CONVENIO");
       // TO FIX
       // EVITAR QUE LA VISTA YA TENGA LOS DATOS PRECARGADOS Y LAS PROMESAS DISPONIBLES
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se finalizo convenio."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se finalizo convenio."));
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se finalizo el convenio. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se finalizo el convenio. Contacte al equipo de sistemas."));
     }
     cargarListas();
   }
@@ -311,7 +309,6 @@ public class ConveniosBean implements Serializable {
 
   // METODO QUE AGREGA UNA PROMESA DE PAGO AL CONVENIO EN CURSO
   public void agregarPromesas() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok = true;
     boolean pagosNoValidos = false;
     boolean fechasNoValidas = false;
@@ -326,11 +323,11 @@ public class ConveniosBean implements Serializable {
       }
     }
     if (totalPagos > convenioActivo.getSaldoNegociado()) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo de las promesas es mayor al saldo del convenio."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo de las promesas es mayor al saldo del convenio."));
     } else if (pagosNoValidos) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pueden prometer pagos iguales o menores a cero."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pueden prometer pagos iguales o menores a cero."));
     } else if (fechasNoValidas) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pueden prometer pagos en fechas anteriores al dia de hoy."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pueden prometer pagos en fechas anteriores al dia de hoy."));
     } else {
       for (int i = 0; i < pagosPrometidos; i++) {
         PromesaPago p = new PromesaPago();
@@ -342,10 +339,10 @@ public class ConveniosBean implements Serializable {
       if (ok) {
         cargarListas();
         RequestContext.getCurrentInstance().update("formConvenios");
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agregaron las promesas de pago."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agregaron las promesas de pago."));
         RequestContext.getCurrentInstance().execute("PF('agregarConvenioDialog').hide();");
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agregaron las promesas de pago. Contacte al equipo de sistemas"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agregaron las promesas de pago. Contacte al equipo de sistemas"));
       }
     }
   }

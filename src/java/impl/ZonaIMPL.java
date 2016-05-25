@@ -47,7 +47,7 @@ public class ZonaIMPL implements ZonaDAO {
     try {
       zonas = sesion.createSQLQuery(consulta).addEntity(Zona.class).list();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -62,7 +62,7 @@ public class ZonaIMPL implements ZonaDAO {
     try {
       nombres = sesion.createSQLQuery(consulta).list();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -77,7 +77,7 @@ public class ZonaIMPL implements ZonaDAO {
     try {
       gestores = sesion.createSQLQuery(consulta).list();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

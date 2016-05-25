@@ -63,7 +63,8 @@ public class PagoIMPL implements PagoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar pago");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -183,7 +184,7 @@ public class PagoIMPL implements PagoDAO {
     try {
       gestor = (Usuario) sesion.createSQLQuery(consulta).addEntity(Usuario.class).uniqueResult();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -199,7 +200,7 @@ public class PagoIMPL implements PagoDAO {
       pagos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
       pagos = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -269,10 +270,10 @@ public class PagoIMPL implements PagoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Pago> pagos = new ArrayList();
     try {
-      String consulta = "SELECT * FROM pago WHERE id_gestor = " + idGestor + " AND id_quincena = " + new QuincenaIMPL().obtenerQuincenaActual().getIdQuincena() + ";";
+      String consulta = "SELECT * FROM pago WHERE id_gestor = " + idGestor + " AND id_quincena = " + new QuincenaIMPL().obtenerQuincenaActual().getIdQuincena() + " AND estatus = " + Pagos.APROBADO + ";";
       pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     }
     cerrar(sesion);
     if (!pagos.isEmpty()) {
@@ -315,6 +316,40 @@ public class PagoIMPL implements PagoDAO {
       pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
     } catch (HibernateException he) {
       pagos = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return pagos;
+  }
+
+  @Override
+  public List<Pago> buscarPagosQuincenActual() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Pago> pagos = new ArrayList();
+    Quincena q = new QuincenaIMPL().obtenerQuincenaActual();
+    String consulta = "SELECT * FROM pago WHERE id_quincena = " + q.getIdQuincena() + " AND estatus = " + Pagos.APROBADO + " AND pagado = " + Pagos.NO_PAGADO + ";";
+    try {
+      pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
+    } catch (HibernateException he) {
+      pagos = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return pagos;
+  }
+
+  @Override
+  public List<Pago> buscarPagosQuincenaActualGestor(int idGestor) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Pago> pagos = new ArrayList();
+    Quincena q = new QuincenaIMPL().obtenerQuincenaActual();
+    String consulta = "SELECT * FROM pago WHERE id_quincena = " + q.getIdQuincena() + " AND estatus = " + Pagos.APROBADO + " AND pagado = " + Pagos.NO_PAGADO + " AND id_gestor = " + idGestor + ";";
+    try {
+      pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

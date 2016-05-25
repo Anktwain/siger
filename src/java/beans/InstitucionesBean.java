@@ -93,7 +93,6 @@ public class InstitucionesBean implements Serializable {
 
   // METODO QUE CREA A LA NUEVA INSTITUCION 
   public void crearInstitucion() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     nuevoSujeto.setEliminado(1);
     nuevoSujeto.setNombreRazonSocial(nombreRazonSocial);
     rfc = rfc.toUpperCase();
@@ -110,21 +109,20 @@ public class InstitucionesBean implements Serializable {
           nombrecorto = "";
           RequestContext.getCurrentInstance().update("formNuevaEmpresa");
           RequestContext.getCurrentInstance().update("editarEmpresasForm");
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo la institucion: " + nombrecorto));
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo la institucion: " + nombrecorto));
           RequestContext.getCurrentInstance().execute("PF('dlgNuevaEmpresa').hide();");
         } else {
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se creo la institucion. Contacte al equipo de sistemas."));
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se creo la institucion. Contacte al equipo de sistemas."));
         }
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El RFC proporcionado no es valido."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El RFC proporcionado no es valido."));
       sujetoDao.eliminarEnSerio(nuevoSujeto);
     }
   }
 
   // METODO QUE EDITA LA INSTITUCION
   public void editarInstitucion() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok;
     ok = validarRfc(seleccionada.getSujeto().getRfc().toUpperCase());
     if (ok) {
@@ -132,19 +130,18 @@ public class InstitucionesBean implements Serializable {
       if (ok) {
         cargarListas();
         RequestContext.getCurrentInstance().update("editarEmpresasForm");
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se modifico la institucion."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se modifico la institucion."));
         RequestContext.getCurrentInstance().execute("PF('dlgDatosPrimariosEmpresa').hide();");
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se modifico la institucion. Contacte al equipo de sistemas."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se modifico la institucion. Contacte al equipo de sistemas."));
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El RFC proporcionado no es valido."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El RFC proporcionado no es valido."));
     }
   }
 
   // METODO QUE CREA UN NUEVO PRODUCTO
   public void crearProducto() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok;
     Producto p = new Producto();
     p.setNombre(nombreProducto);
@@ -156,31 +153,29 @@ public class InstitucionesBean implements Serializable {
       descripcionProducto = "";
       RequestContext.getCurrentInstance().update("nuevoProductoForm");
       RequestContext.getCurrentInstance().update("editarProductosEmpresaForm");
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el producto."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el producto."));
       RequestContext.getCurrentInstance().execute("PF('dlgNuevoProducto').hide();");
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el producto. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el producto. Contacte al equipo de sistemas."));
     }
   }
 
   // METODO QUE EDITA UN PRODUCTO SELECCIONADO
   public void editarProducto() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok;
     ok = productoDao.editar(seleccionado);
     if (ok) {
       listaProductos = productoDao.buscarProductosPorInstitucion(seleccionada.getIdInstitucion());
       RequestContext.getCurrentInstance().update("editarProductosEmpresaForm");
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se modifico el producto."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se modifico el producto."));
       RequestContext.getCurrentInstance().execute("PF('dlgEditarProducto').hide();");
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se modifico el producto. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se modifico el producto. Contacte al equipo de sistemas."));
     }
   }
 
   // METODO QUE CREA UN NUEVO SUBPRODUCTO
   public void crearSubproducto() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok;
     Subproducto s = new Subproducto();
     s.setNombre(nombreSubproducto);
@@ -192,25 +187,24 @@ public class InstitucionesBean implements Serializable {
       descripcionSubproducto = "";
       RequestContext.getCurrentInstance().update("nuevoSubproductoForm");
       RequestContext.getCurrentInstance().update("editarSubproductosProductosForm");
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el subproducto."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el subproducto."));
       RequestContext.getCurrentInstance().execute("PF('dlgNuevoSubproducto').hide();");
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el subproducto. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el subproducto. Contacte al equipo de sistemas."));
     }
   }
 
   // METODO QUE EDITA UN SUBPRODUCTO
   public void editarSubproducto() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok;
     ok = subproductoDao.editar(subSeleccionado);
     if (ok) {
       listaSubproductos = subproductoDao.buscarSubproductosPorProducto(seleccionado.getIdProducto());
       RequestContext.getCurrentInstance().update("editarSubproductosProductoForm");
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se modifico el subproducto."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se modifico el subproducto."));
       RequestContext.getCurrentInstance().execute("PF('dlgEditarProducto').hide();");
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se modifico el subproducto. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se modifico el subproducto. Contacte al equipo de sistemas."));
     }
   }
 

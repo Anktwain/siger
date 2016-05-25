@@ -419,13 +419,12 @@ public class GestionBean implements Serializable {
     preparaGestion();
     boolean ok = verificaMarcaje();
     ok = ok & gestionDao.insertarGestion(nueva);
-    FacesContext contexto = FacesContext.getCurrentInstance();
     if (ok) {
       limpiarCampos();
       RequestContext.getCurrentInstance().update("@all");
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se guardo la gestion: "));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se guardo la gestion: "));
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se guardo la gestion. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se guardo la gestion. Contacte al equipo de sistemas."));
     }
   }
 

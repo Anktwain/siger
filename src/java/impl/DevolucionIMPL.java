@@ -30,7 +30,7 @@ public class DevolucionIMPL implements DevolucionDAO {
     try {
       retirados = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -46,7 +46,7 @@ public class DevolucionIMPL implements DevolucionDAO {
       bandeja = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
     } catch (HibernateException he) {
       bandeja = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -62,7 +62,7 @@ public class DevolucionIMPL implements DevolucionDAO {
       devueltos = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
     } catch (HibernateException he) {
       devueltos = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -156,7 +156,7 @@ public class DevolucionIMPL implements DevolucionDAO {
       bandeja = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
     } catch (HibernateException he) {
       bandeja = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

@@ -31,7 +31,6 @@ public class DireccionIMPL implements DireccionDAO {
   public Direccion insertar(Direccion direccion) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
-
     try {
       sesion.save(direccion);
       tx.commit();

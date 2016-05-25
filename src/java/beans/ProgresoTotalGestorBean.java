@@ -10,6 +10,7 @@ import com.lowagie.text.PageSize;
 import dao.PagoDAO;
 import dto.Pago;
 import impl.PagoIMPL;
+import impl.QuincenaIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +123,11 @@ public class ProgresoTotalGestorBean implements Serializable {
       estado = "Por pagar";
     }
     return estado;
+  }
+  
+  // METODO QUE OBTIENE EL NOMBRE DE LA QUINCENA ACTUAL
+  public String obtenerQuincenaActual() {
+    return new QuincenaIMPL().obtenerQuincenaActual().getNombre();
   }
   
   // METODO QUE DEVUELVE EL NUMERO DE PAGOS PENDIENTES PARA ESTE GESTOR HOY

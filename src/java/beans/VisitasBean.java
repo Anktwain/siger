@@ -6,13 +6,11 @@
 package beans;
 
 import dao.CreditoDAO;
-import dao.DireccionDAO;
 import dao.ImpresionDAO;
 import dto.Credito;
 import dto.Direccion;
 import dto.Impresion;
 import impl.CreditoIMPL;
-import impl.DireccionIMPL;
 import impl.ImpresionIMPL;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,7 +19,6 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -47,10 +44,10 @@ public class VisitasBean implements Serializable{
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
   CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
+  VistaCreditoBean vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
 
   // VARIABLES DE CLASE
   private final CreditoDAO creditoDao;
-  private final DireccionDAO direccionDao;
   private final ImpresionDAO impresionDao;
   private final Credito creditoActual;
   private boolean periodoSepomexActivo;
@@ -58,34 +55,20 @@ public class VisitasBean implements Serializable{
   private boolean descargarPdf;
   private String rutaPdf;
   StreamedContent archivo;
-  private Direccion direccion;
 
   // CONSTRUCTOR
   public VisitasBean() {
-    direccionDao = new DireccionIMPL();
     creditoDao = new CreditoIMPL();
     impresionDao = new ImpresionIMPL();
     creditoActual = creditoActualBean.getCreditoActual();
-    direccion = obtenerDireccion();
     periodoSepomexActivo = false;
     periodoVisitasActivo = false;
     descargarPdf = false;
     verificarPeriodoSepomex();
     verificarPeriodoVisitas();
   }
-
-  // METODO QUE OBTINE LA PRIMER DIRECCION DEL CREDITO
-  public final Direccion obtenerDireccion(){
-    List<Direccion> direcciones = direccionDao.buscarPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
-    if(direcciones.isEmpty()){
-      return new Direccion();
-    }
-    else{
-      return direcciones.get(0);
-    }
-  }
   
-  // METODO QUE VERIFICA SI EL PERIODODE IMPRESIONES PARA CORREO ESTA ACTIVO
+  // METODO QUE VERIFICA SI EL PERIODO DE IMPRESIONES PARA CORREO ESTA ACTIVO
   public final void verificarPeriodoSepomex() {
     Date fechaActual = new Date();
     try {
@@ -133,9 +116,9 @@ public class VisitasBean implements Serializable{
 
   // METODO QUE GENERA UN ARCHIVO PDF PARA CORREO ORDINARIO
   public void generarCorreo() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
-    if (direccion.getIdDireccion() == null) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El credito no tiene ninguna direccion asociada."));
+    Direccion direccion = vistaCreditoBean.getDireccionSeleccionada();
+    if (direccion == null) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una direccion."));
     } else {
       Impresion imp = new Impresion();
       imp.setCredito(creditoActual);
@@ -143,18 +126,18 @@ public class VisitasBean implements Serializable{
       imp.setTipoImpresion(Impresiones.CORREO_ORDINARIO);
       imp.setDireccion(direccion);
       if (impresionDao.insertar(imp)) {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
       }
     }
   }
 
 // METODO QUE GENERA UN ARCHIVO PDF PARA VISITA DOMICILIARIA
   public void generarVisita() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
-    if (direccion.getIdDireccion() == null) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El credito no tiene ninguna direccion asociada."));
+    Direccion direccion = vistaCreditoBean.getDireccionSeleccionada();
+    if (direccion == null) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una direccion."));
     } else {
       Impresion imp = new Impresion();
       imp.setCredito(creditoActual);
@@ -162,18 +145,18 @@ public class VisitasBean implements Serializable{
       imp.setTipoImpresion(Impresiones.VISITA_DOMICILIARIA);
       imp.setDireccion(direccion);
       if (impresionDao.insertar(imp)) {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
       }
     }
   }
 
   // METODO QUE GENERA UNA IMPRESION NORMAL
   public void generarNormal() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
-    if (direccion.getIdDireccion() == null) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El credito no tiene ninguna direccion asociada."));
+    Direccion direccion = vistaCreditoBean.getDireccionSeleccionada();
+    if (direccion == null) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una direccion."));
     } else {
       Impresion imp = new Impresion();
       imp.setCredito(creditoActual);
@@ -181,17 +164,17 @@ public class VisitasBean implements Serializable{
       imp.setTipoImpresion(Impresiones.IMPRESION_NORMAL);
       imp.setDireccion(direccion);
       if (impresionDao.insertar(imp)) {
-        if (generarPdf()) {
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo para ser impreso por el administrador."));
+        if (generarPdf(direccion)) {
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo, ahora puede descargarlo."));
         } else {
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
         }
       }
     }
   }
 
   // METODO QUE GENERA EL PDF
-  public boolean generarPdf() {
+  public boolean generarPdf(Direccion direccion) {
     try {
       InputStream stream = new FileInputStream(GeneradorPdf.crearPdf(nombrarPdf(), creditoActual, direccion, creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito())));
       archivo = new DefaultStreamedContent(stream, "application/pdf", nombrarPdf());
@@ -246,12 +229,4 @@ public class VisitasBean implements Serializable{
     this.archivo = archivo;
   }
 
-  public Direccion getDireccion() {
-    return direccion;
-  }
-
-  public void setDireccion(Direccion direccion) {
-    this.direccion = direccion;
-  }
-  
 }

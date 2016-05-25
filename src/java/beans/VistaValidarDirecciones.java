@@ -133,7 +133,6 @@ public class VistaValidarDirecciones implements Serializable {
 
   // METODO QUE PREPARA LA DIRECCION SELECCIONADA
   public void prepararDireccion() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     try {
       listaColonias = coloniaDao.buscarPorCodigoPostal(direccionSeleccionada.getCp());
       if (!listaColonias.isEmpty()) {
@@ -154,7 +153,7 @@ public class VistaValidarDirecciones implements Serializable {
         listaMunicipios = municipioDao.buscarMunicipiosPorEstado(listaColonias.get(0).getMunicipio().getEstadoRepublica().getIdEstado());
         nuevoMunicipio = listaColonias.get(0).getMunicipio();
         nuevoEstado = listaColonias.get(0).getMunicipio().getEstadoRepublica();
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atencion.", "No existen colonias con este codigo postal. Elija una colonia de la lista o agregue una nueva."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atencion.", "No existen colonias con este codigo postal. Elija una colonia de la lista o agregue una nueva."));
       }
     } catch (Exception e) {
     }
@@ -173,7 +172,6 @@ public class VistaValidarDirecciones implements Serializable {
 
   // METODO QUE VALIDA UNA DIRECCION
   public void validar() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     nuevaColonia = coloniaDao.buscar(nuevaColonia.getIdColonia());
     nuevoMunicipio = municipioDao.buscar(nuevoMunicipio.getIdMunicipio());
     nuevoEstado = estadoRepublicaDao.buscar(nuevoEstado.getIdEstado());
@@ -197,12 +195,12 @@ public class VistaValidarDirecciones implements Serializable {
         direccionesPorValidar = obtenerListaDeDirecciones();
         Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " valido una direccion asociada al sujeto " + d.getSujeto().getNombreRazonSocial());
         GestionAutomatica.generarGestionAutomatica("4DOMI", creditoDao.buscarPorSujeto(direccionSeleccionada.getIdSujeto()), indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL CLIENTE: " + d.getSujeto().getNombreRazonSocial());
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se ha validado la direccion"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se ha validado la direccion"));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se actualizo el archivo. Contacte al equipo de sistemas"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se actualizo el archivo. Contacte al equipo de sistemas"));
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se valido la direccion. Contacte al equipo de sistemas"));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se valido la direccion. Contacte al equipo de sistemas"));
     }
 
   }
@@ -244,11 +242,10 @@ public class VistaValidarDirecciones implements Serializable {
 
   // METODO QUE CREA UNA NUEVA COLONIA
   public void crearColonia() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     if (!cpNuevaColonia.matches("(\\d)+")) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal debe ser numerico."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal debe ser numerico."));
     } else if (!cpNuevaColonia.substring(0, 3).equals(direccionSeleccionada.getCp().substring(0, 3))) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal introducido no pertenece a este municipio."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal introducido no pertenece a este municipio."));
     } else {
       nuevaColoniaColonia.setCodigoPostal(cpNuevaColonia);
       nuevaColoniaColonia.setMunicipio(nuevaColoniaMunicipio);
@@ -259,9 +256,9 @@ public class VistaValidarDirecciones implements Serializable {
         nombreNuevaColonia = "";
         cpNuevaColonia = "";
         Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " agrego la colonia " + nuevaColoniaColonia.getTipo() + " " + nuevaColoniaColonia.getNombre());
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo la nueva colonia. Ahora valide la direccion."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo la nueva colonia. Ahora valide la direccion."));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo agregar la nueva colonia. Contacte al equipo de sistemas."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo agregar la nueva colonia. Contacte al equipo de sistemas."));
       }
     }
   }

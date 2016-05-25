@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -92,36 +91,54 @@ public class CuentasGestorBean implements Serializable {
     List<Campana> listaCampanas = campanaDao.buscarTodas();
     for (int i = 0; i < (listaCampanas.size()); i++) {
       List<Credito> listaCredito = creditoDao.buscarCreditosPorCampanaGestor(listaCampanas.get(i).getIdCampana(), indexBean.getUsuario().getIdUsuario());
-      CreditoCampana c = new CreditoCampana();
-      c.setIdCampana(listaCampanas.get(i).getIdCampana());
-      c.setNombreCampana(listaCampanas.get(i).getNombre());
-      c.setCuentasEnCampana(listaCredito.size());
-      c.setNuevasEnCampana(checarCambiosCampana(listaCredito));
-      c.setProgresoCampana(checarProgresoCampana(listaCredito));
-      listaCreditosCampanas.add(c);
+      if (!listaCredito.isEmpty()) {
+        CreditoCampana c = new CreditoCampana();
+        c.setIdCampana(listaCampanas.get(i).getIdCampana());
+        c.setNombreCampana(listaCampanas.get(i).getNombre());
+        c.setCuentasEnCampana(listaCredito.size());
+        int[] arreglo = checarCampana(listaCredito);
+        c.setNuevasEnCampana(arreglo[0]);
+        c.setProgresoCampana(arreglo[1]);
+        c.setVerdes(arreglo[2]);
+        c.setAmarillas(arreglo[3]);
+        c.setRojas(arreglo[4]);
+        listaCreditosCampanas.add(c);
+      }
     }
   }
 
   //METODO QUE CALCULA LOS CREDITOS QUE CAMBIARON DE CAMPAÑA HOY
-  public int checarCambiosCampana(List<Credito> creditos) {
+  public int[] checarCampana(List<Credito> creditos) {
+    int[] arreglo = new int[5];
     int cambios = 0;
+    int progreso = 0;
+    int verdes = 0;
+    int amarillas = 0;
+    int rojas = 0;
     for (int i = 0; i < (creditos.size()); i++) {
       if (historialDao.verificarCampioCampañaCredito(creditos.get(i).getIdCredito())) {
         cambios = cambios + 1;
       }
-    }
-    return cambios;
-  }
-
-  // METODO QUE CALCULA EL PROGRESO DE UNA CAMPAÑA
-  public int checarProgresoCampana(List<Credito> creditos) {
-    int progreso = 0;
-    for (int i = 0; i < (creditos.size()); i++) {
       if (gestionDao.buscarGestionHoy(creditos.get(i).getIdCredito())) {
         progreso = progreso + 1;
       }
+      int dias = gestionDao.checarDiasSinGestionar(creditos.get(i).getIdCredito()).intValue();
+      if (dias <= 3) {
+        verdes = verdes + 1;
+      }
+      if ((dias > 3) && (dias < 7)) {
+        amarillas = amarillas + 1;
+      }
+      if (dias >= 7) {
+        rojas = rojas + 1;
+      }
     }
-    return progreso;
+    arreglo[0] = cambios;
+    arreglo[1] = progreso;
+    arreglo[2] = verdes;
+    arreglo[3] = amarillas;
+    arreglo[4] = rojas;
+    return arreglo;
   }
 
   // METODO QUE VERIFICA SI LA CAMPAÑA EN LA LISTA ES LA CAMPAÑA QUE SE ESTA GESTIONANDO
@@ -251,7 +268,7 @@ public class CuentasGestorBean implements Serializable {
           break;
         }
       }
-      if (p.getMontoPago()< promesa.getCantidadPrometida()) {
+      if (p.getMontoPago() < promesa.getCantidadPrometida()) {
         ok = true;
       }
     }
@@ -271,7 +288,7 @@ public class CuentasGestorBean implements Serializable {
           break;
         }
       }
-      if (p.getMontoPago()== promesa.getCantidadPrometida()) {
+      if (p.getMontoPago() == promesa.getCantidadPrometida()) {
         ok = true;
       }
     }
@@ -313,9 +330,6 @@ public class CuentasGestorBean implements Serializable {
         Logs.log.error("No se pudo redirigir a la vista de la campaña actual.");
         Logs.log.error(ioe);
       }
-    } else {
-      FacesContext contexto = FacesContext.getCurrentInstance();
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La campaña no tiene creditos para gestionar."));
     }
   }
 
@@ -369,6 +383,9 @@ public class CuentasGestorBean implements Serializable {
     private int cuentasEnCampana;
     private int nuevasEnCampana;
     private int progresoCampana;
+    private int verdes;
+    private int amarillas;
+    private int rojas;
 
     // CONSTRUCTOR
     public CreditoCampana() {
@@ -413,6 +430,30 @@ public class CuentasGestorBean implements Serializable {
 
     public void setNuevasEnCampana(int nuevasEnCampana) {
       this.nuevasEnCampana = nuevasEnCampana;
+    }
+
+    public int getVerdes() {
+      return verdes;
+    }
+
+    public void setVerdes(int verdes) {
+      this.verdes = verdes;
+    }
+
+    public int getAmarillas() {
+      return amarillas;
+    }
+
+    public void setAmarillas(int amarillas) {
+      this.amarillas = amarillas;
+    }
+
+    public int getRojas() {
+      return rojas;
+    }
+
+    public void setRojas(int rojas) {
+      this.rojas = rojas;
     }
 
   }

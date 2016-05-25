@@ -29,7 +29,7 @@ public class EstatusInformativoIMPL implements EstatusInformativoDAO {
       ei = sesion.createSQLQuery(consulta).addEntity(EstatusInformativo.class).list();
     } catch (HibernateException he) {
       ei = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -68,7 +68,7 @@ public class EstatusInformativoIMPL implements EstatusInformativoDAO {
       ei = (EstatusInformativo) sesion.createSQLQuery(consulta).addEntity(EstatusInformativo.class).uniqueResult();
     } catch (HibernateException he) {
       ei = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

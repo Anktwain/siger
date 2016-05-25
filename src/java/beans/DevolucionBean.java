@@ -61,7 +61,6 @@ public class DevolucionBean implements Serializable {
 
   // METODO PARA APROBAR UNA DEVOLUCION
   public void aprobar(List<Devolucion> lista) {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     int tam = lista.size();
     if (!lista.isEmpty()) {
       boolean ok = true;
@@ -74,18 +73,17 @@ public class DevolucionBean implements Serializable {
       }
       if (ok) {
         obtenerListas();
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se aprobaron las devoluciones seleccionadas"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se aprobaron las devoluciones seleccionadas"));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron aprobar las devoluciones. Contacte con el administrador de base de datos"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron aprobar las devoluciones. Contacte con el administrador de base de datos"));
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ninguna devolucion"));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ninguna devolucion"));
     }
   }
 
   // METODO PARA RECHAZAR UNA DEVOLUCION
   public void rechazar(List<Devolucion> lista) {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     int tam = lista.size();
     if ((!lista.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
@@ -96,18 +94,17 @@ public class DevolucionBean implements Serializable {
       }
       if (ok) {
         obtenerListas();
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se rechazaron las devoluciones seleccionadas"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se rechazaron las devoluciones seleccionadas"));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron rechazar las devoluciones. Contacte con el administrador de base de datos"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron rechazar las devoluciones. Contacte con el administrador de base de datos"));
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ninguna devolucion"));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ninguna devolucion"));
     }
   }
 
   // METODO PARA PEDIR AL BANCO UNA CONSERVACION
   public void conservar(List<Devolucion> lista) {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     int tam = lista.size();
     if ((!lista.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
@@ -120,18 +117,17 @@ public class DevolucionBean implements Serializable {
       }
       if (ok) {
         obtenerListas();
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se han conservado los creditos seleccionados"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se han conservado los creditos seleccionados"));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron aprobar las devoluciones. Contacte con el administrador de base de datos"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron aprobar las devoluciones. Contacte con el administrador de base de datos"));
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ninguna devolucion"));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ninguna devolucion"));
     }
   }
 
   // METODO PARA REACTIVAR UN CREDITO QUE ESTUVO DEVUELTO PREVIAMENTE
   public void reactivar() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     int tam = devolucionesSeleccionadas.size();
     if ((!devolucionesSeleccionadas.isEmpty()) && (tam >= 1)) {
       boolean ok = true;
@@ -142,12 +138,12 @@ public class DevolucionBean implements Serializable {
       }
       if (ok) {
         obtenerListas();
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reactivaron los creditos seleccionados"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reactivaron los creditos seleccionados"));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron reactivar los creditos. Contacte con el administrador de base de datos"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudieron reactivar los creditos. Contacte con el administrador de base de datos"));
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
     }
   }
 

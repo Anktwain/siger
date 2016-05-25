@@ -29,7 +29,7 @@ public class MotivoDevolucionIMPL implements MotivoDevolucionDAO {
       md = sesion.createSQLQuery(consulta).addEntity(MotivoDevolucion.class).list();
     } catch (HibernateException he) {
       md = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -45,7 +45,7 @@ public class MotivoDevolucionIMPL implements MotivoDevolucionDAO {
       md = (MotivoDevolucion) sesion.createSQLQuery(consulta).addEntity(MotivoDevolucion.class).uniqueResult();
     } catch (HibernateException he) {
       md = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

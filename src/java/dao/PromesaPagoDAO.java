@@ -27,4 +27,6 @@ public interface PromesaPagoDAO {
   public List<PromesaPago> promesasPagoHoy(int idCredito);
   
   public List<PromesaPago> buscarPromesasAnterioresCredito(int idCredito);
+  
+  public List<PromesaPago> buscarPromesasFuturas(int idCredito);
 }

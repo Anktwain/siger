@@ -224,7 +224,7 @@
             <div align="center">
               <p:commandButton value="Enviar" icon="ui-icon-check" actionListener="#{conveniosBean.agregarPago()}" update=":growl, formConvenios:pagosConvenioEnCurso" />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:commandButton value="Cancelar" icon="ui-icon-close" actionListener="#{conveniosBean.cancelarPago()}" process="@this" />
+              <p:commandButton value="Cancelar" icon="ui-icon-close" actionListener="#{conveniosBean.cancelar()}" process="@this" />
             </div>
           </h:form>
         </p:dialog>

@@ -56,7 +56,7 @@ public class RegionIMPL implements RegionDAO {
       regiones = sesion.createSQLQuery(consulta).addEntity(Region.class).list();
     } catch (HibernateException he) {
       regiones = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -71,7 +71,7 @@ public class RegionIMPL implements RegionDAO {
     try {
       idsMunicipio = sesion.createSQLQuery(consulta).list();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -92,7 +92,7 @@ public class RegionIMPL implements RegionDAO {
         municipios.add(m);
       }
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -113,7 +113,7 @@ public class RegionIMPL implements RegionDAO {
         estados.add(e);
       }
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

@@ -112,16 +112,15 @@ public class ZonasBean implements Serializable {
 
   // METODO QUE CREA LA ZONA
   public void crearZona() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     boolean ok = false;
     if (nombreZona.equals("")) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe indicar un nombre para la zona."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe indicar un nombre para la zona."));
     } else if (municipiosSeleccionados.isEmpty()) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar al menos un municipio."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar al menos un municipio."));
     } else if (validarNombreZona()) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Ya existe una zona con el nombre propuesto."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Ya existe una zona con el nombre propuesto."));
     } else if (!validarGestorZona()) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El gestor seleccionado ya tiene asignada una zona."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El gestor seleccionado ya tiene asignada una zona."));
     } else {
       Zona z = new Zona();
       z.setDespacho(indexBean.getUsuario().getDespacho());
@@ -140,20 +139,19 @@ public class ZonasBean implements Serializable {
           }
         }
         if (ok) {
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego la zona al sistema."));
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego la zona al sistema."));
           cancelar();
         } else {
-          contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la zona. Contacte al equipo de sistemas"));
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la zona. Contacte al equipo de sistemas"));
         }
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la zona. Contacte al equipo de sistemas"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego la zona. Contacte al equipo de sistemas"));
       }
     }
   }
 
   // METODO QUE ELIMINA LA ZONA SELECCIONADA
   public void eliminarZona(Zona zona) {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     List<Region> regiones = regionDao.buscarPorZona(zona.getIdZona());
     boolean ok = true;
     for (int i = 0; i < (regiones.size()); i++) {
@@ -168,12 +166,12 @@ public class ZonasBean implements Serializable {
         obtenerListas();
         actualizaVista();
         RequestContext.getCurrentInstance().execute("PF('dlgZonas').hide();");
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se elimino la zona."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se elimino la zona."));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar la zona. Contacte al equipo de sistemas"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar la zona. Contacte al equipo de sistemas"));
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar la zona. Contacte al equipo de sistemas"));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar la zona. Contacte al equipo de sistemas"));
     }
   }
 
@@ -223,9 +221,8 @@ public class ZonasBean implements Serializable {
 
   // METODO QUE ELIMINA EL MUNICIPIO SELECCIONADO
   public void eliminarMunicipios() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     if (municipiosPorEliminar.isEmpty()) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se ha seleccionado ningun municipio."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se ha seleccionado ningun municipio."));
     } else {
       System.out.println("MUNICIPIOS POR ELIMINAR: " + municipiosPorEliminar.size());
       /*
@@ -239,9 +236,9 @@ public class ZonasBean implements Serializable {
           r.setEstadoRepublica(municipioPorEliminar.getEstadoRepublica());
           r.setZona(zonaSeleccionada);
           if (regionDao.eliminar(r)) {
-            contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se elimino el municipio " + municipioPorEliminar.getNombre() + " de la zona."));
+            FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se elimino el municipio " + municipioPorEliminar.getNombre() + " de la zona."));
           } else {
-            contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar el municipio. Contacte al equipo de sistemas"));
+            FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo eliminar el municipio. Contacte al equipo de sistemas"));
           }
         }
       }

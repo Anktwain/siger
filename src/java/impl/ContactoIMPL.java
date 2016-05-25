@@ -157,7 +157,7 @@ public class ContactoIMPL implements ContactoDAO {
       contactos = sesion.createSQLQuery(consulta).addEntity(Contacto.class).list();
     } catch (HibernateException he) {
       contactos = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

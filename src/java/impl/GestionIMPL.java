@@ -58,7 +58,7 @@ public class GestionIMPL implements GestionDAO {
       gestiones = sesion.createSQLQuery("SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND id_usuario = " + idUsuario + " ORDER BY fecha DESC;").addEntity(Gestion.class).list();
     } catch (HibernateException he) {
       gestiones = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -74,7 +74,7 @@ public class GestionIMPL implements GestionDAO {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
     } catch (HibernateException he) {
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -89,7 +89,7 @@ public class GestionIMPL implements GestionDAO {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
     } catch (HibernateException he) {
       gestiones = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -105,7 +105,7 @@ public class GestionIMPL implements GestionDAO {
       desc = (DescripcionGestion) sesion.createSQLQuery(consulta).addEntity(DescripcionGestion.class).uniqueResult();
     } catch (HibernateException he) {
       desc = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -144,7 +144,7 @@ public class GestionIMPL implements GestionDAO {
       }
     } catch (HibernateException he) {
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -162,7 +162,7 @@ public class GestionIMPL implements GestionDAO {
       gestiones = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
       gestiones = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -180,7 +180,7 @@ public class GestionIMPL implements GestionDAO {
       gestiones = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
       gestiones = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -199,7 +199,7 @@ public class GestionIMPL implements GestionDAO {
     try {
       gestor = (Usuario) sesion.createSQLQuery(consulta).addEntity(Usuario.class).uniqueResult();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -222,11 +222,38 @@ public class GestionIMPL implements GestionDAO {
       }
     } catch (HibernateException he) {
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
     return ok;
+  }
+
+  @Override
+  public Number checarDiasSinGestionar(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number dias;
+    List<Gestion> ultima;
+    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND id_tipo_gestion != 5 ORDER BY fecha DESC LIMIT 1";
+    try {
+      ultima = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+      if(!ultima.isEmpty()){
+        Date fechaGestion = ultima.get(0).getFecha();
+        Date fechaActual = new Date();
+        long milisegundos = (fechaActual.getTime() - fechaGestion.getTime());
+        dias = (milisegundos / 86400000);
+      }
+      else{
+        dias = 7;
+      }
+    } catch (HibernateException he) {
+      dias = 7;
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return dias;
   }
   
   private void cerrar(Session sesion) {

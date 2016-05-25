@@ -68,12 +68,15 @@
             <!-- AQUI VA LA TABLA QUE MUESTRA LOS PAGOS DE LA QUINCENA -->
             <div class="tab-pane fade" id="pestanaPagosQuincena">
               <h:form id="pagosQuincenaForm">
-                <div class="pull-left">
-                  <p:dataTable id="pagosQuincenaGestor" var="p" value="#{progresoTotalGestorBean.listaPagosQuincena}" rowKey="#{p.idPago}" emptyMessage="No existen pagos en esta quincena." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1270px;">
+                <div align="center">
+                  <h:outputText value="Quincena #{progresoTotalGestorBean.obtenerQuincenaActual()}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                  <br />
+                  <br />
+                  <p:dataTable id="pagosQuincenaGestor" var="p" value="#{progresoTotalGestorBean.listaPagosQuincena}" rowKey="#{p.idPago}" emptyMessage="No existen pagos en esta quincena." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1250px;">
                     <p:column headerText="Credito" style="width:100px;"> 
                       <h:outputText value="#{p.promesaPago.convenioPago.credito.numeroCredito}" />
                     </p:column>
-                    <p:column headerText="Deudor" style="width:250px;"> 
+                    <p:column headerText="Deudor" style="width:300px;"> 
                       <h:outputText value="#{p.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
                     </p:column>
                     <p:column headerText="Fecha revision" style="width:100px;"> 
@@ -82,12 +85,15 @@
                     <p:column headerText="Revisor" style="width:100px;"> 
                       <h:outputText value="#{p.revisor}" />
                     </p:column>
-                    <p:column headerText="Monto pago" style="width:120px;"> 
+                    <p:column headerText="Observaciones" style="width:200px;"> 
+                      <h:outputText value="#{p.observacionRevisor}" />
+                    </p:column>
+                    <p:column headerText="Monto pago" style="width:100px;"> 
                       <h:outputText value="#{p.montoPago}">
                         <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                       </h:outputText>
                     </p:column>
-                    <p:column headerText="Monto aprobado" style="width:120px;"> 
+                    <p:column headerText="Monto aprobado" style="width:100px;"> 
                       <h:outputText value="#{p.montoAprobado}">
                         <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                       </h:outputText>
@@ -95,10 +101,7 @@
                     <p:column headerText="Estatus" style="width:100px;"> 
                       <h:outputText value="#{pagosBean.etiquetarEstatus(p.estatus)}" />
                     </p:column>
-                    <p:column headerText="Observaciones" style="width:200px;">
-                        <h:outputText value="#{p.observacionRevisor}"/>
-                    </p:column>
-                    <p:column headerText="Pagado" style="width:200px;">
+                    <p:column headerText="Pagado" style="width:100px;">
                       <h:outputText value="#{progresoTotalGestorBean.etiquetarEstatusPago(p.pagado)}"/>
                     </p:column>
                     <f:facet name="footer">

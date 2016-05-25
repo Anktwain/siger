@@ -24,7 +24,9 @@ import impl.CreditoIMPL;
 import impl.EmailIMPL;
 import impl.GestorIMPL;
 import impl.PagoIMPL;
+import impl.QuincenaIMPL;
 import impl.SujetoIMPL;
+import java.io.File;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,6 +52,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.primefaces.context.RequestContext;
 import util.GestionAutomatica;
+import util.constantes.Directorios;
 import util.constantes.Pagos;
 import util.constantes.Patrones;
 import util.log.Logs;
@@ -69,11 +72,14 @@ public class PagosBean implements Serializable {
   // VARIABLES DE CLASE
   private boolean habilitaTabla;
   private boolean permitirExport;
+  private boolean permitirExport2;
   private boolean habilitaVisualizador;
   private String urlImagen;
   private String nombreArchivo;
+  private String nombreArchivo2;
   private Pago pagoSeleccionado;
-  ComprobantePago comprobanteSeleccionado;
+  private ComprobantePago comprobanteSeleccionado;
+  private Gestor gestorSeleccionado;
   private final PagoDAO pagoDao;
   private final CreditoDAO creditoDao;
   private final ActualizacionDAO actualizacionDao;
@@ -82,11 +88,14 @@ public class PagosBean implements Serializable {
   private final ComprobantePagoDAO comprobantePagoDao;
   private List<Pago> pagosPorRevisar;
   private List<Pago> listaPagos;
+  private List<Pago> listaPagosQuincena;
+  private List<Pago> pagosSeleccionados;
   private List<String> listaRemitentes;
   private List<String> listaDestinatarios;
   private List<String> listaCorreos;
   private List<PagoGestor> listaPagosGestor;
   private List<ComprobantePago> listaComprobantes;
+  private List<Gestor> listaGestores;
   private String remitente;
   private List<String> destinatarios;
   private List<String> listaObservacionesPago;
@@ -105,6 +114,7 @@ public class PagosBean implements Serializable {
   public PagosBean() {
     remitente = indexBean.getUsuario().getCorreo();
     permitirExport = false;
+    permitirExport2 = false;
     habilitaTabla = false;
     habilitaVisualizador = false;
     pagoDao = new PagoIMPL();
@@ -122,7 +132,12 @@ public class PagosBean implements Serializable {
     listaObservacionesPago = new ArrayList();
     listaPagosGestor = new ArrayList();
     listaComprobantes = new ArrayList();
+    listaPagosQuincena = new ArrayList();
+    pagosSeleccionados = new ArrayList();
+    listaGestores = new ArrayList();
+    pagoSeleccionado = new Pago();
     comprobanteSeleccionado = new ComprobantePago();
+    gestorSeleccionado = new Gestor();
     cargarListas();
   }
 
@@ -132,6 +147,7 @@ public class PagosBean implements Serializable {
     pagosPorRevisar = pagoDao.pagosPorRevisarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     listaObservacionesPago = Arrays.asList("1 MES", "2 O MAS MESES", "QUITA DE CAPITAL", "CASTIGO", "QUEBRANTO", "NO HACER PAGO(S)", "NO ENVIAR A BANCO", "ACTA DEFUNCION", "LIQUIDADA", "REGULARIZADA");
     listaPagosGestor = generarPagosGestor();
+    listaGestores = new GestorIMPL().buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
   }
 
   // METODO QUE CARGA LAS LISTAS DE CORREO
@@ -164,14 +180,14 @@ public class PagosBean implements Serializable {
 
   // METODO QUE APRUEBA UN PAGO
   public void aprobarPago() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     if (montoAprobado > pagoSeleccionado.getMontoPago()) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El monto a aprobar es mayor al monto del pago."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El monto a aprobar es mayor al monto del pago."));
     } else {
       pagoSeleccionado.setEstatus(Pagos.APROBADO);
       pagoSeleccionado.setRevisor(indexBean.getUsuario().getNombreLogin());
       pagoSeleccionado.setMontoAprobado(montoAprobado);
       pagoSeleccionado.setInformacionRevision(observacionParaBanco);
+      pagoSeleccionado.setQuincena(new QuincenaIMPL().obtenerQuincenaActual());
       boolean ok = pagoDao.editar(pagoSeleccionado);
       if (ok) {
         Actualizacion act = actualizacionDao.buscarUltimaActualizacion(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getIdCredito());
@@ -188,27 +204,26 @@ public class PagosBean implements Serializable {
         cargarListas();
         Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " aprobo un pago por $" + pagoSeleccionado.getMontoAprobado() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
         GestionAutomatica.generarGestionAutomatica("16PAGSI", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE APRUEBA PAGO POR $" + pagoSeleccionado.getMontoAprobado());
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se aprobo el pago."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se aprobo el pago."));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo aprobar el pago. Contacte al equipo de sistemas."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo aprobar el pago. Contacte al equipo de sistemas."));
       }
     }
   }
 
   // METODO QUE RECHAZA UN PAGO
   public void rechazarPago() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     pagoSeleccionado.setEstatus(Pagos.RECHAZADO);
     pagoSeleccionado.setRevisor(indexBean.getUsuario().getNombreLogin());
     pagoSeleccionado.setObservacionRevisor(observacionRechazo);
     boolean ok = pagoDao.editar(pagoSeleccionado);
     if (ok) {
       cargarListas();
-      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " rechazo un pago por $" + pagoSeleccionado.getMontoAprobado() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
+      Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " rechazo un pago por $" + pagoSeleccionado.getMontoPago() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
       GestionAutomatica.generarGestionAutomatica("17PAGNO", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE RECHAZA PAGO POR $" + pagoSeleccionado.getMontoPago());
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se rechazo el pago."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se rechazo el pago."));
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo rechazar el pago. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo rechazar el pago. Contacte al equipo de sistemas."));
     }
   }
 
@@ -226,18 +241,17 @@ public class PagosBean implements Serializable {
   // METODO QUE VALIDA LAS FECHAS
   public boolean validarFechas() {
     boolean ok = true;
-    FacesContext contexto = FacesContext.getCurrentInstance();
     Date fechaActual = new Date();
     if (fechaInicio.after(fechaActual)) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser mayor a la actual."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser mayor a la actual."));
       ok = false;
     }
     if (fechaFin.after(fechaActual)) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser mayor a la actual."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser mayor a la actual."));
       ok = false;
     }
     if (fechaFin.before(fechaInicio)) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la fecha inicial."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la fecha inicial."));
       ok = false;
     }
     return ok;
@@ -261,11 +275,22 @@ public class PagosBean implements Serializable {
     return estado;
   }
 
+  // METODO QUE LE DA UNA ETIQUETA AL ESTATUS DEL PAGO DE COMISIONES
+  public String etiquetarEstatusPago(int pagado) {
+    String estado = null;
+    if (pagado == Pagos.PAGADO) {
+      estado = "Si";
+    }
+    if (pagado == Pagos.NO_PAGADO) {
+      estado = "No";
+    }
+    return estado;
+  }
+
   // METODO QUE GESTIONA EL ENVIO DE PAGOS A REVISION
   public void verificarCorreoRevision() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     if (pagoSeleccionado.getEstatus() == Pagos.REVISION_BANCO) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Este pago ya fue enviado a revision."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Este pago ya fue enviado a revision."));
     } else {
       copia = "1ctexpress_ibr@corporativodelrio.com";
       String producto;
@@ -288,7 +313,6 @@ public class PagosBean implements Serializable {
 
   // METODO QUE ENVIA EL CORREO ELECTRONICO AL BANCO
   public void enviarCorreoBanco() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     try {
       Properties props = new Properties();
       props.put("mail.smtp.host", "mail.corporativodelrio.com");
@@ -312,10 +336,11 @@ public class PagosBean implements Serializable {
       texto.setText(mensajeCorreo);
       multiParte.addBodyPart(texto);
       List<ComprobantePago> comprobantes = comprobantePagoDao.buscarPorPago(pagoSeleccionado.getIdPago());
-      for(int i = 0; i<(comprobantes.size()); i++){
+      for (int i = 0; i < (comprobantes.size()); i++) {
         BodyPart adjunto = new MimeBodyPart();
         adjunto.setDataHandler(new DataHandler(new FileDataSource(comprobantes.get(i).getNombreComprobante())));
-        adjunto.setFileName("Comprobante " + (i+1));
+        String extension = comprobantes.get(i).getNombreComprobante().substring(comprobantes.get(i).getNombreComprobante().length() - 4, comprobantes.get(i).getNombreComprobante().length());
+        adjunto.setFileName("Comprobante" + (i + 1) + extension);
         multiParte.addBodyPart(adjunto);
       }
       mensaje.setContent(multiParte);
@@ -325,16 +350,21 @@ public class PagosBean implements Serializable {
       pagoSeleccionado.setEstatus(Pagos.REVISION_BANCO);
       if (pagoDao.editar(pagoSeleccionado)) {
         GestionAutomatica.generarGestionAutomatica("25VAPA", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE ENVIA PAGO PARA REVISION POR PARTE DEL BANCO");
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se envio el pago a revision."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se envio el pago a revision."));
       }
     } catch (Exception e) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se envio el pago a revision. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se envio el pago a revision. Contacte al equipo de sistemas."));
       Logs.log.error("No se pudo enviar pago a revision con el banco");
       Logs.log.error("Remitente: " + remitente + ", destinatario: " + destinatarios + ", cco: " + copia);
       Logs.log.error(e.getStackTrace());
     } finally {
       RequestContext.getCurrentInstance().execute("PF('mailPagoDialog').hide()");
     }
+  }
+
+  // METODO QUE OBTIENE EL NOMBRE DE LA QUINCENA ACTUAL
+  public String obtenerQuincenaActual() {
+    return new QuincenaIMPL().obtenerQuincenaActual().getNombre();
   }
 
   // METODO QUE OBTIENE LOS MESES VENCIDOS DEL CREDITO
@@ -420,10 +450,65 @@ public class PagosBean implements Serializable {
   }
 
   // METODO QUE ABRE EL VISUALIZADOR PARA EL COMPROBANTE SELECCIONADO
-  public void visualizar(ComprobantePago comprobante){
-    
+  public void visualizar() {
+    RequestContext.getCurrentInstance().execute("PF('detallePagoDialogPdf').hide();");
+    RequestContext.getCurrentInstance().execute("PF('detallePagoDialogImg').hide();");
+    String nombre = comprobanteSeleccionado.getNombreComprobante().replace(Directorios.RUTA_WINDOWS_CARGA_COMPROBANTES, "");
+    File f = new File(comprobanteSeleccionado.getNombreComprobante());
+    if (f.exists() && !f.isDirectory()) {
+      urlImagen = Directorios.RUTA_SERVIDOR_WEB_COMPROBANTES + nombre;
+      if (nombre.substring(nombre.indexOf(".")).equals(".pdf")) {
+        RequestContext.getCurrentInstance().update("formVisorPagoPdf");
+        RequestContext.getCurrentInstance().execute("PF('detallePagoDialogPdf').show();");
+      } else {
+        RequestContext.getCurrentInstance().update("formVisorPagoImagen");
+        RequestContext.getCurrentInstance().execute("PF('detallePagoDialogImg').show();");
+      }
+    } else {
+      Logs.log.error("El comprobante de pago " + nombre + " no esta disponible en el servidor.");
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se encontro el archivo. Contacte al equipo de sistemas."));
+    }
   }
-  
+
+  // METODO QUE SIRVE PARA INDICAR SI HA SIDO PAGADA LA COMISION DE ESTE PAGO
+  public void pagarComision(List<Pago> pagos) {
+    if (pagos.isEmpty()) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar al menos un pago."));
+    } else {
+      boolean ok = true;
+      for (int i = 0; i < (pagos.size()); i++) {
+        Pago p = pagos.get(i);
+        p.setPagado(Pagos.PAGADO);
+        ok = pagoDao.editar(p);
+        if (!ok) {
+          break;
+        }
+      }
+      if (ok) {
+        if (gestorSeleccionado.getIdGestor() == 0) {
+          listaPagosQuincena = pagoDao.buscarPagosQuincenActual();
+        } else {
+          listaPagosQuincena = pagoDao.buscarPagosQuincenaActualGestor(gestorSeleccionado.getIdGestor());
+        }
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se registraron los pagos de comisiones."));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se logro registrar el pago de la comisiones. Contacte al equipo de sistemas."));
+      }
+    }
+  }
+
+  // METODO QUE CARGA LOS PAGOS DE LA QUINCENA ACTUAL SEGUN EL GESTOR SELECCIONADO
+  public void cargarPagosQuincenaGestor() {
+    if (gestorSeleccionado.getIdGestor() == 0) {
+      listaPagosQuincena = pagoDao.buscarPagosQuincenActual();
+      nombreArchivo2 = "PAGOS-TODOS-QUINCENA-" + obtenerQuincenaActual();
+    } else {
+      listaPagosQuincena = pagoDao.buscarPagosQuincenaActualGestor(gestorSeleccionado.getIdGestor());
+      nombreArchivo2 = "PAGOS-" + gestorDao.buscar(gestorSeleccionado.getIdGestor()).getUsuario().getNombreLogin() + "-QUINCENA-" + obtenerQuincenaActual();
+    }
+    permitirExport2 = !listaPagosQuincena.isEmpty();
+  }
+
   // GETTERS & SETTERS
   public List<Pago> getPagosPorRevisar() {
     return pagosPorRevisar;
@@ -639,6 +724,54 @@ public class PagosBean implements Serializable {
 
   public void setComprobanteSeleccionado(ComprobantePago comprobanteSeleccionado) {
     this.comprobanteSeleccionado = comprobanteSeleccionado;
+  }
+
+  public List<Pago> getListaPagosQuincena() {
+    return listaPagosQuincena;
+  }
+
+  public void setListaPagosQuincena(List<Pago> listaPagosQuincena) {
+    this.listaPagosQuincena = listaPagosQuincena;
+  }
+
+  public List<Pago> getPagosSeleccionados() {
+    return pagosSeleccionados;
+  }
+
+  public void setPagosSeleccionados(List<Pago> pagosSeleccionados) {
+    this.pagosSeleccionados = pagosSeleccionados;
+  }
+
+  public Gestor getGestorSeleccionado() {
+    return gestorSeleccionado;
+  }
+
+  public void setGestorSeleccionado(Gestor gestorSeleccionado) {
+    this.gestorSeleccionado = gestorSeleccionado;
+  }
+
+  public List<Gestor> getListaGestores() {
+    return listaGestores;
+  }
+
+  public void setListaGestores(List<Gestor> listaGestores) {
+    this.listaGestores = listaGestores;
+  }
+
+  public boolean isPermitirExport2() {
+    return permitirExport2;
+  }
+
+  public void setPermitirExport2(boolean permitirExport2) {
+    this.permitirExport2 = permitirExport2;
+  }
+
+  public String getNombreArchivo2() {
+    return nombreArchivo2;
+  }
+
+  public void setNombreArchivo2(String nombreArchivo2) {
+    this.nombreArchivo2 = nombreArchivo2;
   }
 
   // CLASE MIEMBRO QUE RELACIONA AL GESTOR CON SUS PAGOS

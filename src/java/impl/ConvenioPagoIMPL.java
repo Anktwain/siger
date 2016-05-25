@@ -36,7 +36,7 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
         tx.rollback();
       }
       Logs.log.error("No se pudo insertar el nuevo convenio");
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -58,7 +58,7 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
         tx.rollback();
       }
       Logs.log.error("No se pudo editar el convenio");
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -80,7 +80,7 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
         tx.rollback();
       }
       Logs.log.error("No se pudo eliminar el convenio");
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -137,7 +137,7 @@ public class ConvenioPagoIMPL implements ConvenioPagoDAO {
       }
     } catch (HibernateException he) {
       saldo = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

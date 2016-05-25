@@ -82,7 +82,7 @@ public class GeneradorPdf {
       p = new Paragraph(credito.getDeudor().getSujeto().getNombreRazonSocial(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
-      p = new Paragraph(direccion.getCalle(), cuerpo2);
+      p = new Paragraph(direccion.getCalle() + " " + direccion.getExterior() + " " + direccion.getInterior(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
       p = new Paragraph(direccion.getColonia().getTipo() + " " + direccion.getColonia().getNombre(), cuerpo2);

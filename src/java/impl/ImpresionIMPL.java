@@ -85,7 +85,7 @@ public class ImpresionIMPL implements ImpresionDAO {
       impresiones = sesion.createSQLQuery(consulta).addEntity(Impresion.class).list();
     } catch (HibernateException he) {
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -102,7 +102,7 @@ public class ImpresionIMPL implements ImpresionDAO {
     } catch (HibernateException he) {
       visitas = -1;
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -119,7 +119,7 @@ public class ImpresionIMPL implements ImpresionDAO {
     } catch (HibernateException he) {
       visitas = -1;
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -136,7 +136,7 @@ public class ImpresionIMPL implements ImpresionDAO {
     } catch (HibernateException he) {
       visitas = -1;
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -153,11 +153,27 @@ public class ImpresionIMPL implements ImpresionDAO {
     } catch (HibernateException he) {
       visitas = -1;
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
     return visitas;
+  }
+
+  @Override
+  public List<Impresion> buscarPorDireccion(int idDireccion) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Impresion> impresiones = new ArrayList();
+    String consulta = "SELECT * FROM impresion WHERE id_direccion = " + idDireccion + ";";
+    try {
+      impresiones = sesion.createSQLQuery(consulta).addEntity(Impresion.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return impresiones;
   }
 
   private void cerrar(Session sesion) {

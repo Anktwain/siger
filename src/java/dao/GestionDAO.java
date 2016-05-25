@@ -34,4 +34,6 @@ public interface GestionDAO {
   
   public boolean buscarReasignacionHoy(int idCredito);
   
+  public Number checarDiasSinGestionar(int idCredito);
+  
 }

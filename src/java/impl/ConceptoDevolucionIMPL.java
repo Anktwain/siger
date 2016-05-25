@@ -27,7 +27,7 @@ public class ConceptoDevolucionIMPL implements ConceptoDevolucionDAO{
       cd = sesion.createSQLQuery(consulta).addEntity(ConceptoDevolucion.class).list();
     } catch (HibernateException he) {
       cd = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -43,7 +43,7 @@ public class ConceptoDevolucionIMPL implements ConceptoDevolucionDAO{
       cd = (ConceptoDevolucion) sesion.createSQLQuery(consulta).addEntity(ConceptoDevolucion.class).uniqueResult();
     } catch (HibernateException he) {
       cd = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

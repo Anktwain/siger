@@ -67,11 +67,9 @@ public class MarcajeBean implements Serializable {
   private final EstatusInformativoDAO estatusInformativoDao;
   private final MarcajeDAO marcajeDao;
   private Credito seleccionadoSepomex;
-  private FacesContext contexto;
 
   // CONSTRUCTOR
   public MarcajeBean() {
-    contexto = FacesContext.getCurrentInstance();
     tipoImpresion = new ArrayList();
     listaSepomex = new ArrayList();
     listaTelegrama = new ArrayList();
@@ -169,32 +167,29 @@ public class MarcajeBean implements Serializable {
     g.setGestion("RECHAZO DE CORRESPONDENCIA SEPOMEX");
     ok = ok & (gestionDao.insertarGestion(g));
     if (ok) {
-      contexto = FacesContext.getCurrentInstance();
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se actualizo la informacion del credito."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se actualizo la informacion del credito."));
       obtenerListas();
       RequestContext.getCurrentInstance().update("marcajeForm");
     } else {
-      contexto = FacesContext.getCurrentInstance();
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo realizar la operacion. Contacte al equipo de sistemas."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo realizar la operacion. Contacte al equipo de sistemas."));
     }
     RequestContext.getCurrentInstance().execute("PF('dlgConfirmarDevolucionSepomex').hide;");
   }
 
   // METODO QUE ESTABLECE UN PERIODO DE IMPRESIONES
   public void establecerPeriodo() {
-    contexto = FacesContext.getCurrentInstance();
     Date fechaActual = new Date();
     if (fechaInicioImpresiones.before(fechaActual)) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser menor o igual a la actual."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser menor o igual a la actual."));
     } else if (fechaFinImpresiones.before(fechaInicioImpresiones)) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la inicial."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la inicial."));
     } else {
       String periodo = fechaInicioImpresiones.getTime() + ";" + fechaFinImpresiones.getTime() + ";" + tipoImpresionSeleccionado;
       boolean ok = ManejadorArchivosDeTexto.crearArchivo(periodo, Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES, tipoImpresionSeleccionado.replace(" ", "_") + ".txt");
       if (ok) {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se establecio el periodo de impresion."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se establecio el periodo de impresion."));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se establecio el periodo de impresion. Contacte al equipo de sistemas."));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se establecio el periodo de impresion. Contacte al equipo de sistemas."));
       }
     }
     obtenerPeriodos();

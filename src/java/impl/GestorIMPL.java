@@ -53,11 +53,13 @@ public class GestorIMPL implements GestorDAO {
   public Gestor buscar(int idGestor) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Gestor gestor;
+    String consulta = "SELECT * FROM gestor WHERE id_gestor = " + idGestor + ";";
     try {
-      gestor = (Gestor) sesion.createSQLQuery("SELECT * FROM gestor WHERE id_gestor = " + idGestor + ";").addEntity(Gestor.class).uniqueResult();
+      gestor = (Gestor) sesion.createSQLQuery(consulta).addEntity(Gestor.class).uniqueResult();
     } catch (HibernateException he) {
       gestor = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

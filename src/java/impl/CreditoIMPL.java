@@ -55,7 +55,7 @@ public class CreditoIMPL implements CreditoDAO {
       creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
       creditos = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -71,7 +71,7 @@ public class CreditoIMPL implements CreditoDAO {
       creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
       creditos = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -87,7 +87,7 @@ public class CreditoIMPL implements CreditoDAO {
       c = (Credito) sesion.createSQLQuery(consulta).addEntity(Credito.class).uniqueResult();
     } catch (HibernateException he) {
       c = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -103,7 +103,7 @@ public class CreditoIMPL implements CreditoDAO {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
       creditos = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -119,7 +119,7 @@ public class CreditoIMPL implements CreditoDAO {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
       creditos = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -135,7 +135,7 @@ public class CreditoIMPL implements CreditoDAO {
       id = (int) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
       id = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -151,7 +151,7 @@ public class CreditoIMPL implements CreditoDAO {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
       creditos = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -169,7 +169,7 @@ public class CreditoIMPL implements CreditoDAO {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -190,7 +190,7 @@ public class CreditoIMPL implements CreditoDAO {
       }
     } catch (HibernateException he) {
       resultados = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -357,7 +357,7 @@ public class CreditoIMPL implements CreditoDAO {
     try {
       acts = sesion.createSQLQuery("SELECT * FROM actualizacion WHERE id_credito = " + idCredito + " ORDER BY id_actualizacion DESC LIMIT 1;").addEntity(Actualizacion.class).list();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     }
     cerrar(sesion);
     if (!acts.isEmpty()) {
@@ -392,7 +392,7 @@ public class CreditoIMPL implements CreditoDAO {
       mesesVencidos = (int) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
       mesesVencidos = -1;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

@@ -27,7 +27,7 @@ public class FacIMPL implements FacDAO{
     try {
       facs = sesion.createSQLQuery("SELECT DISTINCT * FROM fac WHERE id_actualizacion = (SELECT id_actualizacion FROM actualizacion WHERE id_credito = " + idCredito + ") ORDER BY anio DESC, mes DESC;").addEntity(Fac.class).list();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

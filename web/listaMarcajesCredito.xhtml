@@ -9,19 +9,21 @@
   <body>
     <div class="clearfix">
       <h:form id="formTablaMarcajes">
-        <p:outputLabel value="#{checarMarcajesBean.verificarCampaña()}" style="font-size: 16px; color: #000000; font-family: 'Open Sans',sans-serif;" />
-        &nbsp;&nbsp;
-        <p:outputLabel value="#{checarMarcajesBean.verificaGestionHoy()}" style="font-size: 16px; color: #00CC33; font-family: 'Open Sans',sans-serif;" />
-        &nbsp;&nbsp;
-        <p:outputLabel value="#{checarMarcajesBean.verificaPagoHoy()}" style="font-size: 16px; color: #FF6600; font-family: 'Open Sans',sans-serif;" />
-        &nbsp;&nbsp;
-        <p:outputLabel value="#{checarMarcajesBean.verificaCambioDeCampaña()}" style="font-size: 16px; color: #3399FF; font-family: 'Open Sans',sans-serif;" />
-        &nbsp;&nbsp;
-        <p:outputLabel value="#{checarMarcajesBean.verificaMarcaje()}" style="font-size: 16px; color: #FF0000; font-family: 'Open Sans',sans-serif;" />
-        &nbsp;&nbsp;
-        <p:outputLabel value="#{checarMarcajesBean.verificaSOFOM()}" style="font-size: 16px; color: #FF66FF; font-family: 'Open Sans',sans-serif;" />
-        &nbsp;&nbsp;
-        <p:outputLabel value="#{checarMarcajesBean.verificaReasignacionHoy()}" style="font-size: 16px; color: #009999; font-family: 'Open Sans',sans-serif;" />
+        <div class="pull-left">
+          <p:outputLabel value="#{checarMarcajesBean.verificarCampaña()}" style="font-size: 16px; color: #000000; font-family: 'Open Sans',sans-serif;" />
+          &nbsp;&nbsp;
+          <p:outputLabel value="#{checarMarcajesBean.verificaGestionHoy()}" style="font-size: 16px; color: #00CC33; font-family: 'Open Sans',sans-serif;" />
+          &nbsp;&nbsp;
+          <p:outputLabel value="#{checarMarcajesBean.verificaPagoHoy()}" style="font-size: 16px; color: #FF6600; font-family: 'Open Sans',sans-serif;" />
+          &nbsp;&nbsp;
+          <p:outputLabel value="#{checarMarcajesBean.verificaCambioDeCampaña()}" style="font-size: 16px; color: #3399FF; font-family: 'Open Sans',sans-serif;" />
+          &nbsp;&nbsp;
+          <p:outputLabel value="#{checarMarcajesBean.verificaMarcaje()}" style="font-size: 16px; color: #FF0000; font-family: 'Open Sans',sans-serif;" />
+          &nbsp;&nbsp;
+          <p:outputLabel value="#{checarMarcajesBean.verificaSOFOM()}" style="font-size: 16px; color: #FF66FF; font-family: 'Open Sans',sans-serif;" />
+          &nbsp;&nbsp;
+          <p:outputLabel value="#{checarMarcajesBean.verificaReasignacionHoy()}" style="font-size: 16px; color: #009999; font-family: 'Open Sans',sans-serif;" />
+        </div>
       </h:form>
     </div>
   </body>

@@ -43,7 +43,6 @@ public class EstatusInformativoBean implements Serializable {
 
   // METODO QUE CREA UN NUEVO ESTATUS
   public void crear() {
-    FacesContext contexto = FacesContext.getCurrentInstance();
     if (!nuevoEstatus.equals("")) {
       EstatusInformativo e = new EstatusInformativo();
       e.setEstatus(nuevoEstatus);
@@ -52,12 +51,12 @@ public class EstatusInformativoBean implements Serializable {
         RequestContext con = RequestContext.getCurrentInstance();
         cargarEstatus();
         con.execute("PF('dialogoNuevoEstatus').hide();");
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se registro el nuevo estatus"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se registro el nuevo estatus"));
       } else {
-        contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo registrar la informacion. Contacte con el administrador de base de datos"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo registrar la informacion. Contacte con el administrador de base de datos"));
       }
     } else {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ingreso informacion"));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ingreso informacion"));
     }
   }
 

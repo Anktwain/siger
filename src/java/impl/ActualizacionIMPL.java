@@ -31,7 +31,7 @@ public class ActualizacionIMPL implements ActualizacionDAO {
       actualizaciones = sesion.createSQLQuery("SELECT DISTINCT * FROM actualizacion WHERE id_credito = " + idCredito + " ORDER BY id_actualizacion DESC;").addEntity(Actualizacion.class).list();
     } catch (HibernateException he) {
       actualizaciones = null;
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -47,7 +47,7 @@ public class ActualizacionIMPL implements ActualizacionDAO {
       actualizacion = (Actualizacion) sesion.createSQLQuery(consulta).addEntity(Actualizacion.class).uniqueResult();
     } catch (HibernateException he) {
       Logs.log.error(consulta);
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -82,7 +82,7 @@ public class ActualizacionIMPL implements ActualizacionDAO {
     try {
       acts = sesion.createSQLQuery("SELECT * FROM actualizacion WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_gestor = " + idGestor + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ");").addEntity(Actualizacion.class).list();
     } catch (HibernateException he) {
-      Logs.log.error(he.getStackTrace());
+      Logs.log.error(he.getMessage());
     }
     cerrar(sesion);
     if (!acts.isEmpty()) {

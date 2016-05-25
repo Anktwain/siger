@@ -46,5 +46,9 @@ public interface PagoDAO {
   public Pago buscarPagoFechaCredito(Date fecha, int idCredito);
   
   public List<Pago> buscarTodosPagosGestor(int idUsuario);
-          
+  
+  public List<Pago> buscarPagosQuincenActual();
+  
+  public List<Pago> buscarPagosQuincenaActualGestor(int idGestor);
+
 }

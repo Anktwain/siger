@@ -15,7 +15,7 @@
         <div class="clearfix">
           <h:form id="datosCreditoForm">
             <h3 class="m-bottom-xs m-top-xs">
-              <p:outputLabel value="#{vistaCreditoBean.creditoActual.deudor.sujeto.nombreRazonSocial}" style="font-size: 28px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+                <p:outputLabel value="#{vistaCreditoBean.creditoActual.deudor.sujeto.nombreRazonSocial}" style="font-size: 28px; color: #{vistaCreditoBean.color}; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
             </h3>
             <div class="pull-left">
               <h4 class="m-bottom-xs m-top-xs">
@@ -191,21 +191,23 @@
         <h:form id="barraDetalleCreditoForm">
           <p:commandButton value="Ver gestiones anteriores" actionListener="#{gestionesSigerViejoBean.obtenerGestionesAnteriores(vistaCreditoBean.creditoActual.numeroCredito)}" oncomplete="PF('dialogoGestionesAnteriores').show();" update="gestionesAnterioresForm" />
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:button value="Editar datos del deudor" outcome="deudores" />
+          <p:button value="Editar datos del deudor" outcome="deudores" disabled="true" />
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:button value="Convenios de pago" outcome="vistaConvenio" />
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:commandButton value="Devolucion" oncomplete="PF('dialogoDevolucionVistaCredito').show();" />
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:commandButton value="Marcar como urgente" actionListener="#{vistaCreditoBean.marcarUrgente()}" disabled="#{vistaCreditoBean.habilitaUrgente}" update=":growl, barraDetalleCreditoForm, formTablaMarcajes"/>
-          <br />
-          <br />
+          <p:commandButton value="Marcar como urgente" actionListener="#{vistaCreditoBean.marcarUrgente()}" disabled="#{vistaCreditoBean.habilitaUrgente}" update=":growl, barraDetalleCreditoForm, formTablaMarcajes" rendered="#{indexBean.adminVisible}" />
+        </h:form>
+        <br />
+        <br />
+        <h:form id="reasignarGestorForm" rendered="#{indexBean.adminVisible}">
           <h5>
             <strong>
               Gestor actual:
             </strong>
           </h5>
-          <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px" rendered="#{indexBean.adminVisible}">
+          <p:selectOneMenu id="listaGestoresVistaCredito" value="#{vistaCreditoBean.gestorSeleccionado.idGestor}" style="width:200px">
             <f:selectItem itemValue="#{vistaCreditoBean.creditoActual.gestor.idGestor}" itemLabel="#{vistaCreditoBean.creditoActual.gestor.usuario.nombreLogin}" />
             <f:selectItems value="#{vistaCreditoBean.listaGestores}" var="ges" itemLabel="#{ges.usuario.nombreLogin}" itemValue="#{ges.idGestor}" />
             <p:ajax listener="#{vistaCreditoBean.confirmar()}" />
@@ -237,11 +239,13 @@
                 <p:accordionPanel multiple="true" activeIndex="-1">
                   <p:tab title="Direcciones">
                     <p:contextMenu for="tablaDireccionesDetalleCredito" style="width:200px;">
+                      <p:menuitem value="Editar" icon="ui-icon-wrench" actionListener="#{vistaCreditoBean.prepararDireccion()}" oncomplete="PF('dialogoEditarDireccion').show();" update="editarDireccionForm" />
+                      <p:menuitem value="Eliminar" icon="ui-icon-close" oncomplete="PF('dialogoEliminarDireccion').show();" />
                       <p:menuitem value="Generar carta (visita)" icon="ui-icon-document" oncomplete="PF('dialogoImpresionVisitas').show();" />
                     </p:contextMenu>
-                    <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" selection="#{visitasBean.direccion}" selectionMode="single" rowKey="#{d.idDireccion}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                    <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" selection="#{vistaCreditoBean.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idDireccion}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Calle y numero" style="width:300px;" > 
-                        <h:outputText value="#{d.calle}"/>
+                        <h:outputText value="#{d.calle} #{d.exterior} #{d.interior}"/>
                       </p:column>
                       <p:column headerText="Colonia" style="width:250px;" > 
                         <h:outputText value="#{d.colonia.nombre}"/>
@@ -255,6 +259,9 @@
                       <p:column headerText="C.P." style="width:50px;" > 
                         <h:outputText value="#{d.colonia.codigoPostal}"/>
                       </p:column>
+                      <f:facet name="footer">
+                        <p:commandButton value="Agregar nueva direccion" icon="ui-icon-plus" oncomplete="PF('dialogoNuevaDireccion').show();" />
+                      </f:facet>
                     </p:dataTable>
                   </p:tab>
                   <p:tab title="Telefonos">
@@ -603,6 +610,150 @@
         <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.agregarContacto()}" oncomplete="PF('dialogoNuevoContacto').hide();" update=":growl, :DetalleCredito, nuevoContactoForm" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoNuevoContacto').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA EDITAR UNA DIRECCION -->
+  <p:dialog id="dlgEditarDireccion" widgetVar="dialogoEditarDireccion" modal="true" resizable="false" header="Editar direccion">
+    <h:form id="editarDireccionForm">
+      Estado:
+      &nbsp;&nbsp;
+      <p:selectOneMenu value="#{vistaCreditoBean.direccionSeleccionada.estadoRepublica.idEstado}" style="width: 200px;">
+        <f:selectItems value="#{vistaCreditoBean.listaEstados}" var="e2" itemLabel="#{e2.nombre}" itemValue="#{e2.idEstado}" />
+        <p:ajax listener="#{vistaCreditoBean.obtenerMunicipios(vistaCreditoBean.direccionSeleccionada.estadoRepublica)}" update="comboboxMunicipiosDireccionSeleccionada, comboboxColoniasDireccionSeleccionada" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Municipio:
+      &nbsp;&nbsp;
+      <p:selectOneMenu id="comboboxMunicipiosDireccionSeleccionada" value="#{vistaCreditoBean.direccionSeleccionada.municipio.idMunicipio}" filter="true" filterMatchMode="contains" style="width: 200px;">
+        <f:selectItems value="#{vistaCreditoBean.listaMunicipios}" var="m2" itemLabel="#{m2.nombre}" itemValue="#{m2.idMunicipio}"/>
+        <p:ajax listener="#{vistaCreditoBean.obtenerColonias(vistaCreditoBean.direccionSeleccionada.municipio)}" update="comboboxColoniasDireccionSeleccionada" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Colonia:
+      &nbsp;&nbsp;
+      <p:selectOneMenu id="comboboxColoniasDireccionSeleccionada" value="#{vistaCreditoBean.direccionSeleccionada.colonia.idColonia}" filter="true" filterMatchMode="contains" style="width: 300px;">
+        <f:selectItems value="#{vistaCreditoBean.listaColonias}" var="col2" itemLabel="#{col2.tipo} #{col2.nombre}" itemValue="#{col2.idColonia}"/>
+        <p:ajax listener="#{vistaCreditoBean.actualizarColonia()}" update="cpDireccionSeleccionada" />
+      </p:selectOneMenu>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      C.P:
+      &nbsp;&nbsp;
+      <h:outputText id="cpDireccionSeleccionada" value="#{vistaCreditoBean.direccionSeleccionada.colonia.codigoPostal}" />
+      <br />
+      <br />
+      Calle:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.direccionSeleccionada.calle}" size="40" maxlength="100" />
+      <br />
+      <br />
+      Numero exterior:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.direccionSeleccionada.exterior}" size="10" maxlength="30" />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      Numero interior:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.direccionSeleccionada.interior}" size="10" maxlength="30" />
+      <hr />
+      Coordenadas GPS
+      <br />
+      <br />
+      Latitud:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.direccionSeleccionada.latitud}" size="15" maxlength="11" />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      Longitud:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.direccionSeleccionada.longitud}" size="15" maxlength="11" />
+      <br />
+      <br />
+      <div align="center">
+        <p:commandButton value="Editar direccion" icon="ui-icon-pencil" actionListener="#{vistaCreditoBean.editarDireccion()}" oncomplete="PF('dialogoEditarDireccion').hide();" update=":growl, DetalleCredito" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoEditarDireccion').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA AGREGAR UNA DIRECCION -->
+  <p:dialog id="dlgNuevaDireccion" widgetVar="dialogoNuevaDireccion" modal="true" resizable="false" header="Dar de alta una direccion para este credito">
+    <h:form id="nuevaDireccionForm">
+      Codigo postal:
+      &nbsp;&nbsp;
+      <p:inputText id="cpNuevaDireccion" value="#{vistaCreditoBean.cpNuevaDireccion}" size="10" maxlength="5" />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <p:commandButton value="Detectar" icon="ui-icon-search" actionListener="#{vistaCreditoBean.detectarDireccionPorCP()}" update=":growl, nuevaDireccionForm" />
+      <br />
+      <br />
+      Estado:
+      &nbsp;&nbsp;
+      <p:selectOneMenu value="#{vistaCreditoBean.estadoNuevaDireccion.idEstado}" style="width: 200px;">
+        <f:selectItem itemLabel="" itemValue="0" />
+        <f:selectItems value="#{vistaCreditoBean.listaEstados}" var="e" itemLabel="#{e.nombre}" itemValue="#{e.idEstado}" />
+        <p:ajax listener="#{vistaCreditoBean.obtenerMunicipios(vistaCreditoBean.estadoNuevaDireccion)}" update="comboboxMunicipiosNuevaDireccion, comboboxColoniasNuevaDireccion" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Municipio:
+      &nbsp;&nbsp;
+      <p:selectOneMenu id="comboboxMunicipiosNuevaDireccion" value="#{vistaCreditoBean.municipioNuevaDireccion.idMunicipio}" filter="true" filterMatchMode="contains" style="width: 200px;">
+        <f:selectItem itemLabel="" itemValue="0" />
+        <f:selectItems value="#{vistaCreditoBean.listaMunicipios}" var="m" itemLabel="#{m.nombre}" itemValue="#{m.idMunicipio}"/>
+        <p:ajax listener="#{vistaCreditoBean.obtenerColonias(vistaCreditoBean.municipioNuevaDireccion)}" update="comboboxColoniasNuevaDireccion" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Colonia:
+      &nbsp;&nbsp;
+      <p:selectOneMenu id="comboboxColoniasNuevaDireccion" value="#{vistaCreditoBean.coloniaNuevaDireccion.idColonia}" filter="true" filterMatchMode="contains" style="width: 300px;">
+        <f:selectItem itemLabel="" itemValue="0" />
+        <f:selectItems value="#{vistaCreditoBean.listaColonias}" var="col" itemLabel="#{col.tipo} #{col.nombre}" itemValue="#{col.idColonia}"/>
+        <p:ajax listener="#{vistaCreditoBean.completarCp()}" update="nuevaDireccionForm:cpNuevaDireccion" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Calle:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.calleNuevaDireccion}" size="40" maxlength="50" />
+      <br />
+      <br />
+      Numero exterior:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.exteriorNuevaDireccion}" size="10" maxlength="15" />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      Numero interior:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.interiorNuevaDireccion}" size="10" maxlength="15" />
+      <hr />
+      Coordenadas GPS
+      <br />
+      <br />
+      Latitud:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.latitudNuevaDireccion}" size="15" maxlength="11" />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      Longitud:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.longitudNuevaDireccion}" size="15" maxlength="11" />
+      <hr />
+      <div align="center">
+        <p:commandButton value="Agregar direccion" icon="ui-icon-plus" actionListener="#{vistaCreditoBean.agregarDireccion()}" oncomplete="PF('dialogoNuevaDireccion').hide();" update=":growl, nuevaDireccionForm, DetalleCredito" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoNuevaDireccion').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA ELIMINAR UNA DIRECCION -->
+  <p:dialog id="dlgEliminarDireccion" widgetVar="dialogoEliminarDireccion" modal="true" resizable="false" header="Eliminar direccion">
+    <h:form id="eliminarDireccionForm">
+      Esta seguro de eliminar esta direccion?
+      <br />
+      <br />
+      <div align="center">
+        <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.eliminarDireccion()}" oncomplete="PF('dialogoEliminarDireccion').hide();" update=":growl, DetalleCredito" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoEliminarDireccion').hide();" />
       </div>
     </h:form>
   </p:dialog>

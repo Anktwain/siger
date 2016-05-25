@@ -166,18 +166,17 @@ public class GestionesBean implements Serializable {
   // METODO QUE VALIDA LAS FECHAS
   public boolean validarFechas() {
     boolean ok = true;
-    FacesContext contexto = FacesContext.getCurrentInstance();
     Date fechaActual = new Date();
     if (fechaInicio.after(fechaActual)) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser mayor a la actual."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha inicial no puede ser mayor a la actual."));
       ok = false;
     }
     if (fechaFin.after(fechaActual)) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser mayor a la actual."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser mayor a la actual."));
       ok = false;
     }
     if (fechaFin.before(fechaInicio)) {
-      contexto.addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la fecha inicial."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La fecha final no puede ser menor a la fecha inicial."));
       ok = false;
     }
     return ok;
