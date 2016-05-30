@@ -70,7 +70,8 @@ public class DeudorIMPL implements DeudorDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar el deudor");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -98,7 +99,8 @@ public class DeudorIMPL implements DeudorDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo hacer borrado logico al deudor");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

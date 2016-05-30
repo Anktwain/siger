@@ -59,4 +59,8 @@ public interface CreditoDAO {
   
   public List<Credito> buscarCreditosPorProducto(int idProducto);
   
+  public List<Credito> buscarCreditosPorMunicipio(int idMunicipio);
+  
+  public List<Credito> buscarCreditosPorEstado(int idEstado);
+  
 }

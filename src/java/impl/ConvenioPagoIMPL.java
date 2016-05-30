@@ -8,7 +8,6 @@ package impl;
 import dao.ConvenioPagoDAO;
 import dto.ConvenioPago;
 import dto.PromesaPago;
-import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

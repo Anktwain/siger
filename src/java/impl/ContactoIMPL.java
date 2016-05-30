@@ -60,7 +60,6 @@ public class ContactoIMPL implements ContactoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       sesion.update(contacto);
       tx.commit();
@@ -70,11 +69,11 @@ public class ContactoIMPL implements ContactoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar el contacto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
-
     return ok;
   }
 
@@ -90,7 +89,6 @@ public class ContactoIMPL implements ContactoDAO {
     boolean ok;
 
     try {
-      // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
       contacto.getSujeto().setEliminado(Perfiles.ELIMINADO);
       sesion.update(contacto.getSujeto());
       tx.commit();
@@ -100,7 +98,8 @@ public class ContactoIMPL implements ContactoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo hacer borrado logico al contacto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

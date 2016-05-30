@@ -1,7 +1,7 @@
 package carga;
 
 import beans.FilaBean;
-import dto.Fila;
+import dto.carga.Fila;
 import dto.Producto;
 import dto.Subproducto;
 import java.util.List;

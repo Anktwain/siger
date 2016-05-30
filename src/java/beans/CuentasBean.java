@@ -13,6 +13,7 @@ import dao.MotivoDevolucionDAO;
 import dto.ConceptoDevolucion;
 import dto.Credito;
 import dto.Devolucion;
+import dto.Historial;
 import dto.MotivoDevolucion;
 import impl.ConceptoDevolucionIMPL;
 import impl.CreditoIMPL;
@@ -24,8 +25,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -117,8 +116,7 @@ public class CuentasBean implements Serializable {
     if ((conceptoSeleccionado.getIdConceptoDevolucion() != 0) && (motivoSeleccionado.getIdMotivoDevolucion() != 0)) {
       Devolucion d = new Devolucion();
       d.setEstatus(Devoluciones.DEVUELTO);
-      Date fecha = new Date();
-      d.setFecha(fecha);
+      d.setFecha(new Date());
       conceptoSeleccionado = conceptoDevolucionDao.buscarPorId(conceptoSeleccionado.getIdConceptoDevolucion());
       d.setConceptoDevolucion(conceptoSeleccionado);
       motivoSeleccionado = motivoDevolucionDao.buscarPorId(motivoSeleccionado.getIdMotivoDevolucion());
@@ -127,8 +125,11 @@ public class CuentasBean implements Serializable {
       d.setObservaciones(observaciones);
       d.setSolicitante(admin);
       d.setRevisor(admin);
-      String evento = "El administrador: " + admin + ", devolvio el credito";
-      ok = devolucionDao.insertar(d) && historialDao.insertarHistorial(creditoSeleccionado.getIdCredito(), evento);
+      Historial h = new Historial();
+      h.setEvento("El administrador: " + admin + ", devolvio el credito");
+      h.setCredito(creditoSeleccionado);
+      h.setFecha(new Date());
+      ok = devolucionDao.insertar(d) && historialDao.insertar(h);
       if (ok) {
         RequestContext con = RequestContext.getCurrentInstance();
         obtenerListas();

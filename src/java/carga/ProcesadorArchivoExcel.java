@@ -1,6 +1,6 @@
 package carga;
 
-import dto.Fila;
+import dto.carga.Fila;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

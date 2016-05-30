@@ -14,9 +14,9 @@ import java.util.List;
  */
 public interface HistorialDAO {
   
-  public boolean insertarHistorial(int idCredito, String evento);
+  public boolean insertar(Historial historial);
   
-  public List<Historial> buscarHistorialPorIdCredito(int idCredito);
+  public List<Historial> buscarPorCredito(int idCredito);
   
   public boolean verificarCampioCampañaCredito(int idCredito);
     

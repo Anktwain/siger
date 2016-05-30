@@ -1,6 +1,6 @@
 package carga.asignacion;
 
-import dto.Fila;
+import dto.carga.Fila;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -87,7 +87,8 @@ public class Asignacion {
           consulta.close();
           conexion.close();
         } catch (Exception e) {
-          e.printStackTrace();
+          Logs.log.error("No se logro abrir la conexion");
+          Logs.log.error(e.getMessage());
         }
       }
     }
@@ -149,7 +150,8 @@ public class Asignacion {
         consulta.close();
         conexion.close();
       } catch (Exception e) {
-        e.printStackTrace();
+        Logs.log.error("No se logro abrir la conexion");
+        Logs.log.error(e.getMessage());
       }
     }
   }
@@ -196,7 +198,8 @@ public class Asignacion {
       }
       bw.close();
     } catch (IOException ioe) {
-      ioe.printStackTrace();
+      Logs.log.error("No se escribieron los cambios en el archivo");
+      Logs.log.error(ioe.getMessage());
     }
   }
 

@@ -1,10 +1,16 @@
-package dto;
+package dto.carga;
 
 import dto.Despacho;
+import dto.Despacho;
+import dto.Deudor;
 import dto.Deudor;
 import dto.Gestor;
+import dto.Gestor;
+import dto.Institucion;
 import dto.Institucion;
 import dto.Producto;
+import dto.Producto;
+import dto.Subproducto;
 import dto.Subproducto;
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -230,8 +230,13 @@ public class PagosBean implements Serializable {
   public void buscar() {
     if (validarFechas()) {
       DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-      nombreArchivo = "PAGOS_" + df.format(fechaInicio) + "_" + df.format(fechaFin).replace(":", "-");
-      listaPagos = pagoDao.pagosPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho(), df.format(fechaInicio), df.format(fechaFin));
+      if (gestorSeleccionado.getIdGestor() == 0) {
+        nombreArchivo = "PAGOS_" + df.format(fechaInicio) + "_" + df.format(fechaFin).replace(":", "-");
+        listaPagos = pagoDao.pagosPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho(), df.format(fechaInicio), df.format(fechaFin));
+      } else {
+        System.out.println("GESTOR " + gestorDao.buscar(gestorSeleccionado.getIdGestor()).getUsuario().getNombreLogin());
+        listaPagos = pagoDao.pagosPorGestor(gestorSeleccionado.getIdGestor(), df.format(fechaInicio), df.format(fechaFin));
+      }
       habilitaTabla = true;
       permitirExport = !listaPagos.isEmpty();
       RequestContext.getCurrentInstance().update("formTodosPagos");
@@ -323,9 +328,10 @@ public class PagosBean implements Serializable {
       Session sesion = Session.getDefaultInstance(props, null);
       MimeMessage mensaje = new MimeMessage(sesion);
       mensaje.setFrom(new InternetAddress(remitente));
-      mensaje.addRecipient(Message.RecipientType.BCC, new InternetAddress(copia));
+      mensaje.addRecipient(Message.RecipientType.BCC, new InternetAddress("cobranza_ibr@corporativodelrio.com"));
       if (!destinatarios.isEmpty()) {
         mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatarios.get(0)));
+        mensaje.addRecipient(Message.RecipientType.CC, new InternetAddress(copia));
         for (int i = 1; i < (destinatarios.size()); i++) {
           mensaje.addRecipient(Message.RecipientType.CC, new InternetAddress(destinatarios.get(i)));
         }

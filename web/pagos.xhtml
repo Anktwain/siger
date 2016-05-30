@@ -167,10 +167,18 @@
                 </p:dataTable>
               </h:form>
             </div>
-            <!-- AQUI VA LA TABLA QUE MUESTRA TODOS LOS PAGOS DEL SISTEMA -->
+            <!-- AQUI VA LA TABLA QUE MUESTRA TODOS LOS APROBADOS DEL SISTEMA -->
             <div class="tab-pane fade" id="pestanaTodosPagos">
               <h:form id="formTodosPagos">
                 <table>
+                  <tr>
+                    <td>
+                      <p:selectOneMenu value="#{pagosBean.gestorSeleccionado.idGestor}" style="width:200px">
+                        <f:selectItem itemValue="0" itemLabel="Todos" />
+                        <f:selectItems value="#{pagosBean.listaGestores}" var="ges" itemLabel="#{ges.usuario.nombreLogin}" itemValue="#{ges.idGestor}" />
+                      </p:selectOneMenu>
+                    </td>
+                  </tr>  
                   <tr>
                     <td>
                       <h4 class="no-margin">Fecha inicio:</h4>
@@ -197,7 +205,7 @@
                 </table>
                 <br />
                 <div align="center">
-                  <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1310px;" rendered="#{pagosBean.habilitaTabla}">
+                  <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1210px;" rendered="#{pagosBean.habilitaTabla}">
                     <p:column headerText="Fecha deposito" style="width:100px;" sortBy="#{p.fechaDeposito}"> 
                       <h:outputText value="#{p.fechaDeposito}" />
                     </p:column>
@@ -219,9 +227,6 @@
                     </p:column>
                     <p:column headerText="Gestor" style="width:100px;" sortBy="#{p.gestor.usuario.nombreLogin}"> 
                       <h:outputText value="#{p.gestor.usuario.nombreLogin}" />
-                    </p:column>
-                    <p:column headerText="Estatus" style="width:100px;" sortBy="#{pagosBean.etiquetarEstatus(p.estatus)}"> 
-                      <h:outputText value="#{pagosBean.etiquetarEstatus(p.estatus)}" />
                     </p:column>
                     <p:column headerText="Revisor" style="width:100px;" sortBy="#{p.revisor}"> 
                       <h:outputText value="#{p.revisor}" />
@@ -315,7 +320,7 @@
             </p:selectCheckboxMenu>
             <br />
             <br />
-            Copia oculta para:
+            Copia para:
             &nbsp;&nbsp;&nbsp;&nbsp;
             <p:selectOneMenu value="#{pagosBean.copia}">
               <f:selectItems value="#{pagosBean.listaCorreos}" />

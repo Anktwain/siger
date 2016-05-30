@@ -2,7 +2,7 @@ package beans;
 
 import carga.ClasificadorDeCreditos;
 import carga.EjecutarScript;
-import dto.Fila;
+import dto.carga.Fila;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

@@ -39,7 +39,8 @@ public class CreditoIMPL implements CreditoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar el credito");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -288,7 +289,7 @@ public class CreditoIMPL implements CreditoDAO {
   public List<Credito> buscarCreditosPorCampanaGestor(int idCampana, int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Credito> creditos;
-    String consulta = "SELECT * FROM credito WHERE id_campana = " + idCampana + " AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ");";
+    String consulta = "SELECT * FROM credito WHERE id_campana = " + idCampana + " AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
     try {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
@@ -439,6 +440,38 @@ public class CreditoIMPL implements CreditoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Credito> creditos = new ArrayList();
     String consulta = "SELECT * FROM credito WHERE id_producto = " + idProducto + ";";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+
+  @Override
+  public List<Credito> buscarCreditosPorMunicipio(int idMunicipio) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos = new ArrayList();
+    String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_municipio = " + idMunicipio + ")));";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+
+  @Override
+  public List<Credito> buscarCreditosPorEstado(int idEstado) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos = new ArrayList();
+    String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_estado = " + idEstado + ")));";
     try {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {

@@ -25,13 +25,6 @@ public class ObtenerOracionCompletaGestionBean implements Serializable {
   // METODO QUE CREA UNA ORACION A PARTIR DE LOS OBJETOS RELACIONADOS CON LA GESTION RECIBIDOS
   public String obtenerOracion(Gestion gestion) {
     if (gestion != null) {
-      /*
-      if (gestion.getTipoQuienGestion().getDescripcion().equals("NO APLICA")) {
-        return gestion.getTipoGestion().getNombre() + ". " + gestion.getDondeGestion().getNombre() + ", " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ": " + gestion.getDescripcionGestion().getTextoGestion() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
-      } else {
-        return gestion.getTipoGestion().getNombre() + ". " + gestion.getDondeGestion().getNombre() + ", " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ": " + gestion.getDescripcionGestion().getTextoGestion() + " " + gestion.getQuienGestion().getQuien() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
-      }
-      */
       String completa = "";
       switch(gestion.getTipoGestion().getNombre()){
         case "VISITA DOMICILIARIA":
@@ -47,7 +40,7 @@ public class ObtenerOracionCompletaGestionBean implements Serializable {
           completa = gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
           break;
         case "AUTOMATICA":
-          completa = gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus() + ".";
+          completa = gestion.getGestion() + " " + gestion.getEstatusInformativo().getEstatus() + ".";
           break;
       }
       return completa;

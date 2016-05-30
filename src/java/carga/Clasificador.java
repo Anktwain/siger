@@ -2,7 +2,7 @@ package carga;
 
 import dto.Credito;
 import dto.Deudor;
-import dto.Fila;
+import dto.carga.Fila;
 import dto.Remesa;
 
 import java.util.List;

@@ -2,6 +2,7 @@ package util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import util.log.Logs;
 
 /**
  * La clase {@code MD5} permite ...
@@ -34,7 +35,8 @@ public class MD5 {
       }
       return sb.toString();
     } catch (NoSuchAlgorithmException nsae) {
-      nsae.printStackTrace();
+      Logs.log.error("El algoritmo no recibio una entrada valida");
+      Logs.log.error(nsae.getMessage());
       return null;
     }
   }

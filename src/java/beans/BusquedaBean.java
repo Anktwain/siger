@@ -8,23 +8,26 @@ package beans;
 import dao.CampanaDAO;
 import dao.CreditoDAO;
 import dao.DireccionDAO;
+import dao.EstadoRepublicaDAO;
 import dao.InstitucionDAO;
+import dao.MunicipioDAO;
 import dao.ProductoDAO;
-import dao.SubproductoDAO;
 import dao.ZonaDAO;
 import dto.Campana;
 import dto.Credito;
 import dto.Direccion;
+import dto.EstadoRepublica;
 import dto.Institucion;
+import dto.Municipio;
 import dto.Producto;
-import dto.Subproducto;
 import dto.Zona;
 import impl.CampanaIMPL;
 import impl.CreditoIMPL;
 import impl.DireccionIMPL;
+import impl.EstadoRepublicaIMPL;
 import impl.InstitucionIMPL;
+import impl.MunicipioIMPL;
 import impl.ProductoIMPL;
-import impl.SubproductoIMPL;
 import impl.ZonaIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,11 +54,17 @@ public class BusquedaBean implements Serializable {
   private final InstitucionDAO institucionDao;
   private final ProductoDAO productoDao;
   private final CampanaDAO campanaDao;
+  private final EstadoRepublicaDAO estadoRepublicaDao;
+  private final MunicipioDAO municipioDao;
   private Zona zonaSeleccionada;
   private CreditoDireccion creditoSeleccionado;
   private Institucion institucionSeleccionada;
   private Producto productoSeleccionado;
   private Campana campanaSeleccionada;
+  private EstadoRepublica estadoSeleccionado;
+  private Municipio municipioSeleccionado;
+  private List<EstadoRepublica> listaEstados;
+  private List<Municipio> listaMunicipios;
   private List<Zona> listaZonas;
   private List<CreditoDireccion> listaCreditos;
   private List<Credito> listaCreditos2;
@@ -85,17 +94,22 @@ public class BusquedaBean implements Serializable {
     institucionSeleccionada = new Institucion();
     productoSeleccionado = new Producto();
     campanaSeleccionada = new Campana();
+    estadoSeleccionado = new EstadoRepublica();
+    municipioSeleccionado = new Municipio();
     creditoDao = new CreditoIMPL();
     zonaDao = new ZonaIMPL();
     direccionDao = new DireccionIMPL();
     institucionDao = new InstitucionIMPL();
     productoDao = new ProductoIMPL();
     campanaDao = new CampanaIMPL();
+    estadoRepublicaDao = new EstadoRepublicaIMPL();
+    municipioDao = new MunicipioIMPL();
     obtenerListas();
   }
 
   // METODO QUE OBTIENE LAS LISTAS INICIALES
   public final void obtenerListas() {
+    listaEstados = estadoRepublicaDao.buscarTodo();
     listaZonas = zonaDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     listaInstituciones = institucionDao.buscarInstitucionesPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     listaCampanas = campanaDao.buscarTodas();
@@ -121,6 +135,42 @@ public class BusquedaBean implements Serializable {
       }
       listaCreditos.add(cd);
     }
+  }
+
+  // METODO QUE BUSCA LOS CREDITOS DEPENDIENDO DEL ESTADO Y MUNICIPIOS SELECCIONADOS
+  public void obtenerCreditosPorAreaGeografica() {
+    listaCreditos.clear();
+    if (estadoSeleccionado.getIdEstado() == 0) {
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Debe seleccionar un estado."));
+    } else {
+      List<Credito> listaCreds = new ArrayList();
+      if (municipioSeleccionado.getIdMunicipio() == 0) {
+        listaCreds = creditoDao.buscarCreditosPorEstado(estadoSeleccionado.getIdEstado());
+      } else {
+        listaCreds = creditoDao.buscarCreditosPorMunicipio(municipioSeleccionado.getIdMunicipio());
+      }
+      for (int i = 0; i < (listaCreds.size()); i++) {
+        CreditoDireccion cd = new CreditoDireccion();
+        cd.setNumeroCredito(listaCreds.get(i).getNumeroCredito());
+        cd.setNombreDeudor(listaCreds.get(i).getDeudor().getSujeto().getNombreRazonSocial());
+        cd.setInstitucion(listaCreds.get(i).getProducto().getInstitucion().getNombreCorto());
+        cd.setGestorActual(listaCreds.get(i).getGestor().getUsuario().getNombreLogin());
+        List<Direccion> dirs = direccionDao.buscarPorSujeto(listaCreds.get(i).getDeudor().getSujeto().getIdSujeto());
+        if ((dirs != null) && (dirs.size() > 0)) {
+          cd.setCalleNumero(dirs.get(0).getCalle());
+          cd.setColonia(dirs.get(0).getColonia().getNombre());
+          cd.setCp(dirs.get(0).getColonia().getCodigoPostal());
+          cd.setEstado(dirs.get(0).getEstadoRepublica().getNombre());
+          cd.setMunicipio(dirs.get(0).getMunicipio().getNombre());
+        }
+        listaCreditos.add(cd);
+      }
+    }
+  }
+
+  // METODO QUE CARGA LOS MUNICIPIOS CUANDO SE HA SELECCIONADO UN ESTADO
+  public void obtenerMunicipios(EstadoRepublica estadoSeleccionado) {
+    listaMunicipios = municipioDao.buscarMunicipiosPorEstado(estadoSeleccionado.getIdEstado());
   }
 
   // METODO QUE OBTIENE LA DIRECCION DEL CREDITO SELECCIONADO Y ABRE EL DIALOGO CORRESPONDIENTE
@@ -300,6 +350,38 @@ public class BusquedaBean implements Serializable {
 
   public void setListaCampanas(List<Campana> listaCampanas) {
     this.listaCampanas = listaCampanas;
+  }
+
+  public EstadoRepublica getEstadoSeleccionado() {
+    return estadoSeleccionado;
+  }
+
+  public void setEstadoSeleccionado(EstadoRepublica estadoSeleccionado) {
+    this.estadoSeleccionado = estadoSeleccionado;
+  }
+
+  public Municipio getMunicipioSeleccionado() {
+    return municipioSeleccionado;
+  }
+
+  public void setMunicipioSeleccionado(Municipio municipioSeleccionado) {
+    this.municipioSeleccionado = municipioSeleccionado;
+  }
+
+  public List<EstadoRepublica> getListaEstados() {
+    return listaEstados;
+  }
+
+  public void setListaEstados(List<EstadoRepublica> listaEstados) {
+    this.listaEstados = listaEstados;
+  }
+
+  public List<Municipio> getListaMunicipios() {
+    return listaMunicipios;
+  }
+
+  public void setListaMunicipios(List<Municipio> listaMunicipios) {
+    this.listaMunicipios = listaMunicipios;
   }
 
   // CLASE MIEMBRO PARA PODER MOSTRAR EL CREDITO Y SU DIRECCION

@@ -23,13 +23,14 @@ public class MunicipioIMPL implements MunicipioDAO {
   public List<Municipio> buscarMunicipiosPorEstado(int idEstado) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Municipio> municipios;
-    String consulta = "select * from municipio where id_estado = " + idEstado + " order by nombre asc;";
+    String consulta = "SELECT * FROM municipio WHERE id_estado = " + idEstado + " ORDER BY nombre ASC;";
     try {
       municipios = sesion.createSQLQuery(consulta).addEntity(Municipio.class).list();
 
     } catch (HibernateException he) {
       municipios = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -40,14 +41,13 @@ public class MunicipioIMPL implements MunicipioDAO {
   public List<Municipio> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Municipio> municipios;
+    String consulta = "SELECT * FROM municipio ORDER BY nombre ASC;";
     try {
-      // LA CONSULTA NO ES ASI, ESTA ES UNA CONSULTA DE PRUEBA
-      municipios = sesion.createSQLQuery("select * from municipio where id_estado_estados = 9 order by nombre asc;").addEntity(Municipio.class).list();
-      // CONSULTA ORIGINAL
-      // municipios = sesion.createSQLQuery("select * from municipio order by nombre asc;").addEntity(Municipio.class).list();
+      municipios = sesion.createSQLQuery(consulta).addEntity(Municipio.class).list();
     } catch (HibernateException he) {
       municipios = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

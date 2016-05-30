@@ -57,7 +57,6 @@ public class DireccionIMPL implements DireccionDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       sesion.update(direccion);
       tx.commit();
@@ -67,11 +66,11 @@ public class DireccionIMPL implements DireccionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar la direccion");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
-
     return ok;
   }
 
@@ -95,7 +94,8 @@ public class DireccionIMPL implements DireccionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo eliminar la direccion");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

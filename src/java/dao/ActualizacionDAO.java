@@ -6,7 +6,6 @@
 package dao;
 
 import dto.Actualizacion;
-import java.util.Date;
 import java.util.List;
 
 /**

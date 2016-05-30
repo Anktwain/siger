@@ -30,19 +30,17 @@ public class ProductoIMPL implements ProductoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       sesion.save(producto);
       tx.commit();
       ok = true;
-      //log.info("Se insertó un nuevo usuaario");
     } catch (HibernateException he) {
       ok = false;
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
-      //         log.error(he.getMessage());
+      Logs.log.error("No se pudo insertar el producto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -59,7 +57,6 @@ public class ProductoIMPL implements ProductoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       sesion.update(producto);
       tx.commit();
@@ -69,7 +66,8 @@ public class ProductoIMPL implements ProductoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar el producto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -87,7 +85,6 @@ public class ProductoIMPL implements ProductoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       // Se colocará algo similar a esto: usuario.setPerfil(Perfiles.ELIMINADO);
       sesion.update(producto);
@@ -98,7 +95,8 @@ public class ProductoIMPL implements ProductoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo hacer borrado logico al producto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -115,11 +113,13 @@ public class ProductoIMPL implements ProductoDAO {
   public Producto buscar(int idProducto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Producto producto;
+    String consulta = "SELECT * FROM producto WHERE id_producto = " + idProducto + ";";
     try {
-      producto = (Producto) sesion.createSQLQuery("select * from producto where id_producto = " + idProducto + ";").addEntity(Producto.class).uniqueResult();
+      producto = (Producto) sesion.createSQLQuery(consulta).addEntity(Producto.class).uniqueResult();
     } catch (HibernateException he) {
       producto = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -130,11 +130,13 @@ public class ProductoIMPL implements ProductoDAO {
   public List<Producto> buscarProductosPorInstitucion(int idInstitucion) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Producto> productos = new ArrayList();
+    String consulta = "SELECT * FROM producto WHERE id_institucion = " + idInstitucion + ";";
     try {
-      productos = sesion.createSQLQuery("SELECT * FROM producto WHERE id_institucion = " + idInstitucion + ";").addEntity(Producto.class).list();
+      productos = sesion.createSQLQuery(consulta).addEntity(Producto.class).list();
     } catch (HibernateException he) {
       productos = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

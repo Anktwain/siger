@@ -15,7 +15,7 @@
         <div class="clearfix">
           <h:form id="datosCreditoForm">
             <h3 class="m-bottom-xs m-top-xs">
-                <p:outputLabel value="#{vistaCreditoBean.creditoActual.deudor.sujeto.nombreRazonSocial}" style="font-size: 28px; color: #{vistaCreditoBean.color}; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <p:outputLabel value="#{vistaCreditoBean.creditoActual.deudor.sujeto.nombreRazonSocial}" style="font-size: 28px; color: #{vistaCreditoBean.color}; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
             </h3>
             <div class="pull-left">
               <h4 class="m-bottom-xs m-top-xs">
@@ -189,7 +189,9 @@
         </div>
         <hr />
         <h:form id="barraDetalleCreditoForm">
-          <p:commandButton value="Ver gestiones anteriores" actionListener="#{gestionesSigerViejoBean.obtenerGestionesAnteriores(vistaCreditoBean.creditoActual.numeroCredito)}" oncomplete="PF('dialogoGestionesAnteriores').show();" update="gestionesAnterioresForm" />
+          <p:commandButton value="Ver gestiones anteriores" actionListener="#{sigerViejoBean.obtenerGestionesAnteriores(vistaCreditoBean.creditoActual.numeroCredito)}" oncomplete="PF('dialogoGestionesAnteriores').show();" update="gestionesAnterioresForm" />
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:commandButton value="Ver direcciones anteriores" actionListener="#{sigerViejoBean.obtenerDireccionesAnteriores(vistaCreditoBean.creditoActual.numeroCredito)}" oncomplete="PF('dialogoDireccionesAnteriores').show();" update="direccionesAnterioresForm" />
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:button value="Editar datos del deudor" outcome="deudores" disabled="true" />
           &nbsp;&nbsp;&nbsp;&nbsp;
@@ -240,7 +242,6 @@
                   <p:tab title="Direcciones">
                     <p:contextMenu for="tablaDireccionesDetalleCredito" style="width:200px;">
                       <p:menuitem value="Editar" icon="ui-icon-wrench" actionListener="#{vistaCreditoBean.prepararDireccion()}" oncomplete="PF('dialogoEditarDireccion').show();" update="editarDireccionForm" />
-                      <p:menuitem value="Eliminar" icon="ui-icon-close" oncomplete="PF('dialogoEliminarDireccion').show();" />
                       <p:menuitem value="Generar carta (visita)" icon="ui-icon-document" oncomplete="PF('dialogoImpresionVisitas').show();" />
                     </p:contextMenu>
                     <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" selection="#{vistaCreditoBean.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idDireccion}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
@@ -497,6 +498,28 @@
       <div align="center">
         <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('dialogoGestionesAnteriores').hide();" />
       </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA VER LAS DIRECCIONES ANTERIORES -->
+  <p:dialog id="dlgDireccionesAnteriores" widgetVar="dialogoDireccionesAnteriores" modal="true" resizable="false" header="Direcciones del sistema anterior">
+    <h:form id="direccionesAnterioresForm">
+      <p:dataTable id="tablaDireccionesViejas" var="d" value="#{sigerViejoBean.listaDirecciones}" emptyMessage="No existen direcciones para este credito en el sistema anterior." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width: 950px;">
+        <p:column headerText="Calle y numero" style="width:250px;" > 
+          <h:outputText value="#{d.calleNum}"/>
+        </p:column>
+        <p:column headerText="Colonia" style="width:200px;" > 
+          <h:outputText value="#{d.colonia}"/>
+        </p:column>
+        <p:column headerText="Municipio" style="width:200px;" > 
+          <h:outputText value="#{d.municipio}"/>
+        </p:column>
+        <p:column headerText="Estado" style="width:200px;" > 
+          <h:outputText value="#{d.estado}"/>
+        </p:column>
+        <p:column headerText="C.P." style="width:80px;" > 
+          <h:outputText value="#{d.cp}"/>
+        </p:column>
+      </p:dataTable>
     </h:form>
   </p:dialog>
   <!-- DIALOGO PARA AGREGAR UN NUEVO TELEFONO -->

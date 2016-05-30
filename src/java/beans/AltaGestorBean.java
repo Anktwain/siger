@@ -9,8 +9,6 @@ import impl.UsuarioIMPL;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.application.FacesMessage;
@@ -68,24 +66,19 @@ public class AltaGestorBean implements Serializable {
   public void insertar() throws IOException {
     // Valida correo
     if (!validarCorreo()) {
-      FacesContext context = FacesContext.getCurrentInstance();
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
               "El formato de correo electrónico no es válido."));
     } else if (!passwordsCoinciden()) {
-      FacesContext context = FacesContext.getCurrentInstance();
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
               "Las contraseñas no coinciden, vuelva a escribirlas."));
     } else if (!nombreLoginEsUnico()) {
-      FacesContext context = FacesContext.getCurrentInstance();
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
               "El nombre de usuario ya existe, elija otro."));
     } else if (!correoEsUnico()) {
-      FacesContext context = FacesContext.getCurrentInstance();
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
               "La dirección de correo electrónico ya se encuentra registrada."));
     } else if (!despachoExiste()) {
-      FacesContext context = FacesContext.getCurrentInstance();
-      context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
+      FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo agregar el usuario",
               "La clave de despacho proporcionada no es valida."));
     } else {
       insertarUsuario();

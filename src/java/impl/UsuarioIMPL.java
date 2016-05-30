@@ -44,8 +44,8 @@ public class UsuarioIMPL implements UsuarioDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
-      //         log.error(he.getMessage());
+      Logs.log.error("No se pudo insertar el usuario");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -72,7 +72,8 @@ public class UsuarioIMPL implements UsuarioDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar el usuario");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -100,7 +101,8 @@ public class UsuarioIMPL implements UsuarioDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo hacer borrado logico al usuario");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -116,7 +118,6 @@ public class UsuarioIMPL implements UsuarioDAO {
   @Override
   public Usuario buscar(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Usuario usuario;
     try {
       usuario = (Usuario) sesion.get(Usuario.class, idUsuario);
@@ -128,7 +129,8 @@ public class UsuarioIMPL implements UsuarioDAO {
       }
     } catch (HibernateException he) {
       usuario = null;
-      he.printStackTrace();
+      Logs.log.error("No se pudo buscar el usuario");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -146,13 +148,14 @@ public class UsuarioIMPL implements UsuarioDAO {
   @Override
   public Usuario buscar(String nombreLogin, String password) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Usuario usuario;
+      String consulta = "SELECT * FROM usuario u WHERE u.perfil != " + Perfiles.ELIMINADO + " AND u.perfil != " + Perfiles.GESTOR_NO_CONFIRMADO + " AND u.nombre_login = '" + nombreLogin + "' AND u.password = '" + password + "';";
     try {
-      usuario = (Usuario) sesion.createSQLQuery("SELECT * FROM usuario u WHERE u.perfil != " + Perfiles.ELIMINADO + " and u.perfil != " + Perfiles.GESTOR_NO_CONFIRMADO + " and u.nombre_login = '" + nombreLogin + "' and u.password = '" + password + "';").addEntity(Usuario.class).uniqueResult();
+      usuario = (Usuario) sesion.createSQLQuery(consulta).addEntity(Usuario.class).uniqueResult();
     } catch (HibernateException he) {
       usuario = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -178,7 +181,8 @@ public class UsuarioIMPL implements UsuarioDAO {
               + correo + "'").uniqueResult();
     } catch (HibernateException he) {
       usuario = null;
-      he.printStackTrace();
+      Logs.log.error("No s epudo buscar el usuario por correo");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -202,7 +206,8 @@ public class UsuarioIMPL implements UsuarioDAO {
               + " and u.perfil != " + Perfiles.GESTOR_NO_CONFIRMADO).list();
     } catch (HibernateException he) {
       listaUsuario = null;
-      he.printStackTrace();
+      Logs.log.error("no se pudieron buscar todos los usuarios");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -219,11 +224,13 @@ public class UsuarioIMPL implements UsuarioDAO {
   public List<Usuario> buscarUsuariosNoConfirmados(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Usuario> listaUsuarioNoConfirmados;
+    String consulta = "SELECT * FROM usuario WHERE perfil = " + Perfiles.GESTOR_NO_CONFIRMADO + " AND id_despacho = " + idDespacho + ";";
     try {
-      listaUsuarioNoConfirmados = sesion.createSQLQuery("SELECT * FROM usuario WHERE perfil = " + Perfiles.GESTOR_NO_CONFIRMADO + " AND id_despacho = " + idDespacho + ";").addEntity(Usuario.class).list();
+      listaUsuarioNoConfirmados = sesion.createSQLQuery(consulta).addEntity(Usuario.class).list();
     } catch (HibernateException he) {
       listaUsuarioNoConfirmados = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -246,7 +253,8 @@ public class UsuarioIMPL implements UsuarioDAO {
               + " and u.nombreLogin = '" + nombreLogin + "'").uniqueResult();
     } catch (HibernateException he) {
       usuario = null;
-      he.printStackTrace();
+      Logs.log.error("No se pudo buscar el nombre de login");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -269,7 +277,8 @@ public class UsuarioIMPL implements UsuarioDAO {
               + " and u.correo = '" + correo + "'").uniqueResult();
     } catch (HibernateException he) {
       usuario = null;
-      he.printStackTrace();
+      Logs.log.error("No se pudo buscar correo");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -280,11 +289,13 @@ public class UsuarioIMPL implements UsuarioDAO {
   public Usuario buscarUsuarioPorIdGestor(int idGestor) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Usuario usuario;
+    String consulta = "SELECT * FROM usuario WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ");";
     try {
-      usuario = (Usuario) sesion.createSQLQuery("SELECT * FROM usuario WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = " + idGestor + ");").addEntity(Usuario.class).uniqueResult();
+      usuario = (Usuario) sesion.createSQLQuery(consulta).addEntity(Usuario.class).uniqueResult();
     } catch (HibernateException he) {
       usuario = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

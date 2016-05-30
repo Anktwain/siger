@@ -730,7 +730,7 @@
                   <p:ajax event="rowSelect" listener="#{vistaDeudores.onRowDireccionSelect}" update="frmDetalleDireccion"/>
                   <p:column headerText="Direcci&oacute;n" class="no-margin no-padding">
                     <a href="#verDireccion" data-toggle="tab">
-                      <h:outputText id="direccion" value="#{direccion.calle}, #{direccion.colonia}, #{direccion.municipio}, #{direccion.estadoRepublica}"/>
+                      <h:outputText id="direccion" value="#{direccion.calle}, #{direccion.exterior}, #{direccion.interior} #{direccion.colonia.nombre}, #{direccion.municipio.nombre}, #{direccion.estadoRepublica.nombre}"/>
                     </a>
                   </p:column>
                 </p:dataTable>
@@ -749,17 +749,21 @@
               <h:form id="frmDetalleDireccion">
                 <p:panelGrid columns="2">
                   <h:outputText value="Estado: " />
-                  <p:selectOneMenu id="cboxEdo" value="#{vistaDeudores.direccionlActual.estadoRepublica}" style="width: 100%" filter="true">
+                  <p:selectOneMenu id="cboxEdo" value="#{vistaDeudores.direccionlActual.estadoRepublica.idEstado}" style="width: 100%" filter="true">
                     <p:ajax listener="#{vistaDeudores.direccionBean.listarMunicipiosPorEstado()}"/>
                     <f:selectItem itemLabel="Seleccione un estado" itemValue="" class="chzn-select no-padding" />
                     <f:selectItems value="#{vistaDeudores.direccionBean.estados}" var="estado" itemLabel="#{estado}" itemValue="#{estado.idEstado}" />
                   </p:selectOneMenu>
                   <h:outputText value="Municipio/Delegaci&oacute;n: " />
-                  <p:inputText value="#{vistaDeudores.direccionlActual.municipio}" class="no-padding"/>
+                  <p:inputText value="#{vistaDeudores.direccionlActual.municipio.nombre}" class="no-padding"/>
                   <h:outputText value="Colonia: " />
-                  <p:inputText value="#{vistaDeudores.direccionlActual.colonia}" class="no-padding"/>
+                  <p:inputText value="#{vistaDeudores.direccionlActual.colonia.nombre}" class="no-padding"/>
                   <h:outputText value="Calle: " />
                   <p:inputText value="#{vistaDeudores.direccionlActual.calle}" class="no-padding"/>
+                  <h:outputText value="Numero exterior: " />
+                  <p:inputText value="#{vistaDeudores.direccionlActual.exterior}" class="no-padding"/>
+                  <h:outputText value="Numero interior: " />
+                  <p:inputText value="#{vistaDeudores.direccionlActual.interior}" class="no-padding"/>
                   <h:outputText value="C.P.: " />
                   <p:inputText value="#{vistaDeudores.direccionlActual.colonia.codigoPostal}" class="no-padding"/>
                 </p:panelGrid>

@@ -78,6 +78,49 @@
                 </p:column>
               </p:dataTable>
             </p:tab>
+            <p:tab title="Busqueda por area geografica">
+              Estado:
+              &nbsp;&nbsp;
+              <p:selectOneMenu value="#{busquedaBean.estadoSeleccionado.idEstado}" style="width: 200px;">
+                <f:selectItem itemLabel="" itemValue="0" />
+                <f:selectItems value="#{busquedaBean.listaEstados}" var="e" itemLabel="#{e.nombre}" itemValue="#{e.idEstado}" />
+                <p:ajax listener="#{busquedaBean.obtenerMunicipios(busquedaBean.estadoSeleccionado)}" update="comboboxMunicipiosBusqueda" />
+              </p:selectOneMenu>
+              <br />
+              <br />
+              Municipio:
+              &nbsp;&nbsp;
+              <p:selectOneMenu id="comboboxMunicipiosBusqueda" value="#{busquedaBean.municipioSeleccionado.idMunicipio}" filter="true" filterMatchMode="contains" style="width: 200px;">
+                <f:selectItem itemLabel="" itemValue="0" />
+                <f:selectItems value="#{busquedaBean.listaMunicipios}" var="m" itemLabel="#{m.nombre}" itemValue="#{m.idMunicipio}"/>
+              </p:selectOneMenu>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorAreaGeografica()}" update=":growl, busquedaPorArea" />
+              <br />
+              <br />
+              <p:dataTable id="busquedaPorArea" var="c" value="#{busquedaBean.listaCreditos}" emptyMessage="No existen creditos en la zona seleccionada." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:column headerText="Credito" style="width:300px;">
+                  <h:outputText value="#{c.numeroCredito}" />
+                  <br />
+                  <h:outputText value="#{c.nombreDeudor}" />
+                </p:column>
+                <p:column headerText="Institucion" style="width:100px;">
+                  <h:outputText value="#{c.institucion}" />
+                </p:column>
+                <p:column headerText="Gestor" style="width:100px;">
+                  <h:outputText value="#{c.gestorActual}" />
+                </p:column>
+                <p:column headerText="Calle y numero" style="width:200px;">
+                  <h:outputText value="#{c.calleNumero}" />
+                </p:column>
+                <p:column headerText="Colonia y C.P." style="width:200px;">
+                  <h:outputText value="#{c.colonia} (#{c.cp})" />
+                </p:column>
+                <p:column headerText="Municipio y estado" style="width:200px;">
+                  <h:outputText value="#{c.municipio}, #{c.estado}" />
+                </p:column>
+              </p:dataTable>
+            </p:tab>
             <p:tab title="Busqueda por saldo vencido">
               Introduzca el rango en el que se buscara
               <p:inputText value="#{busquedaBean.saldoInferior}" type="number" style="width: 100px;" /> &lt; Saldo vencido &lt; <p:inputText value="#{busquedaBean.saldoSuperior}" type="number" style="width: 100px;" />

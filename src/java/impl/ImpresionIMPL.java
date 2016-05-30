@@ -37,7 +37,8 @@ public class ImpresionIMPL implements ImpresionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo insertar la impresion");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -110,10 +111,10 @@ public class ImpresionIMPL implements ImpresionDAO {
   }
 
   @Override
-  public Number calcularVisitasDomiciliariasPorGestor(int idDespacho, int idGestor) {
+  public Number calcularVisitasDomiciliariasPorGestor(int idDespacho, int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number visitas;
-    String consulta = "SELECT COUNT(*) FROM impresion WHERE id_impresion NOT IN (SELECT id_impresion FROM detalle_visita) AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + " AND id_gestor = " + idGestor + ") AND tipo_impresion = " + Impresiones.VISITA_DOMICILIARIA + ";";
+    String consulta = "SELECT COUNT(*) FROM impresion WHERE id_impresion NOT IN (SELECT id_impresion FROM detalle_visita) AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + " AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ")) AND tipo_impresion = " + Impresiones.VISITA_DOMICILIARIA + ";";
     try {
       visitas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {

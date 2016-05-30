@@ -10,6 +10,7 @@ import dto.Calificacion;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import util.HibernateUtil;
+import util.log.Logs;
 
 /**
  *
@@ -26,7 +27,8 @@ public class CalificacionIMPL implements CalificacionDAO {
       calif = (Calificacion) sesion.createSQLQuery(consulta).addEntity(Calificacion.class).uniqueResult();
     } catch (HibernateException he) {
       calif = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

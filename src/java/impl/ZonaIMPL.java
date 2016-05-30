@@ -31,8 +31,8 @@ public class ZonaIMPL implements ZonaDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
-      //         log.error(he.getMessage());
+      Logs.log.error("No se pudo insertar zona");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -98,7 +98,8 @@ public class ZonaIMPL implements ZonaDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo eliminar zona");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

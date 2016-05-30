@@ -50,5 +50,13 @@ public interface PagoDAO {
   public List<Pago> buscarPagosQuincenActual();
   
   public List<Pago> buscarPagosQuincenaActualGestor(int idGestor);
+  
+  public float calcularMontoAprobadoGestorHoy(int idUsuario);
+  
+  public float calcularSaldoPendienteGestor(int idUsuario);
 
+  public double calcularRecuperacionGestor(int idUsuario);
+  
+  public List<Pago> pagosPorGestor(int idGestor, String fechaInicio, String fechaFin);
+  
 }

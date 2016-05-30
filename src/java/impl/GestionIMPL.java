@@ -43,7 +43,8 @@ public class GestionIMPL implements GestionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo insertar la gestion");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

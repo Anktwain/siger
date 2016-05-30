@@ -29,7 +29,7 @@ public interface ImpresionDAO {
   
   public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho);
   
-  public Number calcularVisitasDomiciliariasPorGestor(int idDespacho, int idGestor);
+  public Number calcularVisitasDomiciliariasPorGestor(int idDespacho, int idUsuario);
   
   public Number calcularVisitasPorEstado(int idDespacho, int idEstado);
   

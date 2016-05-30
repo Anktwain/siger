@@ -322,7 +322,7 @@ public class VistaCreditoBean implements Serializable {
     // OBTENEMOS LA LISTA DE CONTACTOS DEL DEUDOR
     listaContactos = contactoDao.buscarContactoPorSujeto(idSujeto);
     // OBTENEMOS EL HISTORIAL DEL CREDITO
-    historial = historialDao.buscarHistorialPorIdCredito(creditoActual.getIdCredito());
+    historial = historialDao.buscarPorCredito(creditoActual.getIdCredito());
     habilitaHistorial = !historial.isEmpty();
     // OBTENEMOS LA LISTA DE ACTUALIZACIONES DEL CREDITO
     actualizaciones = facDao.buscarPorCredito(creditoActual.getIdCredito());
@@ -406,11 +406,9 @@ public class VistaCreditoBean implements Serializable {
       // ESCRIBIMOS EN EL HISTORIAL LA REASIGNACION
       Historial h = new Historial();
       h.setCredito(creditoActual);
-      Date fecha = new Date();
-      h.setFecha(fecha);
-      String evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito al gestor: " + nuevoGestor.getUsuario().getNombreLogin();
-      h.setEvento(evento);
-      ok = ok & (historialDao.insertarHistorial(creditoActual.getIdCredito(), evento));
+      h.setFecha(new Date());
+      h.setEvento("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito al gestor: " + nuevoGestor.getUsuario().getNombreLogin());
+      ok = ok & (historialDao.insertar(h));
       if (ok) {
         // GESTION AUTOMATICA 2
         GestionAutomatica.generarGestionAutomatica("15CTARE", creditoActual, indexBean.getUsuario(), "REASIGNACION DE CREDITO NO. " + creditoActual.getNumeroCredito());
@@ -486,11 +484,9 @@ public class VistaCreditoBean implements Serializable {
   // METODO QUE MANDA UN CREDITO A DEVOLUCION
   public void devolverCredito() {
     boolean ok = false;
-    String evento;
     if ((conceptoSeleccionado.getIdConceptoDevolucion() != 0) && (motivoSeleccionado.getIdMotivoDevolucion() != 0)) {
       Devolucion d = new Devolucion();
-      Date fecha = new Date();
-      d.setFecha(fecha);
+      d.setFecha(new Date());
       conceptoSeleccionado = conceptoDevolucionDao.buscarPorId(conceptoSeleccionado.getIdConceptoDevolucion());
       d.setConceptoDevolucion(conceptoSeleccionado);
       motivoSeleccionado = motivoDevolucionDao.buscarPorId(motivoSeleccionado.getIdMotivoDevolucion());
@@ -501,9 +497,13 @@ public class VistaCreditoBean implements Serializable {
       if (indexBean.getUsuario().getPerfil() != Perfiles.GESTOR) {
         d.setEstatus(Devoluciones.DEVUELTO);
         d.setRevisor(indexBean.getUsuario().getNombreLogin());
-        evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + ", devolvio el credito";
+        String evento = "El administrador: " + indexBean.getUsuario().getNombreLogin() + ", devolvio el credito";
         Logs.log.info(evento);
-        ok = historialDao.insertarHistorial(creditoActual.getIdCredito(), evento);
+        Historial h = new Historial();
+        h.setCredito(creditoActual);
+        h.setEvento(evento);
+        h.setFecha(new Date());
+        ok = historialDao.insertar(h);
       } else {
         d.setEstatus(Devoluciones.PENDIENTE);
       }

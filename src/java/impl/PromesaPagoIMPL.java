@@ -7,10 +7,7 @@ package impl;
 
 import dao.PromesaPagoDAO;
 import dto.PromesaPago;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -39,8 +36,8 @@ public class PromesaPagoIMPL implements PromesaPagoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
-      //         log.error(he.getMessage());
+      Logs.log.error("No se pudo insertar la promesa de pago");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

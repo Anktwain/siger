@@ -41,8 +41,8 @@ public class GestorIMPL implements GestorDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
-      //         log.error(he.getMessage());
+      Logs.log.error("No se pudo insertar el gestor");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

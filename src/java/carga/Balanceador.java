@@ -1,7 +1,7 @@
 package carga;
 
-import dto.Asignacion;
-import dto.Fila;
+import dto.carga.Asignacion;
+import dto.carga.Fila;
 import java.util.List;
 
 /**

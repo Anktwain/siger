@@ -8,7 +8,6 @@ package impl;
 import dao.ActualizacionDAO;
 import dto.Actualizacion;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -68,7 +67,8 @@ public class ActualizacionIMPL implements ActualizacionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar la actualizacion");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

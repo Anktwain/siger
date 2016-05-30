@@ -7,9 +7,11 @@ package beans;
 
 import dao.CreditoDAO;
 import dao.GestionDAO;
+import dao.ImpresionDAO;
 import dao.PagoDAO;
 import impl.CreditoIMPL;
 import impl.GestionIMPL;
+import impl.ImpresionIMPL;
 import impl.PagoIMPL;
 import java.io.Serializable;
 import javax.el.ELContext;
@@ -34,12 +36,14 @@ public class ProgresoGestorBean implements Serializable{
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
   private final PagoDAO pagoDao;
+  private final ImpresionDAO impresionDao;
 
   // CONSTRUCTOR
   public ProgresoGestorBean() {
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     pagoDao = new PagoIMPL();
+    impresionDao = new ImpresionIMPL();
   }
 
   public String calcularCuentasActivas() {
@@ -47,26 +51,23 @@ public class ProgresoGestorBean implements Serializable{
   }
 
   public String calcularVisitasPorGestor() {
-    //return gestionDao.calcularVisitasDomiciliariasPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
-    return "";
+    return impresionDao.calcularVisitasDomiciliariasPorGestor(indexBean.getUsuario().getDespacho().getIdDespacho(), indexBean.getUsuario().getIdUsuario()).toString();
   }
 
   public String calcularPagosPorAprobarPorGestor() {
-    return "";
-    //return pagoDao.calcularPagosPorAprobarGestor(indexBean.getUsuario().getIdUsuario()).toString();
+    return Float.toString(pagoDao.calcularSaldoPendienteGestor(indexBean.getUsuario().getIdUsuario()));
   }
 
   public String calcularRecuperacionPorGestor() {
-    return "";
-    //return pagoDao.calcularRecuperacionGestor(indexBean.getUsuario().getIdUsuario()).toString();
+    return String.format("%,2.6f", pagoDao.calcularRecuperacionGestor(indexBean.getUsuario().getIdUsuario())) + " %";
   }
   
   public String gestionesHoy(){
-    return "";
+    return gestionDao.calcularGestionesHoyPorGestor(indexBean.getUsuario().getIdUsuario()).toString();
   }
   
   public String saldoAprobadoHoy(){
-    return "";
+    return Float.toString(pagoDao.calcularMontoAprobadoGestorHoy(indexBean.getUsuario().getIdUsuario()));
   }
   
 }

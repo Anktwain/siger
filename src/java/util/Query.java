@@ -8,6 +8,7 @@ package util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import util.log.Logs;
 
 
 /**
@@ -24,7 +25,8 @@ public class Query {
       consulta.executeUpdate(query);
       return true;
     } catch (Exception e) {
-      e.printStackTrace();
+      Logs.log.error("No se ejecuto la consulta");
+      Logs.log.error(e.getMessage());
       return false;
     }
   }

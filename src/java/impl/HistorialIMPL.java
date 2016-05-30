@@ -5,7 +5,6 @@
  */
 package impl;
 
-import dao.CreditoDAO;
 import dao.HistorialDAO;
 import dto.Historial;
 import java.text.SimpleDateFormat;
@@ -25,36 +24,30 @@ import util.log.Logs;
 public class HistorialIMPL implements HistorialDAO {
 
   @Override
-  public boolean insertarHistorial(int idCredito, String evento) {
+  public boolean insertar(Historial historial) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
-      CreditoDAO creditoDao = new CreditoIMPL();
-      Date fecha = new Date();
-      Historial h = new Historial();
-      h.setCredito(creditoDao.buscarCreditoPorId(idCredito));
-      h.setEvento(evento);
-      h.setFecha(fecha);
-      sesion.save(h);
+      sesion.save(historial);
       tx.commit();
       ok = true;
     } catch (HibernateException he) {
       ok = false;
+      historial = null;
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo insertar historial");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
-
     return ok;
   }
 
   @Override
-  public List<Historial> buscarHistorialPorIdCredito(int idCredito) {
+  public List<Historial> buscarPorCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Historial> historial = new ArrayList();
     try {

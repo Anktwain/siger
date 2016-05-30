@@ -1,6 +1,7 @@
-package dto;
+package dto.carga;
 
 import dao.GestorDAO;
+import dto.Gestor;
 import dto.Gestor;
 import impl.GestorIMPL;
 import java.io.Serializable;

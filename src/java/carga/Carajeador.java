@@ -8,7 +8,7 @@ import dto.Credito;
 import dto.Despacho;
 import dto.Deudor;
 import dto.Email;
-import dto.Fila;
+import dto.carga.Fila;
 import dto.Gestor;
 import dto.Institucion;
 import dto.Linea;
@@ -360,7 +360,8 @@ public class Carajeador {
         // CIERRE DEL ARCHIVO
         fileWriter.close();
       } catch (IOException ioe) {
-        ioe.printStackTrace();
+        Logs.log.error("No se logro escribir en el archivo de texto");
+        Logs.log.error(ioe.getMessage());
       }
 
     } else {
@@ -378,7 +379,8 @@ public class Carajeador {
         printWriter.close();
         bufferedWriter.close();
       } catch (IOException ioe) {
-        ioe.printStackTrace();
+        Logs.log.error("No se logro crear el archivo de texto");
+        Logs.log.error(ioe.getMessage());
       }
     }
   }

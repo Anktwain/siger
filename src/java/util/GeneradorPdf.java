@@ -23,6 +23,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import util.constantes.Directorios;
 import util.constantes.TextoPdfs;
+import util.log.Logs;
 
 /**
  *
@@ -183,7 +184,8 @@ public class GeneradorPdf {
       archivo.close();
       return rutaArchivo;
     } catch (IOException | DocumentException e) {
-      e.printStackTrace();
+      Logs.log.error("No se creo el documento PDF");
+      Logs.log.error(e.getMessage());
       return "";
     }
   }

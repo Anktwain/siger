@@ -1,55 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://10.0.0.26:3306/sigerbd?zeroDateTimeBehavior=convertToNull</property>
-    <property name="hibernate.connection.username">cofradia</property>
-    <property name="hibernate.connection.password">cofradiaDB</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sigerbd?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.username">root</property>
+    <property name="hibernate.connection.password">root</property>
+    <property name="connection.pool_size">10</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="hibernate.enable_lazy_load_no_trans">true</property>
     <mapping resource="mapeo/Auto.hbm.xml"/>
     <mapping resource="mapeo/Actualizacion.hbm.xml"/>
+    <mapping resource="mapeo/ComprobantePago.hbm.xml"/>
+    <mapping resource="mapeo/DescripcionGestion.hbm.xml"/>
+    <mapping resource="mapeo/Quincena.hbm.xml"/>
+    <mapping resource="mapeo/Historial.hbm.xml"/>
+    <mapping resource="mapeo/Direccion.hbm.xml"/>
+    <mapping resource="mapeo/Region.hbm.xml"/>
+    <mapping resource="mapeo/Municipio.hbm.xml"/>
+    <mapping resource="mapeo/Campana.hbm.xml"/>
+    <mapping resource="mapeo/ConceptoDevolucion.hbm.xml"/>
+    <mapping resource="mapeo/Telefono.hbm.xml"/>
+    <mapping resource="mapeo/Producto.hbm.xml"/>
+    <mapping resource="mapeo/EstadoRepublica.hbm.xml"/>
+    <mapping resource="mapeo/Subproducto.hbm.xml"/>
+    <mapping resource="mapeo/Administrativo.hbm.xml"/>
+    <mapping resource="mapeo/Marcaje.hbm.xml"/>
+    <mapping resource="mapeo/AsuntoGestion.hbm.xml"/>
+    <mapping resource="mapeo/MotivoDevolucion.hbm.xml"/>
+    <mapping resource="mapeo/QuienGestion.hbm.xml"/>
+    <mapping resource="mapeo/Usuario.hbm.xml"/>
+    <mapping resource="mapeo/Credito.hbm.xml"/>
+    <mapping resource="mapeo/Pago.hbm.xml"/>
     <mapping resource="mapeo/DondeGestion.hbm.xml"/>
     <mapping resource="mapeo/Gestion.hbm.xml"/>
+    <mapping resource="mapeo/BloqueVisita.hbm.xml"/>
     <mapping resource="mapeo/Gestor.hbm.xml"/>
-    <mapping resource="mapeo/DescripcionGestion.hbm.xml"/>
     <mapping resource="mapeo/TipoAsuntoGestion.hbm.xml"/>
     <mapping resource="mapeo/Zona.hbm.xml"/>
     <mapping resource="mapeo/Remesa.hbm.xml"/>
     <mapping resource="mapeo/Despacho.hbm.xml"/>
-    <mapping resource="mapeo/Quincena.hbm.xml"/>
-    <mapping resource="mapeo/Historial.hbm.xml"/>
     <mapping resource="mapeo/EstatusInformativo.hbm.xml"/>
     <mapping resource="mapeo/TipoGestion.hbm.xml"/>
     <mapping resource="mapeo/PromesaPago.hbm.xml"/>
-    <mapping resource="mapeo/Direccion.hbm.xml"/>
     <mapping resource="mapeo/Linea.hbm.xml"/>
-    <mapping resource="mapeo/Region.hbm.xml"/>
-    <mapping resource="mapeo/Municipio.hbm.xml"/>
     <mapping resource="mapeo/TipoQuienGestion.hbm.xml"/>
-    <mapping resource="mapeo/Campana.hbm.xml"/>
-    <mapping resource="mapeo/ConceptoDevolucion.hbm.xml"/>
     <mapping resource="mapeo/Deudor.hbm.xml"/>
-    <mapping resource="mapeo/Telefono.hbm.xml"/>
     <mapping resource="mapeo/Contacto.hbm.xml"/>
-    <mapping resource="mapeo/Producto.hbm.xml"/>
+    <mapping resource="mapeo/Calificacion.hbm.xml"/>
     <mapping resource="mapeo/Institucion.hbm.xml"/>
-    <mapping resource="mapeo/EstadoRepublica.hbm.xml"/>
-    <mapping resource="mapeo/Subproducto.hbm.xml"/>
     <mapping resource="mapeo/Email.hbm.xml"/>
-    <mapping resource="mapeo/Administrativo.hbm.xml"/>
-    <mapping resource="mapeo/Colonia.hbm.xml"/>
     <mapping resource="mapeo/Sujeto.hbm.xml"/>
-    <mapping resource="mapeo/AsuntoGestion.hbm.xml"/>
-    <mapping resource="mapeo/MotivoDevolucion.hbm.xml"/>
+    <mapping resource="mapeo/Colonia.hbm.xml"/>
     <mapping resource="mapeo/Fac.hbm.xml"/>
-    <mapping resource="mapeo/QuienGestion.hbm.xml"/>
     <mapping resource="mapeo/ConvenioPago.hbm.xml"/>
-    <mapping resource="mapeo/Usuario.hbm.xml"/>
-    <mapping resource="mapeo/Credito.hbm.xml"/>
-    <mapping resource="mapeo/Pago.hbm.xml"/>
+    <mapping resource="mapeo/DetalleVisita.hbm.xml"/>
     <mapping resource="mapeo/Devolucion.hbm.xml"/>
+    <mapping resource="mapeo/Impresion.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

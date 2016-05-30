@@ -68,6 +68,7 @@ public class EstatusInformativoIMPL implements EstatusInformativoDAO {
       ei = (EstatusInformativo) sesion.createSQLQuery(consulta).addEntity(EstatusInformativo.class).uniqueResult();
     } catch (HibernateException he) {
       ei = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

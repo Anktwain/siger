@@ -8,10 +8,12 @@ package beans;
 import dao.DevolucionDAO;
 import dao.HistorialDAO;
 import dto.Devolucion;
+import dto.Historial;
 import impl.DevolucionIMPL;
 import impl.HistorialIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
@@ -68,8 +70,11 @@ public class DevolucionBean implements Serializable {
         lista.get(i).setEstatus(Devoluciones.DEVUELTO);
         String quien = indexBean.getUsuario().getNombreLogin();
         lista.get(i).setRevisor(quien);
-        String evento = "El administrador: " + admin + ", aprobo la devolucion del credito";
-        ok = devolucionDao.editar(lista.get(i)) && historialDao.insertarHistorial(lista.get(i).getCredito().getIdCredito(), evento);
+        Historial h = new Historial();
+        h.setCredito(lista.get(i).getCredito());
+        h.setEvento("El administrador: " + admin + ", aprobo la devolucion del credito");
+        h.setFecha(new Date());
+        ok = devolucionDao.editar(lista.get(i)) && historialDao.insertar(h);
       }
       if (ok) {
         obtenerListas();
@@ -89,8 +94,11 @@ public class DevolucionBean implements Serializable {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
         Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getCredito().getNumeroCredito());
-        String evento = "El administrador: " + admin + ", rechazo la devolucion del credito";
-        ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
+        Historial h = new Historial();
+        h.setCredito(devolucion.getCredito());
+        h.setEvento("El administrador: " + admin + ", rechazo la devolucion del credito");
+        h.setFecha(new Date());
+        ok = devolucionDao.eliminar(devolucion) && historialDao.insertar(h);
       }
       if (ok) {
         obtenerListas();
@@ -112,8 +120,11 @@ public class DevolucionBean implements Serializable {
         Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(lista.get(i).getCredito().getNumeroCredito());
         devolucion.setEstatus(Devoluciones.ESPERA_CONSERVACION);
         devolucion.setSolicitante(indexBean.getUsuario().getNombreLogin());
-        String evento = "El administrador: " + admin + ", solicito la conservacion del credito";
-        ok = devolucionDao.editar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
+        Historial h = new Historial();
+        h.setCredito(devolucion.getCredito());
+        h.setEvento("El administrador: " + admin + ", solicito la conservacion del credito");
+        h.setFecha(new Date());
+        ok = devolucionDao.editar(devolucion) && historialDao.insertar(h);
       }
       if (ok) {
         obtenerListas();
@@ -133,8 +144,11 @@ public class DevolucionBean implements Serializable {
       boolean ok = true;
       for (int i = 0; i < tam; i++) {
         Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(devolucionesSeleccionadas.get(i).getCredito().getNumeroCredito());
-        String evento = "El administrador: " + admin + ", reactivo el credito";
-        ok = devolucionDao.eliminar(devolucion) && historialDao.insertarHistorial(devolucion.getCredito().getIdCredito(), evento);
+        Historial h = new Historial();
+        h.setCredito(devolucion.getCredito());
+        h.setEvento("El administrador: " + admin + ", reactivo el credito");
+        h.setFecha(new Date());
+        ok = devolucionDao.eliminar(devolucion) && historialDao.insertar(h);
       }
       if (ok) {
         obtenerListas();

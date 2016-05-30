@@ -83,7 +83,8 @@ public class DevolucionIMPL implements DevolucionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo insertar la devolucion");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -104,7 +105,8 @@ public class DevolucionIMPL implements DevolucionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar la devolucion");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -125,7 +127,8 @@ public class DevolucionIMPL implements DevolucionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo eliminar la devolucion");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -136,11 +139,13 @@ public class DevolucionIMPL implements DevolucionDAO {
   public Devolucion buscarDevolucionPorNumeroCredito(String numeroCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Devolucion dev;
+    String consulta = "SELECT * FROM devolucion WHERE id_credito = (SELECT id_credito FROM credito WHERE numero_credito = '" + numeroCredito + "') AND estatus = " + Devoluciones.DEVUELTO + ";";
     try {
-      dev = (Devolucion) sesion.createSQLQuery("SELECT * FROM devolucion WHERE id_credito = (SELECT id_credito FROM credito WHERE numero_credito = '" + numeroCredito + "') AND estatus = " + Devoluciones.DEVUELTO + ";").addEntity(Devolucion.class).uniqueResult();
+      dev = (Devolucion) sesion.createSQLQuery(consulta).addEntity(Devolucion.class).uniqueResult();
     } catch (HibernateException he) {
       dev = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

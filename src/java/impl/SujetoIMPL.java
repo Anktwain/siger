@@ -68,7 +68,8 @@ public class SujetoIMPL implements SujetoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar el sujeto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -98,7 +99,8 @@ public class SujetoIMPL implements SujetoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo hacer borrado logico del sujeto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -127,7 +129,8 @@ public class SujetoIMPL implements SujetoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo eliminar el sujeto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -144,8 +147,8 @@ public class SujetoIMPL implements SujetoDAO {
   @Override
   public Sujeto buscar(int idSujeto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Sujeto sujeto;
+    String consulta = "SELECT * FROM sujeto WHERE id_sujeto = " + Integer.toString(idSujeto) + ";";
     /*
      try {
      sujeto = (Sujeto) sesion.get(Sujeto.class, idSujeto);
@@ -164,10 +167,11 @@ public class SujetoIMPL implements SujetoDAO {
      return sujeto;
      */
     try {
-      sujeto = (Sujeto) sesion.createSQLQuery("select * from sujeto where id_sujeto = " + Integer.toString(idSujeto) + ";").addEntity(Sujeto.class).uniqueResult();
+      sujeto = (Sujeto) sesion.createSQLQuery(consulta).addEntity(Sujeto.class).uniqueResult();
     } catch (HibernateException he) {
       sujeto = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -182,14 +186,14 @@ public class SujetoIMPL implements SujetoDAO {
   @Override
   public List<Sujeto> buscarTodo() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     List<Sujeto> listaSujeto;
-
+    String consulta = "SELECT * FROM SUJETO;";
     try {
-      listaSujeto = sesion.createQuery("from Sujeto").list();
+      listaSujeto = sesion.createSQLQuery(consulta).addEntity(Sujeto.class).list();
     } catch (HibernateException he) {
       listaSujeto = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

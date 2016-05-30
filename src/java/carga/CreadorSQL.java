@@ -3,7 +3,7 @@ package carga;
 import dao.DeudorDAO;
 import dao.SujetoDAO;
 import dto.Deudor;
-import dto.Fila;
+import dto.carga.Fila;
 import dto.Sujeto;
 import impl.DeudorIMPL;
 import impl.SujetoIMPL;
@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import util.BautistaDeArchivos;
 import util.constantes.Directorios;
+import util.log.Logs;
 
 /**
  *
@@ -60,12 +61,13 @@ public class CreadorSQL {
   } // fin del método crearSujetos
 
   /**
-   * Crea tantas sentencias sql como objetos Fila se obtuvo del archivo de remesa.
-   * Estas sentencias son guardadas en un script que más tarde se ejecuta para
-   * consumar la carga.
+   * Crea tantas sentencias sql como objetos Fila se obtuvo del archivo de
+   * remesa. Estas sentencias son guardadas en un script que más tarde se
+   * ejecuta para consumar la carga.
    *
-   * @param filas La lista de objetos Fila para las cuales se generarán las sentencias.
-   * @return 
+   * @param filas La lista de objetos Fila para las cuales se generarán las
+   * sentencias.
+   * @return
    */
   public static String crearSQL(List<Fila> filas) {
     String query = "";
@@ -108,15 +110,16 @@ public class CreadorSQL {
               + " '" + f.getDisposicion() + "', '" + f.getMensualidad() + "', '" + numerador(f.getTasa()) + "', '" + numerador(null) + "', "
               + "'" + f.getCuenta() + "', '1', '1', '" + f.getIdProducto() + "', '" + f.getIdSubproducto() + "', '" + f.getIdDeudor() + "', "
               + "'" + f.getIdGestor() + "', '" + f.getIdDespacho() + "');\n";
-      
+
       // Este archivo fungirá como script
       archivoSql = Directorios.RUTA_REMESAS + BautistaDeArchivos.bautizar("script", BautistaDeArchivos.PREFIJO, "sql");
-      
+
       // Llegado a este punto, se deberá guardar la query en un archivo...
       guardarQueryEnArchivo(query, archivoSql);
       query = "";
-      if(linea != null)
+      if (linea != null) {
         System.out.println(linea);
+      }
     }
     return archivoSql;
   } // fin del método crearSQL
@@ -139,12 +142,12 @@ public class CreadorSQL {
   }
 
   /**
-   * Coloca el valor "0" en caso de que el número dado sea null o una cadena vacía.
-   * Esto evita errores de punteros nulos.
+   * Coloca el valor "0" en caso de que el número dado sea null o una cadena
+   * vacía. Esto evita errores de punteros nulos.
    *
    * @param numero Un String que representa un número
-   * @return Un String que el mismo número o u 0 en caso de que el valor de entrada
-   * sea null o cadena vacía.
+   * @return Un String que el mismo número o u 0 en caso de que el valor de
+   * entrada sea null o cadena vacía.
    */
   private static String numerador(String numero) {
     if (numero == null || numero.isEmpty()) {
@@ -153,7 +156,7 @@ public class CreadorSQL {
       return numero;
     }
   }
-  
+
   /**
    * Guarda la sentencia en un archivo sql.
    *
@@ -193,7 +196,8 @@ public class CreadorSQL {
         printWriter.close();
         bufferedWriter.close();
       } catch (IOException ioe) {
-        ioe.printStackTrace();
+        Logs.log.error("No se logro crear el archivo de texto");
+        Logs.log.error(ioe.getMessage());
       }
     }
   }

@@ -41,8 +41,8 @@ public class SubproductoIMPL implements SubproductoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
-      //         log.error(he.getMessage());
+      Logs.log.error("No se pudo insertar el subproducto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -69,7 +69,8 @@ public class SubproductoIMPL implements SubproductoDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo editar el subproducto");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -95,13 +96,14 @@ public class SubproductoIMPL implements SubproductoDAO {
   @Override
   public Subproducto buscar(int idSubproducto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Subproducto subproducto;
+    String consulta = "SELECT * FROM subproducto WHERE id_subproducto = " + idSubproducto + ";";
     try {
-      subproducto = (Subproducto) sesion.createSQLQuery("select * from subproducto where id_subproducto = " + idSubproducto + ";").addEntity(Subproducto.class).uniqueResult();
+      subproducto = (Subproducto) sesion.createSQLQuery(consulta).addEntity(Subproducto.class).uniqueResult();
     } catch (HibernateException he) {
       subproducto = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -138,11 +140,13 @@ public class SubproductoIMPL implements SubproductoDAO {
   public List<Subproducto> buscarSubproductosPorProducto(int idProducto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Subproducto> subproductos = new ArrayList();
+    String consulta = "SELECT * FROM subproducto WHERE id_producto = " + idProducto + ";";
     try {
-      subproductos = sesion.createSQLQuery("SELECT * FROM subproducto WHERE id_producto = " + idProducto + ";").addEntity(Subproducto.class).list();
+      subproductos = sesion.createSQLQuery(consulta).addEntity(Subproducto.class).list();
     } catch (HibernateException he) {
       subproductos = null;
-      he.printStackTrace();
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }

@@ -39,8 +39,8 @@ public class RegionIMPL implements RegionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
-      //         log.error(he.getMessage());
+      Logs.log.error("No se pudo insertar la region");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
@@ -134,7 +134,8 @@ public class RegionIMPL implements RegionDAO {
       if (tx != null) {
         tx.rollback();
       }
-      he.printStackTrace();
+      Logs.log.error("No se pudo eliminar la region");
+      Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
