@@ -6,6 +6,7 @@
 package beans;
 
 import dao.ActualizacionDAO;
+import dao.AjusteDAO;
 import dao.ColoniaDAO;
 import dao.ConceptoDevolucionDAO;
 import dao.ContactoDAO;
@@ -24,6 +25,7 @@ import dao.MotivoDevolucionDAO;
 import dao.MunicipioDAO;
 import dao.TelefonoDAO;
 import dto.Actualizacion;
+import dto.Ajuste;
 import dto.Colonia;
 import dto.ConceptoDevolucion;
 import dto.Contacto;
@@ -43,6 +45,7 @@ import dto.Municipio;
 import dto.QuienGestion;
 import dto.Telefono;
 import impl.ActualizacionIMPL;
+import impl.AjusteIMPL;
 import impl.ColoniaIMPL;
 import impl.ConceptoDevolucionIMPL;
 import impl.ContactoIMPL;
@@ -77,6 +80,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.GestionAutomatica;
+import util.constantes.Ajustes;
 import util.constantes.Correos;
 import util.constantes.Devoluciones;
 import util.constantes.Marcajes;
@@ -103,6 +107,7 @@ public class VistaCreditoBean implements Serializable {
   private boolean habilitaFacs;
   private boolean habilitaCredsRelacionados;
   private boolean habilitaHistorial;
+  private boolean habilitaAjustes;
   private boolean principalNuevoTelefono;
   private boolean principalNuevoCorreo;
   private String color;
@@ -167,6 +172,7 @@ public class VistaCreditoBean implements Serializable {
   private final EstadoRepublicaDAO estadoRepublicaDao;
   private final MunicipioDAO municipioDao;
   private final ColoniaDAO coloniaDao;
+  private final AjusteDAO ajusteDao;
   private List<Gestion> listaGestiones;
   private List<Gestor> listaGestores;
   private List<Credito> creditosRelacionados;
@@ -178,6 +184,7 @@ public class VistaCreditoBean implements Serializable {
   private List<ConceptoDevolucion> listaConceptos;
   private List<MotivoDevolucion> listaMotivos;
   private List<Fac> actualizaciones;
+  private List<Ajuste> ajustes;
   private List<String> listaSujetos;
   private List<EstadoRepublica> listaEstados;
   private List<Municipio> listaMunicipios;
@@ -213,6 +220,7 @@ public class VistaCreditoBean implements Serializable {
     estadoRepublicaDao = new EstadoRepublicaIMPL();
     municipioDao = new MunicipioIMPL();
     coloniaDao = new ColoniaIMPL();
+    ajusteDao = new AjusteIMPL();
     listaMotivos = new ArrayList();
     creditosRelacionados = new ArrayList();
     listaDirecciones = new ArrayList();
@@ -224,6 +232,7 @@ public class VistaCreditoBean implements Serializable {
     listaEstados = new ArrayList();
     listaMunicipios = new ArrayList();
     listaColonias = new ArrayList();
+    ajustes = new ArrayList();
     obtenerDatos();
   }
 
@@ -316,17 +325,20 @@ public class VistaCreditoBean implements Serializable {
       telefonoPrincipal = "";
     }
     // OBTENEMOS LA LISTA DE TELEFONOS DEL DEUDOR
-    listaTelefonos = telefonoDao.buscarPorSujeto(idSujeto);
+    listaTelefonos = telefonoDao.buscarPorCliente(creditoActual.getDeudor().getNumeroDeudor());
     // OBTENEMOS LA LISTA DE CORREOS ELECTRONICOS DEL DEUDOR
-    listaCorreos = emailDao.buscarPorSujeto(idSujeto);
+    listaCorreos = emailDao.buscarPorCliente(creditoActual.getDeudor().getNumeroDeudor());
     // OBTENEMOS LA LISTA DE CONTACTOS DEL DEUDOR
-    listaContactos = contactoDao.buscarContactoPorSujeto(idSujeto);
+    listaContactos = contactoDao.buscarContactoPorCliente(creditoActual.getDeudor().getNumeroDeudor());
     // OBTENEMOS EL HISTORIAL DEL CREDITO
     historial = historialDao.buscarPorCredito(creditoActual.getIdCredito());
     habilitaHistorial = !historial.isEmpty();
     // OBTENEMOS LA LISTA DE ACTUALIZACIONES DEL CREDITO
     actualizaciones = facDao.buscarPorCredito(creditoActual.getIdCredito());
     habilitaFacs = !actualizaciones.isEmpty();
+    // OBTENEMOS LA LISTA DE AJUSTES ACTUALES Y ANTERIORES
+    ajustes = ajusteDao.buscarAjustesPorCredito(creditoActual.getIdCredito());
+    habilitaAjustes = !ajustes.isEmpty();
     // SE OBTIENE LA LISTA DE SUJETOS QUE PODRIAN SER NUEVOS CONTACTOS
     List< QuienGestion> sujetos = new QuienGestionIMPL().buscarTodo();
     for (int i = 1; i < (sujetos.size()); i++) {
@@ -335,17 +347,17 @@ public class VistaCreditoBean implements Serializable {
       }
     }
   }
-  
+
   // METODO QUE CHECA LA FRECUENCIA DE GESTION DE LA CUENTA
-  public void checarColor(){
+  public void checarColor() {
     int dias = gestionDao.checarDiasSinGestionar(creditoActual.getIdCredito()).intValue();
-    if(dias <= 3){
+    if (dias <= 3) {
       color = "#04B404";
     }
-    if((dias >3) && (dias < 7)){
+    if ((dias > 3) && (dias <= 7)) {
       color = "#F3CE85";
     }
-    if(dias >= 7){
+    if (dias > 7) {
       color = "#EC1010";
     }
   }
@@ -374,7 +386,7 @@ public class VistaCreditoBean implements Serializable {
     }
   }
 
-  // METODO PARA ABRIR EL DIALOGO
+  // METODO PARA ABRIR EL DIALOGO DE CONFIRMACION DE DEVOLUCION
   public void confirmar() {
     RequestContext.getCurrentInstance().execute("PF('confirmacionDialog2').show();");
   }
@@ -467,6 +479,20 @@ public class VistaCreditoBean implements Serializable {
     return cadena;
   }
 
+  // METODO QUE LE DA UNA ETIQUETA AL TIPO DE AJUSTE DE TELMEX
+  public String etiquetarAjuste(int tipo) {
+    String cadena = "";
+    switch (tipo) {
+      case Ajustes.ANTERIORES:
+        cadena = "Anteriores";
+        break;
+      case Ajustes.ACTUALES:
+        cadena = "Actuales";
+        break;
+    }
+    return cadena;
+  }
+
   // METODO QUE OBTIENE LA LISTA DE GESTIONES
   public void obtenerGestionesAnteriores() {
     listaGestiones = gestionDao.buscarGestionesCredito(creditoActual.getIdCredito());
@@ -514,8 +540,6 @@ public class VistaCreditoBean implements Serializable {
         con.update("cuentas");
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se devolvio el credito seleccionado"));
       } else {
-        // PERO LOS LUNES SON UN MARTIRIO PARA MI
-        // ESCRIBIRE ESTA FUNCION Y VAMONOS AL CARAJO
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo devolver el credito. Contacte con el administrador de base de datos"));
       }
     }
@@ -567,6 +591,7 @@ public class VistaCreditoBean implements Serializable {
     t.setHorario(horarioNuevoTelefono);
     t = telefonoDao.insertar(t);
     if (t != null) {
+      obtenerDatos();
       if (principalNuevoTelefono) {
         establecerTelefonoPrincipal(t);
       }
@@ -613,6 +638,7 @@ public class VistaCreditoBean implements Serializable {
       e.setTipo(tipoNuevoCorreo);
       e = emailDao.insertar(e);
       if (e != null) {
+        obtenerDatos();
         if (principalNuevoCorreo) {
           establecerCorreoPrincipal(e);
         }
@@ -662,6 +688,7 @@ public class VistaCreditoBean implements Serializable {
       c.setObservaciones(observacionesContacto);
       c = contactoDao.insertar(c);
       if (c != null) {
+        obtenerDatos();
         listaContactos = contactoDao.buscarContactoPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
         nuevoContacto = "";
         tipoNuevoContacto = "";
@@ -1353,6 +1380,22 @@ public class VistaCreditoBean implements Serializable {
 
   public void setColor(String color) {
     this.color = color;
+  }
+
+  public List<Ajuste> getAjustes() {
+    return ajustes;
+  }
+
+  public void setAjustes(List<Ajuste> ajustes) {
+    this.ajustes = ajustes;
+  }
+
+  public boolean isHabilitaAjustes() {
+    return habilitaAjustes;
+  }
+
+  public void setHabilitaAjustes(boolean habilitaAjustes) {
+    this.habilitaAjustes = habilitaAjustes;
   }
 
 }

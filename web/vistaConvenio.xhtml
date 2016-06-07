@@ -207,9 +207,16 @@
             <p:calendar value="#{conveniosBean.fechaDeposito}" showOn="button" required="true" requiredMessage="Debe indicar una fecha de deposito." />
             <br />
             <br />
+            En ventanilla:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:selectBooleanCheckbox value="#{conveniosBean.ventanilla}">
+                <p:ajax listener="#{conveniosBean.cambiarLeyenda()}" update="agregarPagoForm:cuentasPago, agregarPagoForm:observacionesPagoGestor" />
+            </p:selectBooleanCheckbox>
+            <br />
+            <br />
             Numero de cuenta:
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:selectOneMenu value="#{conveniosBean.cuentaPago}" required="true" requiredMessage="Debe indicar una cuenta de deposito.">
+            <p:selectOneMenu id="cuentasPago" value="#{conveniosBean.cuentaPago}" disabled="#{conveniosBean.ventanilla}">
               <f:selectItem itemLabel="" itemValue="" />
               <f:selectItems value="#{conveniosBean.listaCuentasPago}" />
             </p:selectOneMenu>
@@ -218,7 +225,7 @@
             Observaciones:
             <br />
             <br />
-            <p:inputText value="#{conveniosBean.observacionesPago}" size="40" maxlength="50" />
+            <p:inputText id="observacionesPagoGestor" value="#{conveniosBean.observacionesPago}" size="40" maxlength="50" />
             <br />
             <br />
             <div align="center">

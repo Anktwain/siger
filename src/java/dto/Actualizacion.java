@@ -1,5 +1,5 @@
 package dto;
-// Generated 17/05/2016 10:10:16 AM by Hibernate Tools 4.3.1
+// Generated 30/05/2016 10:43:48 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -20,6 +20,7 @@ public class Actualizacion  implements java.io.Serializable {
      private String estatus;
      private Date fechaUltimoPago;
      private Date fechaUltimoVencimientoPagado;
+     private Set ajustes = new HashSet(0);
      private Set facs = new HashSet(0);
 
     public Actualizacion() {
@@ -30,7 +31,7 @@ public class Actualizacion  implements java.io.Serializable {
         this.credito = credito;
         this.remesa = remesa;
     }
-    public Actualizacion(Credito credito, Remesa remesa, Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Date fechaUltimoVencimientoPagado, Set facs) {
+    public Actualizacion(Credito credito, Remesa remesa, Integer mesesVencidos, Float saldoVencido, String estatus, Date fechaUltimoPago, Date fechaUltimoVencimientoPagado, Set ajustes, Set facs) {
        this.credito = credito;
        this.remesa = remesa;
        this.mesesVencidos = mesesVencidos;
@@ -38,6 +39,7 @@ public class Actualizacion  implements java.io.Serializable {
        this.estatus = estatus;
        this.fechaUltimoPago = fechaUltimoPago;
        this.fechaUltimoVencimientoPagado = fechaUltimoVencimientoPagado;
+       this.ajustes = ajustes;
        this.facs = facs;
     }
    
@@ -96,6 +98,13 @@ public class Actualizacion  implements java.io.Serializable {
     
     public void setFechaUltimoVencimientoPagado(Date fechaUltimoVencimientoPagado) {
         this.fechaUltimoVencimientoPagado = fechaUltimoVencimientoPagado;
+    }
+    public Set getAjustes() {
+        return this.ajustes;
+    }
+    
+    public void setAjustes(Set ajustes) {
+        this.ajustes = ajustes;
     }
     public Set getFacs() {
         return this.facs;

@@ -20,7 +20,13 @@ public class EjecutarScript {
   public void ejecutar() throws IOException, SQLException {
     try {
       Class.forName("com.mysql.jdbc.Driver");
-      mConnection = DriverManager.getConnection("jdbc:mysql://10.0.0.26:3306/sigerbd?user=cofradia&password=cofradiaDB");
+      System.out.println("CONEXION");
+      System.out.println("HOST: localhost");
+      System.out.println("USER: root");
+      System.out.println("PSWD: root");
+      mConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sigerbd?user=root&password=root");
+      //mConnection = DriverManager.getConnection("jdbc:mysql://10.0.0.26:3306/sigerbd?user=root&password=root");
+      //mConnection = DriverManager.getConnection("jdbc:mysql://10.0.0.26:3306/sigerbd?user=cofradia&password=cofradiaDB");
     } catch (ClassNotFoundException e) {
       System.err.println("Unable to get mysql driver: " + e);
     } catch (SQLException e) {

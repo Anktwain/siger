@@ -70,6 +70,7 @@ public class ConveniosBean implements Serializable {
   private boolean habilitaPromesas;
   private boolean quitaCapital;
   private boolean sinContacto;
+  private boolean ventanilla;
   private boolean habilita1;
   private boolean habilita2;
   private boolean habilita3;
@@ -137,6 +138,7 @@ public class ConveniosBean implements Serializable {
   // METODO QUE TRAE LA LISTA DE CONVENIOS
   public final void cargarListas() {
     observacionesPago = "TE MANDO PAGO PARA SU VALIDACION.";
+    pagosPrometidos = 1;
     convenioActivo = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
     listaHistorialConvenios = convenioPagoDao.buscarConveniosFinalizadosCredito(creditoActual.getIdCredito());
     listaHistorialPagos = pagoDao.buscarPagosPorCredito(creditoActual.getIdCredito());
@@ -161,10 +163,8 @@ public class ConveniosBean implements Serializable {
 
   // METODO QUE AGREGA UN CONVENIO DE PAGO
   public void agregarConvenio() {
-    if (saldoNuevoConvenio > saldoMaximo) {
-      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser menor o igual al saldo vencido."));
-    } else if (saldoNuevoConvenio <= 0) {
-      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser mayor a cero."));
+    if (saldoNuevoConvenio <= 0) {
+      //FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser mayor a cero."));
     } else if (pagosPrometidos <= 0) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe prometer al menos un pago."));
     } else {
@@ -185,6 +185,10 @@ public class ConveniosBean implements Serializable {
       convenio.setFecha(fecha);
       convenio.setPagosNegociados(pagosPrometidos);
       convenio.setSaldoNegociado(saldoNuevoConvenio);
+      if (saldoNuevoConvenio > saldoMaximo) {
+        Logs.log.warn("El usuario " + indexBean.getUsuario().getNombreLogin() + " del despacho " + indexBean.getUsuario().getDespacho().getNombreCorto() + " realizo un convenio por un saldo mayor al saldo vencido.");
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo negociado debe ser menor o igual al saldo vencido."));
+      }
       convenio = convenioPagoDao.insertar(convenio);
       if (convenio != null) {
         convenioActivo = convenio;
@@ -194,6 +198,7 @@ public class ConveniosBean implements Serializable {
         switch (pagosPrometidos) {
           case 1:
             habilita1 = true;
+            saldosNuevasPromesas[0] = saldoNuevoConvenio;
             break;
           case 2:
             habilita1 = true;
@@ -258,13 +263,12 @@ public class ConveniosBean implements Serializable {
     }
     cargarListas();
   }
-  
+
   // METODO QUE BORRA EL CONVENIO EN CASO DE QUE EL USUARIO CANCELE LA OPERACION
-  public void borrarConvenio(){
-    if(!convenioPagoDao.eliminar(convenioActivo)){
+  public void borrarConvenio() {
+    if (!convenioPagoDao.eliminar(convenioActivo)) {
       Logs.log.error("No se pudo terminar el convenio del credito " + convenioActivo.getCredito().getNumeroCredito() + " por cancelacion del usuario.");
-    }
-    else{
+    } else {
       cargarListas();
       Logs.log.info("Se termino convenio por cancelacion del usuario en el modulo de agregar promesas de pago.");
     }
@@ -273,12 +277,14 @@ public class ConveniosBean implements Serializable {
 
   // METODO AUXILIAR PARA TOMAR EL EVENTO DE CARGA DE ARCHIVOS
   public void eventoDeCarga(FileUploadEvent evento) {
+    System.out.println("ENTRO AL EVENTO DE CARGA");
     archivo = evento.getFile();
     cargarArchivoAlServidor(archivo);
   }
 
   // METODO QUE CARGA AL SERVIDOR EL ARCHIVO OBTENIDO DEL EVENTO FILE UPLOAD
   public void cargarArchivoAlServidor(UploadedFile archivo) {
+    System.out.println("ENTRO A CARGAR EL ARCHIVO AL SERVIDOR");
     byte[] bytes;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
     String extension = archivo.getFileName().substring(archivo.getFileName().indexOf("."));
@@ -322,13 +328,19 @@ public class ConveniosBean implements Serializable {
         fechasNoValidas = true;
       }
     }
-    if (totalPagos > convenioActivo.getSaldoNegociado()) {
-      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo de las promesas es mayor al saldo del convenio."));
-    } else if (pagosNoValidos) {
+    // TO FIX
+    // AVISAR DE PROMESAS CON UN SALDO MAYOR AL DEL CONVENIO
+    /*
+     if (totalPagos > convenioActivo.getSaldoNegociado()) {
+     FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El saldo de las promesas es mayor al saldo del convenio."));
+     } else 
+     */
+    if (pagosNoValidos) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pueden prometer pagos iguales o menores a cero."));
-    } else if (fechasNoValidas) {
-      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pueden prometer pagos en fechas anteriores al dia de hoy."));
-    } else {
+    } /* else if (fechasNoValidas) {
+     FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pueden prometer pagos en fechas anteriores al dia de hoy."));
+     } 
+     */ else {
       for (int i = 0; i < pagosPrometidos; i++) {
         PromesaPago p = new PromesaPago();
         p.setConvenioPago(convenioActivo);
@@ -347,6 +359,15 @@ public class ConveniosBean implements Serializable {
     }
   }
 
+  // METODO QUE CAMBIA LA LEYENDA DE LOS PAGOS
+  public void cambiarLeyenda() {
+    if (ventanilla) {
+      observacionesPago = "TE MANDO PAGO EN VENTANILLA.";
+    } else {
+      observacionesPago = "TE MANDO PAGO PARA SU VALIDACION.";
+    }
+  }
+
   // METODO QUE CARGA UN PAGO A UNA PROMESA EN ESPECIFICO
   public void agregarPago() {
     float montoMaximo = promesaSeleccionada.getCantidadPrometida();
@@ -362,7 +383,11 @@ public class ConveniosBean implements Serializable {
       p.setEstatus(Pagos.PENDIENTE);
       p.setFechaDeposito(fechaDeposito);
       p.setFechaRegistro(new Date());
-      p.setNumeroCuenta(cuentaPago);
+      if (ventanilla) {
+        p.setNumeroCuenta(creditoActual.getNumeroCredito());
+      } else {
+        p.setNumeroCuenta(cuentaPago);
+      }
       Quincena q = quincenaDao.obtenerQuincenaActual();
       p.setQuincena(q);
       p.setRevisor("");
@@ -728,6 +753,14 @@ public class ConveniosBean implements Serializable {
 
   public void setListaNombresComprobantes(List<String> listaNombresComprobantes) {
     this.listaNombresComprobantes = listaNombresComprobantes;
+  }
+
+  public boolean isVentanilla() {
+    return ventanilla;
+  }
+
+  public void setVentanilla(boolean ventanilla) {
+    this.ventanilla = ventanilla;
   }
 
 }

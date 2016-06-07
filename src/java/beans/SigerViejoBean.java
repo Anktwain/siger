@@ -27,14 +27,14 @@ import util.log.Logs;
 public class SigerViejoBean implements Serializable {
 
   // VARIABLES DE CLASE
-  // TO FIX:
-  // PERMITIR CONEXIONES REMOTAS EN PABLITO'S SERVER
   private final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
   private final String DB_URL = "jdbc:mysql://10.0.0.52:3306/sigerweb";
   private final String USER = "root";
   private final String PASS = "root";
   private List<GestionSigerViejo> listaGestiones;
   private List<DireccionSigerViejo> listaDirecciones;
+  private List<TelefonoSigerViejo> listaTelefonos;
+  private List<ContactoSigerViejo> listaContactos;
 
   // CONSTRUCTOR
   public SigerViejoBean() {
@@ -44,6 +44,7 @@ public class SigerViejoBean implements Serializable {
 
   // METODO QUE BUSCARA LAS GESTIONES ANTERIORES
   public void obtenerGestionesAnteriores(String credito) {
+    listaGestiones = new ArrayList();
     Connection conn;
     Statement stmt;
     String consulta = "SELECT g.Gestion_Fecha, g.Nota_Importante, g.Gestion, t.Tipo_Gest_Desc FROM gestiones g JOIN cat_tipo_gestion t WHERE t.Tipo_Gest_Clv = g.Tipo_Gest_Clv AND g.Credito_SF_LT_NT_CT_CreditosII = '" + credito + "' ORDER BY g.Gestion_Fecha DESC;";
@@ -79,6 +80,7 @@ public class SigerViejoBean implements Serializable {
 
   // METODO QUE BUSCARA LAS DIRECCIONES DEL SIGER VIEJO
   public void obtenerDireccionesAnteriores(String credito) {
+    listaDirecciones = new ArrayList();
     Connection conn;
     Statement stmt;
     String consulta = "SELECT DomDeu, ColDeu, Entdeu, EdoDeu, CodPos FROM direcciones WHERE Datos_primarios_Folio = (SELECT Datos_primarios_Folio FROM credito_sf_lt_nt_ct WHERE CreditosII = '" + credito + "');";
@@ -89,12 +91,71 @@ public class SigerViejoBean implements Serializable {
       ResultSet rs = stmt.executeQuery(consulta);
       while (rs.next()) {
         DireccionSigerViejo d = new DireccionSigerViejo();
-        d.setCalleNum("DomDeu");
-        d.setColonia("ColDeu");
-        d.setMunicipio("Entdeu");
-        d.setEstado("EdoDeu");
-        d.setCp("CodPos");
+        d.setCalleNum(rs.getString("DomDeu"));
+        d.setColonia(rs.getString("ColDeu"));
+        d.setMunicipio(rs.getString("Entdeu"));
+        d.setEstado(rs.getString("EdoDeu"));
+        d.setCp(rs.getString("CodPos"));
         listaDirecciones.add(d);
+      }
+      rs.close();
+    } catch (ClassNotFoundException | SQLException e) {
+      Logs.log.error(consulta);
+      Logs.log.error(e);
+    }
+  }
+
+  // METODO QUE BUSCARA LOS DATOS DE CONTACTO ANTERIORES
+  public void obtenerDatosContactoAnteriores(String credito) {
+    obtenerTelefonosAnteriores(credito);
+    obtenerContactosAnteriores(credito);
+  }
+
+  // METODO QUE BUSCARA LOS TELEFONOS DEL SIGER VIEJO
+  public void obtenerTelefonosAnteriores(String credito) {
+    listaTelefonos = new ArrayList();
+    Connection conn;
+    Statement stmt;
+    String consulta = "SELECT Numero, Lugar, Tipo, Extencion, Lada, Horario FROM telefonos WHERE Datos_primarios_Folio = (SELECT Datos_primarios_Folio FROM credito_sf_lt_nt_ct WHERE CreditosII = '" + credito + "');";
+    try {
+      Class.forName(JDBC_DRIVER);
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+      stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery(consulta);
+      while (rs.next()) {
+        TelefonoSigerViejo t = new TelefonoSigerViejo();
+        t.setNumero(rs.getString("Numero"));
+        t.setNumero(rs.getString("Lugar"));
+        t.setNumero(rs.getString("Tipo"));
+        t.setNumero(rs.getString("Extencion"));
+        t.setNumero(rs.getString("Lada"));
+        t.setNumero(rs.getString("Horario"));
+        listaTelefonos.add(t);
+      }
+      rs.close();
+    } catch (ClassNotFoundException | SQLException e) {
+      Logs.log.error(consulta);
+      Logs.log.error(e);
+    }
+  }
+
+  // METODO QUE BUSCARA LOS CORREOS DEL SIGER VIEJO
+  public void obtenerContactosAnteriores(String credito) {
+    listaContactos = new ArrayList();
+    Connection conn;
+    Statement stmt;
+    String consulta = "SELECT NomCont, Observaciones, TipoDeContacto FROM contactos WHERE Datos_primarios_Folio = (SELECT Datos_primarios_Folio FROM credito_sf_lt_nt_ct WHERE CreditosII = '" + credito + "');";
+    try {
+      Class.forName(JDBC_DRIVER);
+      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+      stmt = conn.createStatement();
+      ResultSet rs = stmt.executeQuery(consulta);
+      while (rs.next()) {
+        ContactoSigerViejo c = new ContactoSigerViejo();
+        c.setNombre(rs.getString("NomCont"));
+        c.setObservaciones(rs.getString("Observaciones"));
+        c.setTipo(rs.getString("TipoDeContacto"));
+        listaContactos.add(c);
       }
       rs.close();
     } catch (ClassNotFoundException | SQLException e) {
@@ -118,6 +179,22 @@ public class SigerViejoBean implements Serializable {
 
   public void setListaDirecciones(List<DireccionSigerViejo> listaDirecciones) {
     this.listaDirecciones = listaDirecciones;
+  }
+
+  public List<TelefonoSigerViejo> getListaTelefonos() {
+    return listaTelefonos;
+  }
+
+  public void setListaTelefonos(List<TelefonoSigerViejo> listaTelefonos) {
+    this.listaTelefonos = listaTelefonos;
+  }
+
+  public List<ContactoSigerViejo> getListaContactos() {
+    return listaContactos;
+  }
+
+  public void setListaContactos(List<ContactoSigerViejo> listaContactos) {
+    this.listaContactos = listaContactos;
   }
 
   // CLASE MIEMBRO PARA OBTENER LAS GESTIONES ANTERIORES
@@ -163,7 +240,7 @@ public class SigerViejoBean implements Serializable {
     // CONSTRUCTOR
     public DireccionSigerViejo() {
     }
-    
+
     // GETTERS & SETTERS
     public String getCalleNum() {
       return calleNum;
@@ -205,4 +282,110 @@ public class SigerViejoBean implements Serializable {
       this.cp = cp;
     }
   }
+
+  // CLASE MIEMBRO PARA OBTENER LOS TELEFONOS ANTERIORES
+  public static class TelefonoSigerViejo {
+
+    // VARIABLES DE CLASE
+    private String numero;
+    private String lugar;
+    private String tipo;
+    private String extension;
+    private String lada;
+    private String horario;
+
+    // CONSTRUCTOR
+    public TelefonoSigerViejo() {
+    }
+
+    // GETTERS & SETTERS
+    public String getNumero() {
+      return numero;
+    }
+
+    public void setNumero(String numero) {
+      this.numero = numero;
+    }
+
+    public String getLugar() {
+      return lugar;
+    }
+
+    public void setLugar(String lugar) {
+      this.lugar = lugar;
+    }
+
+    public String getTipo() {
+      return tipo;
+    }
+
+    public void setTipo(String tipo) {
+      this.tipo = tipo;
+    }
+
+    public String getExtension() {
+      return extension;
+    }
+
+    public void setExtension(String extension) {
+      this.extension = extension;
+    }
+
+    public String getLada() {
+      return lada;
+    }
+
+    public void setLada(String lada) {
+      this.lada = lada;
+    }
+
+    public String getHorario() {
+      return horario;
+    }
+
+    public void setHorario(String horario) {
+      this.horario = horario;
+    }
+
+  }
+
+  // CLASE MIEMBRO PARA OBTENER LOS CONTACTOS ANTERIORES
+  private static class ContactoSigerViejo {
+
+    // VARIABLES DE CLASE
+    private String nombre;
+    private String tipo;
+    private String observaciones;
+
+    // CONSTRUCTOR
+    public ContactoSigerViejo() {
+    }
+
+    // GETTERS & SETTERS
+    public String getNombre() {
+      return nombre;
+    }
+
+    public void setNombre(String nombre) {
+      this.nombre = nombre;
+    }
+
+    public String getTipo() {
+      return tipo;
+    }
+
+    public void setTipo(String tipo) {
+      this.tipo = tipo;
+    }
+
+    public String getObservaciones() {
+      return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+      this.observaciones = observaciones;
+    }
+    
+  }
+
 }

@@ -34,37 +34,101 @@
       <div class="main-header clearfix">
         <div class="page-title">
           <h3 class="no-margin">Cuentas</h3>
-          <span>Consulte todas las cuentas que su despacho esta gestionando</span>
-          <span>Utilice los formularios para buscar un credito en particular</span>
+          <span>Consulte todas las cuentas que su despacho esta gestionando o utilice los formularios para buscar un credito en particular</span>
         </div>
       </div>
       <div class="row">
         <div class="padding-md">
           <div class="col-lg-12">
-            <h:form id="formCuentas">
-              <p:contextMenu for="cuentas" style="width:200px;">
-                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{cuentasBean.selectorDeVista()}" />
-                <p:menuitem value="Devolver" icon="ui-icon-alert" oncomplete="PF('confirmacionDialog').show();" />
-              </p:contextMenu>
-              <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditos}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" style="width: 1050px;">
-                <p:column headerText="Credito" style="width:150px;" sortBy="#{c.numeroCredito}">
-                  <h:outputText value="#{c.numeroCredito}" style="float:right"/>
-                </p:column>
-                <p:column headerText="Nombre del deudor" style="width:400px;" sortBy="#{c.deudor.sujeto.nombreRazonSocial}">
-                  <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
-                </p:column>
-                <p:column headerText="Saldo vencido" style="width:150px;" sortBy="#{cuentasBean.calcularSaldoVencido(c)}"> 
-                  <h:outputText value="#{cuentasBean.calcularSaldoVencido(c)}" style="float:right">
-                    <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                  </h:outputText>
-                </p:column>
-                <p:column headerText="Institucion" style="width:150px;" sortBy="#{c.producto.institucion.nombreCorto}">
-                  <h:outputText value="#{c.producto.institucion.nombreCorto}"/>
-                </p:column>
-                <p:column headerText="Gestor asignado" style="width:150px;" sortBy="#{c.gestor.usuario.nombreLogin}">
-                  <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>
-                </p:column>
-              </p:dataTable>
+            <h:form id="formCuentas">              
+              <table>
+                <tr>
+                  <td style="padding-bottom: 15px; padding-right: 10px;">
+                    <h4 class="no-margin">
+                      Gestor:
+                    </h4>
+                  </td>
+                  <td>
+                    <p:selectOneMenu value="#{cuentasBean.gestorSeleccionado.idGestor}" style="width:200px">
+                      <f:selectItem itemLabel="Todos" itemValue="0" />
+                      <f:selectItems value="#{cuentasBean.listaGestores}" var="ges" itemLabel="#{ges.usuario.nombreLogin}" itemValue="#{ges.idGestor}" />
+                    </p:selectOneMenu>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 15px; padding-right: 10px;">
+                    <h4 class="no-margin">
+                      Campaña:
+                    </h4>
+                  </td>
+                  <td>
+                    <p:selectOneMenu value="#{cuentasBean.campanaSeleccionada.idCampana}" style="width:300px">
+                      <f:selectItem itemLabel="Todas" itemValue="0" />
+                      <f:selectItems value="#{cuentasBean.listaCampanas}" var="cam" itemLabel="#{cam.nombre}" itemValue="#{cam.idCampana}" />
+                    </p:selectOneMenu>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 15px; padding-right: 10px;">
+                    <h4 class="no-margin">
+                      Marcaje:
+                    </h4>
+                  </td>
+                  <td>
+                    <p:selectOneMenu value="#{cuentasBean.marcajeSeleccionado.idMarcaje}" style="width:200px">
+                      <f:selectItem itemLabel="Todos" itemValue="0" />
+                      <f:selectItems value="#{cuentasBean.listaMarcajes}" var="mar" itemLabel="#{mar.marcaje}" itemValue="#{mar.idMarcaje}" />
+                    </p:selectOneMenu>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-bottom: 15px; padding-right: 10px;">
+                    <h4 class="no-margin">
+                      Frecuencia de gestion:
+                    </h4>
+                  </td>
+                  <td>
+                    <p:selectOneMenu value="#{cuentasBean.colorSeleccionado}" style="width:300px">
+                      <f:selectItem itemLabel="Todos" itemValue="0" />
+                      <f:selectItem itemLabel="Verde (Hace menos de 3 dias)" itemValue="Verde" />
+                      <f:selectItem itemLabel="Amarillo (Hace mas de 3 y menos de 7 dias)" itemValue="Amarillo" />
+                      <f:selectItem itemLabel="Rojo (Hace mas de 7 dias)" itemValue="Rojo" />
+                    </p:selectOneMenu>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{cuentasBean.prepararCreditos()}" update="cuentas" />
+                  </td>
+                </tr>
+              </table>
+              <br />
+              <br />
+              <div align="center">
+                <p:contextMenu for="cuentas" style="width:200px;">
+                  <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{cuentasBean.selectorDeVista()}" />
+                  <p:menuitem value="Devolver" icon="ui-icon-alert" oncomplete="PF('confirmacionDialog').show();" />
+                </p:contextMenu>
+                <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditos}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" style="width: 1050px;">
+                  <p:column headerText="Credito" style="width:150px;" sortBy="#{c.numeroCredito}">
+                    <h:outputText value="#{c.numeroCredito}" style="float:right"/>
+                  </p:column>
+                  <p:column headerText="Nombre del deudor" style="width:400px;" sortBy="#{c.deudor.sujeto.nombreRazonSocial}">
+                    <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
+                  </p:column>
+                  <p:column headerText="Saldo vencido" style="width:150px;" sortBy="#{cuentasBean.calcularSaldoVencido(c)}"> 
+                    <h:outputText value="#{cuentasBean.calcularSaldoVencido(c)}" style="float:right">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </p:column>
+                  <p:column headerText="Institucion" style="width:150px;" sortBy="#{c.producto.institucion.nombreCorto}">
+                    <h:outputText value="#{c.producto.institucion.nombreCorto}"/>
+                  </p:column>
+                  <p:column headerText="Gestor asignado" style="width:150px;" sortBy="#{c.gestor.usuario.nombreLogin}">
+                    <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>
+                  </p:column>
+                </p:dataTable>
+              </div>
             </h:form>
           </div>
         </div>

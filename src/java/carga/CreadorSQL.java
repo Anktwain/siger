@@ -3,7 +3,7 @@ package carga;
 import dao.DeudorDAO;
 import dao.SujetoDAO;
 import dto.Deudor;
-import dto.carga.Fila;
+import dto.Fila;
 import dto.Sujeto;
 import impl.DeudorIMPL;
 import impl.SujetoIMPL;

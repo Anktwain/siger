@@ -38,6 +38,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.constantes.Perfiles;
 
 /**
  *
@@ -143,11 +144,23 @@ public class BusquedaBean implements Serializable {
     if (estadoSeleccionado.getIdEstado() == 0) {
       FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Debe seleccionar un estado."));
     } else {
-      List<Credito> listaCreds = new ArrayList();
+      List<Credito> listaCreds;
       if (municipioSeleccionado.getIdMunicipio() == 0) {
-        listaCreds = creditoDao.buscarCreditosPorEstado(estadoSeleccionado.getIdEstado());
+        if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_estado = " + estadoSeleccionado.getIdEstado() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+          listaCreds = creditoDao.busquedaEspecialCreditos(consulta);
+        } else {
+          listaCreds = creditoDao.buscarCreditosPorEstado(estadoSeleccionado.getIdEstado());
+        }
       } else {
-        listaCreds = creditoDao.buscarCreditosPorMunicipio(municipioSeleccionado.getIdMunicipio());
+        System.out.println(indexBean.getUsuario().getPerfil());
+        if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_municipio = " + municipioSeleccionado.getIdMunicipio() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+          listaCreds = creditoDao.busquedaEspecialCreditos(consulta);
+        } else {
+          listaCreds = creditoDao.buscarCreditosPorMunicipio(municipioSeleccionado.getIdMunicipio());
+
+        }
       }
       for (int i = 0; i < (listaCreds.size()); i++) {
         CreditoDireccion cd = new CreditoDireccion();
@@ -186,12 +199,24 @@ public class BusquedaBean implements Serializable {
   // METODO QUE OBTIENE LOS CREDITOS POR UN RANGO ESPECIFICO DE SU SALDO VENCIDO
   public void obtenerCreditosPorSaldoVencido() {
     listaCreditos2.clear();
-    listaCreditos2 = creditoDao.buscarCreditosPorSaldoVencido(saldoInferior, saldoSuperior);
+    System.out.println(indexBean.getUsuario().getPerfil());
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE saldo_vencido > " + saldoInferior + " AND saldo_vencido < " + saldoSuperior + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+      listaCreditos2 = creditoDao.busquedaEspecialCreditos(consulta);
+    } else {
+      listaCreditos2 = creditoDao.buscarCreditosPorSaldoVencido(saldoInferior, saldoSuperior);
+    }
   }
 
   public void obtenerCreditosPorMesesVencidos() {
     listaCreditos2.clear();
-    listaCreditos2 = creditoDao.buscarCreditosPorMesesVencidos(mesesVencidos);
+    System.out.println(indexBean.getUsuario().getPerfil());
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE meses_vencidos = " + mesesVencidos + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+      listaCreditos2 = creditoDao.busquedaEspecialCreditos(consulta);
+    } else {
+      listaCreditos2 = creditoDao.buscarCreditosPorMesesVencidos(mesesVencidos);
+    }
   }
 
   // METODO QUE OBTIENE EL SALDO VENCIDO DE UN CREDITO
@@ -215,7 +240,14 @@ public class BusquedaBean implements Serializable {
     if (institucionSeleccionada.getIdInstitucion() == 0) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una institucion."));
     } else {
-      List<Credito> lista = creditoDao.buscarCreditosPorProducto(productoSeleccionado.getIdProducto());
+      List<Credito> lista;
+      System.out.println(indexBean.getUsuario().getPerfil());
+      if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+        String consulta = "SELECT * FROM credito WHERE id_producto = " + productoSeleccionado.getIdProducto() + " AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+        lista = creditoDao.busquedaEspecialCreditos(consulta);
+      } else {
+        lista = creditoDao.buscarCreditosPorProducto(productoSeleccionado.getIdProducto());
+      }
       if (campanaSeleccionada.getIdCampana() == 0) {
         listaCreditos2 = lista;
       } else {

@@ -13,7 +13,11 @@ import java.util.List;
  * @author Eduardo
  */
 public interface AsuntoGestionDAO {
+  
   public List<AsuntoGestion> buscarTodo();
+  
   public List<AsuntoGestion> buscarPorTipoGestion(int idTipoGestion);
+  
   public AsuntoGestion buscarPorId(int idAsunto);
+  
 }

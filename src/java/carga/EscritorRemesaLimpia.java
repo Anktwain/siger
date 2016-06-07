@@ -1,6 +1,6 @@
 package carga;
 
-import dto.carga.Fila;
+import dto.Fila;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

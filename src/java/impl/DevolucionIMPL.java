@@ -155,17 +155,35 @@ public class DevolucionIMPL implements DevolucionDAO {
   @Override
   public List<Devolucion> buscarDevolucionesPendientesPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Devolucion> bandeja = new ArrayList<>();
+    List<Devolucion> bandeja = new ArrayList();
     String consulta = "SELECT * FROM devolucion WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND estatus = " + Devoluciones.PENDIENTE + ";";
     try {
       bandeja = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
     } catch (HibernateException he) {
-      bandeja = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
     return bandeja;
+  }
+
+  @Override
+  public boolean esGestionable(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Devolucion> bandeja = new ArrayList();
+    boolean ok;
+    String consulta = "SELECT * FROM devolucion WHERE id_credito = " + idCredito + " AND estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + ");";
+    try {
+      bandeja = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+      ok = bandeja.isEmpty();
+    }
+    return ok;
   }
 
   private void cerrar(Session sesion) {

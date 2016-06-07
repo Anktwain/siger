@@ -1,7 +1,7 @@
 package carga;
 
 import dao.GestorDAO;
-import dto.carga.Fila;
+import dto.Fila;
 import dto.Gestor;
 import impl.GestorIMPL;
 import java.util.Collections;

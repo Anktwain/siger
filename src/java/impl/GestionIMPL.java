@@ -235,7 +235,7 @@ public class GestionIMPL implements GestionDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number dias;
     List<Gestion> ultima;
-    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND id_tipo_gestion != 5 ORDER BY fecha DESC LIMIT 1";
+    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND (id_tipo_gestion != 5 OR id_descripcion_gestion IN (SELECT id_descripcion_gestion FROM descripcion_gestion WHERE abreviatura IN ('9APROB', '32RUVD'))) ORDER BY fecha DESC LIMIT 1;";
     try {
       ultima = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
       if(!ultima.isEmpty()){
@@ -245,10 +245,10 @@ public class GestionIMPL implements GestionDAO {
         dias = (milisegundos / 86400000);
       }
       else{
-        dias = 7;
+        dias = 8;
       }
     } catch (HibernateException he) {
-      dias = 7;
+      dias = 8;
       Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {

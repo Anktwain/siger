@@ -150,12 +150,28 @@ public class ContactoIMPL implements ContactoDAO {
   @Override
   public List<Contacto> buscarContactoPorSujeto(int idSujeto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Contacto> contactos = new ArrayList<>();
+    List<Contacto> contactos = new ArrayList();
     String consulta = "SELECT c.* FROM contacto c JOIN sujeto s WHERE s.id_sujeto = c.id_sujeto AND c.id_deudor = (SELECT id_deudor FROM deudor WHERE id_sujeto = " + idSujeto + ");";
     try {
       contactos = sesion.createSQLQuery(consulta).addEntity(Contacto.class).list();
     } catch (HibernateException he) {
-      contactos = null;
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return contactos;
+  }
+
+  @Override
+  public List<Contacto> buscarContactoPorCliente(String numeroCliente) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Contacto> contactos = new ArrayList();
+    String consulta = "SELECT * FROM contacto WHERE id_sujeto IN (SELECT id_sujeto FROM deudor WHERE numero_deudor = '" + numeroCliente + "');";
+    try {
+      contactos = sesion.createSQLQuery(consulta).addEntity(Contacto.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

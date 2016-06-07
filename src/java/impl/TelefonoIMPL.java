@@ -157,6 +157,22 @@ public class TelefonoIMPL implements TelefonoDAO {
     return principal;
   }
 
+  @Override
+  public List<Telefono> buscarPorCliente(String numeroCliente) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Telefono> listaTelefonos;
+    String consulta = "SELECT * FROM telefono WHERE id_sujeto IN (SELECT id_sujeto FROM deudor WHERE numero_deudor = '" + numeroCliente + "');";
+    try {
+      listaTelefonos = sesion.createSQLQuery(consulta).addEntity(Telefono.class).list();
+    } catch (HibernateException he) {
+      listaTelefonos = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return listaTelefonos;
+  }
+
   /**
    *
    *

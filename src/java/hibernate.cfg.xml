@@ -7,7 +7,7 @@
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sigerbd?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">root</property>
-    <property name="connection.pool_size">10</property>
+    <property name="connection.pool_size">20</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="hibernate.enable_lazy_load_no_trans">true</property>
     <mapping resource="mapeo/Auto.hbm.xml"/>
@@ -34,8 +34,8 @@
     <mapping resource="mapeo/Credito.hbm.xml"/>
     <mapping resource="mapeo/Pago.hbm.xml"/>
     <mapping resource="mapeo/DondeGestion.hbm.xml"/>
-    <mapping resource="mapeo/Gestion.hbm.xml"/>
     <mapping resource="mapeo/BloqueVisita.hbm.xml"/>
+    <mapping resource="mapeo/Gestion.hbm.xml"/>
     <mapping resource="mapeo/Gestor.hbm.xml"/>
     <mapping resource="mapeo/TipoAsuntoGestion.hbm.xml"/>
     <mapping resource="mapeo/Zona.hbm.xml"/>
@@ -51,12 +51,13 @@
     <mapping resource="mapeo/Calificacion.hbm.xml"/>
     <mapping resource="mapeo/Institucion.hbm.xml"/>
     <mapping resource="mapeo/Email.hbm.xml"/>
-    <mapping resource="mapeo/Sujeto.hbm.xml"/>
     <mapping resource="mapeo/Colonia.hbm.xml"/>
+    <mapping resource="mapeo/Sujeto.hbm.xml"/>
     <mapping resource="mapeo/Fac.hbm.xml"/>
     <mapping resource="mapeo/ConvenioPago.hbm.xml"/>
     <mapping resource="mapeo/DetalleVisita.hbm.xml"/>
     <mapping resource="mapeo/Devolucion.hbm.xml"/>
     <mapping resource="mapeo/Impresion.hbm.xml"/>
+    <mapping resource="mapeo/Ajuste.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>

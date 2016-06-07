@@ -126,10 +126,10 @@ public class CuentasGestorBean implements Serializable {
       if (dias <= 3) {
         verdes = verdes + 1;
       }
-      if ((dias > 3) && (dias < 7)) {
+      if ((dias > 3) && (dias <= 7)) {
         amarillas = amarillas + 1;
       }
-      if (dias >= 7) {
+      if (dias > 7) {
         rojas = rojas + 1;
       }
     }
@@ -263,6 +263,8 @@ public class CuentasGestorBean implements Serializable {
 // METODO QUE OBTIENE LA LISTA DE CREDITOS SEGUN LA CAMPAÑA ELEGIDA
   public void preparaCampana() {
     posicion = 0;
+    // TO FIX
+    // HACER QUE SE CARGUEN PRIMERO LOS ROJOS, LUEGO AMARILLOS Y AL FINAL VERDES
     creditosCampana = creditoDao.buscarCreditosPorCampanaGestor(seleccion.getIdCampana(), indexBean.getUsuario().getIdUsuario());
     if (!creditosCampana.isEmpty()) {
       for (int i = 0; i < (creditosCampana.size()); i++) {

@@ -42,7 +42,6 @@ public class GeneradorPdf {
   private static final Locale locale = new Locale("es", "MX");
   private static final NumberFormat nf = NumberFormat.getCurrencyInstance(locale);
   private static Image foto;
-  private static Image foto2;
 
   // CONSTRUCTOR
   public GeneradorPdf() {
@@ -79,20 +78,22 @@ public class GeneradorPdf {
       // ESPACIADO
       documento.add(new Paragraph(Chunk.NEWLINE));
       documento.add(new Paragraph(Chunk.NEWLINE));
+      documento.add(new Paragraph(Chunk.NEWLINE));
+      documento.add(new Paragraph(Chunk.NEWLINE));
       // DATOS DEL DESTINATARIO
-      p = new Paragraph(credito.getDeudor().getSujeto().getNombreRazonSocial(), cuerpo2);
+      p = new Paragraph("          " + credito.getDeudor().getSujeto().getNombreRazonSocial(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
-      p = new Paragraph(direccion.getCalle() + " " + direccion.getExterior() + " " + direccion.getInterior(), cuerpo2);
+      p = new Paragraph("          " + direccion.getCalle() + " " + direccion.getExterior() + " " + direccion.getInterior(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
-      p = new Paragraph(direccion.getColonia().getTipo() + " " + direccion.getColonia().getNombre(), cuerpo2);
+      p = new Paragraph("          " + direccion.getColonia().getTipo().toUpperCase() + " " + direccion.getColonia().getNombre().toUpperCase(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
-      p = new Paragraph(direccion.getMunicipio().getNombre() + ", " + direccion.getEstadoRepublica().getAbreviatura(), cuerpo2);
+      p = new Paragraph("          " + direccion.getMunicipio().getNombre().toUpperCase() + ", " + direccion.getEstadoRepublica().getAbreviatura().toUpperCase(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
-      p = new Paragraph("C.P. " + direccion.getColonia().getCodigoPostal(), cuerpo2);
+      p = new Paragraph("          " + "C.P. " + direccion.getColonia().getCodigoPostal(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
       // DATOS DEL CREDITO

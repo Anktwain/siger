@@ -234,7 +234,6 @@ public class PagosBean implements Serializable {
         nombreArchivo = "PAGOS_" + df.format(fechaInicio) + "_" + df.format(fechaFin).replace(":", "-");
         listaPagos = pagoDao.pagosPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho(), df.format(fechaInicio), df.format(fechaFin));
       } else {
-        System.out.println("GESTOR " + gestorDao.buscar(gestorSeleccionado.getIdGestor()).getUsuario().getNombreLogin());
         listaPagos = pagoDao.pagosPorGestor(gestorSeleccionado.getIdGestor(), df.format(fechaInicio), df.format(fechaFin));
       }
       habilitaTabla = true;
@@ -297,16 +296,14 @@ public class PagosBean implements Serializable {
     if (pagoSeleccionado.getEstatus() == Pagos.REVISION_BANCO) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Este pago ya fue enviado a revision."));
     } else {
-      copia = "1ctexpress_ibr@corporativodelrio.com";
+      copia = "cobranza_ibr@corporativodelrio.com";
       String producto;
       if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("CT EXPRESS")) {
         producto = "CT EXPRESS";
-      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("EXPRESS CT")) {
-        producto = "SOFOM CT";
-      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("TELMEX")) {
-        producto = "CREDITO TELMEX";
+      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("PERSONAL")) {
+        producto = "SOFOM PERSONAL";
       } else {
-        producto = "CREDITO TELMEX";
+        producto = "SOFOM COMERCIAL";
       }
       String credito = pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito();
       String deudor = pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getDeudor().getSujeto().getNombreRazonSocial();

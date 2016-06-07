@@ -36,7 +36,7 @@
               <p:outputLabel value="#{vistaCreditoBean.calleNumero}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               &nbsp;
               <p:outputLabel value="#{vistaCreditoBean.coloniaMunicipio}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-              &nbsp;
+              <br />
               <p:outputLabel value="#{vistaCreditoBean.estadoCP}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
               <h5>
@@ -142,6 +142,18 @@
                 <tr>
                   <td style="padding-left: 10px; padding-right: 10px;">
                     <strong>
+                      Monto credito:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <h:outputText value="#{vistaCreditoBean.creditoActual.monto}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </td>
+                </tr>  
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
                       Mensualidad:
                     </strong>
                   </td>
@@ -193,7 +205,8 @@
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:commandButton value="Ver direcciones anteriores" actionListener="#{sigerViejoBean.obtenerDireccionesAnteriores(vistaCreditoBean.creditoActual.numeroCredito)}" oncomplete="PF('dialogoDireccionesAnteriores').show();" update="direccionesAnterioresForm" />
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:button value="Editar datos del deudor" outcome="deudores" disabled="true" />
+          <p:commandButton value="Ver datos de contacto anteriores" actionListener="#{sigerViejoBean.obtenerDatosContactoAnteriores(vistaCreditoBean.creditoActual.numeroCredito)}" oncomplete="PF('dialogoDatosContactoAnteriores').show();" update="datosContactoAnterioresForm" />
+          <!-- <p:button value="Editar datos del deudor" outcome="deudores" disabled="true" /> -->
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:button value="Convenios de pago" outcome="vistaConvenio" />
           &nbsp;&nbsp;&nbsp;&nbsp;
@@ -376,6 +389,16 @@
                   </p:column>
                 </p:dataTable>
               </p:tab>
+              <p:tab title="Ajustes" rendered="#{vistaCreditoBean.habilitaAjustes}">
+                <p:dataTable id="tablaAjustesCredito" var="aj" value="#{vistaCreditoBean.ajustes}" emptyMessage="El credito no cuenta con ajustes." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width: 600px;" >
+                  <p:column headerText="Tipo de ajuste" style="width:150px;"> 
+                    <h:outputText value="#{vistaCreditoBean.etiquetarAjuste(aj.tipo)}"/>
+                  </p:column>
+                  <p:column headerText="Ajuste" style="width:400px;"> 
+                    <h:outputText value="#{aj.ajuste}" style="float:right" />
+                  </p:column>
+                </p:dataTable>
+              </p:tab>
               <p:tab title="Historial de este credito" rendered="#{vistaCreditoBean.habilitaHistorial}">
                 <p:dataTable id="tablaHistorialCredito" var="h" value="#{vistaCreditoBean.historial}" emptyMessage="El credito no cuenta con historial." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                   <p:column headerText="Fecha" style="width:150px;" > 
@@ -433,8 +456,11 @@
       <p:inputText value="#{vistaCreditoBean.observaciones}" style="width:300px" />
       <br />
       <br />
-      <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.devolverCredito()}" update=":growl" />
-      <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoDevolucionVistaCredito').hide();" />
+      <div align="center">
+        <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.devolverCredito()}" oncomplete="PF('dialogoDevolucionVistaCredito').hide();" update=":growl" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoDevolucionVistaCredito').hide();" />
+      </div>
     </h:form>
   </p:dialog>
   <!-- DIALOGO DEVOLUCION CREDITO IMPRESION DE VISITAS -->
@@ -485,7 +511,7 @@
   <!-- DIALOGO PARA VER LAS GESTIONES ANTERIORES -->
   <p:dialog id="dlgGestionesAnteriores" widgetVar="dialogoGestionesAnteriores" modal="true" resizable="false" header="Gestiones del sistema anterior">
     <h:form id="gestionesAnterioresForm">
-      <p:dataTable id="tablaGestionesViejas" var="g" value="#{gestionesSigerViejoBean.listaGestiones}" emptyMessage="No existen gestiones para este credito en el sistema anterior." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width: 600px;">
+      <p:dataTable id="tablaGestionesViejas" var="g" value="#{sigerViejoBean.listaGestiones}" emptyMessage="No existen gestiones para este credito en el sistema anterior." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width: 600px;">
         <p:column headerText="Fecha" style="width:100px;" > 
           <h:outputText value="#{g.fechaGestion}"/>
         </p:column>
@@ -520,6 +546,68 @@
           <h:outputText value="#{d.cp}"/>
         </p:column>
       </p:dataTable>
+      <br />
+      <br />
+      <div align="center">
+        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('dialogoGestionesAnteriores').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA VER DATOS DE CONTACTO ANTERIORES -->
+  <p:dialog id="dlgDatosContactoAnteriores" widgetVar="dialogoDatosContactoAnteriores" modal="true" resizable="false" header="Datos de contacto del sistema anterior">
+    <h:form id="datosContactoAnterioresForm">
+      <div align="center">
+        <p:dataTable id="tablaTelefonosViejos" var="t" value="#{sigerViejoBean.listaTelefonos}" 
+                     emptyMessage="No existen telefonos para este credito en el sistema anterior." 
+                     paginator="true" paginatorAlwaysVisible="false" rows="5" paginatorPosition="bottom" 
+                     style="width: 850px;">
+          <f:facet name="header">
+            Telefonos en el sistema anterior
+          </f:facet>
+          <p:column headerText="Telefono" style="width:150px;" > 
+            <h:outputText value="#{t.numero}"/>
+          </p:column>
+          <p:column headerText="Extension" style="width:50px;" > 
+            <h:outputText value="#{t.extension}"/>
+          </p:column>
+          <p:column headerText="Lada" style="width:50px;" > 
+            <h:outputText value="#{t.lada}"/>
+          </p:column>
+          <p:column headerText="Tipo" style="width:150px;" > 
+            <h:outputText value="#{t.tipo}"/>
+          </p:column>
+          <p:column headerText="Lugar" style="width:150px;" > 
+            <h:outputText value="#{t.lugar}"/>
+          </p:column>
+          <p:column headerText="Horario" style="width:150px;" > 
+            <h:outputText value="#{t.horario}"/>
+          </p:column>
+        </p:dataTable>
+        <br />
+        <br />
+        <p:dataTable id="tablaContactosViejos" var="c" value="#{sigerViejoBean.listaContactos}" 
+                     emptyMessage="No existen contactos para este credito en el sistema anterior." 
+                     paginator="true" paginatorAlwaysVisible="false" rows="5" paginatorPosition="bottom" 
+                     style="width: 800px;">
+          <f:facet name="header">
+            Contactos en el sistema anterior
+          </f:facet>
+          <p:column headerText="Nombre" style="width:300px;" > 
+            <h:outputText value="#{c.nombre}"/>
+          </p:column>
+          <p:column headerText="Tipo" style="width:200px;" > 
+            <h:outputText value="#{c.tipo}"/>
+          </p:column>
+          <p:column headerText="Observaciones" style="width:250px;" > 
+            <h:outputText value="#{c.observaciones}"/>
+          </p:column>
+        </p:dataTable>
+      </div>
+      <br />
+      <br />
+      <div align="center">
+        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('dialogoGestionesAnteriores').hide();" />
+      </div>
     </h:form>
   </p:dialog>
   <!-- DIALOGO PARA AGREGAR UN NUEVO TELEFONO -->

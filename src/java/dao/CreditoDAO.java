@@ -63,4 +63,6 @@ public interface CreditoDAO {
   
   public List<Credito> buscarCreditosPorEstado(int idEstado);
   
+  public List<Credito> busquedaEspecialCreditos(String consulta);
+  
 }

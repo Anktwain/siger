@@ -8,6 +8,7 @@ package beans;
 import dao.AsuntoGestionDAO;
 import dao.CreditoDAO;
 import dao.DescripcionGestionDAO;
+import dao.DevolucionDAO;
 import dao.DondeGestionDAO;
 import dao.EstatusInformativoDAO;
 import dao.GestionDAO;
@@ -27,6 +28,7 @@ import dto.TipoQuienGestion;
 import impl.AsuntoGestionIMPL;
 import impl.CreditoIMPL;
 import impl.DescripcionGestionIMPL;
+import impl.DevolucionIMPL;
 import impl.DondeGestionIMPL;
 import impl.EstatusInformativoIMPL;
 import impl.GestionIMPL;
@@ -62,6 +64,7 @@ public class GestionBean implements Serializable {
   ObtenerOracionCompletaGestionBean obtenerOracionCompletaGestionBean = (ObtenerOracionCompletaGestionBean) elContext.getELResolver().getValue(elContext, null, "obtenerOracionCompletaBean");
 
   // VARIABLES DE CLASE
+  private boolean habilitaGestion;
   private List<TipoGestion> listaTipos;
   private List<DondeGestion> listaDonde;
   private List<AsuntoGestion> listaAsuntos;
@@ -69,7 +72,6 @@ public class GestionBean implements Serializable {
   private List<TipoQuienGestion> listaTipoSujetos;
   private List<QuienGestion> listaSujetos;
   private List<EstatusInformativo> listaEstatus;
-  private final Gestion nueva;
   private TipoGestion tipoSeleccionado;
   private DondeGestion dondeSeleccionado;
   private AsuntoGestion asuntoSeleccionado;
@@ -88,7 +90,9 @@ public class GestionBean implements Serializable {
   private final DescripcionGestionDAO descripcionGestionDao;
   private final CreditoDAO creditoDao;
   private final MarcajeDAO marcajeDao;
+  private final DevolucionDAO devolucionDao;
   private final Credito creditoActual;
+  private final Gestion nueva;
 
   // CONSTRUCTOR
   public GestionBean() {
@@ -109,6 +113,7 @@ public class GestionBean implements Serializable {
     quienGestionDao = new QuienGestionIMPL();
     creditoDao = new CreditoIMPL();
     marcajeDao = new MarcajeIMPL();
+    devolucionDao = new DevolucionIMPL();
     tipoSeleccionado = new TipoGestion();
     dondeSeleccionado = new DondeGestion();
     asuntoSeleccionado = new AsuntoGestion();
@@ -119,6 +124,7 @@ public class GestionBean implements Serializable {
     nueva = new Gestion();
     listaTipos = tipoGestionDao.buscarTodo();
     creditoActual = creditoActualBean.getCreditoActual();
+    habilitaGestion = devolucionDao.esGestionable(creditoActual.getIdCredito());
   }
 
   // METODO QUE PREPARA EL COMBOBOX DONDE GESTION
@@ -164,8 +170,22 @@ public class GestionBean implements Serializable {
       preparaEstatus();
     }
     switch (descripcionSeleccionada.getTextoGestion()) {
+      case "DA TONO DE OCUPADO":
+        gestion = "NUMERO OCUPADO";
+        break;
       case "NO CONTESTA":
         gestion = descripcionSeleccionada.getTextoGestion();
+        break;
+      case "MANDA DIRECTO A BUZON":
+        gestion = "BUZON DE VOZ";
+        break;
+      case "ESTA FUERA DE SERVICIO":
+      case "MENSAJE DE APAGADO O FUERA DEL AREA DE SERVICIO":
+      case "INDICAN MENSAJE QUE ESTA DESCOLGADO O EN REPARACION":
+        gestion = "FUERA DE SERVICIO";
+        break;
+      case "ENTRA LA CONTESTADORA":
+        gestion = "CONTESTADORA";
         break;
       case "GRABACION INDICA QUE NO EXISTE":
         gestion = "NUMERO NO EXISTE";
@@ -675,6 +695,14 @@ public class GestionBean implements Serializable {
 
   public void setDescripcionSeleccionada(DescripcionGestion descripcionSeleccionada) {
     this.descripcionSeleccionada = descripcionSeleccionada;
+  }
+
+  public boolean isHabilitaGestion() {
+    return habilitaGestion;
+  }
+
+  public void setHabilitaGestion(boolean habilitaGestion) {
+    this.habilitaGestion = habilitaGestion;
   }
 
 }

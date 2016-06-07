@@ -1,4 +1,4 @@
-package dto.carga;
+package dto;
 
 import dao.GestorDAO;
 import dto.Gestor;

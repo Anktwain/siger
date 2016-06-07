@@ -51,4 +51,7 @@ public interface ContactoDAO {
     public List<Contacto> buscarPorSujeto(int idSujeto);
     
     public List<Contacto> buscarContactoPorSujeto(int idSujeto);
+    
+    public List<Contacto> buscarContactoPorCliente(String numeroCliente);
+    
 }

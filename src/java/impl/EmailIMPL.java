@@ -32,8 +32,8 @@ public class EmailIMPL implements EmailDAO {
     try {
       sesion.save(email);
       tx.commit();
-      Logs.log.info("Se insertó un nuevo Email: id = " + email.getIdEmail() +
-              " asociado a Sujeto: id = " + email.getSujeto().getIdSujeto());
+      Logs.log.info("Se insertó un nuevo Email: id = " + email.getIdEmail()
+              + " asociado a Sujeto: id = " + email.getSujeto().getIdSujeto());
     } catch (HibernateException he) {
       email = null;
       if (tx != null) {
@@ -150,6 +150,22 @@ public class EmailIMPL implements EmailDAO {
       cerrar(sesion);
     }
     return correo;
+  }
+
+  @Override
+  public List<Email> buscarPorCliente(String numeroCliente) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Email> listaEmails;
+    String consulta = "SELECT * FROM email WHERE id_sujeto IN (SELECT id_sujeto FROM deudor WHERE numero_deudor = '" + numeroCliente + "');";
+    try {
+      listaEmails = sesion.createSQLQuery(consulta).addEntity(Email.class).list();
+    } catch (HibernateException he) {
+      listaEmails = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return listaEmails;
   }
 
   /**

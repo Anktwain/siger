@@ -5,17 +5,15 @@
  */
 package dao;
 
-import dto.Marcaje;
+import dto.Ajuste;
 import java.util.List;
 
 /**
  *
  * @author Eduardo
  */
-public interface MarcajeDAO {
+public interface AjusteDAO {
   
-  public Marcaje buscarMarcajePorId(int idMarcaje);
-  
-  public List<Marcaje> buscarTodos();
+  public List<Ajuste> buscarAjustesPorCredito(int idCredito);
   
 }

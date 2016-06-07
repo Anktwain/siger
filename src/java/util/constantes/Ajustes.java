@@ -3,19 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dao;
-
-import dto.Marcaje;
-import java.util.List;
+package util.constantes;
 
 /**
  *
  * @author Eduardo
  */
-public interface MarcajeDAO {
+public interface Ajustes {
   
-  public Marcaje buscarMarcajePorId(int idMarcaje);
+  public static final int ANTERIORES = 1;
   
-  public List<Marcaje> buscarTodos();
-  
+  public static final int ACTUALES = 2;
 }

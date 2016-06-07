@@ -1,5 +1,5 @@
 package dto;
-// Generated 17/05/2016 10:10:16 AM by Hibernate Tools 4.3.1
+// Generated 30/05/2016 10:43:48 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -33,7 +33,7 @@ public class Pago  implements java.io.Serializable {
     }
 
 	
-    public Pago(Gestor gestor, PromesaPago promesaPago, Quincena quincena, Date fechaDeposito, Date fechaRegistro, int estatus, float montoPago, float montoAprobado, String numeroCuenta, String revisor, String informacionRevision, int pagado) {
+    public Pago(Gestor gestor, PromesaPago promesaPago, Quincena quincena, Date fechaDeposito, Date fechaRegistro, int estatus, float montoPago, float montoAprobado, String numeroCuenta, String revisor, int pagado) {
         this.gestor = gestor;
         this.promesaPago = promesaPago;
         this.quincena = quincena;
@@ -44,7 +44,6 @@ public class Pago  implements java.io.Serializable {
         this.montoAprobado = montoAprobado;
         this.numeroCuenta = numeroCuenta;
         this.revisor = revisor;
-        this.informacionRevision = informacionRevision;
         this.pagado = pagado;
     }
     public Pago(Gestor gestor, PromesaPago promesaPago, Quincena quincena, Date fechaDeposito, Date fechaRegistro, int estatus, float montoPago, float montoAprobado, String numeroCuenta, String revisor, String observacionGestor, String observacionRevisor, String informacionRevision, int pagado, Set comprobantePagos) {

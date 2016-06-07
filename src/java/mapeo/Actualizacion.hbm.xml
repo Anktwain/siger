@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 17/05/2016 10:10:17 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 30/05/2016 10:43:49 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Actualizacion" optimistic-lock="version" table="actualizacion">
     <id name="idActualizacion" type="java.lang.Integer">
@@ -28,6 +28,12 @@
     <property name="fechaUltimoVencimientoPagado" type="date">
       <column length="10" name="fecha_ultimo_vencimiento_pagado"/>
     </property>
+    <set fetch="select" inverse="true" lazy="true" name="ajustes" table="ajuste">
+      <key>
+        <column name="id_actualizacion" not-null="true"/>
+      </key>
+      <one-to-many class="dto.Ajuste"/>
+    </set>
     <set fetch="select" inverse="true" lazy="true" name="facs" table="fac">
       <key>
         <column name="id_actualizacion" not-null="true"/>

@@ -1,6 +1,6 @@
 package carga;
 
-import dto.carga.Fila;
+import dto.Fila;
 import java.util.List;
 import util.constantes.Directorios;
 

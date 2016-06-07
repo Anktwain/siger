@@ -120,6 +120,7 @@ public class GestionesBean implements Serializable {
 
   // METODO QUE OBTIENE LA LISTA DE PRODUCTOS DE ACUERDO A LA INSTITUCION SELECCIONADA
   public void habilitaProductos() {
+    habilitaProducto = true;
     listaProductos = productoDao.buscarProductosPorInstitucion(institucionSeleccionada.getIdInstitucion());
     RequestContext.getCurrentInstance().update("formGestionesAdmin");
   }

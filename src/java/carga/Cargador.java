@@ -1,6 +1,6 @@
 package carga;
 
-import dto.carga.Fila;
+import dto.Fila;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;

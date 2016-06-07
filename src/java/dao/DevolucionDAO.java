@@ -30,4 +30,6 @@ public interface DevolucionDAO {
   
   public List<Devolucion> buscarDevolucionesPendientesPorDespacho(int idDespacho);
   
+  public boolean esGestionable(int idCredito);
+  
 }

@@ -8,7 +8,7 @@ import dto.Credito;
 import dto.Despacho;
 import dto.Deudor;
 import dto.Email;
-import dto.carga.Fila;
+import dto.Fila;
 import dto.Gestor;
 import dto.Institucion;
 import dto.Linea;

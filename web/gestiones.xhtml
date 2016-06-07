@@ -107,7 +107,7 @@
                 </p:inputSwitch>
               </td>
               <td style="padding-left: 20px;">
-                <p:selectOneMenu id="seleccionarProductosGestionesCombobox" value="#{gestionesBean.productoSeleccionado.idProducto}" style="width:300px" disabled="#{!gestionesBean.habilitaProducto}">
+                <p:selectOneMenu id="seleccionarProductosGestionesCombobox" value="#{gestionesBean.productoSeleccionado.idProducto}" style="width:300px" disabled="#{gestionesBean.habilitaProducto}">
                   <f:selectItems value="#{gestionesBean.listaProductos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idProducto}" />
                 </p:selectOneMenu>
               </td>
@@ -155,8 +155,8 @@
             <p:column headerText="Deudor" style="width: 300px;">
               <h:outputText value="#{g.credito.deudor.sujeto.nombreRazonSocial}" />
             </p:column>
-            <p:column headerText="Producto" style="width: 120px;">
-              <h:outputText value="#{g.credito.producto.nombre}" />
+            <p:column headerText="Producto" style="width: 200px;">
+              <h:outputText value="#{g.credito.subproducto.nombre}" />
             </p:column>
             <p:column headerText="Gestion">
               <h:outputText value="#{obtenerOracionCompletaGestionBean.obtenerOracion(g)}" />

@@ -52,4 +52,6 @@ public interface EmailDAO {
     
     public Email buscarPrincipalPorSujeto(int idSujeto);
     
+    public List<Email> buscarPorCliente(String numeroCliente);
+    
 }

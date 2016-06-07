@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 17/05/2016 10:10:17 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 30/05/2016 10:43:49 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.EstatusInformativo" optimistic-lock="version" table="estatus_informativo">
     <id name="idEstatusInformativo" type="java.lang.Integer">

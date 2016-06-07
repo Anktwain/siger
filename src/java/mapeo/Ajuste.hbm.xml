@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 30/05/2016 10:43:49 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.Ajuste" optimistic-lock="version" table="ajuste">
+    <id name="idAjuste" type="java.lang.Integer">
+      <column name="id_ajuste"/>
+      <generator class="identity"/>
+    </id>
+    <many-to-one class="dto.Actualizacion" fetch="select" name="actualizacion">
+      <column name="id_actualizacion" not-null="true"/>
+    </many-to-one>
+    <property name="tipo" type="int">
+      <column name="tipo" not-null="true"/>
+    </property>
+    <property name="ajuste" type="string">
+      <column length="100" name="ajuste" not-null="true"/>
+    </property>
+  </class>
+</hibernate-mapping>

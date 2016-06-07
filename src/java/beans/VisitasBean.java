@@ -27,6 +27,7 @@ import javax.faces.view.ViewScoped;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import util.GeneradorPdf;
+import util.GestionAutomatica;
 import util.ManejadorArchivosDeTexto;
 import util.constantes.Directorios;
 import util.constantes.Impresiones;
@@ -165,6 +166,7 @@ public class VisitasBean implements Serializable{
       imp.setDireccion(direccion);
       if (impresionDao.insertar(imp)) {
         if (generarPdf(direccion)) {
+          GestionAutomatica.generarGestionAutomatica("32RUVD", creditoActual, indexBean.getUsuario(), "SE GENERO VISITA DOMICILIARIA PARA EL CREDITO " + creditoActual.getNumeroCredito() + ".");
           FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo, ahora puede descargarlo."));
         } else {
           FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
@@ -178,7 +180,8 @@ public class VisitasBean implements Serializable{
     try {
       InputStream stream = new FileInputStream(GeneradorPdf.crearPdf(nombrarPdf(), creditoActual, direccion, creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito())));
       archivo = new DefaultStreamedContent(stream, "application/pdf", nombrarPdf());
-      rutaPdf = "http://localhost:8080/pdfs/" + archivo.getName();
+      rutaPdf = "http://binah:8080/pdfs/" + archivo.getName();
+      //rutaPdf = "http://localhost:8080/pdfs/" + archivo.getName();
       descargarPdf = true;
       return true;
     } catch (Exception e) {

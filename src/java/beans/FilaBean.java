@@ -1,7 +1,7 @@
 package beans;
 
 import carga.Direccionador;
-import dto.carga.Fila;
+import dto.Fila;
 import java.io.Serializable;
 import java.util.Arrays;
 import dao.DespachoDAO;

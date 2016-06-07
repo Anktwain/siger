@@ -57,4 +57,5 @@ public interface TelefonoDAO {
   
   public Telefono buscarTelefonoPrincipal(int idSujeto);
   
+  public List<Telefono> buscarPorCliente(String numeroCliente);
 }

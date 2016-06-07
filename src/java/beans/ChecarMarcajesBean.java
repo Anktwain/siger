@@ -7,12 +7,14 @@ package beans;
 
 import dao.CampanaDAO;
 import dao.CreditoDAO;
+import dao.DevolucionDAO;
 import dao.GestionDAO;
 import dao.HistorialDAO;
 import dao.SubproductoDAO;
 import dto.Credito;
 import impl.CampanaIMPL;
 import impl.CreditoIMPL;
+import impl.DevolucionIMPL;
 import impl.GestionIMPL;
 import impl.HistorialIMPL;
 import impl.SubproductoIMPL;
@@ -42,16 +44,16 @@ public class ChecarMarcajesBean implements Serializable {
   private final CampanaDAO campanaDao;
   private final GestionDAO gestionDao;
   private final CreditoDAO creditoDao;
-  private final SubproductoDAO subproductoDao;
   private final HistorialDAO historialDao;
+  private final DevolucionDAO devolucionDao;
 
   //CONSTRUCTOR
   public ChecarMarcajesBean() {
     campanaDao = new CampanaIMPL();
     gestionDao = new GestionIMPL();
     creditoDao = new CreditoIMPL();
-    subproductoDao = new SubproductoIMPL();
     historialDao = new HistorialIMPL();
+    devolucionDao = new DevolucionIMPL();
     creditoActual = creditoActualBean.getCreditoActual();
   }
 
@@ -121,5 +123,13 @@ public class ChecarMarcajesBean implements Serializable {
       return "";
     }
   }
-
+  
+  // METODO QUE VERIFICA SI EL CREDITO HA SIDO DEVUELTO
+  public String verificaDevuelto() {
+    if (devolucionDao.esGestionable(creditoActual.getIdCredito())) {
+      return "";
+    } else {
+      return "Inactivo";
+    }
+  }
 }

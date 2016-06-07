@@ -1,6 +1,6 @@
 package carga.asignacion;
 
-import dto.carga.Fila;
+import dto.Fila;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;

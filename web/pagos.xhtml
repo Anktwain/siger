@@ -58,7 +58,7 @@
                 <p:contextMenu for="revisionPagos" style="width:250px;">
                   <p:menuitem value="Ver lista de comprobantes" icon="ui-icon-zoomin" actionListener="#{pagosBean.visualizarListaComprobantes(pagosBean.pagoSeleccionado)}" update=":formVisualizarPagos" />
                   <p:menuitem value="Enviar a revision" icon="ui-icon-mail-closed" actionListener="#{pagosBean.verificarCorreoRevision()}" update="growl, mailPagoForm" />
-                  <p:menuitem value="Aprobar pago" icon="ui-icon-check" oncomplete="PF('confirmacionAprobarPagoDialog').show()" actionListener="#{pagosBean.prepararMontoAprobado()}" update="confirmacionAprobarPagoForm, formPagoComisiones" />
+                  <p:menuitem value="Aprobar pago" icon="ui-icon-check" oncomplete="PF('confirmacionAprobarPagoDialog').show()" actionListener="#{pagosBean.prepararMontoAprobado()}" update="confirmacionAprobarPagoForm, formPagoComisiones, formPagosGestores" />
                   <p:menuitem value="Rechazar pago" icon="ui-icon-cancel" oncomplete="PF('confirmacionRechazarPagoDialog').show()" />
                 </p:contextMenu>
                 <p:dataTable id="revisionPagos" var="pr" value="#{pagosBean.pagosPorRevisar}" rowKey="#{pr.idPago}" selection="#{pagosBean.pagoSeleccionado}" selectionMode="single" emptyMessage="No existen pagos por revisar." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false">
@@ -172,6 +172,9 @@
               <h:form id="formTodosPagos">
                 <table>
                   <tr>
+                    <td>
+                      <h4 class="no-margin">Gestor:</h4>
+                    </td>
                     <td>
                       <p:selectOneMenu value="#{pagosBean.gestorSeleccionado.idGestor}" style="width:200px">
                         <f:selectItem itemValue="0" itemLabel="Todos" />

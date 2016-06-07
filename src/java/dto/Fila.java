@@ -1,4 +1,4 @@
-package dto.carga;
+package dto;
 
 import dto.Despacho;
 import dto.Despacho;
