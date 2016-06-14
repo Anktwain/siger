@@ -125,11 +125,11 @@ public class SigerViejoBean implements Serializable {
       while (rs.next()) {
         TelefonoSigerViejo t = new TelefonoSigerViejo();
         t.setNumero(rs.getString("Numero"));
-        t.setNumero(rs.getString("Lugar"));
-        t.setNumero(rs.getString("Tipo"));
-        t.setNumero(rs.getString("Extencion"));
-        t.setNumero(rs.getString("Lada"));
-        t.setNumero(rs.getString("Horario"));
+        t.setLugar(rs.getString("Lugar"));
+        t.setTipo(rs.getString("Tipo"));
+        t.setExtension(rs.getString("Extencion"));
+        t.setLada(rs.getString("Lada"));
+        t.setHorario(rs.getString("Horario"));
         listaTelefonos.add(t);
       }
       rs.close();
@@ -350,7 +350,7 @@ public class SigerViejoBean implements Serializable {
   }
 
   // CLASE MIEMBRO PARA OBTENER LOS CONTACTOS ANTERIORES
-  private static class ContactoSigerViejo {
+  public static class ContactoSigerViejo {
 
     // VARIABLES DE CLASE
     private String nombre;

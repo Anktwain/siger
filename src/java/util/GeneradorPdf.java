@@ -80,20 +80,28 @@ public class GeneradorPdf {
       documento.add(new Paragraph(Chunk.NEWLINE));
       documento.add(new Paragraph(Chunk.NEWLINE));
       documento.add(new Paragraph(Chunk.NEWLINE));
+      // TABULADOR
+      String tabulador = "               ";
       // DATOS DEL DESTINATARIO
-      p = new Paragraph("          " + credito.getDeudor().getSujeto().getNombreRazonSocial(), cuerpo2);
+      p = new Paragraph(tabulador + credito.getDeudor().getSujeto().getNombreRazonSocial().toUpperCase(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
-      p = new Paragraph("          " + direccion.getCalle() + " " + direccion.getExterior() + " " + direccion.getInterior(), cuerpo2);
+      if (direccion.getInterior() == null) {
+        p = new Paragraph(tabulador + direccion.getCalle().toUpperCase() + " " + direccion.getExterior().toUpperCase(), cuerpo2);
+        p.setAlignment(Chunk.ALIGN_LEFT);
+        documento.add(p);
+      } else {
+        p = new Paragraph(tabulador + direccion.getCalle().toUpperCase() + " " + direccion.getExterior().toUpperCase() + " " + direccion.getInterior().toUpperCase(), cuerpo2);
+        p.setAlignment(Chunk.ALIGN_LEFT);
+        documento.add(p);
+      }
+      p = new Paragraph(tabulador + direccion.getColonia().getTipo().toUpperCase() + " " + direccion.getColonia().getNombre().toUpperCase(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
-      p = new Paragraph("          " + direccion.getColonia().getTipo().toUpperCase() + " " + direccion.getColonia().getNombre().toUpperCase(), cuerpo2);
+      p = new Paragraph(tabulador + direccion.getMunicipio().getNombre().toUpperCase() + ", " + direccion.getEstadoRepublica().getAbreviatura().toUpperCase(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
-      p = new Paragraph("          " + direccion.getMunicipio().getNombre().toUpperCase() + ", " + direccion.getEstadoRepublica().getAbreviatura().toUpperCase(), cuerpo2);
-      p.setAlignment(Chunk.ALIGN_LEFT);
-      documento.add(p);
-      p = new Paragraph("          " + "C.P. " + direccion.getColonia().getCodigoPostal(), cuerpo2);
+      p = new Paragraph(tabulador + "C.P. " + direccion.getColonia().getCodigoPostal(), cuerpo2);
       p.setAlignment(Chunk.ALIGN_LEFT);
       documento.add(p);
       // DATOS DEL CREDITO
@@ -107,26 +115,26 @@ public class GeneradorPdf {
       String producto, texto1, texto2, texto3, texto4, texto5;
       texto3 = TextoPdfs.TEXTO_GENERAL_3;
       texto5 = TextoPdfs.TEXTO_GENERAL_5;
-      if (credito.getProducto().getNombre().contains("CREDITO EXPRESS CT")) {
-        // CREDITOS SOFOM
-        producto = "Crédito TELMEX (SOFOM)";
-        texto1 = TextoPdfs.TEXTO_TELMEX_1;
-        texto2 = TextoPdfs.TEXTO_TELMEX_2;
-        texto4 = "Numero de cuenta asociado a su credito (" + credito.getNumeroCuenta() + ")";
-      } else if (credito.getProducto().getNombre().contains("EXPRESS")) {
-        // CREDITOS CT EXPRESS
+      if (credito.getSubproducto().getNombre().contains("CT EXPRESS")) {
         producto = "Credito CT Express";
         texto1 = TextoPdfs.TEXTO_EXPRESS_1;
         texto2 = TextoPdfs.TEXTO_EXPRESS_2;
         texto4 = TextoPdfs.TEXTO_EXPRESS_4;
-      } else if (credito.getProducto().getNombre().contains("TELMEX")) {
-        // CREDITOS LINEA TELMEX
-        producto = "Crédito TELMEX";
+      }
+      else if(credito.getProducto().getNombre().contains("EXPRESS ABIERTO")){
+        producto = "Credito CT Express";
+        texto1 = TextoPdfs.TEXTO_EXPRESS_1;
+        texto2 = TextoPdfs.TEXTO_EXPRESS_2;
+        texto4 = TextoPdfs.TEXTO_EXPRESS_4;
+      }
+      else if (credito.getProducto().getNombre().contains("CREDITO EXPRESS CT")) {
+        producto = "Crédito TELMEX (SOFOM)";
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
         texto2 = TextoPdfs.TEXTO_TELMEX_2;
-        texto4 = TextoPdfs.TEXTO_TELMEX_4;
-      } else {
-        producto = credito.getProducto().getNombre();
+        texto4 = "Numero de cuenta asociado a su credito (" + credito.getNumeroCuenta() + ")";
+      }
+      else{
+        producto = "Crédito TELMEX (SOFOM)";
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
         texto2 = TextoPdfs.TEXTO_TELMEX_2;
         texto4 = TextoPdfs.TEXTO_TELMEX_4;
@@ -168,14 +176,12 @@ public class GeneradorPdf {
       documento.add(p);
       documento.add(new Paragraph(Chunk.NEWLINE));
       documento.add(new Paragraph(Chunk.NEWLINE));
-      documento.add(new Paragraph(Chunk.NEWLINE));
       p = new Paragraph("A T E N T A M E N T E", cuerpo);
       p.setAlignment(Chunk.ALIGN_CENTER);
       documento.add(p);
       p = new Paragraph("BUFETE DEL RIO, S.C.", cuerpo);
       p.setAlignment(Chunk.ALIGN_CENTER);
       documento.add(p);
-      documento.add(new Paragraph(Chunk.NEWLINE));
       documento.add(new Paragraph(Chunk.NEWLINE));
       // AVISO DE PRIVACIDAD
       p = new Paragraph(TextoPdfs.AVISO_PRIVACIDAD, cuerpoMini);

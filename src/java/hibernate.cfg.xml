@@ -4,10 +4,9 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sigerbd?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.url">jdbc:mysql://10.0.0.26:3306/sigerbd?zeroDateTimeBehavior=convertToNull</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">root</property>
-    <property name="connection.pool_size">20</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="hibernate.enable_lazy_load_no_trans">true</property>
     <mapping resource="mapeo/Auto.hbm.xml"/>
@@ -32,6 +31,7 @@
     <mapping resource="mapeo/QuienGestion.hbm.xml"/>
     <mapping resource="mapeo/Usuario.hbm.xml"/>
     <mapping resource="mapeo/Credito.hbm.xml"/>
+    <mapping resource="mapeo/Evento.hbm.xml"/>
     <mapping resource="mapeo/Pago.hbm.xml"/>
     <mapping resource="mapeo/DondeGestion.hbm.xml"/>
     <mapping resource="mapeo/BloqueVisita.hbm.xml"/>

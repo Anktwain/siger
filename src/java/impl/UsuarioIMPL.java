@@ -148,12 +148,11 @@ public class UsuarioIMPL implements UsuarioDAO {
   @Override
   public Usuario buscar(String nombreLogin, String password) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Usuario usuario;
-      String consulta = "SELECT * FROM usuario u WHERE u.perfil != " + Perfiles.ELIMINADO + " AND u.perfil != " + Perfiles.GESTOR_NO_CONFIRMADO + " AND u.nombre_login = '" + nombreLogin + "' AND u.password = '" + password + "';";
+    Usuario usuario = null;
+      String consulta = "SELECT * FROM usuario WHERE perfil NOT IN (" + Perfiles.ADMINISTRADOR_NO_CONFIRMADO + ", " + Perfiles.GESTOR_NO_CONFIRMADO + ", " + Perfiles.ELIMINADO + ") AND nombre_login = '" + nombreLogin + "' AND password = '" + password + "';";
     try {
       usuario = (Usuario) sesion.createSQLQuery(consulta).addEntity(Usuario.class).uniqueResult();
     } catch (HibernateException he) {
-      usuario = null;
       Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
@@ -181,7 +180,7 @@ public class UsuarioIMPL implements UsuarioDAO {
               + correo + "'").uniqueResult();
     } catch (HibernateException he) {
       usuario = null;
-      Logs.log.error("No s epudo buscar el usuario por correo");
+      Logs.log.error("No se pudo buscar el usuario por correo");
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

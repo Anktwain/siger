@@ -48,6 +48,7 @@ public class VisitasBean implements Serializable{
   VistaCreditoBean vistaCreditoBean = (VistaCreditoBean) elContext.getELResolver().getValue(elContext, null, "vistaCreditoBean");
 
   // VARIABLES DE CLASE
+  private float saldoVencido;
   private final CreditoDAO creditoDao;
   private final ImpresionDAO impresionDao;
   private final Credito creditoActual;
@@ -65,8 +66,11 @@ public class VisitasBean implements Serializable{
     periodoSepomexActivo = false;
     periodoVisitasActivo = false;
     descargarPdf = false;
-    verificarPeriodoSepomex();
-    verificarPeriodoVisitas();
+    saldoVencido = creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito());
+    // TO FIX
+    // SE COMENTAN HASTA IMPLEMENTAR EL MODULO DE VISITAS
+    //verificarPeriodoSepomex();
+    //verificarPeriodoVisitas();
   }
   
   // METODO QUE VERIFICA SI EL PERIODO DE IMPRESIONES PARA CORREO ESTA ACTIVO
@@ -165,7 +169,7 @@ public class VisitasBean implements Serializable{
       imp.setTipoImpresion(Impresiones.IMPRESION_NORMAL);
       imp.setDireccion(direccion);
       if (impresionDao.insertar(imp)) {
-        if (generarPdf(direccion)) {
+        if (generarPdf(direccion, saldoVencido)) {
           GestionAutomatica.generarGestionAutomatica("32RUVD", creditoActual, indexBean.getUsuario(), "SE GENERO VISITA DOMICILIARIA PARA EL CREDITO " + creditoActual.getNumeroCredito() + ".");
           FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo, ahora puede descargarlo."));
         } else {
@@ -176,9 +180,9 @@ public class VisitasBean implements Serializable{
   }
 
   // METODO QUE GENERA EL PDF
-  public boolean generarPdf(Direccion direccion) {
+  public boolean generarPdf(Direccion direccion, float saldoVencido) {
     try {
-      InputStream stream = new FileInputStream(GeneradorPdf.crearPdf(nombrarPdf(), creditoActual, direccion, creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito())));
+      InputStream stream = new FileInputStream(GeneradorPdf.crearPdf(nombrarPdf(), creditoActual, direccion, saldoVencido));
       archivo = new DefaultStreamedContent(stream, "application/pdf", nombrarPdf());
       rutaPdf = "http://binah:8080/pdfs/" + archivo.getName();
       //rutaPdf = "http://localhost:8080/pdfs/" + archivo.getName();
@@ -230,6 +234,14 @@ public class VisitasBean implements Serializable{
   
   public void setArchivo(StreamedContent archivo) {
     this.archivo = archivo;
+  }
+
+  public float getSaldoVencido() {
+    return saldoVencido;
+  }
+
+  public void setSaldoVencido(float saldoVencido) {
+    this.saldoVencido = saldoVencido;
   }
 
 }

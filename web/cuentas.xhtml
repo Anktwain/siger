@@ -109,14 +109,15 @@
                   <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{cuentasBean.selectorDeVista()}" />
                   <p:menuitem value="Devolver" icon="ui-icon-alert" oncomplete="PF('confirmacionDialog').show();" />
                 </p:contextMenu>
-                <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditos}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditoSeleccionado}" emptyMessage="No existen creditos gestionables." selectionMode="single" paginator="true" rows="15" paginatorPosition="bottom" style="width: 1050px;">
+                <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditos}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditosSeleccionados}" emptyMessage="No existen creditos gestionables." paginator="true" rows="15" paginatorPosition="bottom" style="width: 1100px;">
+                  <p:column selectionMode="multiple" style="width:35px;text-align:center" />  
                   <p:column headerText="Credito" style="width:150px;" sortBy="#{c.numeroCredito}">
                     <h:outputText value="#{c.numeroCredito}" style="float:right"/>
                   </p:column>
-                  <p:column headerText="Nombre del deudor" style="width:400px;" sortBy="#{c.deudor.sujeto.nombreRazonSocial}">
+                  <p:column headerText="Nombre del deudor" style="width:400px;" sortBy="#{c.deudor.sujeto.nombreRazonSocial}" footerText="Total de creditos filtrados en esta busqueda:">
                     <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
                   </p:column>
-                  <p:column headerText="Saldo vencido" style="width:150px;" sortBy="#{cuentasBean.calcularSaldoVencido(c)}"> 
+                  <p:column headerText="Saldo vencido" style="width:150px;" sortBy="#{cuentasBean.calcularSaldoVencido(c)}" footerText="#{cuentasBean.listaCreditos.size()}"> 
                     <h:outputText value="#{cuentasBean.calcularSaldoVencido(c)}" style="float:right">
                       <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
@@ -127,6 +128,9 @@
                   <p:column headerText="Gestor asignado" style="width:150px;" sortBy="#{c.gestor.usuario.nombreLogin}">
                     <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>
                   </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton value="Reasignar creditos seleccionados" icon="ui-icon-refresh" oncomplete="PF('reasignacionDialog').show();" />
+                  </f:facet>
                 </p:dataTable>
               </div>
             </h:form>
@@ -173,6 +177,28 @@
       <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('confirmacionDialog').hide();" />
     </h:form>
   </p:dialog>
+  <!-- DIALOGO PARA REASIGNACION -->
+  <p:dialog id="dlgReasignacionDirecta" widgetVar="reasignacionDialog" modal="true" header="Confirme esta reasignacion">
+    <h:form id="reasignacionDirectaForm">
+      Realmente desea reasignar este(estos) credito(s)?
+      <br />
+      <br />
+      Seleccione el gestor al que reasignara los creditos:
+      <br />
+      <br />
+      <p:selectOneMenu id="listaGestoresVistaCuentas" value="#{cuentasBean.gestorSeleccionado.idGestor}" style="width:200px">
+        <f:selectItems value="#{cuentasBean.listaGestores}" var="ges" itemLabel="#{ges.usuario.nombreLogin}" itemValue="#{ges.idGestor}" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      <div align="center">
+        <p:commandButton value="Si" icon="ui-icon-check" oncomplete="PF('reasignacionDialog').hide();" actionListener="#{cuentasBean.reasignarGestor(cuentasBean.creditosSeleccionados)}" update=":growl, formCuentas:cuentas" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="No" icon="ui-icon-close" oncomplete="PF('reasignacionDialog').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+
   <!-- DIALOGO BARRA DE CARGA -->
   <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
   <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >

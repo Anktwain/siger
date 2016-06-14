@@ -32,15 +32,71 @@
           </li>
         </ul>
       </div>
-      <h1>
-        M&oacute;dulo de tareas
-      </h1>
-      <h3>
-        En construcci&oacute;n!
-      </h3>
-      <h:graphicImage library="img" name="construccion.png" />
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Tareas</h3>
+          <span>Consulte las tareas de algun gestor en especifico.</span>
+          <span>Agregue alguna tarea para ser realizada por los gestores.</span>
+        </div>
+      </div>
+      <div align="center">
+        <h:form id="tareasForm">
+          <p:schedule widgetVar="calendario" value="#{tareasBean.modelo}" locale="mx" style="width: 1200px; height: 1000px;">
+            <p:ajax event="dateSelect" update=":growl" listener="#{tareasBean.obtenerEvento}" oncomplete="PF('nuevoEventoDlg').show();" />
+          </p:schedule>
+        </h:form>
+      </div>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
+    <p:dialog widgetVar="nuevoEventoDlg" header="Nuevo evento">
+      <h:form id="egregarEventoForm">
+        <h:outputText value="#{tareasBean.diaSeleccionado}" />
+        <h:panelGrid id="eventDetails" columns="2">
+          <p:outputLabel value="Nombre:" />
+          <p:inputText id="title" value="#{tareasBean.evento.title}" required="true" />
+          <p:outputLabel value="Desde:" />
+          <p:calendar id="from" value="#{tareasBean.evento.fechaInicio}" showButtonPanel="true" pattern="yyyy/MM/dd HH:mm"/>
+          <p:outputLabel value="Hasta:" />
+          <p:calendar id="to" value="#{tareasBean.evento.fechaFin}" showButtonPanel="true" pattern="yyyy/MM/dd HH:mm"/>
+          <p:outputLabel value="Todo el dia:" />
+          <h:selectBooleanCheckbox value="#{tareasBean.todoElDia}" />
+        </h:panelGrid>
+        <div align="center">
+          <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('nuevoEventoDlg').hide();" />
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:commandButton value="Aceptar" icon="ui-icon-close" actionListener="#{tareasBean.agregarEvento()}" oncomplete="PF('calendario').update();PF('nuevoEventoDlg').hide();" />
+        </div>
+      </h:form>
+    </p:dialog>
+    <script type="text/javascript">
+      var PrimeFaces;
+      PrimeFaces.locales['mx'] = {
+        closeText: 'Cerrar',
+        prevText: 'Anterior',
+        nextText: 'Siguiente',
+        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+        dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+        weekHeader: 'Semana',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        timeOnlyTitle: 'Sólo hora',
+        timeText: 'Tiempo',
+        hourText: 'Hora',
+        minuteText: 'Minuto',
+        secondText: 'Segundo',
+        currentText: 'Fecha actual',
+        ampm: false,
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Día',
+        allDayText: 'Todo el día'
+      };
+    </script>
   </body>
 </html>

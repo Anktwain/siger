@@ -19,6 +19,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
 import util.constantes.Convenios;
+import util.constantes.Devoluciones;
 import util.constantes.Pagos;
 import util.log.Logs;
 
@@ -234,7 +235,7 @@ public class PagoIMPL implements PagoDAO {
   public double calcularRecuperacionDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     double rec;
-    String consulta = "SELECT (((SELECT ROUND(SUM(monto_aprobado), 2) FROM pago WHERE id_pago IN (SELECT id_pago FROM promesa_pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion) AND id_despacho = " + idDespacho + "))))*100)/(SELECT ROUND(SUM(saldo_vencido), 2) FROM actualizacion WHERE id_credito NOT IN (SELECT id_credito FROM devolucion) AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ")));";
+    String consulta = "SELECT (((SELECT ROUND(SUM(monto_aprobado), 2) FROM pago WHERE id_pago IN (SELECT id_pago FROM promesa_pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ") AND id_despacho = " + idDespacho + "))))*100)/(SELECT ROUND(SUM(saldo_vencido), 2) FROM actualizacion WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ") AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ")));";
     try {
       if (sesion.createSQLQuery(consulta).uniqueResult() == null) {
         rec = 0;
@@ -271,7 +272,7 @@ public class PagoIMPL implements PagoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Pago> pagos = new ArrayList();
     try {
-      String consulta = "SELECT * FROM pago WHERE id_gestor = " + idGestor + " AND id_quincena = " + new QuincenaIMPL().obtenerQuincenaActual().getIdQuincena() + " AND estatus = " + Pagos.APROBADO + ";";
+      String consulta = "SELECT * FROM pago WHERE id_gestor = " + idGestor + " AND id_quincena = " + new QuincenaIMPL().obtenerQuincenaActual().getIdQuincena() + " AND estatus = " + Pagos.APROBADO + " AND id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = 2 AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ")));";
       pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
     } catch (HibernateException he) {
       Logs.log.error(he.getMessage());
@@ -312,7 +313,7 @@ public class PagoIMPL implements PagoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Pago> pagos = new ArrayList();
     Quincena q = new QuincenaIMPL().obtenerQuincenaActual();
-    String consulta = "SELECT * FROM pago WHERE id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND fecha_deposito BETWEEN '" + q.getFechaInicio() + "' AND '" + q.getFechaFin() + "';";
+    String consulta = "SELECT * FROM pago WHERE id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND id_quincena = " + q.getIdQuincena() + ";";
     try {
       pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
     } catch (HibernateException he) {

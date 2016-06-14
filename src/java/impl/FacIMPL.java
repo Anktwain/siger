@@ -18,15 +18,17 @@ import util.log.Logs;
  *
  * @author Eduardo
  */
-public class FacIMPL implements FacDAO{
+public class FacIMPL implements FacDAO {
 
   @Override
   public List<Fac> buscarPorCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Fac> facs = new ArrayList();
+    String consulta = "SELECT * FROM fac WHERE id_actualizacion = (SELECT id_actualizacion FROM actualizacion WHERE id_credito = " + idCredito + ") GROUP BY mes, anio ORDER BY anio DESC, mes DESC;";
     try {
-      facs = sesion.createSQLQuery("SELECT DISTINCT * FROM fac WHERE id_actualizacion = (SELECT id_actualizacion FROM actualizacion WHERE id_credito = " + idCredito + ") ORDER BY anio DESC, mes DESC;").addEntity(Fac.class).list();
+      facs = sesion.createSQLQuery(consulta).addEntity(Fac.class).list();
     } catch (HibernateException he) {
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
@@ -39,5 +41,5 @@ public class FacIMPL implements FacDAO{
       sesion.close();
     }
   }
-  
+
 }

@@ -260,12 +260,79 @@ public class CuentasGestorBean implements Serializable {
     }
   }
 
-// METODO QUE OBTIENE LA LISTA DE CREDITOS SEGUN LA CAMPAÑA ELEGIDA
+// METODO QUE PREPARA LA GESTION DE CAMPAÑA SEGUN LA ELECCION EN LA VISTA CUENTAS GESTOR
   public void preparaCampana() {
+    List<Credito> listaRojas = new ArrayList();
+    List<Credito> listaAmarillas = new ArrayList();
+    List<Credito> listaVerdes = new ArrayList();
+    List<Credito> lista = creditoDao.buscarCreditosPorCampanaGestor(seleccion.getIdCampana(), indexBean.getUsuario().getIdUsuario());
+    for (int i = 0; i < (lista.size()); i++) {
+      int dias = gestionDao.checarDiasSinGestionar(lista.get(i).getIdCredito()).intValue();
+      if (dias <= 3) {
+        listaVerdes.add(lista.get(i));
+      }
+      if ((dias > 3) && (dias <= 7)) {
+        listaAmarillas.add(lista.get(i));
+      }
+      if (dias > 7) {
+        listaRojas.add(lista.get(i));
+      }
+    }
     posicion = 0;
-    // TO FIX
-    // HACER QUE SE CARGUEN PRIMERO LOS ROJOS, LUEGO AMARILLOS Y AL FINAL VERDES
-    creditosCampana = creditoDao.buscarCreditosPorCampanaGestor(seleccion.getIdCampana(), indexBean.getUsuario().getIdUsuario());
+    creditosCampana = new ArrayList();
+    creditosCampana.addAll(listaRojas);
+    creditosCampana.addAll(listaAmarillas);
+    creditosCampana.addAll(listaVerdes);
+    if (!creditosCampana.isEmpty()) {
+      for (int i = 0; i < (creditosCampana.size()); i++) {
+        if (!gestionDao.buscarGestionHoy(creditosCampana.get(i).getIdCredito())) {
+          posicion = i;
+          break;
+        }
+      }
+      creditoActualBean.setCreditoActual(creditosCampana.get(posicion));
+      try {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCampanaActual.xhtml");
+      } catch (IOException ioe) {
+        Logs.log.error("No se pudo redirigir a la vista de la campaña actual.");
+        Logs.log.error(ioe);
+      }
+    }
+  }
+  
+  // METODO QUE PREPARA LA GESTION DE CAMPAÑA DE LOS CREDITOS FILTRADOS EN LA VISTA BUSQUEDA
+  public void preparaCampanaBusqueda(List<Credito> creditos) {
+    CreditoCampana c = new CreditoCampana();
+    c.setCuentasEnCampana(creditos.size());
+    c.setNombreCampana("Campaña especial busqueda creditos");
+    int progreso = 0;
+    for (int i = 0; i < (creditos.size()); i++) {
+      if (gestionDao.buscarGestionHoy(creditos.get(i).getIdCredito())) {
+        progreso = progreso + 1;
+      }
+    }
+    c.setProgresoCampana(progreso);
+    seleccion = c;
+    List<Credito> listaRojas = new ArrayList();
+    List<Credito> listaAmarillas = new ArrayList();
+    List<Credito> listaVerdes = new ArrayList();
+    for (int i = 0; i < (creditos.size()); i++) {
+      int dias = gestionDao.checarDiasSinGestionar(creditos.get(i).getIdCredito()).intValue();
+      if (dias <= 3) {
+        listaVerdes.add(creditos.get(i));
+      }
+      if ((dias > 3) && (dias <= 7)) {
+        listaAmarillas.add(creditos.get(i));
+      }
+      if (dias > 7) {
+        listaRojas.add(creditos.get(i));
+      }
+    }
+    posicion = 0;
+    creditosCampana = new ArrayList();
+    creditosCampana.addAll(listaRojas);
+    creditosCampana.addAll(listaAmarillas);
+    creditosCampana.addAll(listaVerdes);
     if (!creditosCampana.isEmpty()) {
       for (int i = 0; i < (creditosCampana.size()); i++) {
         if (!gestionDao.buscarGestionHoy(creditosCampana.get(i).getIdCredito())) {

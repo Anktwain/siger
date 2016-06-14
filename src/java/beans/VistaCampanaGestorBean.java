@@ -51,7 +51,7 @@ public class VistaCampanaGestorBean implements Serializable {
   // METODO QUE CARGA LOS DATOS NECESARIOS
   public final void obtenerDatos() {
     creditoActualBean.setCreditoActual(cuentasGestorBean.creditosCampana.get(cuentasGestorBean.getPosicion()));
-    cuentasGestorBean.creditosCampana = creditoDao.buscarCreditosPorCampanaGestor(cuentasGestorBean.getSeleccion().getIdCampana(), cuentasGestorBean.indexBean.getUsuario().getIdUsuario());
+    //cuentasGestorBean.creditosCampana = creditoDao.buscarCreditosPorCampanaGestor(cuentasGestorBean.getSeleccion().getIdCampana(), cuentasGestorBean.indexBean.getUsuario().getIdUsuario());
     totalCuentas = cuentasGestorBean.creditosCampana.size();
     checarProgreso();
   }

@@ -29,6 +29,7 @@ import impl.SujetoIMPL;
 import java.io.File;
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,6 +78,9 @@ public class PagosBean implements Serializable {
   private String urlImagen;
   private String nombreArchivo;
   private String nombreArchivo2;
+  private String sumaAprobados;
+  private String sumaCreditos;
+  private String sumaEficiencia;
   private Pago pagoSeleccionado;
   private ComprobantePago comprobanteSeleccionado;
   private Gestor gestorSeleccionado;
@@ -298,9 +302,11 @@ public class PagosBean implements Serializable {
     } else {
       copia = "cobranza_ibr@corporativodelrio.com";
       String producto;
-      if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("CT EXPRESS")) {
+      if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("CT EXPRESS")) {
         producto = "CT EXPRESS";
-      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("PERSONAL")) {
+      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("PERSONAL")) {
+        producto = "SOFOM PERSONAL";
+      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("PERSONALES")) {
         producto = "SOFOM PERSONAL";
       } else {
         producto = "SOFOM COMERCIAL";
@@ -411,8 +417,10 @@ public class PagosBean implements Serializable {
     return p;
   }
 
-  // METODO QUE GNERA LA TABLA DE PAGOS POR GESTOR
+  // METODO QUE GENERA LA TABLA DE PAGOS POR GESTOR
   public List<PagoGestor> generarPagosGestor() {
+    float aprobados = 0;
+    float creditos = 0;
     List<PagoGestor> lista = new ArrayList();
     List<Gestor> gestores = gestorDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     for (int i = 0; i < (gestores.size()); i++) {
@@ -421,9 +429,22 @@ public class PagosBean implements Serializable {
       pg.setGestor(gestores.get(i).getUsuario().getNombreLogin());
       pg.setMontoPagos(pagoDao.calcularMontoGestor(gestores.get(i).getIdGestor()));
       pg.setMontoPrometido(actualizacionDao.obtenerMontoPrometidoGestor(gestores.get(i).getIdGestor()));
-      pg.setEficiencia((pg.getMontoPagos() * 100) / pg.getMontoPrometido());
+      if (pg.getMontoPrometido() == 0) {
+        pg.setEficiencia(0);
+      } else {
+        pg.setEficiencia(((pg.getMontoPagos() * 100) / pg.getMontoPrometido()));
+      }
+      aprobados = aprobados + pg.getMontoPagos();
+      creditos = creditos + pg.getMontoPrometido();
       lista.add(pg);
     }
+    DecimalFormat df = new DecimalFormat();
+    df.setMaximumFractionDigits(2);
+    df.setMinimumFractionDigits(2);
+    sumaAprobados = "$" + df.format(aprobados);
+    sumaCreditos = "$" + df.format(creditos);
+    df.setMaximumFractionDigits(8);
+    sumaEficiencia = String.format("%,2.6f", pagoDao.calcularRecuperacionDespacho(indexBean.getUsuario().getDespacho().getIdDespacho())) + " %";
     return lista;
   }
 
@@ -775,6 +796,30 @@ public class PagosBean implements Serializable {
 
   public void setNombreArchivo2(String nombreArchivo2) {
     this.nombreArchivo2 = nombreArchivo2;
+  }
+
+  public String getSumaAprobados() {
+    return sumaAprobados;
+  }
+
+  public void setSumaAprobados(String sumaAprobados) {
+    this.sumaAprobados = sumaAprobados;
+  }
+
+  public String getSumaCreditos() {
+    return sumaCreditos;
+  }
+
+  public void setSumaCreditos(String sumaCreditos) {
+    this.sumaCreditos = sumaCreditos;
+  }
+
+  public String getSumaEficiencia() {
+    return sumaEficiencia;
+  }
+
+  public void setSumaEficiencia(String sumaEficiencia) {
+    this.sumaEficiencia = sumaEficiencia;
   }
 
   // CLASE MIEMBRO QUE RELACIONA AL GESTOR CON SUS PAGOS

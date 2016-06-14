@@ -9,9 +9,11 @@ import dao.CampanaDAO;
 import dao.CreditoDAO;
 import dao.DireccionDAO;
 import dao.EstadoRepublicaDAO;
+import dao.GestionDAO;
 import dao.InstitucionDAO;
 import dao.MunicipioDAO;
 import dao.ProductoDAO;
+import dao.SubproductoDAO;
 import dao.ZonaDAO;
 import dto.Campana;
 import dto.Credito;
@@ -20,15 +22,19 @@ import dto.EstadoRepublica;
 import dto.Institucion;
 import dto.Municipio;
 import dto.Producto;
+import dto.Subproducto;
 import dto.Zona;
 import impl.CampanaIMPL;
 import impl.CreditoIMPL;
 import impl.DireccionIMPL;
 import impl.EstadoRepublicaIMPL;
+import impl.GestionIMPL;
 import impl.InstitucionIMPL;
 import impl.MunicipioIMPL;
 import impl.ProductoIMPL;
+import impl.SubproductoIMPL;
 import impl.ZonaIMPL;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +45,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Perfiles;
+import util.log.Logs;
 
 /**
  *
@@ -48,22 +55,32 @@ import util.constantes.Perfiles;
 @ViewScoped
 public class BusquedaBean implements Serializable {
 
+  // LLAMADA A OTROS BEANS
+  ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+  IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
+  CuentasGestorBean cuentasGestorBean = (CuentasGestorBean) elContext.getELResolver().getValue(elContext, null, "cuentasGestorBean");
+
   // VARIABLES DE CLASE
   private final ZonaDAO zonaDao;
   private final CreditoDAO creditoDao;
   private final DireccionDAO direccionDao;
   private final InstitucionDAO institucionDao;
   private final ProductoDAO productoDao;
+  private final SubproductoDAO subproductoDao;
   private final CampanaDAO campanaDao;
   private final EstadoRepublicaDAO estadoRepublicaDao;
   private final MunicipioDAO municipioDao;
+  private final GestionDAO gestionDao;
   private Zona zonaSeleccionada;
-  private CreditoDireccion creditoSeleccionado;
+  private CreditoDireccion creditoDireccionSeleccionado;
   private Institucion institucionSeleccionada;
   private Producto productoSeleccionado;
+  private Subproducto subproductoSeleccionado;
   private Campana campanaSeleccionada;
   private EstadoRepublica estadoSeleccionado;
   private Municipio municipioSeleccionado;
+  private Credito creditoSeleccionado;
   private List<EstadoRepublica> listaEstados;
   private List<Municipio> listaMunicipios;
   private List<Zona> listaZonas;
@@ -72,14 +89,12 @@ public class BusquedaBean implements Serializable {
   private List<Institucion> listaInstituciones;
   private List<Producto> listaProductos;
   private List<Campana> listaCampanas;
+  private List<Subproducto> listaSubproductos;
   private Direccion direccionCredito;
   private float saldoInferior;
   private float saldoSuperior;
   private int mesesVencidos;
-
-  // LLAMADA A OTROS BEANS
-  ELContext elContext = FacesContext.getCurrentInstance().getELContext();
-  IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  private String colorSeleccionado;
 
   // CONSTRUCTOR
   public BusquedaBean() {
@@ -89,11 +104,14 @@ public class BusquedaBean implements Serializable {
     listaInstituciones = new ArrayList();
     listaProductos = new ArrayList();
     listaCampanas = new ArrayList();
+    listaSubproductos = new ArrayList();
     zonaSeleccionada = new Zona();
     direccionCredito = new Direccion();
-    creditoSeleccionado = new CreditoDireccion();
+    creditoSeleccionado = new Credito();
+    creditoDireccionSeleccionado = new CreditoDireccion();
     institucionSeleccionada = new Institucion();
     productoSeleccionado = new Producto();
+    subproductoSeleccionado = new Subproducto();
     campanaSeleccionada = new Campana();
     estadoSeleccionado = new EstadoRepublica();
     municipioSeleccionado = new Municipio();
@@ -105,6 +123,8 @@ public class BusquedaBean implements Serializable {
     campanaDao = new CampanaIMPL();
     estadoRepublicaDao = new EstadoRepublicaIMPL();
     municipioDao = new MunicipioIMPL();
+    subproductoDao = new SubproductoIMPL();
+    gestionDao = new GestionIMPL();
     obtenerListas();
   }
 
@@ -153,7 +173,6 @@ public class BusquedaBean implements Serializable {
           listaCreds = creditoDao.buscarCreditosPorEstado(estadoSeleccionado.getIdEstado());
         }
       } else {
-        System.out.println(indexBean.getUsuario().getPerfil());
         if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
           String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_municipio = " + municipioSeleccionado.getIdMunicipio() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
           listaCreds = creditoDao.busquedaEspecialCreditos(consulta);
@@ -170,7 +189,7 @@ public class BusquedaBean implements Serializable {
         cd.setGestorActual(listaCreds.get(i).getGestor().getUsuario().getNombreLogin());
         List<Direccion> dirs = direccionDao.buscarPorSujeto(listaCreds.get(i).getDeudor().getSujeto().getIdSujeto());
         if ((dirs != null) && (dirs.size() > 0)) {
-          cd.setCalleNumero(dirs.get(0).getCalle());
+          cd.setCalleNumero(dirs.get(0).getCalle() + " " + dirs.get(0).getExterior() + " " + dirs.get(0).getInterior());
           cd.setColonia(dirs.get(0).getColonia().getNombre());
           cd.setCp(dirs.get(0).getColonia().getCodigoPostal());
           cd.setEstado(dirs.get(0).getEstadoRepublica().getNombre());
@@ -188,7 +207,7 @@ public class BusquedaBean implements Serializable {
 
   // METODO QUE OBTIENE LA DIRECCION DEL CREDITO SELECCIONADO Y ABRE EL DIALOGO CORRESPONDIENTE
   public void obtenerDireccionCredito() {
-    List<Direccion> dirs = direccionDao.buscarPorSujeto(creditoDao.buscar(creditoSeleccionado.numeroCredito).getDeudor().getSujeto().getIdSujeto());
+    List<Direccion> dirs = direccionDao.buscarPorSujeto(creditoDao.buscar(creditoDireccionSeleccionado.numeroCredito).getDeudor().getSujeto().getIdSujeto());
     if (dirs.size() > 0) {
       direccionCredito = dirs.get(0);
     }
@@ -199,7 +218,6 @@ public class BusquedaBean implements Serializable {
   // METODO QUE OBTIENE LOS CREDITOS POR UN RANGO ESPECIFICO DE SU SALDO VENCIDO
   public void obtenerCreditosPorSaldoVencido() {
     listaCreditos2.clear();
-    System.out.println(indexBean.getUsuario().getPerfil());
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
       String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE saldo_vencido > " + saldoInferior + " AND saldo_vencido < " + saldoSuperior + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
       listaCreditos2 = creditoDao.busquedaEspecialCreditos(consulta);
@@ -210,7 +228,6 @@ public class BusquedaBean implements Serializable {
 
   public void obtenerCreditosPorMesesVencidos() {
     listaCreditos2.clear();
-    System.out.println(indexBean.getUsuario().getPerfil());
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
       String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE meses_vencidos = " + mesesVencidos + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
       listaCreditos2 = creditoDao.busquedaEspecialCreditos(consulta);
@@ -234,29 +251,132 @@ public class BusquedaBean implements Serializable {
     listaProductos = productoDao.buscarProductosPorInstitucion(institucionSeleccionada.getIdInstitucion());
   }
 
+  // METODO QUE PREPARA LOS COMBOS CON LOS SUBPRODUCTOS SEGUN EL PRODUCTO SELECCIONADO
+  public void preparaSubproductos() {
+    listaSubproductos = subproductoDao.buscarSubproductosPorProducto(productoSeleccionado.getIdProducto());
+  }
+
   // METODO QUE OBTIENE LOS CREDITOS DE LOS PRODUCTOS SELECCIONADOS
   public void obtenerCreditosPorProductosCampana() {
     listaCreditos2.clear();
     if (institucionSeleccionada.getIdInstitucion() == 0) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una institucion."));
     } else {
-      List<Credito> lista;
-      System.out.println(indexBean.getUsuario().getPerfil());
-      if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-        String consulta = "SELECT * FROM credito WHERE id_producto = " + productoSeleccionado.getIdProducto() + " AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
-        lista = creditoDao.busquedaEspecialCreditos(consulta);
-      } else {
-        lista = creditoDao.buscarCreditosPorProducto(productoSeleccionado.getIdProducto());
+      String consulta = "SELECT * FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion)";
+      if (productoSeleccionado.getIdProducto() == 0) {
+        consulta = consulta + " AND id_producto IN (SELECT id_producto FROM producto WHERE id_institucion = " + institucionSeleccionada.getIdInstitucion() + ")";
       }
+      if (subproductoSeleccionado.getIdSubproducto() != 0) {
+        consulta = consulta + " AND id_subproducto = " + subproductoSeleccionado.getIdSubproducto();
+      }
+      if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+        consulta = consulta + " AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+      } else {
+        consulta = consulta + " AND id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + indexBean.getUsuario().getDespacho().getIdDespacho() + "));";
+      }
+      List<Credito> lista = creditoDao.busquedaEspecialCreditos(consulta);
+      List<Credito> listaFinal = new ArrayList();
       if (campanaSeleccionada.getIdCampana() == 0) {
-        listaCreditos2 = lista;
+        listaFinal = lista;
       } else {
         for (int i = 0; i < (lista.size()); i++) {
           if (lista.get(i).getCampana().getIdCampana().intValue() == campanaSeleccionada.getIdCampana()) {
-            listaCreditos2.add(lista.get(i));
+            listaFinal.add(lista.get(i));
           }
         }
       }
+      if (!colorSeleccionado.equals("0")) {
+        List<Credito> listaRojas = new ArrayList();
+        List<Credito> listaAmarillas = new ArrayList();
+        List<Credito> listaVerdes = new ArrayList();
+        for (int i = 0; i < (lista.size()); i++) {
+          int dias = gestionDao.checarDiasSinGestionar(lista.get(i).getIdCredito()).intValue();
+          if (dias <= 3) {
+            listaVerdes.add(lista.get(i));
+          }
+          if ((dias > 3) && (dias <= 7)) {
+            listaAmarillas.add(lista.get(i));
+          }
+          if (dias > 7) {
+            listaRojas.add(lista.get(i));
+          }
+        }
+        switch (colorSeleccionado) {
+          case "Verde":
+            listaCreditos2 = listaVerdes;
+            break;
+          case "Amarillo":
+            listaCreditos2 = listaAmarillas;
+            break;
+          case "Rojo":
+            listaCreditos2 = listaRojas;
+            break;
+        }
+      } else {
+        listaCreditos2 = listaFinal;
+      }
+    }
+  }
+
+  // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO DIRECCION
+  public void abrirDetalleCreditoDireccion() {
+    if (creditoDireccionSeleccionado != null) {
+      Credito c = creditoDao.buscar(creditoDireccionSeleccionado.numeroCredito);
+      if (c != null) {
+        creditoActualBean.setCreditoActual(c);
+        try {
+          if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoGestor.xhtml");
+          } else {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
+          }
+        } catch (IOException ioe) {
+          Logs.log.error("No se pudo redirigir a la vista del credito.");
+          Logs.log.error(ioe);
+        }
+      }
+    } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
+    }
+  }
+
+  // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO
+  public void abrirDetalleCredito() {
+    if (creditoSeleccionado != null) {
+      Credito c = creditoDao.buscarCreditoPorId(creditoSeleccionado.getIdCredito());
+      if (c != null) {
+        creditoActualBean.setCreditoActual(c);
+        try {
+          if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoGestor.xhtml");
+          } else {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
+          }
+        } catch (IOException ioe) {
+          Logs.log.error("No se pudo redirigir a la vista del credito.");
+          Logs.log.error(ioe);
+        }
+      }
+    } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
+    }
+  }
+
+  // METODO QUE PREPARA UNA CAMPAÑA SEGUN LOS CREDITOS FILTRADOS
+  public void generarCampana(List<Credito> creditos) {
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      cuentasGestorBean.preparaCampanaBusqueda(creditos);
+    }
+  }
+  
+  // METODO QUE PREPARA UNA CAMPAÑA SEGUN LOS CREDITOS DIRECCION FILTRADOS
+  public void generarCampanaCreditosDireccion(List<CreditoDireccion> creditos) {
+    List<Credito> creds = new ArrayList();
+    for (int i = 0; i <(creditos.size()); i++) {
+      creds.add(creditoDao.buscar(creditos.get(i).getNumeroCredito()));
+    }
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      cuentasGestorBean.preparaCampanaBusqueda(creds);
     }
   }
 
@@ -278,14 +398,6 @@ public class BusquedaBean implements Serializable {
 
   public void setListaZonas(List<Zona> listaZonas) {
     this.listaZonas = listaZonas;
-  }
-
-  public CreditoDireccion getCreditoSeleccionado() {
-    return creditoSeleccionado;
-  }
-
-  public void setCreditoSeleccionado(CreditoDireccion creditoSeleccionado) {
-    this.creditoSeleccionado = creditoSeleccionado;
   }
 
   public Direccion getDireccionCredito() {
@@ -414,6 +526,46 @@ public class BusquedaBean implements Serializable {
 
   public void setListaMunicipios(List<Municipio> listaMunicipios) {
     this.listaMunicipios = listaMunicipios;
+  }
+
+  public List<Subproducto> getListaSubproductos() {
+    return listaSubproductos;
+  }
+
+  public void setListaSubproductos(List<Subproducto> listaSubproductos) {
+    this.listaSubproductos = listaSubproductos;
+  }
+
+  public Subproducto getSubproductoSeleccionado() {
+    return subproductoSeleccionado;
+  }
+
+  public void setSubproductoSeleccionado(Subproducto subproductoSeleccionado) {
+    this.subproductoSeleccionado = subproductoSeleccionado;
+  }
+
+  public CreditoDireccion getCreditoDireccionSeleccionado() {
+    return creditoDireccionSeleccionado;
+  }
+
+  public void setCreditoDireccionSeleccionado(CreditoDireccion creditoDireccionSeleccionado) {
+    this.creditoDireccionSeleccionado = creditoDireccionSeleccionado;
+  }
+
+  public Credito getCreditoSeleccionado() {
+    return creditoSeleccionado;
+  }
+
+  public void setCreditoSeleccionado(Credito creditoSeleccionado) {
+    this.creditoSeleccionado = creditoSeleccionado;
+  }
+
+  public String getColorSeleccionado() {
+    return colorSeleccionado;
+  }
+
+  public void setColorSeleccionado(String colorSeleccionado) {
+    this.colorSeleccionado = colorSeleccionado;
   }
 
   // CLASE MIEMBRO PARA PODER MOSTRAR EL CREDITO Y SU DIRECCION

@@ -12,6 +12,7 @@ import dto.Pago;
 import impl.PagoIMPL;
 import impl.QuincenaIMPL;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.el.ELContext;
@@ -41,6 +42,7 @@ public class ProgresoTotalGestorBean implements Serializable {
   private PieChartModel graficaPagosQuincena;
   private List<Pago> listaPagosQuincena;
   private final PagoDAO pagoDao;
+  private String sumaAprobados;
 
   // CONSTRUCTOR
   public ProgresoTotalGestorBean() {
@@ -49,12 +51,20 @@ public class ProgresoTotalGestorBean implements Serializable {
     pagoDao = new PagoIMPL();
     cargarDatos();
   }
-  
+
   // METODO QUE CARGA TODOS LOS DATOS PARA LOS GESTORES
-  public final void cargarDatos(){
+  public final void cargarDatos() {
     cargarGraficas();
     listaPagosQuincena = pagoDao.buscarTodosPagosGestor(indexBean.getUsuario().getIdUsuario());
-    if(!listaPagosQuincena.isEmpty()){
+    if (!listaPagosQuincena.isEmpty()) {
+      DecimalFormat df = new DecimalFormat();
+      df.setMaximumFractionDigits(2);
+      df.setMinimumFractionDigits(2);
+      float aprobados = 0;
+      for (int i = 0; i <(listaPagosQuincena.size()); i++) {
+        aprobados = aprobados + listaPagosQuincena.get(i).getMontoAprobado();
+      }
+      sumaAprobados = "$" + df.format(aprobados);
       permitirExport = true;
       RequestContext.getCurrentInstance().update("pagosQuincenaForm");
     }
@@ -94,7 +104,7 @@ public class ProgresoTotalGestorBean implements Serializable {
     pdf.setMargins(10, 10, 10, 10);
     pdf.open();
   }
-  
+
   // METODO QUE LE DA UNA ETIQUETA A LOS VALORES NUMERICOS DEL ESTATUS DE PAGOS
   public String etiquetarEstatus(int estatus) {
     String estado = "";
@@ -112,24 +122,24 @@ public class ProgresoTotalGestorBean implements Serializable {
     }
     return estado;
   }
-  
+
   // METODO QUE LE DA UNA ETIQUETA AL ESTATUS DE PAGO
-  public String etiquetarEstatusPago(int pagado){
+  public String etiquetarEstatusPago(int pagado) {
     String estado = "";
-    if(pagado == Pagos.PAGADO){
+    if (pagado == Pagos.PAGADO) {
       estado = "Pagado";
     }
-    if(pagado == Pagos.NO_PAGADO){
+    if (pagado == Pagos.NO_PAGADO) {
       estado = "Por pagar";
     }
     return estado;
   }
-  
+
   // METODO QUE OBTIENE EL NOMBRE DE LA QUINCENA ACTUAL
   public String obtenerQuincenaActual() {
     return new QuincenaIMPL().obtenerQuincenaActual().getNombre();
   }
-  
+
   // METODO QUE DEVUELVE EL NUMERO DE PAGOS PENDIENTES PARA ESTE GESTOR HOY
   public int pagosPendientesHoy() {
     return 0;
@@ -162,6 +172,14 @@ public class ProgresoTotalGestorBean implements Serializable {
 
   public void setPermitirExport(boolean permitirExport) {
     this.permitirExport = permitirExport;
+  }
+
+  public String getSumaAprobados() {
+    return sumaAprobados;
+  }
+
+  public void setSumaAprobados(String sumaAprobados) {
+    this.sumaAprobados = sumaAprobados;
   }
 
 }

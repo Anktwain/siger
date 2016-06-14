@@ -7,6 +7,7 @@ package beans;
 
 import dao.CampanaDAO;
 import dao.ConceptoDevolucionDAO;
+import dao.ConvenioPagoDAO;
 import dao.CreditoDAO;
 import dao.DevolucionDAO;
 import dao.GestorDAO;
@@ -15,6 +16,7 @@ import dao.MarcajeDAO;
 import dao.MotivoDevolucionDAO;
 import dto.Campana;
 import dto.ConceptoDevolucion;
+import dto.ConvenioPago;
 import dto.Credito;
 import dto.Devolucion;
 import dto.Gestor;
@@ -23,6 +25,7 @@ import dto.Marcaje;
 import dto.MotivoDevolucion;
 import impl.CampanaIMPL;
 import impl.ConceptoDevolucionIMPL;
+import impl.ConvenioPagoIMPL;
 import impl.CreditoIMPL;
 import impl.DevolucionIMPL;
 import impl.GestorIMPL;
@@ -40,6 +43,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.GestionAutomatica;
 import util.constantes.Devoluciones;
 import util.log.Logs;
 
@@ -61,7 +65,7 @@ public class CuentasBean implements Serializable {
   private String colorSeleccionado;
   private ConceptoDevolucion conceptoSeleccionado;
   private MotivoDevolucion motivoSeleccionado;
-  private Credito creditoSeleccionado;
+  private List<Credito> creditosSeleccionados;
   private Gestor gestorSeleccionado;
   private Campana campanaSeleccionada;
   private Marcaje marcajeSeleccionado;
@@ -73,6 +77,7 @@ public class CuentasBean implements Serializable {
   private final GestorDAO gestorDao;
   private final CampanaDAO campanaDao;
   private final MarcajeDAO marcajeDao;
+  private final ConvenioPagoDAO convenioPagoDao;
   private List<Credito> listaCreditos;
   private List<ConceptoDevolucion> listaConceptos;
   private List<MotivoDevolucion> listaMotivos;
@@ -82,10 +87,10 @@ public class CuentasBean implements Serializable {
 
   //CONSTRUCTOR
   public CuentasBean() {
-    creditoSeleccionado = new Credito();
+    creditosSeleccionados = new ArrayList();
     conceptoSeleccionado = new ConceptoDevolucion();
     motivoSeleccionado = new MotivoDevolucion();
-    gestorSeleccionado =  new Gestor();
+    gestorSeleccionado = new Gestor();
     campanaSeleccionada = new Campana();
     marcajeSeleccionado = new Marcaje();
     creditoDao = new CreditoIMPL();
@@ -96,6 +101,7 @@ public class CuentasBean implements Serializable {
     gestorDao = new GestorIMPL();
     campanaDao = new CampanaIMPL();
     marcajeDao = new MarcajeIMPL();
+    convenioPagoDao = new ConvenioPagoIMPL();
     listaCreditos = new ArrayList();
     listaConceptos = new ArrayList();
     listaMotivos = new ArrayList();
@@ -115,8 +121,8 @@ public class CuentasBean implements Serializable {
 
   // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO
   public void selectorDeVista() {
-    if (creditoSeleccionado != null) {
-      creditoActualBean.setCreditoActual(creditoSeleccionado);
+    if (!creditosSeleccionados.isEmpty()) {
+      creditoActualBean.setCreditoActual(creditosSeleccionados.get(0));
       try {
         FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
       } catch (IOException ioe) {
@@ -144,13 +150,13 @@ public class CuentasBean implements Serializable {
       d.setConceptoDevolucion(conceptoSeleccionado);
       motivoSeleccionado = motivoDevolucionDao.buscarPorId(motivoSeleccionado.getIdMotivoDevolucion());
       d.setMotivoDevolucion(motivoSeleccionado);
-      d.setCredito(creditoSeleccionado);
+      d.setCredito(creditosSeleccionados.get(0));
       d.setObservaciones(observaciones);
       d.setSolicitante(indexBean.getUsuario().getNombreLogin());
       d.setRevisor(indexBean.getUsuario().getNombreLogin());
       Historial h = new Historial();
       h.setEvento("El administrador: " + indexBean.getUsuario().getNombreLogin() + ", devolvio el credito");
-      h.setCredito(creditoSeleccionado);
+      h.setCredito(creditosSeleccionados.get(0));
       h.setFecha(new Date());
       ok = devolucionDao.insertar(d) && historialDao.insertar(h);
       if (ok) {
@@ -165,6 +171,60 @@ public class CuentasBean implements Serializable {
     }
   }
 
+  // METODO QUE REASIGNA LOS CREDITOS SELECCIONADOS
+  public void reasignarGestor(List<Credito> creditos) {
+    if (creditos.isEmpty()) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar al menos un credito."));
+    } else {
+      boolean okGeneral = true;
+      for (int i = 0; i < (creditos.size()); i++) {
+        // GESTION AUTOMATICA 1
+        // SI EXISTE UN CONVENIO
+        ConvenioPago c = convenioPagoDao.buscarConvenioEnCursoCredito(creditos.get(i).getIdCredito());
+        if (c != null) {
+          GestionAutomatica.generarGestionAutomatica("13CONRE", creditos.get(i), indexBean.getUsuario(), "SE REASIGNA CONVENIO");
+        }
+        // CAMBIAMOS EL GESTOR ASIGNADO ACTUALMENTE
+        String gestorAnterior = creditos.get(i).getGestor().getUsuario().getNombreLogin();
+        creditos.get(i).setGestor(gestorDao.buscar(gestorSeleccionado.getIdGestor()));
+        boolean ok = creditoDao.editar(creditos.get(i));
+        if (ok) {
+          okGeneral = okGeneral & ok;
+          // GESTION AUTOMATICA 2
+          GestionAutomatica.generarGestionAutomatica("15CTARE", creditos.get(i), indexBean.getUsuario(), "REASIGNACION DE CREDITO NO. " + creditos.get(i).getNumeroCredito());
+          // GUARDAMOS EN EL LOG EL DETALLE DE LA REASIGNACION
+          Logs.log.info("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + gestorAnterior + " al gestor " + creditos.get(i).getGestor().getUsuario().getNombreLogin());
+          // ESCRIBIMOS EN EL HISTORIAL LA REASIGNACION
+          Historial h = new Historial();
+          h.setCredito(creditos.get(i));
+          h.setFecha(new Date());
+          h.setEvento("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito al gestor: " + creditos.get(i).getGestor().getUsuario().getNombreLogin());
+          ok = ok & (historialDao.insertar(h));
+          if (!ok) {
+            Logs.log.error("No se actualizo el historial en la reasignacion del credito");
+          }
+        } else {
+          okGeneral = false;
+          break;
+        }
+      }
+      if (okGeneral) {
+        if (creditos.size() == 1) {
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
+        } else {
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasignaron los creditos."));
+        }
+        listaCreditos = new ArrayList();
+      } else {
+        if (creditos.size() == 1) {
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
+        } else {
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasignaron los creditos. Contacte al equipo de sistemas."));
+        }
+      }
+    }
+  }
+
   // METODO QUE OBTIENE EL SALDO VENCIDO DEL CREDITO
   public float calcularSaldoVencido(Credito credito) {
     float f = creditoDao.buscarSaldoVencidoCredito(credito.getIdCredito());
@@ -174,21 +234,21 @@ public class CuentasBean implements Serializable {
       return f;
     }
   }
-  
+
   // METODO QUE OBTIENE LA LISTA DE CREDITOS SEGUN LOS PARAMETROS DESEADOS
-  public void prepararCreditos(){
+  public void prepararCreditos() {
     String consulta = "SELECT * FROM credito WHERE id_despacho = " + indexBean.getUsuario().getDespacho().getIdDespacho();
-    if(gestorSeleccionado.getIdGestor() != 0){
+    if (gestorSeleccionado.getIdGestor() != 0) {
       consulta = consulta + " AND id_gestor = " + gestorSeleccionado.getIdGestor();
     }
-    if(campanaSeleccionada.getIdCampana() != 0){
+    if (campanaSeleccionada.getIdCampana() != 0) {
       consulta = consulta + " AND id_campana = " + campanaSeleccionada.getIdCampana();
     }
-    if(marcajeSeleccionado.getIdMarcaje() != 0){
+    if (marcajeSeleccionado.getIdMarcaje() != 0) {
       consulta = consulta + " AND id_marcaje = " + marcajeSeleccionado.getIdMarcaje();
     }
-    if(!colorSeleccionado.equals("0")){
-      switch(colorSeleccionado){
+    if (!colorSeleccionado.equals("0")) {
+      switch (colorSeleccionado) {
         case "Verde":
           consulta = consulta + " AND id_credito IN (SELECT DISTINCT id_credito FROM gestion WHERE DATE(fecha) >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) AND id_tipo_gestion != 5)";
           break;
@@ -213,12 +273,12 @@ public class CuentasBean implements Serializable {
     this.listaCreditos = listaCreditos;
   }
 
-  public Credito getCreditoSeleccionado() {
-    return creditoSeleccionado;
+  public List<Credito> getCreditosSeleccionados() {
+    return creditosSeleccionados;
   }
 
-  public void setCreditoSeleccionado(Credito creditoSeleccionado) {
-    this.creditoSeleccionado = creditoSeleccionado;
+  public void setCreditosSeleccionados(List<Credito> creditosSeleccionados) {
+    this.creditosSeleccionados = creditosSeleccionados;
   }
 
   public List<ConceptoDevolucion> getListaConceptos() {

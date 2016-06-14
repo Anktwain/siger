@@ -288,14 +288,11 @@ public class CreditoIMPL implements CreditoDAO {
   @Override
   public List<Credito> buscarCreditosPorCampanaGestor(int idCampana, int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Credito> creditos;
-    // TO FIX
-    // ORDENAR ALFABETICAMENTE
-    String consulta = "SELECT * FROM credito WHERE id_campana = " + idCampana + " AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    List<Credito> creditos = new ArrayList();
+    String consulta = "SELECT c.* FROM credito c JOIN deudor d JOIN sujeto s ON c.id_deudor = d.id_deudor AND d.id_sujeto = s.id_sujeto AND c.id_campana = " + idCampana + " AND c.id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND c.id_credito NOT IN (SELECT id_credito FROM devolucion) ORDER BY s.nombre_razon_social ASC;";
     try {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
-      creditos = null;
       Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {

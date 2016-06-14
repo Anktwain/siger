@@ -85,7 +85,7 @@
                     <p:contextMenu for="promesasEnCurso" style="width:200px;">
                       <p:menuitem value="Agregar pago" icon="ui-icon-folder-collapsed" actionListener="#{conveniosBean.inicializarMontoPago()}" oncomplete="PF('agregarPagoDialog').show();" update="agregarPagoForm" />
                     </p:contextMenu>
-                    <p:dataTable id="promesasEnCurso" var="promesa" value="#{conveniosBean.listaPromesas}" rowKey="#{promesa.idPromesaPago}" selection="#{conveniosBean.promesaSeleccionada}" emptyMessage="No existen promesas de pago." selectionMode="single" paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width:270px;">
+                    <p:dataTable id="promesasEnCurso" var="promesa" value="#{conveniosBean.listaPromesas}" rowKey="#{promesa.idPromesaPago}" selection="#{conveniosBean.promesaSeleccionada}" emptyMessage="No existen promesas de pago." selectionMode="single" paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width:270px;" disabledSelection="#{!conveniosBean.habilitaCargaPagos()}">
                       <p:column headerText="Fecha de pago" style="width:100px;">
                         <h:outputText value="#{promesa.fechaPrometida}"/>
                       </p:column>
@@ -171,7 +171,7 @@
             </div>
           </div>
         </h:form>
-          <p:dialog id="dlgPago" widgetVar="agregarPagoDialog" modal="true" header="Agregar pago" closable="false">
+        <p:dialog id="dlgPago" widgetVar="agregarPagoDialog" modal="true" header="Agregar pago" closable="false">
           <h:form id="agregarPagoForm" enctype="multipart/form-data">
             Cargue los comprobantes:
             <br />
@@ -207,18 +207,26 @@
             <p:calendar value="#{conveniosBean.fechaDeposito}" showOn="button" required="true" requiredMessage="Debe indicar una fecha de deposito." />
             <br />
             <br />
-            En ventanilla:
+            <h:outputText value="En ventanilla (#{conveniosBean.promesaSeleccionada.convenioPago.credito.numeroCredito})" />
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:selectBooleanCheckbox value="#{conveniosBean.ventanilla}">
-                <p:ajax listener="#{conveniosBean.cambiarLeyenda()}" update="agregarPagoForm:cuentasPago, agregarPagoForm:observacionesPagoGestor" />
+            <p:selectBooleanCheckbox id="booleanVentanilla" value="#{conveniosBean.ventanilla}" disabled="#{conveniosBean.habilitaVentanilla}">
+              <p:ajax listener="#{conveniosBean.cambiarLeyenda()}" update="agregarPagoForm:booleanAsociada, agregarPagoForm:cuentasPago, agregarPagoForm:observacionesPagoGestor" />
             </p:selectBooleanCheckbox>
             <br />
             <br />
-            Numero de cuenta:
+            <h:outputText value="Cuenta asociada (#{conveniosBean.promesaSeleccionada.convenioPago.credito.numeroCuenta})" />
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:selectOneMenu id="cuentasPago" value="#{conveniosBean.cuentaPago}" disabled="#{conveniosBean.ventanilla}">
+            <p:selectBooleanCheckbox id="booleanAsociada" value="#{conveniosBean.cuentaAsociada}"  disabled="#{conveniosBean.habilitaAsociada}">
+              <p:ajax listener="#{conveniosBean.controlCuentaPago(2)}" update="agregarPagoForm:booleanVentanilla, agregarPagoForm:cuentasPago" />
+            </p:selectBooleanCheckbox>
+            <br />
+            <br />
+            Cuenta concentradora:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:selectOneMenu id="cuentasPago" value="#{conveniosBean.cuentaPago}" disabled="#{conveniosBean.habilitaCuentas}">
               <f:selectItem itemLabel="" itemValue="" />
               <f:selectItems value="#{conveniosBean.listaCuentasPago}" />
+              <p:ajax event="change" listener="#{conveniosBean.controlCuentaPago(3)}" update="agregarPagoForm:booleanVentanilla, agregarPagoForm:booleanAsociada" />
             </p:selectOneMenu>
             <br />
             <br />

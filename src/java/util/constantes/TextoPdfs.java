@@ -21,9 +21,9 @@ public interface TextoPdfs {
 
   public static final String TEXTO_GENERAL_3 = "Representamos a Inbursa para recuperar los pagos atrasados de la Línea de Crédito que se le otorgó. Invariablemente el pago de lo atrasado, deberá hacerse únicamente en la Sucursal de Banco Inbursa de su elección, a:";
 
-  public static final String TEXTO_EXPRESS_4 = "CUENTA CONCENTRADORA 50015025905 a nombre de Banco Inbursa Cobranza Express PYME \no mediante SPEI a la Cuenta 036180-50015025905-6 \no mediante SPEI a la Cuenta 036180-50015025905-6 \no bien en Bancomer: Convenio CIE 386120 Referencia 50015025902";
+  public static final String TEXTO_EXPRESS_4 = "CUENTA CONCENTRADORA 50015025905 a nombre de Banco Inbursa Cobranza Express PYME \no mediante SPEI a la Cuenta 036180-50015025905-6 \no bien en Bancomer: Convenio CIE 386120 Referencia 50015025902";
 
-  public static final String TEXTO_TELMEX_4 = "CUENTA CONCENTRADORA 50015025745 a nombre de Banco Inbursa Cobranza Telmex \no mediante SPEI a la Cuenta 036180-50015025745-6 \no bien en Bancomer: Convenio CIE 386120 Referencia 50015025741";
+  public static final String TEXTO_TELMEX_4 = "CUENTA CONCENTRADORA 50010911552 a nombre de  Sociedad Financiera Inbursa S.A. de C.V. \no mediante SPEI a la Cuenta 036180500109115523 \no bien en Bancomer: Convenio CIE 386120 Referencia 50010911556";
 
   public static final String TEXTO_GENERAL_5 = "Contamos con sus pagos y comunicación, donde un asesor de este Corporativo le atenderá. EN CASO DE REQUERIR PLAZO PARA PAGAR, CONTACTENOS.";
   

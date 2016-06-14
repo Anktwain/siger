@@ -265,20 +265,20 @@
                   <br />
                   <br />
                   <p:dataTable id="pagosGestores" var="pg" value="#{pagosBean.listaPagosGestor}" rowKey="#{pg.idGestor}" emptyMessage="No existe informacion de los pagos por gestor." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 750px;">
-                    <p:column headerText="Gestor" style="width:150px;"> 
+                    <p:column headerText="Gestor" style="width:150px;" footerText="Totales:">
                       <h:outputText value="#{pg.gestor}" />
                     </p:column>
-                    <p:column headerText="Monto pagos aprobados" style="width:200px;"> 
+                    <p:column headerText="Monto pagos aprobados" style="width:200px;" footerText="#{pagosBean.sumaAprobados}">
                       <h:outputText value="#{pg.montoPagos}" style="float: right;">
                         <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                       </h:outputText>
                     </p:column>
-                    <p:column headerText="Monto creditos en gestion" style="width:200px;"> 
+                    <p:column headerText="Monto creditos en gestion" style="width:200px;" footerText="#{pagosBean.sumaCreditos}">
                       <h:outputText value="#{pg.montoPrometido}" style="float: right;">
                         <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                       </h:outputText>
                     </p:column>
-                    <p:column headerText="Eficiencia" style="width:150px;"> 
+                    <p:column headerText="Eficiencia" style="width:150px;" footerText="#{pagosBean.sumaEficiencia}">
                       <h:outputText value="#{pg.eficiencia} %" style="float: right;">
                         <f:convertNumber minFractionDigits="4" maxFractionDigits="4" type="number" />
                       </h:outputText>

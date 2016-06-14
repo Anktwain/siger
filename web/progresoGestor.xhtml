@@ -105,6 +105,9 @@
                       <h:outputText value="#{progresoTotalGestorBean.etiquetarEstatusPago(p.pagado)}"/>
                     </p:column>
                     <f:facet name="footer">
+                      <div align="left">
+                        <h:outputText value="Total recuperado esta quincena: #{progresoTotalGestorBean.sumaAprobados}"/>
+                      </div>
                       <div align="right">
                         <h:commandLink>
                           <p:graphicImage name="/img/iconos/excel.png" width="40" rendered="#{progresoTotalGestorBean.permitirExport}" />

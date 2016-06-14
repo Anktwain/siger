@@ -234,11 +234,11 @@ public class VistaCreditoBean implements Serializable {
     listaColonias = new ArrayList();
     ajustes = new ArrayList();
     obtenerDatos();
+    inicializarDireccion();
   }
 
   // METODO QUE OBTENDRA TODOS LOS DATOS PRIMARIOS SEGUN EL CREDITO SELECCIONADO EN LA VISTA cuentas.xhtml
   public final void obtenerDatos() {
-    inicializarDireccion();
     latitudNuevaDireccion = "0.000000";
     longitudNuevaDireccion = "0.000000";
     listaConceptos = conceptoDevolucionDao.obtenerConceptos();
@@ -261,8 +261,12 @@ public class VistaCreditoBean implements Serializable {
     Direccion d;
     try {
       d = direccionDao.buscarPorSujeto(idSujeto).get(0);
-      calleNumero = d.getCalle() + " " + d.getExterior() + " " + d.getInterior() + ",";
-      coloniaMunicipio = d.getColonia().getNombre() + ",  " + d.getMunicipio().getNombre() + ",";
+      if (d.getInterior() == null) {
+        calleNumero = d.getCalle() + " " + d.getExterior();
+      } else {
+        calleNumero = d.getCalle() + " " + d.getExterior() + " " + d.getInterior();
+      }
+      coloniaMunicipio = d.getColonia().getTipo() + " " + d.getColonia().getNombre() + ",  " + d.getMunicipio().getNombre();
       estadoCP = d.getEstadoRepublica().getNombre() + ",  C.P. " + d.getColonia().getCodigoPostal();
     } catch (Exception e) {
       Logs.log.error("No se pudo obtener la primer direccion del deudor.");
@@ -271,7 +275,7 @@ public class VistaCreditoBean implements Serializable {
     // OBTENEMOS LAS DIFERENTES FECHAS QUE SE REQUIEREN
     try {
       // OBTENER EL PRIMER TELEFONO DEL DEUDOR
-      telefono = formatoTelefono(telefonoDao.buscarPorSujeto(idSujeto).get(0).getNumero());
+      telefono = formatoTelefono(telefonoDao.buscarPorSujeto(idSujeto).get(0));
     } catch (Exception e) {
       Logs.log.error("No se pudo obtener el primer telefono del deudor.");
       Logs.log.error(e);
@@ -320,7 +324,7 @@ public class VistaCreditoBean implements Serializable {
     //OBTENEMOS EL TELEFONO PRINCIPAL DEL DEUDOR
     Telefono p = telefonoDao.buscarTelefonoPrincipal(creditoActual.getDeudor().getSujeto().getIdSujeto());
     if (p != null) {
-      telefonoPrincipal = formatoTelefono(p.getNumero());
+      telefonoPrincipal = formatoTelefono(p);
     } else {
       telefonoPrincipal = "";
     }
@@ -363,7 +367,7 @@ public class VistaCreditoBean implements Serializable {
   }
 
   // METODO QUE PREPARA LA DIRECCION QUE SE PRETENDERA EDITAR
-  public void inicializarDireccion() {
+  public final void inicializarDireccion() {
     direccionSeleccionada.setCalle("");
     direccionSeleccionada.setColonia(coloniaDao.buscar(1));
     direccionSeleccionada.setEstadoRepublica(estadoRepublicaDao.buscar(1));
@@ -376,7 +380,13 @@ public class VistaCreditoBean implements Serializable {
   }
 
   // METODO QUE DA FORMATO A LOS TELEFONOS
-  public String formatoTelefono(String telefono) {
+  public String formatoTelefono(Telefono tel) {
+    String telefono;
+    if (tel.getLada() == null) {
+      telefono = tel.getNumero();
+    } else {
+      telefono = tel.getLada() + tel.getNumero();
+    }
     if (telefono.length() >= 7) {
       return "(" + telefono.substring(0, (telefono.length()) - 7) + ") - " + telefono.substring((telefono.length()) - 7, telefono.length() - 4) + " - " + telefono.substring(telefono.length() - 4, telefono.length());
     } else if (telefono.length() > 7) {
@@ -412,7 +422,6 @@ public class VistaCreditoBean implements Serializable {
     cred.setGestor(nuevoGestor);
     boolean ok = creditoDao.editar(cred);
     if (ok) {
-      // YA NO FALTA MUCHO
       // GUARDAMOS EN EL LOG EL DETALLE DE LA REASIGNACION
       Logs.log.info("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + creditoActual.getGestor().getUsuario().getNombreLogin() + " al gestor " + nuevoGestor.getUsuario().getNombreLogin());
       // ESCRIBIMOS EN EL HISTORIAL LA REASIGNACION
@@ -591,6 +600,7 @@ public class VistaCreditoBean implements Serializable {
     t.setHorario(horarioNuevoTelefono);
     t = telefonoDao.insertar(t);
     if (t != null) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el nuevo telefono."));
       obtenerDatos();
       if (principalNuevoTelefono) {
         establecerTelefonoPrincipal(t);
@@ -600,7 +610,6 @@ public class VistaCreditoBean implements Serializable {
       horarioNuevoTelefono = "";
       tipoNuevoTelefono = "";
       principalNuevoTelefono = false;
-      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se agrego el nuevo telefono."));
     } else {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se agrego el nuevo telefono. Contacte al equipo de sistemas."));
     }
@@ -617,7 +626,7 @@ public class VistaCreditoBean implements Serializable {
     if (ok) {
       telefono.setPrincipal(Telefonos.PRINCIPAL);
       if (telefonoDao.editar(telefono)) {
-        telefonoPrincipal = formatoTelefono(telefono.getLada() + telefono.getNumero());
+        telefonoPrincipal = formatoTelefono(telefono);
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se establecio el telefono como principal."));
       } else {
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo establecer el telefono como principal. Contacte al equipo de sistemas."));

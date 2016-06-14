@@ -14,6 +14,10 @@ import dto.Gestion;
 import dto.Usuario;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -137,7 +141,7 @@ public class GestionIMPL implements GestionDAO {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date fecha = new Date();
     String f = df.format(fecha);
-    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND DATE(fecha) = '" + f + "' AND id_tipo_gestion != 5;";
+    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND DATE(fecha) = '" + f + "' AND (id_tipo_gestion != 5 OR id_descripcion_gestion IN (SELECT id_descripcion_gestion FROM descripcion_gestion WHERE abreviatura = '9APROB'));";
     try {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
       if (gestiones.size() > 0) {
@@ -174,9 +178,7 @@ public class GestionIMPL implements GestionDAO {
   public Number calcularGestionesHoyPorGestor(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number gestiones;
-    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String fecha = df.format(new Date());
-    String consulta = "SELECT COUNT(*) FROM gestion WHERE id_tipo_gestion != 5 AND DATE(fecha) = '" + fecha + "' AND id_credito IN (SELECT id_credito FROM credito WHERE id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ")) AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    String consulta = "SELECT COUNT(*) FROM gestion WHERE DATE(fecha) = CURDATE() AND (id_tipo_gestion != 5 OR id_descripcion_gestion IN (SELECT id_descripcion_gestion FROM descripcion_gestion WHERE abreviatura = '9APROB')) AND id_credito IN (SELECT id_credito FROM credito WHERE id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ")) AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
     try {
       gestiones = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
@@ -239,10 +241,12 @@ public class GestionIMPL implements GestionDAO {
     try {
       ultima = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
       if(!ultima.isEmpty()){
-        Date fechaGestion = ultima.get(0).getFecha();
-        Date fechaActual = new Date();
-        long milisegundos = (fechaActual.getTime() - fechaGestion.getTime());
-        dias = (milisegundos / 86400000);
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Date fg = ultima.get(0).getFecha();
+        LocalDate fechaGestion = fg.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Date fa = new Date();
+        LocalDate fechaActual = fa.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        dias = ChronoUnit.DAYS.between(fechaGestion, fechaActual);
       }
       else{
         dias = 8;

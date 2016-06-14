@@ -1,5 +1,5 @@
 package dto;
-// Generated 30/05/2016 10:43:48 AM by Hibernate Tools 4.3.1
+// Generated 14/06/2016 11:17:20 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -25,6 +25,7 @@ public class Credito  implements java.io.Serializable {
      private Date fechaFin;
      private Date fechaQuebranto;
      private Float monto;
+     private Float saldoInsoluto;
      private Float mensualidad;
      private Float tasaInteres;
      private Integer diasMora;
@@ -53,7 +54,7 @@ public class Credito  implements java.io.Serializable {
         this.numeroCredito = numeroCredito;
         this.tipoCredito = tipoCredito;
     }
-    public Credito(Campana campana, Despacho despacho, Deudor deudor, Gestor gestor, Marcaje marcaje, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set devolucions, Set historials, Set actualizacions, Set gestions, Set autos, Set convenioPagos, Set lineas, Set impresions) {
+    public Credito(Campana campana, Despacho despacho, Deudor deudor, Gestor gestor, Marcaje marcaje, Producto producto, Subproducto subproducto, String numeroCredito, Date fechaInicio, Date fechaFin, Date fechaQuebranto, Float monto, Float saldoInsoluto, Float mensualidad, Float tasaInteres, Integer diasMora, String numeroCuenta, int tipoCredito, Set devolucions, Set historials, Set actualizacions, Set gestions, Set autos, Set convenioPagos, Set lineas, Set impresions) {
        this.campana = campana;
        this.despacho = despacho;
        this.deudor = deudor;
@@ -66,6 +67,7 @@ public class Credito  implements java.io.Serializable {
        this.fechaFin = fechaFin;
        this.fechaQuebranto = fechaQuebranto;
        this.monto = monto;
+       this.saldoInsoluto = saldoInsoluto;
        this.mensualidad = mensualidad;
        this.tasaInteres = tasaInteres;
        this.diasMora = diasMora;
@@ -171,6 +173,13 @@ public class Credito  implements java.io.Serializable {
     
     public void setMonto(Float monto) {
         this.monto = monto;
+    }
+    public Float getSaldoInsoluto() {
+        return this.saldoInsoluto;
+    }
+    
+    public void setSaldoInsoluto(Float saldoInsoluto) {
+        this.saldoInsoluto = saldoInsoluto;
     }
     public Float getMensualidad() {
         return this.mensualidad;

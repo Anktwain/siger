@@ -34,7 +34,7 @@
                 </strong>
               </h5>
               <p:outputLabel value="#{vistaCreditoBean.calleNumero}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-              &nbsp;
+              <br />
               <p:outputLabel value="#{vistaCreditoBean.coloniaMunicipio}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
               <p:outputLabel value="#{vistaCreditoBean.estadoCP}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
@@ -112,16 +112,6 @@
                 <tr>
                   <td style="padding-left: 10px; padding-right: 10px;">
                     <strong>
-                      Fecha Ultimo Vencimiento Pagado:
-                    </strong>
-                  </td>
-                  <td style="padding-left: 10px; padding-right: 10px;">
-                    <p:outputLabel value="#{vistaCreditoBean.fvp}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding-left: 10px; padding-right: 10px;">
-                    <strong>
                       Fecha Fin del credito:
                     </strong>
                   </td>
@@ -150,7 +140,19 @@
                       <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </td>
-                </tr>  
+                </tr>
+                <tr>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <strong>
+                      Saldo insoluto:
+                    </strong>
+                  </td>
+                  <td style="padding-left: 10px; padding-right: 10px;">
+                    <h:outputText value="#{vistaCreditoBean.creditoActual.saldoInsoluto}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
+                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
+                  </td>
+                </tr>
                 <tr>
                   <td style="padding-left: 10px; padding-right: 10px;">
                     <strong>
@@ -206,6 +208,9 @@
           <p:commandButton value="Ver direcciones anteriores" actionListener="#{sigerViejoBean.obtenerDireccionesAnteriores(vistaCreditoBean.creditoActual.numeroCredito)}" oncomplete="PF('dialogoDireccionesAnteriores').show();" update="direccionesAnterioresForm" />
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:commandButton value="Ver datos de contacto anteriores" actionListener="#{sigerViejoBean.obtenerDatosContactoAnteriores(vistaCreditoBean.creditoActual.numeroCredito)}" oncomplete="PF('dialogoDatosContactoAnteriores').show();" update="datosContactoAnterioresForm" />
+          <!--
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          -->
           <!-- <p:button value="Editar datos del deudor" outcome="deudores" disabled="true" /> -->
           &nbsp;&nbsp;&nbsp;&nbsp;
           <p:button value="Convenios de pago" outcome="vistaConvenio" />
@@ -418,11 +423,14 @@
   <!-- DIALOGO CONFIRMAR REASIGNACION -->
   <p:dialog id="dlgConfirmacion" widgetVar="confirmacionDialog2" modal="true" header="Confirme esta reasignacion">
     <h:form>
-      <h:outputText value="Esta seguro de que desea reasignar este credito?" />
+      <h:outputText value="Realmente desea reasignar este credito?" />
       <br />
       <br />
-      <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{vistaCreditoBean.reasignarGestor()}" update="growl" />
-      <p:commandButton value="No" icon="ui-icon-close" actionListener="#{vistaCreditoBean.cerrar()}" />
+      <div align="center">
+        <p:commandButton value="Si" icon="ui-icon-check" actionListener="#{vistaCreditoBean.reasignarGestor()}" update="growl" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="No" icon="ui-icon-close" actionListener="#{vistaCreditoBean.cerrar()}" />
+      </div>
     </h:form>
   </p:dialog>
   <!-- DIALOGO DEVOLUCION CREDITO -->
@@ -471,10 +479,18 @@
       <table>
         <tr>
           <td>
+            <h:outputText value="Saldo vencido:" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText value="#{visitasBean.saldoVencido}" />
+          </td>
+        </tr>
+        <!--
+        <tr>
+          <td>
             <h:outputText value="Periodo de impresion de correo ordinario" style="color: #00CC00; font-size: 16px; font-family: 'Open Sans',sans-serif;" />
           </td>
           <td style="padding-left: 10px;">
-            <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="#{visitasBean.generarCorreo()}" rendered="#{!visitasBean.periodoSepomexActivo}" update=":growl, visitasForm" />
+            <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="generarCorreo()" rendered="!periodoSepomexActivo" update=":growl, visitasForm" />
           </td>
         </tr>
         <tr>
@@ -486,13 +502,14 @@
             <h:outputText value="Periodo de impresion para visita domiciliaria" style="color: #00CC00; font-size: 16px; font-family: 'Open Sans',sans-serif;" />
           </td>
           <td style="padding-left: 10px;">
-            <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="#{visitasBean.generarVisita()}" rendered="#{visitasBean.periodoVisitasActivo}" update=":growl, visitasForm" />
+            <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="generarVisita}" rendered="periodoVisitasActivo" update=":growl, visitasForm" />
           </td>
         </tr>
         <tr>
           <td style="padding-bottom: 20px;">
           </td>
         </tr>
+        -->
         <tr>
           <td>
             <h:outputText value="Generar carta para correo electronico" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
@@ -564,10 +581,10 @@
           <f:facet name="header">
             Telefonos en el sistema anterior
           </f:facet>
-          <p:column headerText="Telefono" style="width:150px;" > 
+          <p:column headerText="Telefono" style="width:100px;" > 
             <h:outputText value="#{t.numero}"/>
           </p:column>
-          <p:column headerText="Extension" style="width:50px;" > 
+          <p:column headerText="Extension" style="width:70px;" > 
             <h:outputText value="#{t.extension}"/>
           </p:column>
           <p:column headerText="Lada" style="width:50px;" > 
@@ -585,7 +602,7 @@
         </p:dataTable>
         <br />
         <br />
-        <p:dataTable id="tablaContactosViejos" var="c" value="#{sigerViejoBean.listaContactos}" 
+        <p:dataTable id="tablaContactosViejos" var="con" value="#{sigerViejoBean.listaContactos}" 
                      emptyMessage="No existen contactos para este credito en el sistema anterior." 
                      paginator="true" paginatorAlwaysVisible="false" rows="5" paginatorPosition="bottom" 
                      style="width: 800px;">
@@ -593,20 +610,20 @@
             Contactos en el sistema anterior
           </f:facet>
           <p:column headerText="Nombre" style="width:300px;" > 
-            <h:outputText value="#{c.nombre}"/>
+              <h:outputText value="#{con.nombre}"/>
           </p:column>
           <p:column headerText="Tipo" style="width:200px;" > 
-            <h:outputText value="#{c.tipo}"/>
+            <h:outputText value="#{con.tipo}"/>
           </p:column>
           <p:column headerText="Observaciones" style="width:250px;" > 
-            <h:outputText value="#{c.observaciones}"/>
+            <h:outputText value="#{con.observaciones}"/>
           </p:column>
         </p:dataTable>
       </div>
       <br />
       <br />
       <div align="center">
-        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('dialogoGestionesAnteriores').hide();" />
+        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('dialogoDatosContactoAnteriores').hide();" />
       </div>
     </h:form>
   </p:dialog>

@@ -53,29 +53,33 @@
               <br />
               <br />
               <p:contextMenu for="busquedaPorZona" style="width:200px;">
+                <p:menuitem value="Ver detalle" icon="ui-icon-check" actionListener="#{busquedaBean.abrirDetalleCreditoDireccion()}" />
                 <p:menuitem value="Ver en Google Maps ®" icon="ui-icon-flag" actionListener="#{busquedaBean.obtenerDireccionCredito()}" />
               </p:contextMenu>
-              <p:dataTable id="busquedaPorZona" var="c" value="#{busquedaBean.listaCreditos}" selection="#{busquedaBean.creditoSeleccionado}" selectionMode="single" rowKey="#{c.numeroCredito}" emptyMessage="No existen creditos en la zona seleccionada." paginator="true" rows="15" paginatorPosition="bottom">
+              <p:dataTable id="busquedaPorZona" var="c1" value="#{busquedaBean.listaCreditos}" selection="#{busquedaBean.creditoDireccionSeleccionado}" selectionMode="single" rowKey="#{c1.numeroCredito}" emptyMessage="No existen creditos en la zona seleccionada." paginator="true" rows="15" paginatorPosition="bottom">
                 <p:column headerText="Credito" style="width:300px;">
-                  <h:outputText value="#{c.numeroCredito}" />
+                  <h:outputText value="#{c1.numeroCredito}" />
                   <br />
-                  <h:outputText value="#{c.nombreDeudor}" />
+                  <h:outputText value="#{c1.nombreDeudor}" />
                 </p:column>
                 <p:column headerText="Institucion" style="width:100px;">
-                  <h:outputText value="#{c.institucion}" />
+                  <h:outputText value="#{c1.institucion}" />
                 </p:column>
                 <p:column headerText="Gestor" style="width:100px;">
-                  <h:outputText value="#{c.gestorActual}" />
+                  <h:outputText value="#{c1.gestorActual}" />
                 </p:column>
                 <p:column headerText="Calle y numero" style="width:200px;">
-                  <h:outputText value="#{c.calleNumero}" />
+                  <h:outputText value="#{c1.calleNumero}" />
                 </p:column>
                 <p:column headerText="Colonia y C.P." style="width:200px;">
-                  <h:outputText value="#{c.colonia} (#{c.cp})" />
+                  <h:outputText value="#{c1.colonia} (#{c.cp})" />
                 </p:column>
                 <p:column headerText="Municipio y estado" style="width:200px;">
-                  <h:outputText value="#{c.municipio}, #{c.estado}" />
+                  <h:outputText value="#{c1.municipio}, #{c.estado}" />
                 </p:column>
+                <f:facet name="footer">
+                  <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampanaCreditosDireccion(busquedaBean.listaCreditos)}" />
+                </f:facet>
               </p:dataTable>
             </p:tab>
             <p:tab title="Busqueda por area geografica">
@@ -98,27 +102,33 @@
               <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorAreaGeografica()}" update=":growl, busquedaPorArea" />
               <br />
               <br />
-              <p:dataTable id="busquedaPorArea" var="c" value="#{busquedaBean.listaCreditos}" emptyMessage="No existen creditos en la zona seleccionada." paginator="true" rows="15" paginatorPosition="bottom">
+              <p:contextMenu for="busquedaPorArea" style="width:200px;">
+                <p:menuitem value="Ver detalle" icon="ui-icon-check" actionListener="#{busquedaBean.abrirDetalleCreditoDireccion()}" />
+              </p:contextMenu>
+              <p:dataTable id="busquedaPorArea" var="c2" value="#{busquedaBean.listaCreditos}" selection="#{busquedaBean.creditoDireccionSeleccionado}" selectionMode="single" rowKey="#{c2.numeroCredito}" emptyMessage="No existen creditos en la zona seleccionada." paginator="true" rows="15" paginatorPosition="bottom">
                 <p:column headerText="Credito" style="width:300px;">
-                  <h:outputText value="#{c.numeroCredito}" />
+                  <h:outputText value="#{c2.numeroCredito}" />
                   <br />
-                  <h:outputText value="#{c.nombreDeudor}" />
+                  <h:outputText value="#{c2.nombreDeudor}" />
                 </p:column>
                 <p:column headerText="Institucion" style="width:100px;">
-                  <h:outputText value="#{c.institucion}" />
+                  <h:outputText value="#{c2.institucion}" />
                 </p:column>
                 <p:column headerText="Gestor" style="width:100px;">
-                  <h:outputText value="#{c.gestorActual}" />
+                  <h:outputText value="#{c2.gestorActual}" />
                 </p:column>
                 <p:column headerText="Calle y numero" style="width:200px;">
-                  <h:outputText value="#{c.calleNumero}" />
+                  <h:outputText value="#{c2.calleNumero}" />
                 </p:column>
                 <p:column headerText="Colonia y C.P." style="width:200px;">
-                  <h:outputText value="#{c.colonia} (#{c.cp})" />
+                  <h:outputText value="#{c2.colonia} (#{c2.cp})" />
                 </p:column>
                 <p:column headerText="Municipio y estado" style="width:200px;">
-                  <h:outputText value="#{c.municipio}, #{c.estado}" />
+                  <h:outputText value="#{c2.municipio}, #{c2.estado}" />
                 </p:column>
+                <f:facet name="footer">
+                  <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampanaCreditosDireccion(busquedaBean.listaCreditos)}" />
+                </f:facet>
               </p:dataTable>
             </p:tab>
             <p:tab title="Busqueda por saldo vencido">
@@ -128,25 +138,31 @@
               <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorSaldoVencido()}" update="busquedaPorSaldoVencido" />
               <br />
               <br />
-              <p:dataTable id="busquedaPorSaldoVencido" var="c" value="#{busquedaBean.listaCreditos2}" emptyMessage="No existen creditos con este rango de saldo vencido." paginator="true" rows="15" paginatorPosition="bottom">
+              <p:contextMenu for="busquedaPorSaldoVencido" style="width:200px;">
+                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{busquedaBean.abrirDetalleCredito()}" />
+              </p:contextMenu>
+              <p:dataTable id="busquedaPorSaldoVencido" var="c3" value="#{busquedaBean.listaCreditos2}" rowKey="#{c3.idCredito}" selection="#{busquedaBean.creditoSeleccionado}" selectionMode="single" emptyMessage="No existen creditos con este rango de saldo vencido." paginator="true" rows="15" paginatorPosition="bottom">
                 <p:column headerText="Credito" style="width:100px;">
-                  <h:outputText value="#{c.numeroCredito}" />
+                  <h:outputText value="#{c3.numeroCredito}" />
                 </p:column>
                 <p:column headerText="Deudor" style="width:400px;">
-                  <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}" />
+                  <h:outputText value="#{c3.deudor.sujeto.nombreRazonSocial}" />
                 </p:column>
                 <p:column headerText="Institucion" style="width:100px;">
-                  <h:outputText value="#{c.producto.institucion.nombreCorto}" />
+                  <h:outputText value="#{c3.producto.institucion.nombreCorto}" />
                 </p:column>
                 <p:column headerText="Gestor" style="width:100px;">
-                  <h:outputText value="#{c.gestor.usuario.nombreLogin}" />
+                  <h:outputText value="#{c3.gestor.usuario.nombreLogin}" />
                 </p:column>
                 <p:column headerText="Saldo vencido" style="width:100px;">
-                  <h:outputText value="#{busquedaBean.obtenerSaldoVencido(c.idCredito)}">
+                  <h:outputText value="#{busquedaBean.obtenerSaldoVencido(c3.idCredito)}">
                     <f:convertNumber type="currency" currencySymbol="$" />
                   </h:outputText>
                 </p:column>
               </p:dataTable>
+              <f:facet name="footer">
+                <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampana(busquedaBean.listaCreditos2)}" />
+              </f:facet>
             </p:tab>
             <p:tab title="Busqueda por tiempo con adeudo">
               Elija la cantidad de meses vencidos
@@ -169,27 +185,33 @@
               <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorMesesVencidos()}" update="busquedaPorMesesVencidos" />
               <br />
               <br />
-              <p:dataTable id="busquedaPorMesesVencidos" var="c" value="#{busquedaBean.listaCreditos2}" emptyMessage="No existen creditos con este tiempo de vencimiento." paginator="true" rows="15" paginatorPosition="bottom">
+              <p:contextMenu for="busquedaPorMesesVencidos" style="width:200px;">
+                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{busquedaBean.abrirDetalleCredito()}" />
+              </p:contextMenu>
+              <p:dataTable id="busquedaPorMesesVencidos" var="c4" value="#{busquedaBean.listaCreditos2}" rowKey="#{c4.idCredito}" selection="#{busquedaBean.creditoSeleccionado}" selectionMode="single" emptyMessage="No existen creditos con este tiempo de vencimiento." paginator="true" rows="15" paginatorPosition="bottom">
                 <p:column headerText="Credito" style="width:100px;">
-                  <h:outputText value="#{c.numeroCredito}" />
+                  <h:outputText value="#{c4.numeroCredito}" />
                 </p:column>
                 <p:column headerText="Deudor" style="width:400px;">
-                  <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}" />
+                  <h:outputText value="#{c4.deudor.sujeto.nombreRazonSocial}" />
                 </p:column>
                 <p:column headerText="Institucion" style="width:100px;">
-                  <h:outputText value="#{c.producto.institucion.nombreCorto}" />
+                  <h:outputText value="#{c4.producto.institucion.nombreCorto}" />
                 </p:column>
                 <p:column headerText="Gestor" style="width:100px;">
-                  <h:outputText value="#{c.gestor.usuario.nombreLogin}" />
+                  <h:outputText value="#{c4.gestor.usuario.nombreLogin}" />
                 </p:column>
                 <p:column headerText="Saldo vencido" style="width:100px;">
-                  <h:outputText value="#{busquedaBean.obtenerSaldoVencido(c.idCredito)}">
+                  <h:outputText value="#{busquedaBean.obtenerSaldoVencido(c4.idCredito)}">
                     <f:convertNumber type="currency" currencySymbol="$" />
                   </h:outputText>
                 </p:column>
                 <p:column headerText="Meses vencidos" style="width:100px;">
-                  <h:outputText value="#{busquedaBean.obtenerMesesVencidos(c.idCredito)}" />
+                  <h:outputText value="#{busquedaBean.obtenerMesesVencidos(c4.idCredito)}" />
                 </p:column>
+                <f:facet name="footer">
+                  <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampana(busquedaBean.listaCreditos2)}" />
+                </f:facet>
               </p:dataTable>
             </p:tab>
             <p:tab title="Busqueda por institucion/producto/campana">
@@ -205,37 +227,63 @@
               Seleccione el producto:
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:selectOneMenu id="productoBusqueda" value="#{busquedaBean.productoSeleccionado.idProducto}">
+                <f:selectItem itemLabel="Todos" itemValue="0" />
                 <f:selectItems value="#{busquedaBean.listaProductos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idProducto}" />
+                <p:ajax update="subproductoBusqueda" listener="#{busquedaBean.preparaSubproductos()}" />
+              </p:selectOneMenu>
+              <br />
+              <br />
+              Seleccione el subproducto:
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu id="subproductoBusqueda" value="#{busquedaBean.subproductoSeleccionado.idSubproducto}">
+                <f:selectItem itemLabel="Todos" itemValue="0" />
+                <f:selectItems value="#{busquedaBean.listaSubproductos}" var="s" itemLabel="#{s.nombre}" itemValue="#{s.idSubproducto}" />
               </p:selectOneMenu>
               <br />
               <br />
               Seleccione la campaña:
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:selectOneMenu id="campanaBusqueda" value="#{busquedaBean.campanaSeleccionada.idCampana}">
-                <f:selectItem itemLabel="Todas las campañas" itemValue="0" />
+                <f:selectItem itemLabel="Todas" itemValue="0" />
                 <f:selectItems value="#{busquedaBean.listaCampanas}" var="ca" itemLabel="#{ca.nombre}" itemValue="#{ca.idCampana}" />
+              </p:selectOneMenu>
+              <br />
+              <br />
+              Seleccione la frecuencia de gestion (color):
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu value="#{busquedaBean.colorSeleccionado}" style="width:300px">
+                <f:selectItem itemLabel="Todos" itemValue="0" />
+                <f:selectItem itemLabel="Verde (Hace menos de 3 dias)" itemValue="Verde" />
+                <f:selectItem itemLabel="Amarillo (Hace mas de 3 y menos de 7 dias)" itemValue="Amarillo" />
+                <f:selectItem itemLabel="Rojo (Hace mas de 7 dias)" itemValue="Rojo" />
               </p:selectOneMenu>
               <br />
               <br />
               <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorProductosCampana()}" update=":growl, busquedaPorProducto" />
               <br />
               <br />
-              <p:dataTable id="busquedaPorProducto" var="c" value="#{busquedaBean.listaCreditos2}" emptyMessage="No existen creditos de este producto." paginator="true" rows="15" paginatorPosition="bottom">
+              <p:contextMenu for="busquedaPorProducto" style="width:200px;">
+                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{busquedaBean.abrirDetalleCredito()}" />
+              </p:contextMenu>
+              <p:dataTable id="busquedaPorProducto" var="c5" value="#{busquedaBean.listaCreditos2}" rowKey="#{c5.idCredito}" selection="#{busquedaBean.creditoSeleccionado}" selectionMode="single" emptyMessage="No existen creditos con los criterios seleccionados." paginator="true" rows="15" paginatorPosition="bottom">
                 <p:column headerText="Credito" style="width:100px;">
-                  <h:outputText value="#{c.numeroCredito}" />
+                  <h:outputText value="#{c5.numeroCredito}" />
                 </p:column>
                 <p:column headerText="Deudor" style="width:400px;">
-                  <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}" />
+                  <h:outputText value="#{c5.deudor.sujeto.nombreRazonSocial}" />
                 </p:column>
                 <p:column headerText="Institucion" style="width:100px;">
-                  <h:outputText value="#{c.producto.institucion.nombreCorto}" />
+                  <h:outputText value="#{c5.producto.institucion.nombreCorto}" />
                 </p:column>
-                <p:column headerText="Producto" style="width:200px;">
-                  <h:outputText value="#{c.producto.nombre}" />
+                <p:column headerText="Subproducto" style="width:200px;">
+                  <h:outputText value="#{c5.subproducto.nombre}" />
                 </p:column>
                 <p:column headerText="Gestor" style="width:100px;">
-                  <h:outputText value="#{c.gestor.usuario.nombreLogin}" />
+                  <h:outputText value="#{c5.gestor.usuario.nombreLogin}" />
                 </p:column>
+                <f:facet name="footer">
+                  <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampana(busquedaBean.listaCreditos2)}" />
+                </f:facet>
               </p:dataTable>
             </p:tab>
           </p:accordionPanel>

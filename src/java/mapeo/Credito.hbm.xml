@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 30/05/2016 10:43:49 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 14/06/2016 11:17:21 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Credito" optimistic-lock="version" table="credito">
     <id name="idCredito" type="java.lang.Integer">
@@ -42,6 +42,9 @@
     </property>
     <property name="monto" type="java.lang.Float">
       <column name="monto" precision="12" scale="0"/>
+    </property>
+    <property name="saldoInsoluto" type="java.lang.Float">
+      <column name="saldo_insoluto" precision="12" scale="0"/>
     </property>
     <property name="mensualidad" type="java.lang.Float">
       <column name="mensualidad" precision="12" scale="0"/>

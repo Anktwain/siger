@@ -180,6 +180,7 @@ public class GestionBean implements Serializable {
         gestion = "BUZON DE VOZ";
         break;
       case "ESTA FUERA DE SERVICIO":
+      case "MENSAJE DE TEMPORALMENTE FUERA DE SERVICIO":
       case "MENSAJE DE APAGADO O FUERA DEL AREA DE SERVICIO":
       case "INDICAN MENSAJE QUE ESTA DESCOLGADO O EN REPARACION":
         gestion = "FUERA DE SERVICIO";
@@ -374,6 +375,10 @@ public class GestionBean implements Serializable {
           case 12:
             if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
               estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(10));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(11));
             } else {
               estatusPosibles.add(estatusInformativoDao.buscar(6));
             }
