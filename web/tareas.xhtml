@@ -9,6 +9,7 @@
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Tareas</title>
     <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+    <h:outputScript library="js" name="locale_es.js" />
   </h:head>
   <f:metadata>
     <f:event listener="#{indexBean.verificarAcceso('tareas')}" type="preRenderView" />
@@ -41,26 +42,26 @@
       </div>
       <div align="center">
         <h:form id="tareasForm">
-          <p:schedule widgetVar="calendario" value="#{tareasBean.modelo}" locale="mx" style="width: 1200px; height: 1000px;">
-            <p:ajax event="dateSelect" update=":growl" listener="#{tareasBean.obtenerEvento}" oncomplete="PF('nuevoEventoDlg').show();" />
+          <p:schedule widgetVar="calendario" value="#{tareasBean.modelo}" locale="es" style="width: 1200px; height: 1000px;">
+            <p:ajax event="dateSelect" update="agregarEventoForm" listener="#{tareasBean.seleccionDeDia}" oncomplete="PF('nuevoEventoDlg').show();" />
+            <p:ajax event="eventSelect" update="detalleEventoForm" listener="#{tareasBean.seleccionDeEvento}" oncomplete="PF('eventoDlg').show();" />
           </p:schedule>
         </h:form>
       </div>
     </div><!-- /main-container -->
     <!-- Footer ================================================== -->
     <ui:include src="barraInferior.xhtml" />
-    <p:dialog widgetVar="nuevoEventoDlg" header="Nuevo evento">
-      <h:form id="egregarEventoForm">
-        <h:outputText value="#{tareasBean.diaSeleccionado}" />
+    <p:dialog widgetVar="nuevoEventoDlg" header="Nuevo evento" modal="true">
+      <h:form id="agregarEventoForm">
         <h:panelGrid id="eventDetails" columns="2">
           <p:outputLabel value="Nombre:" />
-          <p:inputText id="title" value="#{tareasBean.evento.title}" required="true" />
+          <p:inputText value="#{tareasBean.evento.title}" required="true" />
           <p:outputLabel value="Desde:" />
-          <p:calendar id="from" value="#{tareasBean.evento.fechaInicio}" showButtonPanel="true" pattern="yyyy/MM/dd HH:mm"/>
+          <p:calendar value="#{tareasBean.evento.startDate}" showOn="button" locale="es" pattern="yyyy/MM/dd HH:mm"/>
           <p:outputLabel value="Hasta:" />
-          <p:calendar id="to" value="#{tareasBean.evento.fechaFin}" showButtonPanel="true" pattern="yyyy/MM/dd HH:mm"/>
+          <p:calendar value="#{tareasBean.evento.endDate}" showOn="button" locale="es" pattern="yyyy/MM/dd HH:mm"/>
           <p:outputLabel value="Todo el dia:" />
-          <h:selectBooleanCheckbox value="#{tareasBean.todoElDia}" />
+          <h:selectBooleanCheckbox value="#{tareasBean.evento.allDay}" />
         </h:panelGrid>
         <div align="center">
           <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('nuevoEventoDlg').hide();" />
@@ -69,34 +70,10 @@
         </div>
       </h:form>
     </p:dialog>
-    <script type="text/javascript">
-      var PrimeFaces;
-      PrimeFaces.locales['mx'] = {
-        closeText: 'Cerrar',
-        prevText: 'Anterior',
-        nextText: 'Siguiente',
-        monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-        monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-        dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
-        dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
-        dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
-        weekHeader: 'Semana',
-        firstDay: 1,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: '',
-        timeOnlyTitle: 'Sólo hora',
-        timeText: 'Tiempo',
-        hourText: 'Hora',
-        minuteText: 'Minuto',
-        secondText: 'Segundo',
-        currentText: 'Fecha actual',
-        ampm: false,
-        month: 'Mes',
-        week: 'Semana',
-        day: 'Día',
-        allDayText: 'Todo el día'
-      };
-    </script>
-  </body>
+    <p:dialog widgetVar="eventoDlg" header="Detalles del evento" modal="true">
+      <h:form id="detalleEventoForm">
+        <h:outputText value="#{tareasBean.evento.title}"
+    </h:form>
+  </p:dialog>
+</body>
 </html>

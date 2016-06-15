@@ -309,6 +309,10 @@ public class GestionBean implements Serializable {
           case 11:
             if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
               estatusPosibles.add(estatusInformativoDao.buscar(5));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(10));
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+              estatusPosibles.add(estatusInformativoDao.buscar(11));
             } else {
               estatusPosibles.add(estatusInformativoDao.buscar(6));
             }

@@ -13,7 +13,6 @@ import dao.CreditoDAO;
 import dao.EmailDAO;
 import dao.GestorDAO;
 import dao.PagoDAO;
-import dto.Actualizacion;
 import dto.ComprobantePago;
 import dto.Email;
 import dto.Gestor;
@@ -194,6 +193,8 @@ public class PagosBean implements Serializable {
       pagoSeleccionado.setQuincena(new QuincenaIMPL().obtenerQuincenaActual());
       boolean ok = pagoDao.editar(pagoSeleccionado);
       if (ok) {
+        // NO SE DEBERAN ACTUALIZAR LOS SALDOS VENCIDOS
+        /*
         Actualizacion act = actualizacionDao.buscarUltimaActualizacion(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getIdCredito());
         if (act != null) {
           float saldoVencido = act.getSaldoVencido();
@@ -205,6 +206,7 @@ public class PagosBean implements Serializable {
         } else {
           Logs.log.error("No existe actualizacion para este credito.");
         }
+        */
         cargarListas();
         Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " aprobo un pago por $" + pagoSeleccionado.getMontoAprobado() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
         GestionAutomatica.generarGestionAutomatica("16PAGSI", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE APRUEBA PAGO POR $" + pagoSeleccionado.getMontoAprobado());
@@ -303,6 +305,10 @@ public class PagosBean implements Serializable {
       copia = "cobranza_ibr@corporativodelrio.com";
       String producto;
       if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("CT EXPRESS")) {
+        producto = "CT EXPRESS";
+      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("EXPRESS ABIERTO")) {
+        producto = "CT EXPRESS";
+      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("EXPRESS CT")) {
         producto = "CT EXPRESS";
       } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("PERSONAL")) {
         producto = "SOFOM PERSONAL";

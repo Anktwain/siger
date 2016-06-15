@@ -9,6 +9,7 @@
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Convenios</title>
     <link rel="shortcut icon" href="resources/img/icono.ico" type="image/x-icon" />
+    <h:outputScript library="js" name="locale_es.js" />
   </h:head> 
   <body>
     <p:growl id="growl" showDetail="true" sticky="true" />
@@ -204,7 +205,7 @@
             <br />
             Fecha de deposito:
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <p:calendar value="#{conveniosBean.fechaDeposito}" showOn="button" required="true" requiredMessage="Debe indicar una fecha de deposito." />
+            <p:calendar value="#{conveniosBean.fechaDeposito}" showOn="button" required="true" requiredMessage="Debe indicar una fecha de deposito." locale="es" />
             <br />
             <br />
             <h:outputText value="En ventanilla (#{conveniosBean.promesaSeleccionada.convenioPago.credito.numeroCredito})" />
@@ -295,7 +296,7 @@
                 <p:inputText value="#{conveniosBean.saldosNuevasPromesas[0]}" required="true" requiredMessage="Debe ingresar una cantidad." />
                 Fecha pactada:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[0]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[0]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." locale="es" />
               </p:panelGrid>
             </p:outputPanel>
             <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita2}">
@@ -308,7 +309,7 @@
                 <p:inputText value="#{conveniosBean.saldosNuevasPromesas[1]}" required="true" requiredMessage="Debe ingresar una cantidad." />
                 Fecha pactada:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[1]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[1]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." locale="es" />
               </p:panelGrid>
             </p:outputPanel>
             <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita3}">
@@ -321,7 +322,7 @@
                 <p:inputText value="#{conveniosBean.saldosNuevasPromesas[2]}" required="true" requiredMessage="Debe ingresar una cantidad." />
                 Fecha pactada:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[2]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[2]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." locale="es" />
               </p:panelGrid>
             </p:outputPanel>
             <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita4}">
@@ -334,7 +335,7 @@
                 <p:inputText value="#{conveniosBean.saldosNuevasPromesas[3]}" required="true" requiredMessage="Debe ingresar una cantidad." />
                 Fecha pactada:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[3]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[3]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." locale="es" />
               </p:panelGrid>
             </p:outputPanel>
             <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita5}">
@@ -347,7 +348,7 @@
                 <p:inputText value="#{conveniosBean.saldosNuevasPromesas[4]}" required="true" requiredMessage="Debe ingresar una cantidad." />
                 Fecha pactada:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[4]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[4]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." locale="es" />
               </p:panelGrid>
             </p:outputPanel>
             <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita6}">
@@ -360,7 +361,7 @@
                 <p:inputText value="#{conveniosBean.saldosNuevasPromesas[5]}" required="true" requiredMessage="Debe ingresar una cantidad." />
                 Fecha pactada:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[5]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[5]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." locale="es" />
               </p:panelGrid>
             </p:outputPanel>
             <p:outputPanel style="text-align:center;" rendered="#{conveniosBean.habilita7}">
@@ -373,7 +374,7 @@
                 <p:inputText value="#{conveniosBean.saldosNuevasPromesas[6]}" required="true" requiredMessage="Debe ingresar una cantidad." />
                 Fecha pactada:
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[6]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." />
+                <p:calendar value="#{conveniosBean.fechasNuevasPromesas[6]}" showOn="button" required="true" requiredMessage="Debe indicar una fecha." locale="es" />
               </p:panelGrid>
             </p:outputPanel>
             <br />

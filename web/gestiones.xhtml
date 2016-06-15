@@ -8,6 +8,7 @@
   <h:head>
     <meta charset="utf-8"></meta>
     <title>SigerWeb - Gestiones</title>
+    <h:outputScript library="js" name="locale_es.js" />
   </h:head>
   <f:metadata>
     <f:event listener="#{indexBean.verificarAcceso('gestiones')}" type="preRenderView" />
@@ -119,7 +120,7 @@
               <td>
                 <h4 class="no-margin">Fecha inicio:</h4>
                 <br />
-                <p:calendar id="startDate" value="#{gestionesBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial.">
+                <p:calendar id="startDate" value="#{gestionesBean.fechaInicio}" showOn="button" required="true" requiredMessage="Debe indicar una fecha inicial." locale="es">
                   <p:ajax event="dateSelect" update="endDate" />
                 </p:calendar>
               </td>
@@ -127,7 +128,7 @@
               <td style="padding-left: 20px;">
                 <h4 class="no-margin">Fecha fin:</h4>
                 <br />
-                <p:calendar id="endDate" value="#{gestionesBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." />
+                <p:calendar id="endDate" value="#{gestionesBean.fechaFin}" showOn="button" required="true" requiredMessage="Debe indicar una fecha final." locale="es" />
               </td>
             </tr>
             <tr>

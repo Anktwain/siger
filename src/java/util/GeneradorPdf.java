@@ -116,19 +116,19 @@ public class GeneradorPdf {
       texto3 = TextoPdfs.TEXTO_GENERAL_3;
       texto5 = TextoPdfs.TEXTO_GENERAL_5;
       if (credito.getSubproducto().getNombre().contains("CT EXPRESS")) {
-        producto = "Credito CT Express";
+        producto = "Crédito CT Express";
         texto1 = TextoPdfs.TEXTO_EXPRESS_1;
         texto2 = TextoPdfs.TEXTO_EXPRESS_2;
         texto4 = TextoPdfs.TEXTO_EXPRESS_4;
       }
       else if(credito.getProducto().getNombre().contains("EXPRESS ABIERTO")){
-        producto = "Credito CT Express";
+        producto = "Crédito CT Express";
         texto1 = TextoPdfs.TEXTO_EXPRESS_1;
         texto2 = TextoPdfs.TEXTO_EXPRESS_2;
         texto4 = TextoPdfs.TEXTO_EXPRESS_4;
       }
-      else if (credito.getProducto().getNombre().contains("CREDITO EXPRESS CT")) {
-        producto = "Crédito TELMEX (SOFOM)";
+      else if (credito.getProducto().getNombre().contains("EXPRESS CT")) {
+        producto = "Crédito CT Express";
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
         texto2 = TextoPdfs.TEXTO_TELMEX_2;
         texto4 = "Numero de cuenta asociado a su credito (" + credito.getNumeroCuenta() + ")";
