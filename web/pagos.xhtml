@@ -209,37 +209,37 @@
                 </table>
                 <br />
                 <div align="center">
-                  <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1210px;" rendered="#{pagosBean.habilitaTabla}">
-                    <p:column headerText="Fecha deposito" style="width:100px;" sortBy="#{p.fechaDeposito}"> 
-                      <h:outputText value="#{p.fechaDeposito}" />
+                  <p:dataTable id="todosPagos" var="p" value="#{pagosBean.listaPagos}" rowKey="#{p.idPago}" emptyMessage="No existen pagos." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1310px;" rendered="#{pagosBean.habilitaTabla}">
+                    <p:column headerText="Credito" style="width:100px;" sortBy="#{p.promesaPago.convenioPago.credito.numeroCredito}"> 
+                      <h:outputText value="#{p.promesaPago.convenioPago.credito.numeroCredito}" />
                     </p:column>
-                    <p:column headerText="Monto pago" style="width:100px;" sortBy="#{p.montoPago}"> 
-                      <h:outputText value="#{p.montoPago}">
-                        <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    <p:column headerText="Deudor" style="width:280px;" sortBy="#{p.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}"> 
+                      <h:outputText value="#{p.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
+                    </p:column>  
+                    <p:column headerText="Linea global" style="width:250px;" sortBy="#{p.promesaPago.convenioPago.credito.subproducto.nombre}"> 
+                      <h:outputText value="#{p.promesaPago.convenioPago.credito.subproducto.nombre}" />
+                    </p:column>
+                    <p:column headerText="Cuenta pago" style="width:120px;" sortBy="#{p.numeroCuenta}"> 
+                      <h:outputText value="#{p.numeroCuenta}" />
+                    </p:column>
+                    <p:column headerText="Fecha deposito" style="width: 100px;" sortBy="#{p.fechaDeposito}">
+                      <h:outputText value="#{p.fechaDeposito}">
+                        <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
                       </h:outputText>
                     </p:column>
-                    <p:column headerText="Monto aprobado" style="width:100px;" sortBy="#{p.montoAprobado}"> 
+                    <p:column headerText="Monto" style="width:100px;" sortBy="#{p.montoAprobado}"> 
                       <h:outputText value="#{p.montoAprobado}">
                         <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                       </h:outputText>
                     </p:column>
-                    <p:column headerText="Credito" style="width:100px;" sortBy="#{p.promesaPago.convenioPago.credito.numeroCredito}"> 
-                      <h:outputText value="#{p.promesaPago.convenioPago.credito.numeroCredito}" />
+                    <p:column headerText="Observaciones" style="width:150px;" sortBy="#{p.informacionRevision}">
+                      <h:outputText value="#{p.informacionRevision}"/>
                     </p:column>
-                    <p:column headerText="Deudor" style="width:300px;" sortBy="#{p.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}"> 
-                      <h:outputText value="#{p.promesaPago.convenioPago.credito.deudor.sujeto.nombreRazonSocial}" />
+                    <p:column headerText="Estatus" style="width:100px;">
+                      <h:outputText value="#{pagosBean.etiquetarEstatus(p.estatus)}"/>
                     </p:column>
                     <p:column headerText="Gestor" style="width:100px;" sortBy="#{p.gestor.usuario.nombreLogin}"> 
                       <h:outputText value="#{p.gestor.usuario.nombreLogin}" />
-                    </p:column>
-                    <p:column headerText="Revisor" style="width:100px;" sortBy="#{p.revisor}"> 
-                      <h:outputText value="#{p.revisor}" />
-                    </p:column>
-                    <p:column headerText="Observaciones" style="width:200px;" sortBy="#{p.informacionRevision}">
-                      <h:outputText value="#{p.informacionRevision}"/>
-                    </p:column>
-                    <p:column headerText="Pagado" style="width:100px;" sortBy="#{pagosBean.etiquetarEstatusPago(p.pagado)}">
-                      <h:outputText value="#{pagosBean.etiquetarEstatusPago(p.pagado)}"/>
                     </p:column>
                     <f:facet name="footer">
                       <div align="right">

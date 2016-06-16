@@ -239,8 +239,44 @@ public class CuentasGestorBean implements Serializable {
               campana = Campanas.SIN_CONTACTO_PARCIAL;
             }
           }
+        } else {
+          // CHECAR GESTIONES ANTERIORES, EN CASO DE QUE LA ACTUAL NO TENGA CALIFICACION
+          for (int j = (gestionesCredito.size() - 1); j >= 0; j--) {
+            if ((gestionesCredito.get(j).getDescripcionGestion().getCalificacion() != null) && (gestionesCredito.get(j).getDescripcionGestion().getCalificacion() == 2)) {
+              if (!pagos.isEmpty()) {
+                if (!promesasFuturas.isEmpty()) {
+                  for (int k = 0; k < (promesasFuturas.size()); k++) {
+                    Calendar fecha = Calendar.getInstance();
+                    fecha.add(Calendar.DATE, 4);
+                    Date fechaFutura = fecha.getTime();
+                    if (promesasFuturas.get(k).getFechaPrometida().after(fechaFutura)) {
+                      campana = Campanas.CONVENIO_EN_ESPERA_DE_CUMPLIRSE;
+                      break;
+                    } else {
+                      campana = Campanas.CONVENIO_ANTICIPA_FECHA;
+                    }
+                  }
+                } else if (!promesasHoy.isEmpty()) {
+                  campana = Campanas.CONVENIO_MISMA_FECHA;
+                } else {
+                  campana = Campanas.CON_CONTACTO_CON_PAGOS;
+                }
+              } else {
+                campana = Campanas.CON_CONTACTO;
+              }
+              break;
+            } else if ((gestionesCredito.get(j).getDescripcionGestion().getCalificacion() != null) && (gestionesCredito.get(j).getDescripcionGestion().getCalificacion() == 3)) {
+              if (!pagos.isEmpty()) {
+                campana = Campanas.SIN_CONTACTO_CON_PAGOS;
+              } else {
+                campana = Campanas.SIN_CONTACTO_PARCIAL;
+              }
+              break;
+            }
+          }
         }
       }
+      // SI SE EFECTUA UN CAMBIO DE CAMPAÑA
       if (campana != campanaActual) {
         creditosEnGestion.get(i).setCampana(campanaDao.buscarPorId(campana));
         if (creditoDao.editar(creditosEnGestion.get(i))) {
@@ -299,7 +335,7 @@ public class CuentasGestorBean implements Serializable {
       }
     }
   }
-  
+
   // METODO QUE PREPARA LA GESTION DE CAMPAÑA DE LOS CREDITOS FILTRADOS EN LA VISTA BUSQUEDA
   public void preparaCampanaBusqueda(List<Credito> creditos) {
     CreditoCampana c = new CreditoCampana();

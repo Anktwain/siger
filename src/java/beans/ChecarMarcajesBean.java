@@ -10,14 +10,12 @@ import dao.CreditoDAO;
 import dao.DevolucionDAO;
 import dao.GestionDAO;
 import dao.HistorialDAO;
-import dao.SubproductoDAO;
 import dto.Credito;
 import impl.CampanaIMPL;
 import impl.CreditoIMPL;
 import impl.DevolucionIMPL;
 import impl.GestionIMPL;
 import impl.HistorialIMPL;
-import impl.SubproductoIMPL;
 import java.io.Serializable;
 import java.util.List;
 import javax.el.ELContext;
@@ -87,9 +85,6 @@ public class ChecarMarcajesBean implements Serializable {
     } else {
       return "";
     }
-    // FALTA IMPLEMENTAR UNA ENTRADA AL HISTORIAL CUANDO CAMBIE DE CAMPAÑA
-    // CHECAMOS SI HAY UNA ENTRADA EN EL HISTORIAL CON EL TEXTO "CAMBIO DE CAMPAÑA"
-
   }
 
   // METODO QUE VERIFICA SI EL CREDITO TIENE UNA PROMESA DE PAGO EL DIA DE HOY
@@ -108,7 +103,7 @@ public class ChecarMarcajesBean implements Serializable {
 
   // METODO QUE VERIFICA SI UNA CUENTA ES DE SOFOM
   public String verificaSOFOM() {
-    if (creditoActual.getSubproducto().getNombre().contains("CREDITO EXPRESS CT")) {
+    if ((creditoActual.getSubproducto().getNombre().contains("EXPRESS CT"))||(creditoActual.getSubproducto().getNombre().contains("EXPRESS TPV"))) {
       return "SOFOM CT";
     } else {
       return "";

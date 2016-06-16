@@ -13,6 +13,7 @@ import dao.CreditoDAO;
 import dao.EmailDAO;
 import dao.GestorDAO;
 import dao.PagoDAO;
+import dto.Actualizacion;
 import dto.ComprobantePago;
 import dto.Email;
 import dto.Gestor;
@@ -193,8 +194,8 @@ public class PagosBean implements Serializable {
       pagoSeleccionado.setQuincena(new QuincenaIMPL().obtenerQuincenaActual());
       boolean ok = pagoDao.editar(pagoSeleccionado);
       if (ok) {
-        // NO SE DEBERAN ACTUALIZAR LOS SALDOS VENCIDOS
-        /*
+        // WARNING
+        // A PETICION DE LOS ADMINISTRADORES, EN PROXIMAS VERSIONES PODRIAN NO ACTUALIZARSE LOS SALDOS VENCIDOS
         Actualizacion act = actualizacionDao.buscarUltimaActualizacion(pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getIdCredito());
         if (act != null) {
           float saldoVencido = act.getSaldoVencido();
@@ -206,7 +207,6 @@ public class PagosBean implements Serializable {
         } else {
           Logs.log.error("No existe actualizacion para este credito.");
         }
-        */
         cargarListas();
         Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " aprobo un pago por $" + pagoSeleccionado.getMontoAprobado() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
         GestionAutomatica.generarGestionAutomatica("16PAGSI", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE APRUEBA PAGO POR $" + pagoSeleccionado.getMontoAprobado());
@@ -304,15 +304,9 @@ public class PagosBean implements Serializable {
     } else {
       copia = "cobranza_ibr@corporativodelrio.com";
       String producto;
-      if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("CT EXPRESS")) {
+      if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getFamilia().contains("CT EXPRESS")) {
         producto = "CT EXPRESS";
-      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("EXPRESS ABIERTO")) {
-        producto = "CT EXPRESS";
-      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("EXPRESS CT")) {
-        producto = "CT EXPRESS";
-      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("PERSONAL")) {
-        producto = "SOFOM PERSONAL";
-      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getSubproducto().getNombre().contains("PERSONALES")) {
+      } else if (pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getProducto().getNombre().contains("RESIDENCIAL")) {
         producto = "SOFOM PERSONAL";
       } else {
         producto = "SOFOM COMERCIAL";
@@ -427,6 +421,7 @@ public class PagosBean implements Serializable {
   public List<PagoGestor> generarPagosGestor() {
     float aprobados = 0;
     float creditos = 0;
+    float eficiencia = 0;
     List<PagoGestor> lista = new ArrayList();
     List<Gestor> gestores = gestorDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     for (int i = 0; i < (gestores.size()); i++) {
@@ -442,6 +437,7 @@ public class PagosBean implements Serializable {
       }
       aprobados = aprobados + pg.getMontoPagos();
       creditos = creditos + pg.getMontoPrometido();
+      eficiencia = eficiencia + pg.getEficiencia();
       lista.add(pg);
     }
     DecimalFormat df = new DecimalFormat();
@@ -450,7 +446,7 @@ public class PagosBean implements Serializable {
     sumaAprobados = "$" + df.format(aprobados);
     sumaCreditos = "$" + df.format(creditos);
     df.setMaximumFractionDigits(8);
-    sumaEficiencia = String.format("%,2.6f", pagoDao.calcularRecuperacionDespacho(indexBean.getUsuario().getDespacho().getIdDespacho())) + " %";
+    sumaEficiencia = df.format(eficiencia) + " %";
     return lista;
   }
 

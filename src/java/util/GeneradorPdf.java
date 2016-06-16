@@ -115,25 +115,16 @@ public class GeneradorPdf {
       String producto, texto1, texto2, texto3, texto4, texto5;
       texto3 = TextoPdfs.TEXTO_GENERAL_3;
       texto5 = TextoPdfs.TEXTO_GENERAL_5;
-      if (credito.getSubproducto().getNombre().contains("CT EXPRESS")) {
+      if (credito.getProducto().getFamilia().contains("CT EXPRESS")) {
         producto = "Crédito CT Express";
         texto1 = TextoPdfs.TEXTO_EXPRESS_1;
         texto2 = TextoPdfs.TEXTO_EXPRESS_2;
-        texto4 = TextoPdfs.TEXTO_EXPRESS_4;
-      }
-      else if(credito.getProducto().getNombre().contains("EXPRESS ABIERTO")){
-        producto = "Crédito CT Express";
-        texto1 = TextoPdfs.TEXTO_EXPRESS_1;
-        texto2 = TextoPdfs.TEXTO_EXPRESS_2;
-        texto4 = TextoPdfs.TEXTO_EXPRESS_4;
-      }
-      else if (credito.getProducto().getNombre().contains("EXPRESS CT")) {
-        producto = "Crédito CT Express";
-        texto1 = TextoPdfs.TEXTO_TELMEX_1;
-        texto2 = TextoPdfs.TEXTO_TELMEX_2;
-        texto4 = "Numero de cuenta asociado a su credito (" + credito.getNumeroCuenta() + ")";
-      }
-      else{
+        if ((credito.getSubproducto().getNombre().contains("EXPRESS CT")) || (credito.getSubproducto().getNombre().contains("EXPRESS TPV"))) {
+          texto4 = "Numero de cuenta asociado a su credito (" + credito.getNumeroCuenta() + ")";
+        } else {
+          texto4 = TextoPdfs.TEXTO_EXPRESS_4;
+        }
+      } else {
         producto = "Crédito TELMEX (SOFOM)";
         texto1 = TextoPdfs.TEXTO_TELMEX_1;
         texto2 = TextoPdfs.TEXTO_TELMEX_2;

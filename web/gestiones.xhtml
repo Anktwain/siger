@@ -147,9 +147,6 @@
           </table>
           <hr />
           <p:dataTable id="tablaGestiones" var="g" value="#{gestionesBean.listaGestiones}" emptyMessage="No existen gestiones." paginator="true" rows="10" paginatorPosition="bottom" rendered="#{gestionesBean.habilitaTabla}">
-            <p:column headerText="Fecha" style="width: 100px;">
-              <h:outputText value="#{g.fecha}"/>
-            </p:column>
             <p:column headerText="Credito" style="width: 100px;">
               <h:outputText value="#{g.credito.numeroCredito}" />
             </p:column>
@@ -158,6 +155,11 @@
             </p:column>
             <p:column headerText="Producto" style="width: 200px;">
               <h:outputText value="#{g.credito.subproducto.nombre}" />
+            </p:column>
+            <p:column headerText="Fecha" style="width: 100px;">
+              <h:outputText value="#{g.fecha}">
+                <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+              </h:outputText>
             </p:column>
             <p:column headerText="Gestion">
               <h:outputText value="#{obtenerOracionCompletaGestionBean.obtenerOracion(g)}" />

@@ -156,7 +156,7 @@ public class GestionesBean implements Serializable {
         consulta = consulta + "AND id_credito IN (SELECT id_credito FROM credito WHERE id_producto IN (SELECT id_producto FROM producto WHERE id_producto = " + productoSeleccionado.getIdProducto().toString() + ")) ";
         nombreArchivo = nombreArchivo + "_" + productoSeleccionado.getNombre();
       }
-      consulta = consulta + ";";
+      consulta = consulta + "AND id_descripcion_gestion != 117;";
       listaGestiones = gestionDao.busquedaReporteGestiones(consulta);
       habilitaTabla = true;
       permitirExport = !listaGestiones.isEmpty();
