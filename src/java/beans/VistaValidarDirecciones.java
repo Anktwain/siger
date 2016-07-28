@@ -104,6 +104,7 @@ public class VistaValidarDirecciones implements Serializable {
     List<DirsPorValidar> lista = new ArrayList();
     // TO FIX:
     // CAMBIAR EL ARCHIVO PARA QUE NO SIEMPRE ABRA EL MISMO
+    // CREAR UN METODO DE APERTURA DE ARCHIVOS
     try (BufferedReader buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_REMESAS + nombreArchivo))) {
       while ((lineaActual = buferLectura.readLine()) != null) {
         lineas.add(lineaActual);
@@ -194,7 +195,8 @@ public class VistaValidarDirecciones implements Serializable {
         nuevoEstado = new EstadoRepublica();
         direccionesPorValidar = obtenerListaDeDirecciones();
         Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " valido una direccion asociada al sujeto " + d.getSujeto().getNombreRazonSocial());
-        GestionAutomatica.generarGestionAutomatica("4DOMI", creditoDao.buscarPorSujeto(direccionSeleccionada.getIdSujeto()), indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL CLIENTE: " + d.getSujeto().getNombreRazonSocial());
+        GestionAutomatica ga = new GestionAutomatica();
+        ga.generarGestionAutomatica("4DOMI", creditoDao.buscarPorSujeto(direccionSeleccionada.getIdSujeto()), indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL DEUDOR " + d.getSujeto().getNombreRazonSocial());
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se ha validado la direccion"));
       } else {
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se actualizo el archivo. Contacte al equipo de sistemas"));
@@ -202,7 +204,6 @@ public class VistaValidarDirecciones implements Serializable {
     } else {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se valido la direccion. Contacte al equipo de sistemas"));
     }
-
   }
 
   // METODO QUE ELIMINA DEL ARCHIVO LA DIRECCION QUE YA FUE VALIDADA
@@ -213,17 +214,17 @@ public class VistaValidarDirecciones implements Serializable {
     File inputFile = new File(Directorios.RUTA_REMESAS + nombreArchivo);
     File tempFile = new File(Directorios.RUTA_REMESAS + "tmp" + nombreArchivo);
     try {
-      BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-      BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-      String currentLine;
-      while ((currentLine = reader.readLine()) != null) {
-        if (currentLine.contains(direccion)) {
-          continue;
+      try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+        String currentLine;
+        while ((currentLine = reader.readLine()) != null) {
+          if (currentLine.contains(direccion)) {
+            continue;
+          }
+          writer.write(currentLine + System.getProperty("line.separator"));
         }
-        writer.write(currentLine + System.getProperty("line.separator"));
+        writer.close();
       }
-      writer.close();
-      reader.close();
     } catch (Exception e) {
       Logs.log.error("Error de lectura/escritura en archivo de direcciones");
       Logs.log.error(e.getMessage());

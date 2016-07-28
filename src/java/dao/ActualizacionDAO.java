@@ -14,6 +14,8 @@ import java.util.List;
  */
 public interface ActualizacionDAO {
   
+  public boolean insertar(Actualizacion actualizacion);
+  
   public List<Actualizacion> buscarPorCredito(int idCredito);
   
   public Actualizacion buscarUltimaActualizacion(int idCredito);

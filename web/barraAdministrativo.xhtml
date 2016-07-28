@@ -8,7 +8,15 @@
   </h:head>
   <h:body>
     <div class="grey-container shortcut-wrapper">
+      <!--
       <a href="carga.xhtml" class="shortcut-link">
+        <span class="shortcut-icon">
+          <i class="fa fa-cloud-upload"></i>
+        </span>
+        <span class="text">Carga</span>
+      </a>
+      -->
+      <a href="nuevaCarga.xhtml" class="shortcut-link">
         <span class="shortcut-icon">
           <i class="fa fa-cloud-upload"></i>
         </span>
@@ -55,10 +63,10 @@
         </span>
         <span class="text">Devoluci&oacute;n</span>
       </a>
-      <a href="validarDirecciones.xhtml" class="shortcut-link">
+      <a href="nuevoValidarDirecciones.xhtml" class="shortcut-link">
         <span class="shortcut-icon">
           <i class="fa fa-check-square-o"></i>
-        <span class="shortcut-alert">
+          <span class="shortcut-alert">
             <p:outputLabel id="circulito3" value="#{barraAdministrativoBean.contarDireccionesPendientes()}" />
           </span>
         </span>

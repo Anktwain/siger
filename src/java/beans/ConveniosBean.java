@@ -149,6 +149,7 @@ public class ConveniosBean implements Serializable {
   public final void cargarListas() {
     observacionesPago = "TE MANDO PAGO PARA SU VALIDACION.";
     pagosPrometidos = 1;
+    fechasNuevasPromesas[0] = new Date();
     if (creditoActual.getSaldoInsoluto() == null) {
       saldoMaximo = creditoActual.getMonto();
     } else {
@@ -204,13 +205,14 @@ public class ConveniosBean implements Serializable {
       convenio.setPagosNegociados(pagosPrometidos);
       convenio.setSaldoNegociado(saldoNuevoConvenio);
       if (saldoNuevoConvenio > saldoMaximo) {
-        Logs.log.warn("El usuario " + indexBean.getUsuario().getNombreLogin() + " del despacho " + indexBean.getUsuario().getDespacho().getNombreCorto() + " realizo un convenio por un saldo mayor al saldo vencido.");
+        Logs.log.warn("El usuario " + indexBean.getUsuario().getNombreLogin() + " del despacho " + indexBean.getUsuario().getDespacho().getNombreCorto() + " realizo un convenio por un saldo mayor al saldo insoluto.");
       }
       convenio = convenioPagoDao.insertar(convenio);
       if (convenio != null) {
         convenioActivo = convenio;
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo un nuevo convenio."));
-        GestionAutomatica.generarGestionAutomatica("9APROB", creditoActual, indexBean.getUsuario(), "CONVENIO CON " + sujetoConvenio + " POR $" + saldoNuevoConvenio + " EN " + pagosPrometidos + " PARCIALIDAD(ES).");
+        GestionAutomatica ga = new GestionAutomatica();
+        ga.generarGestionAutomatica("9APROB", creditoActual, indexBean.getUsuario(), "CONVENIO CON " + sujetoConvenio + " POR $" + saldoNuevoConvenio + " EN " + pagosPrometidos + " PARCIALIDAD(ES)");
         habilitaPromesas = true;
         switch (pagosPrometidos) {
           case 1:
@@ -271,8 +273,9 @@ public class ConveniosBean implements Serializable {
     c.setEstatus(Convenios.FINALIZADO);
     boolean ok = convenioPagoDao.editar(c);
     if (ok) {
-      GestionAutomatica.generarGestionAutomatica("14DELC", creditoActual, indexBean.getUsuario(), "SE FINALIZA CONVENIO");
-      // TO FIX
+      GestionAutomatica ga = new GestionAutomatica();
+      ga.generarGestionAutomatica("14DELC", creditoActual, indexBean.getUsuario(), "SE FINALIZA CONVENIO");
+      // TO FIX:
       // EVITAR QUE LA VISTA YA TENGA LOS DATOS PRECARGADOS Y LAS PROMESAS DISPONIBLES
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se finalizo convenio."));
     } else {
@@ -291,6 +294,11 @@ public class ConveniosBean implements Serializable {
     }
     cancelar();
   }
+  
+  // METODO QUE OBTIENE EL SALDO VENCIDO DE UN CREDITO
+  public float obtenerSaldoVencido(int idCredito) {
+    return creditoDao.buscarSaldoVencidoCredito(idCredito);
+  }
 
   // METODO QUE HABILITA LA CARGA DE PAGOS Y RESTRINGE CUANDO SON CREDITOS INACTIVOS
   public boolean habilitaCargaPagos() {
@@ -307,7 +315,7 @@ public class ConveniosBean implements Serializable {
   public void cargarArchivoAlServidor(UploadedFile archivo) {
     byte[] bytes;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-    String extension = archivo.getFileName().substring(archivo.getFileName().indexOf("."));
+    String extension = archivo.getFileName().substring(archivo.getFileName().indexOf(".")).toLowerCase();
     String nombre = indexBean.getUsuario().getNombreLogin() + "_" + df.format(new Date()) + extension;
     nombre = nombre.replace(" ", "");
     nombre = Directorios.RUTA_WINDOWS_CARGA_COMPROBANTES + nombre;
@@ -345,12 +353,12 @@ public class ConveniosBean implements Serializable {
         pagosNoValidos = true;
       }
       /*
-      if (fechasNuevasPromesas[i].before(new Date())) {
-        fechasNoValidas = true;
-      }
-      */
+       if (fechasNuevasPromesas[i].before(new Date())) {
+       fechasNoValidas = true;
+       }
+       */
     }
-    // TO FIX
+    // TO FIX:
     // AVISAR DE PROMESAS CON UN SALDO MAYOR AL DEL CONVENIO
     /*
      if (totalPagos > convenioActivo.getSaldoNegociado()) {
@@ -493,11 +501,11 @@ public class ConveniosBean implements Serializable {
 
   // METODO QUE GESTIONA LA HABILITACION DE LOS PAGOS EN VENTANILLA, A LA CUENTA DEL CREDITO Y A LAS CUENTAS CONCENTRADORAS
   public void controlCuentaPago(int caso) {
-    if (ventanilla & (caso ==1)) {
+    if (ventanilla & (caso == 1)) {
       habilitaAsociada = true;
       habilitaCuentas = true;
     }
-    if (cuentaAsociada& (caso ==2)) {
+    if (cuentaAsociada & (caso == 2)) {
       habilitaVentanilla = true;
       habilitaCuentas = true;
     }

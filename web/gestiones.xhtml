@@ -169,7 +169,7 @@
             </p:column>
             <f:facet name="footer">
               <div align="right">
-                <h:commandLink actionListener="#{gestionesBean.reportarExportacion('xls')}">
+                  <h:commandLink actionListener="#{gestionesBean.reportarExportacion('xls')}">
                   <p:graphicImage name="/img/iconos/excel.png" width="40" rendered="#{gestionesBean.permitirExport}" />
                   <p:dataExporter type="xls" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}" />
                 </h:commandLink>

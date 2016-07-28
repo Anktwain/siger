@@ -21,6 +21,8 @@ public interface CreditoDAO {
   
   public List<Credito> creditosEnGestionPorDespacho(int idDespacho);
   
+  public List<Credito> creditosEnGestionPorDespachoSinQuebrantos(int idDespacho);
+  
   public List<Credito> tablaCreditosEnGestionPorDespacho(int idDespacho);
   
   public List<Credito> buscarCreditosPorCliente(String numeroDeudor);
@@ -64,5 +66,9 @@ public interface CreditoDAO {
   public List<Credito> buscarCreditosPorEstado(int idEstado);
   
   public List<Credito> busquedaEspecialCreditos(String consulta);
+  
+  public List<Credito> buscarCreditosDevueltosPorDespacho(int idDespacho);
+  
+  public boolean numeroCreditoExiste(String numeroCredito);
   
 }

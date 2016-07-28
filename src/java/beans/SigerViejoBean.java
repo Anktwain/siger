@@ -28,7 +28,7 @@ public class SigerViejoBean implements Serializable {
 
   // VARIABLES DE CLASE
   private final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-  private final String DB_URL = "jdbc:mysql://10.0.0.52:3306/sigerweb";
+  private final String DB_URL = "jdbc:mysql://titanium:3306/sigerweb";
   private final String USER = "root";
   private final String PASS = "root";
   private List<GestionSigerViejo> listaGestiones;
@@ -45,63 +45,101 @@ public class SigerViejoBean implements Serializable {
   // METODO QUE BUSCARA LAS GESTIONES ANTERIORES
   public void obtenerGestionesAnteriores(String credito) {
     listaGestiones = new ArrayList();
-    Connection conn;
-    Statement stmt;
-    String consulta = "SELECT g.Gestion_Fecha, g.Nota_Importante, g.Gestion, t.Tipo_Gest_Desc FROM gestiones g JOIN cat_tipo_gestion t WHERE t.Tipo_Gest_Clv = g.Tipo_Gest_Clv AND g.Credito_SF_LT_NT_CT_CreditosII = '" + credito + "' ORDER BY g.Gestion_Fecha DESC;";
+    Connection conn = null;
+    Statement stmt = null;
+    String consulta = "SELECT g.Gestion_Fecha, t.Tipo_Gest_Desc, d.Donde_Desc, a.Asunto_Desc_Desc, q.Quien_Desc, g.Gestion, g.Nota_Importante FROM gestiones g JOIN cat_tipo_gestion t JOIN cat_quien q JOIN cat_asunto_desc a JOIN cat_donde d WHERE t.Tipo_Gest_Clv = g.Tipo_Gest_Clv AND g.Quien_Clv = q.Quien_Clv AND g.Asunto_Desc_Clv = a.Asunto_Desc_Clv AND g.Donde_Clv = d.Donde_Clv AND g.Credito_SF_LT_NT_CT_CreditosII = '" + credito + "' ORDER BY g.Gestion_Fecha DESC;";
     try {
       Class.forName(JDBC_DRIVER);
       conn = DriverManager.getConnection(DB_URL, USER, PASS);
       stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery(consulta);
-      while (rs.next()) {
-        GestionSigerViejo g = new GestionSigerViejo();
-        g.setFechaGestion(rs.getDate("g.Gestion_Fecha"));
-        String tipo = rs.getString("t.Tipo_Gest_Desc");
-        String aux = rs.getString("g.Gestion") + ". " + rs.getString("g.Nota_Importante");
-        if (tipo.contains("VISITA DOMICILIARIA")) {
-          g.setGestion("VISITA DOMICILIARIA, " + aux);
-        } else if (tipo.contains("TELEFONIA")) {
-          g.setGestion("TELEF, " + aux);
-        } else if (tipo.contains("LLAMADA ENTRANTE")) {
-          g.setGestion("LLAMADA ENTRANTE, " + aux);
-        } else if (tipo.contains("CORPORATIVO")) {
-          g.setGestion(aux);
-        } else {
-          g.setGestion(aux);
+      try (ResultSet rs = stmt.executeQuery(consulta)) {
+        while (rs.next()) {
+          GestionSigerViejo g = new GestionSigerViejo();
+          g.setFechaGestion(rs.getDate("g.Gestion_Fecha"));
+          String gestion;
+          String tipo = rs.getString("t.Tipo_Gest_Desc");
+          String quien = rs.getString("q.Quien_Desc");
+          if (quien.equals("NADIE")) {
+            if (tipo.equals("AUTOMATICA")) {
+              gestion = rs.getString("d.Donde_Desc") + ", " + rs.getString("a.Asunto_Desc_Desc") + ". " + rs.getString("g.Gestion") + ". " + rs.getString("g.Nota_Importante");
+            } else {
+              gestion = tipo + ", " + rs.getString("d.Donde_Desc") + ". " + rs.getString("a.Asunto_Desc_Desc") + ". " + rs.getString("g.Gestion") + ". " + rs.getString("g.Nota_Importante");
+            }
+          } else {
+            if (tipo.equals("AUTOMATICA")) {
+              gestion = rs.getString("d.Donde_Desc") + ", " + rs.getString("a.Asunto_Desc_Desc") + " " + rs.getString("q.Quien_Desc") + ". " + rs.getString("g.Gestion") + ". " + rs.getString("g.Nota_Importante");
+            } else {
+              gestion = tipo + ", " + rs.getString("d.Donde_Desc") + ". " + rs.getString("a.Asunto_Desc_Desc") + " " + rs.getString("q.Quien_Desc") + ". " + rs.getString("g.Gestion") + ". " + rs.getString("g.Nota_Importante");
+            }
+          }
+          g.setGestion(gestion);
+          listaGestiones.add(g);
         }
-        listaGestiones.add(g);
       }
-      rs.close();
     } catch (ClassNotFoundException | SQLException e) {
       Logs.log.error(consulta);
-      Logs.log.error(e);
+      Logs.log.error(e.getMessage());
+    } finally {
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException sqle) {
+          Logs.log.error("No se pudo cerrar la consulta.");
+          Logs.log.error(sqle.getMessage());
+        }
+      }
+      if (conn != null) {
+        try {
+          conn.close();
+        } catch (SQLException sqle) {
+          Logs.log.error("No se pudo cerrar la conexion.");
+          Logs.log.error(sqle.getMessage());
+        }
+      }
     }
   }
 
   // METODO QUE BUSCARA LAS DIRECCIONES DEL SIGER VIEJO
   public void obtenerDireccionesAnteriores(String credito) {
     listaDirecciones = new ArrayList();
-    Connection conn;
-    Statement stmt;
+    Connection conn = null;
+    Statement stmt = null;
     String consulta = "SELECT DomDeu, ColDeu, Entdeu, EdoDeu, CodPos FROM direcciones WHERE Datos_primarios_Folio = (SELECT Datos_primarios_Folio FROM credito_sf_lt_nt_ct WHERE CreditosII = '" + credito + "');";
     try {
       Class.forName(JDBC_DRIVER);
       conn = DriverManager.getConnection(DB_URL, USER, PASS);
       stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery(consulta);
-      while (rs.next()) {
-        DireccionSigerViejo d = new DireccionSigerViejo();
-        d.setCalleNum(rs.getString("DomDeu"));
-        d.setColonia(rs.getString("ColDeu"));
-        d.setMunicipio(rs.getString("Entdeu"));
-        d.setEstado(rs.getString("EdoDeu"));
-        d.setCp(rs.getString("CodPos"));
-        listaDirecciones.add(d);
+      try (ResultSet rs = stmt.executeQuery(consulta)) {
+        while (rs.next()) {
+          DireccionSigerViejo d = new DireccionSigerViejo();
+          d.setCalleNum(rs.getString("DomDeu"));
+          d.setColonia(rs.getString("ColDeu"));
+          d.setMunicipio(rs.getString("Entdeu"));
+          d.setEstado(rs.getString("EdoDeu"));
+          d.setCp(rs.getString("CodPos"));
+          listaDirecciones.add(d);
+        }
       }
-      rs.close();
     } catch (ClassNotFoundException | SQLException e) {
       Logs.log.error(consulta);
-      Logs.log.error(e);
+      Logs.log.error(e.getMessage());
+    } finally {
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException sqle) {
+          Logs.log.error("No se pudo cerrar la consulta.");
+          Logs.log.error(sqle.getMessage());
+        }
+      }
+      if (conn != null) {
+        try {
+          conn.close();
+        } catch (SQLException sqle) {
+          Logs.log.error("No se pudo cerrar la conexion.");
+          Logs.log.error(sqle.getMessage());
+        }
+      }
     }
   }
 
@@ -114,53 +152,87 @@ public class SigerViejoBean implements Serializable {
   // METODO QUE BUSCARA LOS TELEFONOS DEL SIGER VIEJO
   public void obtenerTelefonosAnteriores(String credito) {
     listaTelefonos = new ArrayList();
-    Connection conn;
-    Statement stmt;
+    Connection conn = null;
+    Statement stmt = null;
     String consulta = "SELECT Numero, Lugar, Tipo, Extencion, Lada, Horario FROM telefonos WHERE Datos_primarios_Folio = (SELECT Datos_primarios_Folio FROM credito_sf_lt_nt_ct WHERE CreditosII = '" + credito + "');";
     try {
       Class.forName(JDBC_DRIVER);
       conn = DriverManager.getConnection(DB_URL, USER, PASS);
       stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery(consulta);
-      while (rs.next()) {
-        TelefonoSigerViejo t = new TelefonoSigerViejo();
-        t.setNumero(rs.getString("Numero"));
-        t.setLugar(rs.getString("Lugar"));
-        t.setTipo(rs.getString("Tipo"));
-        t.setExtension(rs.getString("Extencion"));
-        t.setLada(rs.getString("Lada"));
-        t.setHorario(rs.getString("Horario"));
-        listaTelefonos.add(t);
+      try (ResultSet rs = stmt.executeQuery(consulta)) {
+        while (rs.next()) {
+          TelefonoSigerViejo t = new TelefonoSigerViejo();
+          t.setNumero(rs.getString("Numero"));
+          t.setLugar(rs.getString("Lugar"));
+          t.setTipo(rs.getString("Tipo"));
+          t.setExtension(rs.getString("Extencion"));
+          t.setLada(rs.getString("Lada"));
+          t.setHorario(rs.getString("Horario"));
+          listaTelefonos.add(t);
+        }
       }
-      rs.close();
     } catch (ClassNotFoundException | SQLException e) {
       Logs.log.error(consulta);
-      Logs.log.error(e);
+      Logs.log.error(e.getMessage());
+    } finally {
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException sqle) {
+          Logs.log.error("No se pudo cerrar la consulta.");
+          Logs.log.error(sqle.getMessage());
+        }
+      }
+      if (conn != null) {
+        try {
+          conn.close();
+        } catch (SQLException sqle) {
+          Logs.log.error("No se pudo cerrar la conexion.");
+          Logs.log.error(sqle.getMessage());
+        }
+      }
     }
   }
 
   // METODO QUE BUSCARA LOS CORREOS DEL SIGER VIEJO
   public void obtenerContactosAnteriores(String credito) {
     listaContactos = new ArrayList();
-    Connection conn;
-    Statement stmt;
+    Connection conn = null;
+    Statement stmt = null;
     String consulta = "SELECT NomCont, Observaciones, TipoDeContacto FROM contactos WHERE Datos_primarios_Folio = (SELECT Datos_primarios_Folio FROM credito_sf_lt_nt_ct WHERE CreditosII = '" + credito + "');";
     try {
       Class.forName(JDBC_DRIVER);
       conn = DriverManager.getConnection(DB_URL, USER, PASS);
       stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery(consulta);
-      while (rs.next()) {
-        ContactoSigerViejo c = new ContactoSigerViejo();
-        c.setNombre(rs.getString("NomCont"));
-        c.setObservaciones(rs.getString("Observaciones"));
-        c.setTipo(rs.getString("TipoDeContacto"));
-        listaContactos.add(c);
+      try (ResultSet rs = stmt.executeQuery(consulta)) {
+        while (rs.next()) {
+          ContactoSigerViejo c = new ContactoSigerViejo();
+          c.setNombre(rs.getString("NomCont"));
+          c.setObservaciones(rs.getString("Observaciones"));
+          c.setTipo(rs.getString("TipoDeContacto"));
+          listaContactos.add(c);
+        }
       }
-      rs.close();
     } catch (ClassNotFoundException | SQLException e) {
       Logs.log.error(consulta);
-      Logs.log.error(e);
+      Logs.log.error(e.getMessage());
+    } finally {
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException sqle) {
+          Logs.log.error("No se pudo cerrar la consulta.");
+          Logs.log.error(sqle.getMessage());
+        }
+      }
+      if (conn != null) {
+        try {
+          conn.close();
+        } catch (SQLException sqle) {
+          Logs.log.error("No se pudo cerrar la conexion.");
+          Logs.log.error(sqle.getMessage());
+        }
+      }
     }
   }
 
@@ -385,7 +457,7 @@ public class SigerViejoBean implements Serializable {
     public void setObservaciones(String observaciones) {
       this.observaciones = observaciones;
     }
-    
+
   }
 
 }

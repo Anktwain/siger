@@ -25,6 +25,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import util.HibernateUtil;
+import util.constantes.Devoluciones;
 import util.log.Logs;
 
 /**
@@ -162,7 +163,7 @@ public class GestionIMPL implements GestionDAO {
     Number gestiones;
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     String fecha = df.format(new Date());
-    String consulta = "SELECT COUNT(*) FROM gestion WHERE id_tipo_gestion != 5 AND DATE(fecha) = '" + fecha + "' AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    String consulta = "SELECT COUNT(*) FROM gestion WHERE id_tipo_gestion != 5 AND DATE(fecha) = '" + fecha + "' AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion  WHERE estatus = " + Devoluciones.DEVUELTO + ");";
     try {
       gestiones = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
@@ -178,7 +179,7 @@ public class GestionIMPL implements GestionDAO {
   public Number calcularGestionesHoyPorGestor(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number gestiones;
-    String consulta = "SELECT COUNT(*) FROM gestion WHERE DATE(fecha) = CURDATE() AND (id_tipo_gestion != 5 OR id_descripcion_gestion IN (SELECT id_descripcion_gestion FROM descripcion_gestion WHERE abreviatura = '9APROB')) AND id_credito IN (SELECT id_credito FROM credito WHERE id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ")) AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+    String consulta = "SELECT COUNT(*) FROM gestion WHERE DATE(fecha) = CURDATE() AND (id_tipo_gestion != 5 OR id_descripcion_gestion IN (SELECT id_descripcion_gestion FROM descripcion_gestion WHERE abreviatura = '9APROB')) AND id_credito IN (SELECT id_credito FROM credito WHERE id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ")) AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ");";
     try {
       gestiones = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {

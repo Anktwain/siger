@@ -50,21 +50,21 @@ public class ObtenerOracionCompletaGestionBean implements Serializable {
    }
    }
    */
-  // METODO QUE CREA UNA ORACION CON CADA GESTION REALIZADA SIGUIENTO EL FORMATO PERMITIDO POR EL BANCO
+  // METODO QUE CREA UNA ORACION CON CADA GESTION REALIZADA SIGUIENDO EL FORMATO PERMITIDO POR EL BANCO
   public String obtenerOracion(Gestion gestion) {
     if (gestion != null) {
       String completa;
       if (gestion.getTipoQuienGestion().getIdTipoQuienGestion() == 12) {
         if (gestion.getTipoGestion().getNombre().equals("AUTOMATICA")) {
-          completa = gestion.getDondeGestion().getNombre() + ". " + gestion.getDescripcionGestion().getTextoGestion() + ". " + gestion.getEstatusInformativo().getEstatus();
+          completa = gestion.getDondeGestion().getNombre() + ". " + gestion.getDescripcionGestion().getTextoGestion() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus();
         } else {
-          completa = gestion.getTipoGestion().getNombre() + ": " + gestion.getDondeGestion().getNombre() + ". " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ", " + gestion.getDescripcionGestion().getTextoGestion() + ". " + gestion.getEstatusInformativo().getEstatus();
+          completa = gestion.getTipoGestion().getNombre() + ": " + gestion.getDondeGestion().getNombre() + ". " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ", " + gestion.getDescripcionGestion().getTextoGestion() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus();
         }
       } else {
         if (gestion.getTipoGestion().getNombre().equals("AUTOMATICA")) {
-          completa = gestion.getDondeGestion().getNombre() + ". " + gestion.getDescripcionGestion().getTextoGestion() + " " + gestion.getQuienGestion().getQuien() + ". " + gestion.getEstatusInformativo().getEstatus();
+          completa = gestion.getDondeGestion().getNombre() + ". " + gestion.getDescripcionGestion().getTextoGestion() + " " + gestion.getQuienGestion().getQuien() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus();
         } else {
-          completa = gestion.getTipoGestion().getNombre() + ": " + gestion.getDondeGestion().getNombre() + ". " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ", " + gestion.getDescripcionGestion().getTextoGestion() + " " + gestion.getQuienGestion().getQuien() + ". " + gestion.getEstatusInformativo().getEstatus();
+          completa = gestion.getTipoGestion().getNombre() + ": " + gestion.getDondeGestion().getNombre() + ". " + gestion.getAsuntoGestion().getTipoAsuntoGestion().getAsunto() + ", " + gestion.getDescripcionGestion().getTextoGestion() + " " + gestion.getQuienGestion().getQuien() + ". " + gestion.getGestion() + ". " + gestion.getEstatusInformativo().getEstatus();
         }
       }
       return completa;

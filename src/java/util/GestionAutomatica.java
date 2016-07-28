@@ -19,7 +19,7 @@ import impl.EstatusInformativoIMPL;
 public class GestionAutomatica {
 
   // METODO QUE GENERA LA GESTION AUTOMATICA
-  public static boolean generarGestionAutomatica(String abreviatura, Credito credito, Usuario usuario, String gestion) {
+  public boolean generarGestionAutomatica(String abreviatura, Credito credito, Usuario usuario, String gestion) {
     Gestion g = new GestionIMPL().obtenerGestionAutomaticaPorAbreviatura(abreviatura);
     g.setCredito(credito);
     g.setEstatusInformativo(buscarEstatus(abreviatura));
@@ -28,7 +28,7 @@ public class GestionAutomatica {
     return (new GestionIMPL().insertarGestion(g));
   }
 
-  public static EstatusInformativo buscarEstatus(String abreviatura) {
+  public EstatusInformativo buscarEstatus(String abreviatura) {
     switch (abreviatura) {
       case "4DOMI":
         return new EstatusInformativoIMPL().buscar(12);
@@ -39,7 +39,7 @@ public class GestionAutomatica {
       case "15CTARE":
       case "17PAGNO":
       case "25VAPA":
-        return new EstatusInformativoIMPL().buscar(18);
+        return new EstatusInformativoIMPL().buscar(9);
       case "16PAGSI":
         return new EstatusInformativoIMPL().buscar(3);
       case "32RUVD":

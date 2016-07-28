@@ -113,7 +113,6 @@ public class SubproductoIMPL implements SubproductoDAO {
   @Override
   public Subproducto buscar(String nombreSubproducto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Subproducto subproducto;
     try {
       subproducto = (Subproducto) sesion.createSQLQuery("select * from subproducto where nombre = '" + nombreSubproducto + "';").addEntity(Subproducto.class).uniqueResult();
@@ -145,6 +144,38 @@ public class SubproductoIMPL implements SubproductoDAO {
       subproductos = sesion.createSQLQuery(consulta).addEntity(Subproducto.class).list();
     } catch (HibernateException he) {
       subproductos = null;
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return subproductos;
+  }
+
+  @Override
+  public List<Subproducto> buscarSubproductosPorFamilia(String familia) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Subproducto> subproductos = new ArrayList();
+    String consulta = "SELECT * FROM subproducto WHERE id_producto IN (SELECT id_producto FROM producto WHERE familia = '" + familia + "');";
+    try {
+      subproductos = sesion.createSQLQuery(consulta).addEntity(Subproducto.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return subproductos;
+  }
+
+  @Override
+  public List<Subproducto> buscarSubproductosPorInstitucion(int idInstitucion) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Subproducto> subproductos = new ArrayList();
+    String consulta = "SELECT * FROM subproducto WHERE id_producto IN (SELECT id_producto FROM producto WHERE id_institucion = " + idInstitucion + ");";
+    try {
+      subproductos = sesion.createSQLQuery(consulta).addEntity(Subproducto.class).list();
+    } catch (HibernateException he) {
       Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {

@@ -119,27 +119,27 @@
                   <p:menuitem value="Reactivar" icon="ui-icon-refresh" actionListener="#{devolucionBean.reactivar()}" update="growl, devueltos" />
                 </p:contextMenu>
                 <p:dataTable id="devueltos" var="dev" value="#{devolucionBean.listaDevueltos}" rowKey="#{dev.idDevolucion}" selection="#{devolucionBean.devolucionesSeleccionadas}" emptyMessage="No existen creditos devueltos."  paginator="true" rows="15" paginatorPosition="bottom">
-                  <p:column selectionMode="multiple" style="width:35px;text-align:center"/>
-                  <p:column headerText="Fecha devolucion" style="width:250px;" > 
-                    <h:outputText value="#{dev.fecha}"/>
+                  <p:column selectionMode="multiple" style="width:35px;text-align:center" />
+                  <p:column headerText="Fecha devolucion" style="width:250px;">
+                    <h:outputText value="#{dev.fecha}" />
                   </p:column>
-                  <p:column headerText="Estatus" style="width:100px;" > 
-                    <h:outputText value="#{devolucionBean.etiquetarEstatus(dev.estatus)}"/>
+                  <p:column headerText="Estatus" style="width:100px;">
+                    <h:outputText value="#{devolucionBean.etiquetarEstatus(dev.estatus)}" />
                   </p:column>
-                  <p:column headerText="Credito" style="width:150px;" > 
-                    <h:outputText value="#{dev.credito.numeroCredito}"/>
+                  <p:column headerText="Credito" style="width:150px;" filterBy="#{dev.credito.numeroCredito}" filterMatchMode="startsWith">
+                    <h:outputText value="#{dev.credito.numeroCredito}" />
                   </p:column>
-                  <p:column headerText="Deudor"> 
-                    <h:outputText value="#{dev.credito.deudor.sujeto.nombreRazonSocial}"/>
+                  <p:column headerText="Deudor"  filterBy="#{dev.credito.deudor.sujeto.nombreRazonSocial}" filterMatchMode="contains" filterStyle="width: 300px;">
+                    <h:outputText value="#{dev.credito.deudor.sujeto.nombreRazonSocial}" />
                   </p:column>
-                  <p:column headerText="Motivo" style="width:250px;" > 
-                    <h:outputText value="#{dev.conceptoDevolucion.concepto}"/>
+                  <p:column headerText="Motivo" style="width:250px;">
+                    <h:outputText value="#{dev.conceptoDevolucion.concepto}" />
                   </p:column>
-                  <p:column headerText="Solicitante" style="width:100px;" > 
-                    <h:outputText value="#{dev.solicitante}"/>
+                  <p:column headerText="Solicitante" style="width:100px;">
+                    <h:outputText value="#{dev.solicitante}" />
                   </p:column>
-                  <p:column headerText="Revisor" style="width:100px;" > 
-                    <h:outputText value="#{dev.revisor}"/>
+                  <p:column headerText="Revisor" style="width:100px;">
+                    <h:outputText value="#{dev.revisor}" />
                   </p:column>
                   <f:facet name="footer">
                     <p:commandButton value="Reactivar seleccionados" icon="ui-icon-refresh" actionListener="#{devolucionBean.reactivar()}" update="growl, devueltos" />

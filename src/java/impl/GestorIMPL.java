@@ -2,6 +2,7 @@ package impl;
 
 import dao.GestorDAO;
 import dto.Gestor;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -30,12 +31,11 @@ public class GestorIMPL implements GestorDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     boolean ok;
-
     try {
       sesion.save(gestor);
       tx.commit();
       ok = true;
-      //log.info("Se insertó un nuevo usuaario");
+      Logs.log.info("Se inserto un nuevo gestor");
     } catch (HibernateException he) {
       ok = false;
       if (tx != null) {
@@ -110,7 +110,24 @@ public class GestorIMPL implements GestorDAO {
     }
     return gestores;
   }
-  
+
+  @Override
+  public Gestor buscarGestorDelCredito(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Gestor gestor;
+    String consulta = "SELECT * FROM gestor WHERE id_gestor = (SELECT id_gestor FROM credito WHERE id_credito = " + idCredito + ");";
+    try {
+      gestor = (Gestor) sesion.createSQLQuery(consulta).addEntity(Gestor.class).uniqueResult();
+    } catch (HibernateException he) {
+      gestor = null;
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestor;
+  }
+
   /**
    *
    *

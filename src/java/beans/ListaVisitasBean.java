@@ -86,9 +86,10 @@ public class ListaVisitasBean implements Serializable {
       }
     }
     List<Impresion> ordenada = new ArrayList();
-    ordenada.addAll(QuickSort.quickSortCp(cdmx));
-    ordenada.addAll(QuickSort.quickSortCp(zmvm));
-    ordenada.addAll(QuickSort.quickSortCp(interior));
+    QuickSort qs = new QuickSort();
+    ordenada.addAll(qs.quickSortCp(cdmx));
+    ordenada.addAll(qs.quickSortCp(zmvm));
+    ordenada.addAll(qs.quickSortCp(interior));
     return ordenada;
   }
 

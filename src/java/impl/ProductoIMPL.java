@@ -142,7 +142,7 @@ public class ProductoIMPL implements ProductoDAO {
     }
     return productos;
   }
-  
+
   /**
    *
    *
@@ -156,7 +156,6 @@ public class ProductoIMPL implements ProductoDAO {
   @Override
   public Producto buscar(String nombreProducto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Producto producto;
     try {
       producto = (Producto) sesion.createSQLQuery("select * from producto where nombre = '" + nombreProducto + "';").addEntity(Producto.class).uniqueResult();
@@ -168,22 +167,55 @@ public class ProductoIMPL implements ProductoDAO {
     }
     return producto;
   }
-  
+
   @Override
   public String buscarProductoDelCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    String producto;
+    String producto = "";
+    String consulta = "SELECT nombre FROM producto where id_producto = (SELECT id_producto FROM credito WHERE id_credito = " + idCredito + ");";
     try {
-      producto = (String) sesion.createSQLQuery("SELECT nombre FROM producto where id_producto = (SELECT id_producto FROM credito WHERE id_credito = " + idCredito + ");").uniqueResult();
+      producto = (String) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
-      producto = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
     return producto;
   }
-  
+
+  @Override
+  public List<String> buscarFamiliasPorInstitucion(int idInstitucion) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<String> familias = new ArrayList();
+    String consulta = "SELECT DISTINCT familia FROM producto where id_institucion = " + idInstitucion + ";";
+    try {
+      familias = sesion.createSQLQuery(consulta).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return familias;
+  }
+
+  @Override
+  public List<Producto> buscarProductosPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Producto> productos = new ArrayList();
+    String consulta = "SELECT * FROM producto WHERE id_producto IN (SELECT id_producto FROM credito WHERE id_despacho = " + idDespacho + ");";
+    try {
+      productos = sesion.createSQLQuery(consulta).addEntity(Producto.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return productos;
+  }
+
   /**
    *
    *
@@ -194,5 +226,5 @@ public class ProductoIMPL implements ProductoDAO {
       sesion.close();
     }
   }
-  
+
 }

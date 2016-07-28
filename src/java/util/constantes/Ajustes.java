@@ -14,4 +14,5 @@ public interface Ajustes {
   public static final int ANTERIORES = 1;
   
   public static final int ACTUALES = 2;
+  
 }

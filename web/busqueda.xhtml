@@ -214,26 +214,40 @@
                 </f:facet>
               </p:dataTable>
             </p:tab>
-            <p:tab title="Busqueda por institucion/producto/campana">
+            <p:tab title="Busqueda por institucion/producto/campaña">
               Seleccione la institucion de la que quiere obtener los creditos:
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:selectOneMenu value="#{busquedaBean.institucionSeleccionada.idInstitucion}">
                 <f:selectItem itemLabel="" itemValue="0" />
                 <f:selectItems value="#{busquedaBean.listaInstituciones}" var="i" itemLabel="#{i.sujeto.nombreRazonSocial}" itemValue="#{i.idInstitucion}" />
-                <p:ajax update="productoBusqueda" listener="#{busquedaBean.preparaProductos()}" />
+                <!-- CAMBIO EN ETAPA DE PRUEBAS -->
+              <!-- EN CASO DE NO SER APROBADO, DESCOMENTAR ESTE CODIGO Y ELIMNAR EL BLOQUE INMEDIATO INFERIOR -->
+                <!-- <p:ajax update="productoBusqueda" listener="{busquedaBean.preparaProductos()}" /> -->
+                <p:ajax update="familiaProductoBusqueda" listener="#{busquedaBean.preparaFamiliaProductos()}" />
               </p:selectOneMenu>
               <br />
               <br />
+              <!-- CAMBIO EN ETAPA DE PRUEBAS -->
+              <!-- EN CASO DE NO SER APROBADO, DESCOMENTAR ESTE CODIGO Y ELIMNAR EL BLOQUE INMEDIATO INFERIOR -->
+              <!--
               Seleccione el producto:
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:selectOneMenu id="productoBusqueda" value="#{busquedaBean.productoSeleccionado.idProducto}">
+              <p:selectOneMenu id="productoBusqueda" value="{busquedaBean.productoSeleccionado.idProducto}">
                 <f:selectItem itemLabel="Todos" itemValue="0" />
-                <f:selectItems value="#{busquedaBean.listaProductos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idProducto}" />
+                <f:selectItems value="{busquedaBean.listaProductos}" var="p" itemLabel="{p.nombre}" itemValue="{p.idProducto}" />
+                <p:ajax update="subproductoBusqueda" listener="{busquedaBean.preparaSubproductos()}" />
+              </p:selectOneMenu>
+              -->
+              Seleccione la familia de productos:
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p:selectOneMenu id="familiaProductoBusqueda" value="#{busquedaBean.familiaSeleccionada}">
+                <f:selectItem itemLabel="Todas" itemValue="0" />
+                <f:selectItems value="#{busquedaBean.listaFamilias}" />
                 <p:ajax update="subproductoBusqueda" listener="#{busquedaBean.preparaSubproductos()}" />
               </p:selectOneMenu>
               <br />
               <br />
-              Seleccione el subproducto:
+              Seleccione el producto:
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:selectOneMenu id="subproductoBusqueda" value="#{busquedaBean.subproductoSeleccionado.idSubproducto}">
                 <f:selectItem itemLabel="Todos" itemValue="0" />
@@ -275,7 +289,7 @@
                 <p:column headerText="Institucion" style="width:100px;">
                   <h:outputText value="#{c5.producto.institucion.nombreCorto}" />
                 </p:column>
-                <p:column headerText="Subproducto" style="width:200px;">
+                <p:column headerText="Producto" style="width:200px;">
                   <h:outputText value="#{c5.subproducto.nombre}" />
                 </p:column>
                 <p:column headerText="Gestor" style="width:100px;">
@@ -286,6 +300,37 @@
                 </f:facet>
               </p:dataTable>
             </p:tab>
+            <p:tab title="Busqueda por frecuencia de gestion">
+              NOTA: Esta busqueda ordena los creditos en base a la ultima gestion realizada. Es decir: el primer credito de la lista es el que tiene mas tiempo sin gestionar y el ultimo es el que se ha gestionado mas recientemente.
+              <br />
+              <br />
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorFrecuenciaGestion()}" update=":growl, busquedaPorFrecuencia" />
+              <br />
+              <br />
+              <p:contextMenu for="busquedaPorFrecuencia" style="width:200px;">
+                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{busquedaBean.abrirDetalleCredito()}" />
+              </p:contextMenu>
+              <p:dataTable id="busquedaPorFrecuencia" var="c6" value="#{busquedaBean.listaCreditos2}" rowKey="#{c6.idCredito}" selection="#{busquedaBean.creditoSeleccionado}" selectionMode="single" emptyMessage="No existen creditos con los criterios seleccionados." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:column headerText="Credito" style="width:100px;">
+                  <h:outputText value="#{c6.numeroCredito}" />
+                </p:column>
+                <p:column headerText="Deudor" style="width:400px;">
+                  <h:outputText value="#{c6.deudor.sujeto.nombreRazonSocial}" />
+                </p:column>
+                <p:column headerText="Institucion" style="width:100px;">
+                  <h:outputText value="#{c6.producto.institucion.nombreCorto}" />
+                </p:column>
+                <p:column headerText="Producto" style="width:200px;">
+                  <h:outputText value="#{c6.subproducto.nombre}" />
+                </p:column>
+                <p:column headerText="Gestor" style="width:100px;">
+                  <h:outputText value="#{c6.gestor.usuario.nombreLogin}" />
+                </p:column>
+                <f:facet name="footer">
+                  <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampana(busquedaBean.listaCreditos2)}" />
+                </f:facet>
+              </p:dataTable>
+            </p:tab>  
           </p:accordionPanel>
         </h:form>
       </div>  

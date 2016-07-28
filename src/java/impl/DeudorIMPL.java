@@ -30,7 +30,6 @@ public class DeudorIMPL implements DeudorDAO {
   public Deudor insertar(Deudor deudor) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
-
     try {
       sesion.save(deudor);
       tx.commit();
@@ -122,10 +121,12 @@ public class DeudorIMPL implements DeudorDAO {
   public Deudor buscar(String numeroDeudor) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Deudor deudor;
+    String consulta = "SELECT * FROM deudor WHERE numero_deudor = '" + numeroDeudor + "' ORDER BY id_deudor ASC LIMIT 1;";
     try {
-      deudor = (Deudor) sesion.createSQLQuery("select * from deudor where numero_deudor = '" + numeroDeudor + "';").addEntity(Deudor.class).uniqueResult();
+      deudor = (Deudor) sesion.createSQLQuery(consulta).addEntity(Deudor.class).uniqueResult();
     } catch (HibernateException he) {
       deudor = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

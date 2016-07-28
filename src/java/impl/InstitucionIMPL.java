@@ -193,7 +193,7 @@ public class InstitucionIMPL implements InstitucionDAO {
   public List<Institucion> buscarInstitucionesPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Institucion> listaInstituciones;
-    String consulta = "SELECT * FROM institucion WHERE id_institucion IN (SELECT id_institucion FROM producto WHERE id_producto IN (SELECT id_producto FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion) AND id_despacho = " + idDespacho + "));";
+    String consulta = "SELECT * FROM institucion WHERE id_institucion IN (SELECT id_institucion FROM producto WHERE id_producto IN (SELECT id_producto FROM credito WHERE id_despacho = " + idDespacho + "));";
     try {
       listaInstituciones = sesion.createSQLQuery(consulta).addEntity(Institucion.class).list();
     } catch (HibernateException he) {

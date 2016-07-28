@@ -169,6 +169,10 @@ public class GestionBean implements Serializable {
       sujetoSeleccionado = quienGestionDao.buscarPorId(89);
       preparaEstatus();
     }
+    if(listaTipoSujetos.size()==1){
+      tipoSujetoSeleccionado = listaTipoSujetos.get(0);
+      preparaSujetos();
+    }
     switch (descripcionSeleccionada.getTextoGestion()) {
       case "DA TONO DE OCUPADO":
         gestion = "NUMERO OCUPADO";
@@ -215,47 +219,7 @@ public class GestionBean implements Serializable {
     listaEstatus = estatusPosibles;
     switch (tipoSeleccionado.getIdTipoGestion()) {
       case 1:
-        switch (asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto()) {
-          case 2:
-            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
-              estatusPosibles.add(estatusInformativoDao.buscar(5));
-            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
-              estatusPosibles.add(estatusInformativoDao.buscar(10));
-            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
-              estatusPosibles.add(estatusInformativoDao.buscar(11));
-            } else {
-              estatusPosibles.add(estatusInformativoDao.buscar(6));
-            }
-            break;
-          case 3:
-            estatusPosibles.add(estatusInformativoDao.buscar(21));
-            break;
-          case 4:
-            estatusPosibles.add(estatusInformativoDao.buscar(19));
-            break;
-          case 6:
-            estatusPosibles.add(estatusInformativoDao.buscar(16));
-            break;
-          case 7:
-          case 11:
-            if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
-              estatusPosibles.add(estatusInformativoDao.buscar(5));
-            } else {
-              estatusPosibles.add(estatusInformativoDao.buscar(6));
-            }
-            break;
-          case 8:
-            switch (descripcionSeleccionada.getAbreviatura()) {
-              case "1CONV":
-                estatusPosibles.add(estatusInformativoDao.buscar(1));
-                break;
-              case "2CONV":
-              case "3CONV":
-                estatusPosibles.add(estatusInformativoDao.buscar(2));
-                break;
-            }
-            break;
-        }
+        estatusPosibles.add(estatusInformativoDao.buscar(8));
         break;
       case 2:
         switch (asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto()) {
@@ -290,7 +254,7 @@ public class GestionBean implements Serializable {
               estatusPosibles.add(estatusInformativoDao.buscar(5));
             } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
               estatusPosibles.add(estatusInformativoDao.buscar(10));
-            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 13)) {
               estatusPosibles.add(estatusInformativoDao.buscar(11));
             } else {
               estatusPosibles.add(estatusInformativoDao.buscar(6));
@@ -311,7 +275,7 @@ public class GestionBean implements Serializable {
               estatusPosibles.add(estatusInformativoDao.buscar(5));
             } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
               estatusPosibles.add(estatusInformativoDao.buscar(10));
-            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 13)) {
               estatusPosibles.add(estatusInformativoDao.buscar(11));
             } else {
               estatusPosibles.add(estatusInformativoDao.buscar(6));
@@ -333,11 +297,12 @@ public class GestionBean implements Serializable {
       case 3:
         switch (asuntoSeleccionado.getTipoAsuntoGestion().getClaveAsunto()) {
           case 2:
+          case 13:
             if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
               estatusPosibles.add(estatusInformativoDao.buscar(5));
             } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
               estatusPosibles.add(estatusInformativoDao.buscar(10));
-            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 13)) {
               estatusPosibles.add(estatusInformativoDao.buscar(11));
             } else {
               estatusPosibles.add(estatusInformativoDao.buscar(6));
@@ -354,7 +319,6 @@ public class GestionBean implements Serializable {
             break;
           case 7:
           case 11:
-          case 13:
             if (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 1) {
               estatusPosibles.add(estatusInformativoDao.buscar(5));
             } else {
@@ -381,7 +345,7 @@ public class GestionBean implements Serializable {
               estatusPosibles.add(estatusInformativoDao.buscar(5));
             } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
               estatusPosibles.add(estatusInformativoDao.buscar(10));
-            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 13)) {
               estatusPosibles.add(estatusInformativoDao.buscar(11));
             } else {
               estatusPosibles.add(estatusInformativoDao.buscar(6));
@@ -396,7 +360,7 @@ public class GestionBean implements Serializable {
               estatusPosibles.add(estatusInformativoDao.buscar(5));
             } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
               estatusPosibles.add(estatusInformativoDao.buscar(10));
-            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+            } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 13)) {
               estatusPosibles.add(estatusInformativoDao.buscar(11));
             } else {
               estatusPosibles.add(estatusInformativoDao.buscar(6));
@@ -421,7 +385,7 @@ public class GestionBean implements Serializable {
                   estatusPosibles.add(estatusInformativoDao.buscar(5));
                 } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 2) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 3) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 4)) {
                   estatusPosibles.add(estatusInformativoDao.buscar(10));
-                } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7)) {
+                } else if ((tipoSujetoSeleccionado.getIdTipoQuienGestion() == 5) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 6) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 7) || (tipoSujetoSeleccionado.getIdTipoQuienGestion() == 13)) {
                   estatusPosibles.add(estatusInformativoDao.buscar(11));
                 } else {
                   estatusPosibles.add(estatusInformativoDao.buscar(6));

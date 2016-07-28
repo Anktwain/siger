@@ -31,4 +31,6 @@ public interface Marcajes {
  
   public static final int URGENTE = 10;
   
+  public static final int QUEBRANTO = 11;
+  
 }

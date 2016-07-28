@@ -17,4 +17,6 @@ public interface Impresiones {
   
   public static final int VISITA_DOMICILIARIA = 3;
   
+  public static final int IMPRESION_QUEBRANTO = 4;
+  
 }

@@ -19,13 +19,13 @@ public interface Directorios {
 
   // RUTAS WINDOWS
   public static final String RUTA_IMAGENES = "D:\\img\\";
-  public static final String RUTA_WINDOWS_CARGA_COMPROBANTES = "C:\\apache-tomee-plume-1.7.2\\webapps\\comprobantes\\";
-  public static final String RUTA_WINDOWS_CARGA_VISITAS = "C:\\apache-tomee-plume-1.7.2\\webapps\\pdfs\\";
+  public static final String RUTA_WINDOWS_CARGA_COMPROBANTES = "D:\\ApacheSoftwareFoundation\\Tomcat9.0\\webapps\\comprobantes\\";
+  public static final String RUTA_WINDOWS_CARGA_VISITAS = "D:\\ApacheSoftwareFoundation\\Tomcat9.0\\webapps\\pdfs\\";
   public static final String RUTA_WINDOWS_PERIODO_IMPRESIONES = "C:\\Periodo_Impresiones\\";
   public static final String RUTA_CORREOS = "CorreosInbursa/";
   
   // RUTAS BINAH
-  public static final String RUTA_SERVIDOR_WEB_COMPROBANTES = "http://binah:8080/comprobantes/";
-  public static final String RUTA_SERVIDOR_WEB_VISITAS = "http://binah:8080/pdfs/";
+  public static final String RUTA_SERVIDOR_WEB_COMPROBANTES = "http://binah:8090/comprobantes/";
+  public static final String RUTA_SERVIDOR_WEB_VISITAS = "http://binah:8090/pdfs/";
   
 }

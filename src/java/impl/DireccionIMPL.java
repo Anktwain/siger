@@ -126,13 +126,13 @@ public class DireccionIMPL implements DireccionDAO {
   @Override
   public List<Direccion> buscarPorSujeto(int idSujeto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Direccion> listaDirecciones;
+    List<Direccion> listaDirecciones = new ArrayList();
     String consulta = "SELECT d.* FROM direccion d JOIN sujeto s ON s.id_sujeto = d.id_sujeto WHERE s.id_sujeto = " + idSujeto + ";";
 
     try {
       listaDirecciones = sesion.createSQLQuery(consulta).addEntity(Direccion.class).list();
     } catch (HibernateException he) {
-      listaDirecciones = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

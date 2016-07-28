@@ -34,9 +34,10 @@
       <div class="pull-right" style="padding-right: 100px;">
         <h:form id="formCuentasGestor">
           <p:contextMenu for="campanasGestor" style="width:200px;">
-            <p:menuitem value="Gestionar campaña" icon="ui-icon-check" actionListener="#{cuentasGestorBean.preparaCampana()}" update=":growl" />
+            <p:menuitem value="Gestionar campaña" icon="ui-icon-star" actionListener="#{cuentasGestorBean.preparaCampana()}" />
+            <p:menuitem value="Gestionar quebrantos" icon="ui-icon-flag" actionListener="#{cuentasGestorBean.preparaCampanaQuebranto()}" update=":growl" />
           </p:contextMenu>
-          <p:dataTable id="campanasGestor" var="l" value="#{cuentasGestorBean.listaCreditosCampanas}" selectionMode="single" selection="#{cuentasGestorBean.seleccion}" rowKey="#{l.idCampana}" emptyMessage="No existen campañas disponibles." style="width: 950px;" rendered="#{cuentasGestorBean.habilitaCampanas}">
+          <p:dataTable id="campanasGestor" var="l" value="#{cuentasGestorBean.listaCreditosCampanas}" selectionMode="single" selection="#{cuentasGestorBean.seleccion}" rowKey="#{l.idCampana}" emptyMessage="No existen campañas disponibles." style="width: 1000px;" rendered="#{cuentasGestorBean.habilitaCampanas}">
             <p:column headerText="Campaña" style="width:360px;">
               <h:outputText value="#{l.nombreCampana}" />
             </p:column>
@@ -49,14 +50,23 @@
             <p:column headerText="Cuentas" style="width:80px;">
               <h:outputText value="#{l.cuentasEnCampana}" />
             </p:column>
-            <p:column headerText="Verdes" style="width:60px; color: #04B404;">
+            <p:column headerText="V" style="width:40px; color: #04B404;">
               <h:outputText value="#{l.verdes}" />
             </p:column>
-            <p:column headerText="Amarillas" style="width:80px; color: #F3CE85;">
+            <p:column headerText="A" style="width:40px; color: #F3CE85;">
               <h:outputText value="#{l.amarillas}" />
             </p:column>
-            <p:column headerText="Rojas" style="width:60px; color: #EC1010;">
+            <p:column headerText="R" style="width:40px; color: #EC1010;">
               <h:outputText value="#{l.rojas}" />
+            </p:column>
+            <p:column headerText="QV" style="width:40px; color: #04B404;">
+              <h:outputText value="#{l.verdesQuebranto}" />
+            </p:column>
+            <p:column headerText="QA" style="width:40px; color: #F3CE85;">
+              <h:outputText value="#{l.amarillasQuebranto}" />
+            </p:column>
+            <p:column headerText="QR" style="width:40px; color: #EC1010;">
+              <h:outputText value="#{l.rojasQuebranto}" />
             </p:column>
             <p:column headerText="Recibidas" style="width:80px;">
               <h:outputText value="#{l.nuevasEnCampana}" />

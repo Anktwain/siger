@@ -14,6 +14,8 @@ import java.util.List;
  */
 public interface FacDAO {
   
+  public boolean insertar(Fac fac);
+  
   public List<Fac> buscarPorCredito(int idCredito);
   
 }

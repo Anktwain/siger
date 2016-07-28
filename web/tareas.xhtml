@@ -57,9 +57,9 @@
           <p:outputLabel value="Nombre:" />
           <p:inputText value="#{tareasBean.evento.title}" required="true" />
           <p:outputLabel value="Desde:" />
-          <p:calendar value="#{tareasBean.evento.startDate}" showOn="button" locale="es" pattern="yyyy/MM/dd HH:mm"/>
+          <p:calendar value="#{tareasBean.evento.startDate}" showOn="button" locale="es" pattern="yyyy/MM/dd HH:mm" />
           <p:outputLabel value="Hasta:" />
-          <p:calendar value="#{tareasBean.evento.endDate}" showOn="button" locale="es" pattern="yyyy/MM/dd HH:mm"/>
+          <p:calendar value="#{tareasBean.evento.endDate}" showOn="button" locale="es" pattern="yyyy/MM/dd HH:mm" />
           <p:outputLabel value="Todo el dia:" />
           <h:selectBooleanCheckbox value="#{tareasBean.evento.allDay}" />
         </h:panelGrid>
@@ -72,7 +72,7 @@
     </p:dialog>
     <p:dialog widgetVar="eventoDlg" header="Detalles del evento" modal="true">
       <h:form id="detalleEventoForm">
-        <h:outputText value="#{tareasBean.evento.title}"
+        <h:outputText value="#{tareasBean.evento.title}" />
     </h:form>
   </p:dialog>
 </body>

@@ -14,6 +14,8 @@ import java.util.List;
  */
 public interface AjusteDAO {
   
+  public boolean insertar(Ajuste ajuste);
+  
   public List<Ajuste> buscarAjustesPorCredito(int idCredito);
   
 }

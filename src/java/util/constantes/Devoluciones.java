@@ -19,7 +19,6 @@ public interface Devoluciones {
   
   public static final int DEVUELTO = 0;
   
-  // NO SE UTILIZA ESTE VALOR, SOLO ESTA COMO REFERENCIA
   public static final int CONSERVADO = 1;
   
 }

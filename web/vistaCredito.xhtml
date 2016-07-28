@@ -258,6 +258,10 @@
               <p:tab title="Datos de contacto">
                 <p:accordionPanel multiple="true" activeIndex="-1">
                   <p:tab title="Direcciones">
+                      <!-- TO FIX: -->
+                      <!-- AGREGAR AL CONTEXT MENU -->
+                      <!-- NO SE RENDERIZA HASTA NUEVO AVISO -->
+                      <!-- <p:menuitem value="Generar carta quebranto (visita)" icon="ui-icon-document" oncomplete="PF('dialogoImpresionVisitasQuebranto').show();" rendered="false" /> -->
                     <p:contextMenu for="tablaDireccionesDetalleCredito" style="width:200px;">
                       <p:menuitem value="Editar" icon="ui-icon-wrench" actionListener="#{vistaCreditoBean.prepararDireccion()}" oncomplete="PF('dialogoEditarDireccion').show();" update="editarDireccionForm" />
                       <p:menuitem value="Generar carta (visita)" icon="ui-icon-document" oncomplete="PF('dialogoImpresionVisitas').show();" />
@@ -471,11 +475,9 @@
       </div>
     </h:form>
   </p:dialog>
-  <!-- DIALOGO DEVOLUCION CREDITO IMPRESION DE VISITAS -->
+  <!-- DIALOGO IMPRESION DE VISITAS -->
   <p:dialog id="dlgImpresionVisitas" widgetVar="dialogoImpresionVisitas" modal="true" resizable="false" header="Impresion de visitas">
     <h:form id="visitasForm">
-      <!-- TO DO: -->
-      <!-- CREAR UN COMBOBOX CON LAS DIRECCIONES PARA QUE SE ELIJA CON CUAL SE VA A IMPRIMIR LA VISITA -->
       <table>
         <tr>
           <td>
@@ -484,6 +486,7 @@
             <p:inputText value="#{visitasBean.saldoVencido}" />
           </td>
         </tr>
+        <!-- ESTE CODIGO SE UTILIZARA POSTERIORMENTE, CUANDO LOS MODULOS DE VISITAS ESTEN TERMINADOS -->
         <!--
         <tr>
           <td>
@@ -512,7 +515,7 @@
         -->
         <tr>
           <td>
-            <h:outputText value="Generar carta para correo electronico" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+            <h:outputText value="Generar carta" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
           </td>
           <td style="padding-left: 10px;">
             <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="#{visitasBean.generarNormal()}" update=":growl, visitasForm" />
@@ -521,7 +524,53 @@
       </table>
       <br />
       <div align="center">
-        <p:button value="Descargar" icon="ui-icon-arrowthick-1-s" rendered="#{visitasBean.descargarPdf}" href="#{visitasBean.rutaPdf}" target="_blank" />
+        <p:button value="Descargar" icon="ui-icon-arrowthick-1-s" rendered="#{visitasBean.descargarPdf}" href="#{visitasBean.rutaPdf}" target="_blank" onclick="PF('dialogoImpresionVisitas').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO IMPRESION DE VISITAS DE QUEBRANTO-->
+  <p:dialog id="dlgImpresionVisitasQuebranto" widgetVar="dialogoImpresionVisitasQuebranto" modal="true" resizable="false" header="Impresion de visitas para quebranto">
+    <h:form id="visitasQuebrantoForm">
+      <table>
+        <tr>
+          <td>
+            <h:outputText value="Monto entregado:" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <h:outputText value="#{visitasBean.monto}" />
+          </td>
+          <td>
+            <h:outputText value="Capital que se adeuda:" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText value="#{visitasBean.capital}" />
+          </td>
+          <td>
+            <h:outputText value="Intereses moratorios:" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText value="#{visitasBean.intereses}" />
+          </td>
+          <td>
+            <h:outputText value="Saldo vencido:" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText value="#{visitasBean.saldoVencido}" />
+          </td>
+          <td>
+            <h:outputText value="Total a pagar:" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:inputText value="#{visitasBean.total}" />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <h:outputText value="Generar carta" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
+          </td>
+          <td style="padding-left: 10px;">
+            <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="#{visitasBean.generarQuebranto()}" update=":growl, visitasQuebrantoForm" />
+          </td>
+        </tr>
+      </table>
+      <br />
+      <div align="center">
+        <p:button value="Descargar" icon="ui-icon-arrowthick-1-s" rendered="#{visitasBean.descargarPdf}" href="#{visitasBean.rutaPdf}" target="_blank" onclick="PF('dialogoImpresionVisitasQuebranto').hide();" />
       </div>
     </h:form>
   </p:dialog>
@@ -566,7 +615,7 @@
       <br />
       <br />
       <div align="center">
-        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('dialogoGestionesAnteriores').hide();" />
+        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('dialogoDireccionesAnteriores').hide();" />
       </div>
     </h:form>
   </p:dialog>
@@ -610,7 +659,7 @@
             Contactos en el sistema anterior
           </f:facet>
           <p:column headerText="Nombre" style="width:300px;" > 
-              <h:outputText value="#{con.nombre}"/>
+            <h:outputText value="#{con.nombre}"/>
           </p:column>
           <p:column headerText="Tipo" style="width:200px;" > 
             <h:outputText value="#{con.tipo}"/>
@@ -677,7 +726,7 @@
       <br />
       <br />
       <div align="center">
-        <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.agregarTelefono()}" update=":growl, datosCreditoForm, nuevoTelefonoForm" />
+        <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{vistaCreditoBean.agregarTelefono()}" update=":growl, datosCreditoForm, nuevoTelefonoForm" oncomplete="PF('dialogoNuevoTelefono').hide();" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoNuevoTelefono').hide();" />
       </div>

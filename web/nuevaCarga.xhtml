@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Modulo de carga</title>
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('carga')}" type="preRenderView" />
+  </f:metadata>
+  <h:body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Carga
+          </li>
+        </ul>
+      </div>
+      <div class="col-lg-12">
+        <h:form id="paso1Carga" enctype="multipart/form-data" rendered="#{!nuevaCargaBean.leyendaCargaExitosa}">
+          <h2>
+            Paso 1. Seleccione el archivo de excel (xls):
+          </h2>
+          <p:fileUpload 
+            value="#{nuevaCargaBean.archivo}"
+            fileUploadListener="#{nuevaCargaBean.eventoDeCarga}" 
+            multiple="false" 
+            mode="advanced" 
+            label="Seleccionar archivo" 
+            uploadLabel="Cargar"
+            cancelLabel="Cancelar"
+            sizeLimit="10485760" invalidSizeMessage="Error. El archivo excede 10 MB" 
+            fileLimit="1" fileLimitMessage="Error. Solo se puede cargar 1 archivo." 
+            allowTypes="/(\.|\/)(xls)$/" invalidFileMessage="Error. Solo se permiten archivos con extension xls." 
+            auto="false" 
+            process="@this" 
+            update="@all"
+            style="width: 450px;" 
+            />
+          <br />
+          <br />
+          <p:selectOneMenu id="tipoCarga" value="#{nuevaCargaBean.tipoSeleccionado}" style="width:200px" required="true" requiredMessage="Seleccione el tipo de carga">
+            <f:selectItems value="#{nuevaCargaBean.listaTipos}" var="t" itemLabel="#{t.tipo}" itemValue="#{t.idTipo}" />
+          </p:selectOneMenu>
+        </h:form>
+        <h:form id="leyendaPaso1Carga" rendered="#{nuevaCargaBean.leyendaCargaExitosa}">
+          <h:outputText value="Paso 1 completado. Archivo xls cargado al servidor." style="font-size: 30px; color: #00CC33; font-family: 'Open Sans',sans-serif;" />
+        </h:form>
+        <h:form id="paso2Carga" rendered="#{!nuevaCargaBean.leyendaValidacionExitosa}">
+          <h2>
+            Paso 2. Validacion del archivo:
+          </h2>
+          <h4>
+            En este paso se revisa el archivo cargado y se validan los datos de los creditos que se encuentren.
+          </h4>
+          <p:commandButton value="Validar" icon="ui-icon-check" actionListener="#{nuevaCargaBean.validarCreditos()}" update="@all" />
+        </h:form>
+        <h:form id="leyendaPaso2Carga" rendered="#{nuevaCargaBean.leyendaValidacionExitosa}">
+          <h:outputText value="#{nuevaCargaBean.creditosEncontrados}" style="font-size: 30px; color: #00CC33; font-family: 'Open Sans',sans-serif;" />
+        </h:form>
+        <h:form id="paso3Carga" rendered="#{!nuevaCargaBean.leyendaConteoExitoso}">
+          <h2>
+            Paso 3. Conteo de creditos:
+          </h2>
+          <h4>
+            En este paso se clasifican los creditos y se preparan para actualizarlos, registrarlos o eliminarlos del sistema.
+          </h4>
+          <p:commandButton value="Clasificar" icon="ui-icon-shuffle" actionListener="#{nuevaCargaBean.mostrarClasificacion()}" update="@all" />
+        </h:form>
+        <h:form id="leyendaPaso3Carga" rendered="#{nuevaCargaBean.leyendaConteoExitoso}">
+          <p:dataTable var="creds" value="#{nuevaCargaBean.listaCreditosClasificados}" emptyMessage="No existen creditos en el conteo" style="width: 510px;">
+            <p:column headerText="Estatus creditos encontrados" style="width: 400px;">
+              <h:outputText value="#{creds.tipoCredito}" />
+            </p:column>
+            <p:column headerText="Cantidad" style="width: 100px;">
+              <h:outputText value="#{creds.cantidad}" />
+            </p:column>
+          </p:dataTable>
+        </h:form>
+        <h:form id="paso4Carga" rendered="#{!nuevaCargaBean.cargaExitosa}">
+          <h2>
+            Paso 4. Realizar los cambios en  el sistema:
+          </h2>
+          <div style="font-size: 16px; font-family: 'Open Sans',sans-serif;">
+            En este ultimo paso, se realizan todos los cambios en la base de datos. Esto implica que:
+            <br />
+            - Se retiraran los creditos que no vienen en la remesa.
+            <br />
+            - Se actualizaran los creditos conservados.
+            <br />
+            - Se daran de alta los nuevos creditos y los nuevos totales.
+            <br />
+            <br />
+          </div>
+          <p:commandButton value="Confirmar carga" icon="ui-icon-notice" actionListener="#{nuevaCargaBean.pedirContrasena()}" />
+        </h:form>
+      </div>
+    </div>
+    <!-- DIALOGO CONTRASEÑA -->
+    <p:dialog widgetVar="dialogoContrasena" modal="true" draggable="false" closable="false" resizable="false" header="Modulo de carga">
+      <h:form>
+        Para evitar cualquier uso indebido y para proteger la integridad de la informacion del despacho,
+        <br />
+        le pedimos por favor que proporcione nuevamente su contraseña para poder ejecutar el proceso de carga.
+        <br />
+        <br />
+        <h:outputText value="Al dar click en el boton de abajo (Confirmar carga) se realizaran todos los cambios en la base de datos," style="font-size: 14px; color: #FF0000; font-family: 'Open Sans',sans-serif; font-weight: bold;" />
+        <br />
+        <h:outputText value="por esto es importante que ejecute la carga con extrema precaucion." style="font-size: 14px; color: #FF0000; font-family: 'Open Sans',sans-serif; font-weight: bold;" />
+        <br />
+        <br />
+        <div align="center">
+          Contraseña:
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:inputText value="#{nuevaCargaBean.pswd}" type="password" maxlength="15" size="10" />
+          <br />
+          <br />
+          <p:commandButton value="Confirmar carga" icon="ui-icon-notice" actionListener="#{nuevaCargaBean.verificarContrasena()}" update=":growl" />
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:commandButton value="Cancelar" icon="ui-icon-close" actionListener="#{nuevaCargaBean.aceptar()}" />
+        </div>
+      </h:form>
+    </p:dialog>
+    <!-- DIALOGO REPORTE CARGA -->
+    <p:dialog widgetVar="dialogoReporteCarga" modal="true" draggable="false" closable="false" resizable="false" header="Reporte de carga">
+      <h:form>
+        Se ha realizado la carga con exito. Agregar mas texto informativo.
+        <br />
+        <br />
+        <div align="center">
+          <p:commandButton value="Ir al inicio" icon="ui-icon-home" actionListener="#{nuevaCargaBean.aceptar()}" process="@this" />
+        </div>
+      </h:form>
+    </p:dialog>
+    <!-- DIALOGO BARRA DE CARGA -->
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+      <p:outputLabel value="Espere por favor..."/>
+      <br />
+      <div align="center">
+        <p:graphicImage library="img" name="loadingBarra.gif" />
+      </div>
+    </p:dialog>
+  </h:body>
+</html>

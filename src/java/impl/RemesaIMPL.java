@@ -1,6 +1,6 @@
 package impl;
 
-import dao.RemesaDao;
+import dao.RemesaDAO;
 import dto.Remesa;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -12,16 +12,14 @@ import util.log.Logs;
  *
  * @author brionvega
  */
-public class RemesaIMPL implements RemesaDao {
+public class RemesaIMPL implements RemesaDAO {
 
   @Override
   public int buscarRemesaActual() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Transaction tx = sesion.beginTransaction();
     Remesa remesa;
     int r = 0;
     String query = "select * from remesa where id_remesa = (select max(id_remesa) from remesa)";
-
     try {
       remesa = (Remesa) sesion.createSQLQuery(query).addEntity(Remesa.class).uniqueResult();
       if (remesa != null) {
@@ -32,7 +30,6 @@ public class RemesaIMPL implements RemesaDao {
     } finally {
       cerrar(sesion);
     }
-
     return r;
   }
 
@@ -51,6 +48,23 @@ public class RemesaIMPL implements RemesaDao {
         tx.rollback();
       }
       Logs.log.error("No se pudo insertar Remesa:");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return remesa;
+  }
+
+  @Override
+  public Remesa obtenerUltimaRemesa() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Remesa remesa;
+    String consulta = "SELECT * FROM remesa WHERE DATE(fecha_carga) = CURDATE() ORDER BY fecha_carga DESC LIMIT 1;";
+    try {
+      remesa = (Remesa) sesion.createSQLQuery(consulta).addEntity(Remesa.class).uniqueResult();
+    } catch (HibernateException he) {
+      remesa = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

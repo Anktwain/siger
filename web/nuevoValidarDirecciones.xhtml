@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Validaci&oacute;n de direcciones</title>
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('validar direcciones')}" type="preRenderView" />
+  </f:metadata>
+  <h:body>
+    <p:growl id="growl" showDetail="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none;" />
+    <ui:include src="barraLateral.xhtml" />
+    <ui:include src="barraSuperior.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Validaci&oacute;n de direcciones
+          </li>
+        </ul>
+      </div>
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Validaci&oacute;n de direcciones</h3>
+          <span>Valide y corrija las direcciones de los deudores </span>
+          <span>Cargue un archivo de excel con las direcciones para una validacion automatica </span>
+          <span>Para las direcciones que no se puedan validar automaticamente, seleccione y valide manualmente </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="padding-md">
+          <div class="col-lg-12">
+            <h:form id="cargarArchivoDireccionesForm" enctype="multipart/form-data">
+              <h2>
+                Paso 1. Seleccione el archivo de excel (xls):
+              </h2>
+              <p:fileUpload 
+                value="#{validarDireccionesBean.archivo}"
+                fileUploadListener="#{validarDireccionesBean.eventoDeCarga}" 
+                multiple="false" 
+                mode="advanced" 
+                label="Seleccionar archivo" 
+                uploadLabel="Cargar"
+                cancelLabel="Cancelar"
+                sizeLimit="10485760" invalidSizeMessage="Error. El archivo excede 10 MB" 
+                fileLimit="1" fileLimitMessage="Error. Solo se puede cargar 1 archivo." 
+                allowTypes="/(\.|\/)(xls)$/" invalidFileMessage="Error. Solo se permiten archivos con extension xls." 
+                auto="false" 
+                process="@this" 
+                update=":growl, :cargarArchivoDireccionesForm, :direccionesPorValidarForm" 
+                disabled="#{validarDireccionesBean.habilitaCarga}" 
+                style="width: 450px;" 
+                />
+            </h:form>
+            <h:form id="direccionesPorValidarForm">
+              <h:outputText value="Paso 1 completado. Archivo xls cargado al servidor." style="font-size: 30px; color: #00CC33; font-family: 'Open Sans',sans-serif;" rendered="#{validarDireccionesBean.habilitaCarga}" />
+              <h2>
+                Paso 2. Validacion del archivo:
+              </h2>
+              <h4>
+                En este paso se revisa el archivo cargado y se verifican las direcciones de los creditos que se encuentren.
+              </h4>
+              <h:outputText value="#{validarDireccionesBean.direccionesEncontradas}" style="font-size: 30px; color: #00CC33; font-family: 'Open Sans',sans-serif;" rendered="#{validarDireccionesBean.habilitaValidacionArchivo}" />
+              <p:commandButton value="Validar archivo" icon="ui-icon-check" actionListener="#{validarDireccionesBean.validarArchivo()}" update="direccionesPorValidarForm" rendered="#{!validarDireccionesBean.habilitaValidacionArchivo}" />
+              <h2>
+                Paso 3. Validacion automatica de direcciones:
+              </h2>
+              <h4>
+                En este paso se cargaran automaticamente al sistema las direcciones que sean correctas hasta el nivel de colonia.
+              </h4>
+              <h:outputText value="#{validarDireccionesBean.direccionesValidadas}" style="font-size: 30px; color: #00CC33; font-family: 'Open Sans',sans-serif;" rendered="#{validarDireccionesBean.habilitaValidacionAutomatica}" />
+              <p:commandButton value="Validar direcciones" icon="ui-icon-search" actionListener="#{validarDireccionesBean.validarAutomaticas()}" update="direccionesPorValidarForm" rendered="#{!validarDireccionesBean.habilitaValidacionAutomatica}" />
+              <h2>
+                Paso 4. Validacion manual de direcciones:
+              </h2>
+              <h4>
+                En este paso usted debe verificar las direcciones que el sistema no pudo validar automaticamente. Click sobre la direccion que desee validar.
+              </h4>
+              <br />
+              <br />
+              <p:dataTable id="direccionesPorValidar" var="d" value="#{validarDireccionesBean.direccionesPorValidar}" selection="#{validarDireccionesBean.direccionSeleccionada}" selectionMode="single" rowKey="#{d.id}" emptyMessage="No hay direcciones por validar." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1350px;" rendered="#{validarDireccionesBean.habilitaValidacionAutomatica}">
+                <f:facet name="header">
+                  <p:outputLabel value="Lista de direcciones por validar" />
+                </f:facet>
+                <p:column headerText="Credito" style="width: 100px;">
+                  <h:outputText value="#{d.numeroCredito}" />
+                </p:column>
+                <p:column headerText="Calle" style="width: 300px;">
+                  <h:outputText value="#{d.calle}" />
+                </p:column>
+                <p:column headerText="Colonia" style="width: 350px;">
+                  <h:outputText value="#{d.colonia}" />
+                </p:column>
+                <p:column headerText="Municipio" style="width: 250px;">
+                  <h:outputText value="#{d.municipio}" />
+                </p:column>
+                <p:column headerText="Estado" sortBy="#{d.estado}" style="width: 200px;">
+                  <h:outputText value="#{d.estado}" />
+                </p:column>
+                <p:column headerText="Codigo postal"  style="width: 120px;">
+                  <h:outputText value="#{d.cp}" />
+                </p:column>
+                <p:ajax event="rowSelect" listener="#{validarDireccionesBean.prepararDireccion()}" oncomplete="PF('validarDireccionDlg').show();" update="direccionesPorValidarForm, :validarDireccionForm, :growl" />
+              </p:dataTable>
+            </h:form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ui:include src="barraInferior.xhtml"/>
+    <!-- DIALOGO DETALLE DIRECCION POR VALIDAR -->
+    <p:dialog widgetVar="validarDireccionDlg" modal="true" resizable="false" header="Validar direccion" width="700">
+      <h:form id="validarDireccionForm">
+        De lado izquierdo aparecera el dato obtenido de la remesa, de lado derecho aparecera una sugerencia (si es el caso) a partir de los datos obtenidos.
+        <br />
+        <br />
+        <p:outputPanel style="text-align:center;">
+          <p:panelGrid columns="3">
+            <h:outputText value="Calle y numero:" />
+            <h:outputText value="#{validarDireccionesBean.direccionSeleccionada.calle}" />
+            <p:inputText value="#{validarDireccionesBean.direccionSeleccionada.calle}" size="30" />
+            <h:outputText value="Num exterior:" />
+            <h:outputText value="#{validarDireccionesBean.direccionSeleccionada.exterior}" />
+            <p:inputText value="#{validarDireccionesBean.direccionSeleccionada.exterior}" size="5" />
+            <h:outputText value="Num interior:" />
+            <h:outputText value="#{validarDireccionesBean.direccionSeleccionada.interior}" />
+            <p:inputText value="#{validarDireccionesBean.direccionSeleccionada.interior}" size="5" />
+            <h:outputText value="Colonia:" />
+            <h:outputText value="#{validarDireccionesBean.direccionSeleccionada.colonia}" />
+            <p:selectOneMenu value="#{validarDireccionesBean.nuevaColonia.idColonia}" style="width:350px" filter="true" filterMatchMode="contains">
+              <f:selectItems value="#{validarDireccionesBean.listaColonias}" var="c" itemValue="#{c.idColonia}" itemLabel="(#{c.codigoPostal}) [#{c.tipo}] #{c.nombre}" />
+              <p:ajax listener="#{validarDireccionesBean.obtenerColoniaCompleta()}" update=":direccionesPorValidarForm, cpValidacion" />
+            </p:selectOneMenu>
+            <h:outputText value="Municipio:" />
+            <h:outputText value="#{validarDireccionesBean.direccionSeleccionada.municipio}" />
+            <p:selectOneMenu value="#{validarDireccionesBean.nuevoMunicipio.idMunicipio}" style="width:300px">
+              <f:selectItems value="#{validarDireccionesBean.listaMunicipios}" var="m" itemValue="#{m.idMunicipio}" itemLabel="#{m.nombre}" />
+            </p:selectOneMenu>
+            <h:outputText value="Estado:" />
+            <h:outputText value="#{validarDireccionesBean.direccionSeleccionada.estado}" />
+            <p:selectOneMenu value="#{validarDireccionesBean.nuevoEstado.idEstado}" style="width:300px">
+              <f:selectItems value="#{validarDireccionesBean.listaEstados}" var="e" itemValue="#{e.idEstado}" itemLabel="#{e.nombre}" />
+            </p:selectOneMenu>
+            <h:outputText value="Codigo Postal:" />
+            <h:outputText value="#{validarDireccionesBean.direccionSeleccionada.cp}" />
+            <h:outputText id="cpValidacion" value="#{validarDireccionesBean.nuevaColonia.codigoPostal}" />
+          </p:panelGrid>
+        </p:outputPanel>
+        <br />
+        <div align="center">
+          <p:commandButton value="Validar" icon="ui-icon-check" actionListener="#{validarDireccionesBean.validar()}" oncomplete="PF('validarDireccionDlg').hide();" update=":growl, :direccionesPorValidarForm" />
+          &nbsp;&nbsp;
+          <p:commandButton value="Ver colonias" icon="ui-icon-bookmark" actionListener="#{validarDireccionesBean.mostrarColonias()}" update="validarDireccionForm" />
+          &nbsp;&nbsp;
+          <p:commandButton value="Nueva colonia" icon="ui-icon-plus" actionListener="#{validarDireccionesBean.prepararCombos()}" oncomplete="PF('nuevaColoniaDlg').show();" update=":nuevaColoniaForm, :growl, validarDireccionForm" />
+          &nbsp;&nbsp;
+          <p:commandButton value="Localizacion" icon="ui-icon-search" actionListener="#{validarDireccionesBean.preparaCorreo()}" oncomplete="PF('localizacionDireccionDlg').show();" update=":localizacionDireccionForm" />
+          &nbsp;&nbsp;
+          <p:commandButton value="Cancelar" icon="ui-icon-cancel" oncomplete="PF('validarDireccionDlg').hide();" />
+        </div>
+      </h:form>
+    </p:dialog>
+    <!-- DIALOGO NUEVA COLONIA -->
+    <p:dialog widgetVar="nuevaColoniaDlg" modal="true" header="Nueva colonia" width="800">
+      <h:form id="nuevaColoniaForm">
+        <br />
+        <p:fieldset legend="Advertencia!">
+          Por favor asegurese de que la colonia que busca no existe en la lista de colonias del municipio.
+          <br />
+          <br />
+          En ocasiones las colonias no se encuentran con el codigo postal obtenido en la remesa. Visualize las colonias de todo el municipio dando un click al boton "Ver colonias"
+          <br />
+          <br />
+          Tambien es comun que existan diferencias en el tipo de asentamiento (Colonia, Unidad habitacional, etc.) Compare el nombre de la colonia sin el tipo de asentamiento para evitar dar de alta una colonia que ya existe.
+          <br />
+          <br />
+          Cuando no encuentra una colonia en la lista de colonias del municipio debe validar que la colonia que desea dar de alta exista en Google Maps&copy;.
+          <br />
+          <br />
+          Si esta seguro de que la colonia no esta en la lista y ya la ha validado con Google Maps&copy; proceda a llenar el siguiente formulario.
+        </p:fieldset>
+        <br />
+        <div align="center">
+          <p:panelGrid columns="2">
+            <h:outputText value="Estado:" />
+            <p:selectOneMenu value="#{validarDireccionesBean.estadoNuevaColonia.idEstado}" style="width:300px">
+              <f:selectItems value="#{validarDireccionesBean.listaEstados}" var="e2" itemValue="#{e2.idEstado}" itemLabel="#{e2.nombre}" />
+            </p:selectOneMenu>
+            <h:outputText value="Municipio:" />
+            <p:selectOneMenu value="#{validarDireccionesBean.municipioNuevaColonia.idMunicipio}" style="width:300px">
+              <f:selectItems value="#{validarDireccionesBean.listaMunicipios}" var="m2" itemValue="#{m2.idMunicipio}" itemLabel="#{m2.nombre}" />
+            </p:selectOneMenu>
+            <h:outputText value="Tipo de asentamiento:" />
+            <p:selectOneMenu value="#{validarDireccionesBean.tipoNuevaColonia}" style="width:300px">
+              <f:selectItems value="#{validarDireccionesBean.tiposAsentamiento}" var="t" itemValue="#{t}" itemLabel="#{t}" />
+            </p:selectOneMenu>
+            <h:outputText value="Nombre de la colonia:" />
+            <h:inputText value="#{validarDireccionesBean.nombreNuevaColonia}" size="35" required="true" requiredMessage="Debe ingresar el nombre de la nueva colonia." />
+            <h:outputText value="Codigo postal:" />
+            <h:inputText value="#{validarDireccionesBean.cpNuevaColonia}" size="5" required="true" requiredMessage="Debe ingresar un codigo postal." />
+          </p:panelGrid>
+          <br />
+          <br />
+          <p:commandButton icon="ui-icon-check" value="Aceptar" actionListener="#{validarDireccionesBean.crearColonia()}" oncomplete="PF('nuevaColoniaDlg').hide();" update=":growl, :validarDireccionForm" />
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <p:commandButton icon="ui-icon-close" value="Cancelar" oncomplete="PF('nuevaColoniaDlg').hide();" />
+        </div>
+      </h:form>
+    </p:dialog>
+    <!-- DIALOGO BARRA DE CARGA -->
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+      <p:graphicImage library="img" name="loadingBarra.gif" />
+    </p:dialog>
+    <!-- DIALOGO LOCALIZACION -->
+    <p:dialog widgetVar="localizacionDireccionDlg" modal="true" header="Localizacion de credito" draggable="false" closable="false" resizable="false" width="300">
+      <h:form id="localizacionDireccionForm">
+        Destinatario:
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <!-- TO FIX: -->
+        <!-- SOLO PONER CONTACTOS DE BUFETE DEL RIO -->
+        <p:selectOneMenu value="#{validarDireccionesBean.destinatario}" style="width:250px">
+          <f:selectItems value="#{validarDireccionesBean.listaDestinatarios}" var="des" itemValue="#{des}" itemLabel="#{des}" />
+        </p:selectOneMenu>
+        <br />
+        <br />
+        Asunto
+        <br />
+        <p:inputTextarea value="#{validarDireccionesBean.asunto}" rows="2" cols="30" />
+        <br />
+        <br />
+        Cuerpo del mensaje:
+        <br />
+        <p:inputTextarea value="#{validarDireccionesBean.mensajeCorreo}" rows="5" cols="30" />
+        <br />
+        <br />
+        <div align="center">
+          <p:commandButton value="Enviar" icon="ui-icon-mail-closed" actionListener="#{validarDireccionesBean.enviarCorreoLocalizacion()}" oncomplete="PF('localizacionDireccionDlg').hide()" update=":growl" />
+          &nbsp;&nbsp;&nbsp;
+          <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('localizacionDireccionDlg').hide()" />
+        </div>
+      </h:form>
+    </p:dialog>
+  </h:body>
+</html>

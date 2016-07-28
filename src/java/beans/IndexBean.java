@@ -193,7 +193,7 @@ public class IndexBean implements Serializable {
   public void verificarAccesoIlegal(String modulo) {
     if ((usuario.getPerfil() == Perfiles.SUPER_ADMINISTRADOR) || (usuario.getPerfil() == Perfiles.ADMINISTRADOR)) {
     } else {
-      if ((modulo.equals("panel administrativo")) || (modulo.equals("carga")) || (modulo.equals("cuentas")) || (modulo.equals("gestiones")) || (modulo.equals("pagos")) || (modulo.equals("usuarios")) || (modulo.equals("marcaje")) || (modulo.equals("devolucion")) || (modulo.equals("validar direcciones")) || (modulo.equals("instituciones")) || (modulo.equals("estatus informativo")) || (modulo.equals("zonas"))) {
+      if ((modulo.equals("panel administrativo")) || (modulo.equals("carga")) || (modulo.equals("nueva carga")) || (modulo.equals("cuentas")) || (modulo.equals("gestiones")) || (modulo.equals("pagos")) || (modulo.equals("usuarios")) || (modulo.equals("marcaje")) || (modulo.equals("devolucion")) || (modulo.equals("validar direcciones")) || (modulo.equals("instituciones")) || (modulo.equals("estatus informativo")) || (modulo.equals("zonas"))) {
         try {
           FacesContext.getCurrentInstance().getExternalContext().redirect("accesoIlegal.xhtml");
           Logs.log.warn("El gestor " + usuario.getNombreLogin() + " del despacho " + usuario.getDespacho().getNombreCorto() + " intento entrar al modulo administrativo: '" + modulo + "'. Ha sido redirigido");

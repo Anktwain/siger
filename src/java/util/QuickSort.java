@@ -15,13 +15,13 @@ import java.util.List;
 public class QuickSort {
 
   // METODO QUE ORDENA LA LISTA DE IMPRESIONES POR CODIGO POSTAL
-  public static List<Impresion> quickSortCp(List<Impresion> lista) {
+  public List<Impresion> quickSortCp(List<Impresion> lista) {
     quickSortParaCp(lista, 0, (lista.size()) - 1);
     return lista;
   }
 
   // METODO QUE ES EL QUICKSORT BASICO CON ENTEROS
-  public static void quickSortParaCp(List<Impresion> arreglo, int inicio, int fin) {
+  public void quickSortParaCp(List<Impresion> arreglo, int inicio, int fin) {
     if (arreglo == null || arreglo.isEmpty()) {
       return;
     }

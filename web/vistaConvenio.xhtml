@@ -248,20 +248,17 @@
           <h:form id="nuevoConvenioForm">
             <p:outputPanel style="text-align:center;">
               <p:panelGrid columns="2">
-                Monto maximo:
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <p:outputLabel value="#{conveniosBean.saldoMaximo}" />
-                <br />
+                Saldo insoluto:
+                <p:outputLabel value="#{conveniosBean.creditoActual.saldoInsoluto}" />
+                Saldo vencido:
+                <p:outputLabel value="#{conveniosBean.obtenerSaldoVencido(conveniosBean.creditoActual.idCredito)}" />
+                Mensualidad:
+                <p:outputLabel value="#{conveniosBean.creditoActual.mensualidad}" />
                 Monto negociado:
-                &nbsp;&nbsp;&nbsp;&nbsp;
                 <p:inputText value="#{conveniosBean.saldoNuevoConvenio}" required="true" requiredMessage="Debe ingresar una cantidad." disabled="#{conveniosBean.habilitaPromesas}" />
-                <br />
                 Pagos pactados:
-                &nbsp;&nbsp;&nbsp;&nbsp;
                 <p:inputText value="#{conveniosBean.pagosPrometidos}" disabled="#{conveniosBean.habilitaPromesas}" />
-                <br />
                 El convenio se realizo con:
-                &nbsp;&nbsp;&nbsp;&nbsp;
                 <p:selectOneMenu value="#{conveniosBean.sujetoConvenio}" style="width:200px" disabled="#{conveniosBean.habilitaPromesas}">
                   <f:selectItems value="#{conveniosBean.listaSujetos}" var="s" itemLabel="#{s}" itemValue="#{s}" />
                 </p:selectOneMenu>

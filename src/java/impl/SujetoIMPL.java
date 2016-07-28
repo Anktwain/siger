@@ -29,7 +29,6 @@ public class SujetoIMPL implements SujetoDAO {
   public Sujeto insertar(Sujeto sujeto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
-
     try {
       sesion.save(sujeto);
       tx.commit();
@@ -208,11 +207,45 @@ public class SujetoIMPL implements SujetoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Transaction tx = sesion.beginTransaction();
     Sujeto sujeto;
-    
+
     try {
       sujeto = (Sujeto) sesion.createSQLQuery("SELECT * from sujeto where id_sujeto = (SELECT MAX(id_sujeto) from sujeto);").addEntity(Sujeto.class).uniqueResult();
     } catch (HibernateException he) {
       sujeto = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return sujeto;
+  }
+
+  @Override
+  public Sujeto buscarPorRFC(String rfc) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Sujeto sujeto;
+    String consulta = "SELECT * FROM sujeto WHERE rfc = '" + rfc + "' LIMIT 1;";
+    try {
+      sujeto = (Sujeto) sesion.createSQLQuery(consulta).addEntity(Sujeto.class).uniqueResult();
+    } catch (HibernateException he) {
+      sujeto = null;
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return sujeto;
+  }
+
+  @Override
+  public Sujeto buscarPorNombre(String nombre) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Sujeto sujeto;
+    String consulta = "SELECT * FROM sujeto WHERE nombre_razon_social = '" + nombre + "' ORDER BY id_sujeto DESC LIMIT 1;";
+    try {
+      sujeto = (Sujeto) sesion.createSQLQuery(consulta).addEntity(Sujeto.class).uniqueResult();
+    } catch (HibernateException he) {
+      sujeto = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

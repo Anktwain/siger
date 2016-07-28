@@ -19,6 +19,7 @@ import dto.Campana;
 import dto.Credito;
 import dto.Direccion;
 import dto.EstadoRepublica;
+import dto.Gestion;
 import dto.Institucion;
 import dto.Municipio;
 import dto.Producto;
@@ -37,6 +38,7 @@ import impl.ZonaIMPL;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
@@ -90,11 +92,13 @@ public class BusquedaBean implements Serializable {
   private List<Producto> listaProductos;
   private List<Campana> listaCampanas;
   private List<Subproducto> listaSubproductos;
+  private List<String> listaFamilias;
   private Direccion direccionCredito;
   private float saldoInferior;
   private float saldoSuperior;
   private int mesesVencidos;
   private String colorSeleccionado;
+  private String familiaSeleccionada;
 
   // CONSTRUCTOR
   public BusquedaBean() {
@@ -105,6 +109,7 @@ public class BusquedaBean implements Serializable {
     listaProductos = new ArrayList();
     listaCampanas = new ArrayList();
     listaSubproductos = new ArrayList();
+    listaFamilias = new ArrayList();
     zonaSeleccionada = new Zona();
     direccionCredito = new Direccion();
     creditoSeleccionado = new Credito();
@@ -167,18 +172,17 @@ public class BusquedaBean implements Serializable {
       List<Credito> listaCreds;
       if (municipioSeleccionado.getIdMunicipio() == 0) {
         if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_estado = " + estadoSeleccionado.getIdEstado() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_estado = " + estadoSeleccionado.getIdEstado() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
           listaCreds = creditoDao.busquedaEspecialCreditos(consulta);
         } else {
           listaCreds = creditoDao.buscarCreditosPorEstado(estadoSeleccionado.getIdEstado());
         }
       } else {
         if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_municipio = " + municipioSeleccionado.getIdMunicipio() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_municipio = " + municipioSeleccionado.getIdMunicipio() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
           listaCreds = creditoDao.busquedaEspecialCreditos(consulta);
         } else {
           listaCreds = creditoDao.buscarCreditosPorMunicipio(municipioSeleccionado.getIdMunicipio());
-
         }
       }
       for (int i = 0; i < (listaCreds.size()); i++) {
@@ -219,7 +223,7 @@ public class BusquedaBean implements Serializable {
   public void obtenerCreditosPorSaldoVencido() {
     listaCreditos2.clear();
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE saldo_vencido > " + saldoInferior + " AND saldo_vencido < " + saldoSuperior + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE saldo_vencido > " + saldoInferior + " AND saldo_vencido < " + saldoSuperior + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
       listaCreditos2 = creditoDao.busquedaEspecialCreditos(consulta);
     } else {
       listaCreditos2 = creditoDao.buscarCreditosPorSaldoVencido(saldoInferior, saldoSuperior);
@@ -229,7 +233,7 @@ public class BusquedaBean implements Serializable {
   public void obtenerCreditosPorMesesVencidos() {
     listaCreditos2.clear();
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE meses_vencidos = " + mesesVencidos + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE meses_vencidos = " + mesesVencidos + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
       listaCreditos2 = creditoDao.busquedaEspecialCreditos(consulta);
     } else {
       listaCreditos2 = creditoDao.buscarCreditosPorMesesVencidos(mesesVencidos);
@@ -251,9 +255,18 @@ public class BusquedaBean implements Serializable {
     listaProductos = productoDao.buscarProductosPorInstitucion(institucionSeleccionada.getIdInstitucion());
   }
 
+  public void preparaFamiliaProductos() {
+    listaFamilias = productoDao.buscarFamiliasPorInstitucion(institucionSeleccionada.getIdInstitucion());
+  }
+
   // METODO QUE PREPARA LOS COMBOS CON LOS SUBPRODUCTOS SEGUN EL PRODUCTO SELECCIONADO
   public void preparaSubproductos() {
-    listaSubproductos = subproductoDao.buscarSubproductosPorProducto(productoSeleccionado.getIdProducto());
+    // CAMBIO EN ETAPA DE PRUEBAS
+    // EN CASO DE NO SER APROBADO, DESCOMENTAR ESTE CODIGO Y ELIMNAR EL BLOQUE INMEDIATO INFERIOR
+    /*
+     listaSubproductos = subproductoDao.buscarSubproductosPorProducto(productoSeleccionado.getIdProducto());
+     */
+    listaSubproductos = subproductoDao.buscarSubproductosPorFamilia(familiaSeleccionada);
   }
 
   // METODO QUE OBTIENE LOS CREDITOS DE LOS PRODUCTOS SELECCIONADOS
@@ -263,8 +276,14 @@ public class BusquedaBean implements Serializable {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una institucion."));
     } else {
       String consulta = "SELECT * FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion)";
-      if (productoSeleccionado.getIdProducto() == 0) {
-        consulta = consulta + " AND id_producto IN (SELECT id_producto FROM producto WHERE id_institucion = " + institucionSeleccionada.getIdInstitucion() + ")";
+
+      /*
+       if (productoSeleccionado.getIdProducto() == 0) {
+       consulta = consulta + " AND id_producto IN (SELECT id_producto FROM producto WHERE id_institucion = " + institucionSeleccionada.getIdInstitucion() + ")";
+       }
+       */
+      if (!familiaSeleccionada.equals("0")) {
+        consulta = consulta + " AND id_producto IN (SELECT id_producto FROM producto WHERE familia = '" + familiaSeleccionada + "')";
       }
       if (subproductoSeleccionado.getIdSubproducto() != 0) {
         consulta = consulta + " AND id_subproducto = " + subproductoSeleccionado.getIdSubproducto();
@@ -318,6 +337,25 @@ public class BusquedaBean implements Serializable {
     }
   }
 
+  // METODO QUE OBTIENE LOS CREDITOS SEGUN LA FRECUENCIA DE GESTION SELECCIONADA
+  public void obtenerCreditosPorFrecuenciaGestion() {
+    listaCreditos2.clear();
+    String consulta = "SELECT * FROM gestion WHERE id_credito NOT IN (SELECT id_credito FROM devolucion)";
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      consulta = consulta + " AND id_usuario = " + indexBean.getUsuario().getIdUsuario() + " AND id_credito IN (SELECT id_credito FROM credito WHERE id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + "))";
+    } else {
+      consulta = consulta + " AND id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + indexBean.getUsuario().getDespacho().getIdDespacho() + ")";
+    }
+    consulta = consulta + " ORDER BY fecha DESC;";
+    List<Gestion> gestiones = gestionDao.busquedaReporteGestiones(consulta);
+    for (int i = 0; i < (gestiones.size()); i++) {
+      if (!listaCreditos2.contains(gestiones.get(i).getCredito())) {
+        listaCreditos2.add(gestiones.get(i).getCredito());
+      }
+    }
+    Collections.reverse(listaCreditos2);
+  }
+
   // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO DIRECCION
   public void abrirDetalleCreditoDireccion() {
     if (creditoDireccionSeleccionado != null) {
@@ -368,11 +406,11 @@ public class BusquedaBean implements Serializable {
       cuentasGestorBean.preparaCampanaBusqueda(creditos);
     }
   }
-  
+
   // METODO QUE PREPARA UNA CAMPAÑA SEGUN LOS CREDITOS DIRECCION FILTRADOS
   public void generarCampanaCreditosDireccion(List<CreditoDireccion> creditos) {
     List<Credito> creds = new ArrayList();
-    for (int i = 0; i <(creditos.size()); i++) {
+    for (int i = 0; i < (creditos.size()); i++) {
       creds.add(creditoDao.buscar(creditos.get(i).getNumeroCredito()));
     }
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
@@ -566,6 +604,22 @@ public class BusquedaBean implements Serializable {
 
   public void setColorSeleccionado(String colorSeleccionado) {
     this.colorSeleccionado = colorSeleccionado;
+  }
+
+  public List<String> getListaFamilias() {
+    return listaFamilias;
+  }
+
+  public void setListaFamilias(List<String> listaFamilias) {
+    this.listaFamilias = listaFamilias;
+  }
+
+  public String getFamiliaSeleccionada() {
+    return familiaSeleccionada;
+  }
+
+  public void setFamiliaSeleccionada(String familiaSeleccionada) {
+    this.familiaSeleccionada = familiaSeleccionada;
   }
 
   // CLASE MIEMBRO PARA PODER MOSTRAR EL CREDITO Y SU DIRECCION

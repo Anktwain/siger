@@ -49,6 +49,10 @@ public class VisitasBean implements Serializable{
 
   // VARIABLES DE CLASE
   private float saldoVencido;
+  private float monto;
+  private float capital;
+  private float intereses;
+  private float total;
   private final CreditoDAO creditoDao;
   private final ImpresionDAO impresionDao;
   private final Credito creditoActual;
@@ -67,8 +71,10 @@ public class VisitasBean implements Serializable{
     periodoVisitasActivo = false;
     descargarPdf = false;
     saldoVencido = creditoDao.buscarSaldoVencidoCredito(creditoActual.getIdCredito());
-    // TO FIX
+    monto = creditoActual.getMonto();
+    // TO FIX:
     // SE COMENTAN HASTA IMPLEMENTAR EL MODULO DE VISITAS
+    // DESCOMENTAR PARA PRODUCCION
     //verificarPeriodoSepomex();
     //verificarPeriodoVisitas();
   }
@@ -170,7 +176,31 @@ public class VisitasBean implements Serializable{
       imp.setDireccion(direccion);
       if (impresionDao.insertar(imp)) {
         if (generarPdf(direccion, saldoVencido)) {
-          GestionAutomatica.generarGestionAutomatica("32RUVD", creditoActual, indexBean.getUsuario(), "SE GENERO VISITA DOMICILIARIA PARA EL CREDITO " + creditoActual.getNumeroCredito() + ".");
+          GestionAutomatica ga = new GestionAutomatica();
+          ga.generarGestionAutomatica("32RUVD", creditoActual, indexBean.getUsuario(), "SE GENERO VISITA DOMICILIARIA PARA EL CREDITO " + creditoActual.getNumeroCredito() + ".");
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo, ahora puede descargarlo."));
+        } else {
+          FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
+        }
+      }
+    }
+  }
+  
+  // METODO QUE GENERA UNA IMPRESION PARA QUEBRANTO
+  public void generarQuebranto() {
+    Direccion direccion = vistaCreditoBean.getDireccionSeleccionada();
+    if (direccion == null) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una direccion."));
+    } else {
+      Impresion imp = new Impresion();
+      imp.setCredito(creditoActual);
+      imp.setFechaImpresion(new Date());
+      imp.setTipoImpresion(Impresiones.IMPRESION_QUEBRANTO);
+      imp.setDireccion(direccion);
+      if (impresionDao.insertar(imp)) {
+        if (generarPdfQuebranto(direccion, capital, intereses, saldoVencido, total)) {
+          GestionAutomatica ga = new GestionAutomatica();
+          ga.generarGestionAutomatica("32RUVD", creditoActual, indexBean.getUsuario(), "SE GENERO VISITA DOMICILIARIA PARA EL CREDITO " + creditoActual.getNumeroCredito() + ".");
           FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se genero el archivo, ahora puede descargarlo."));
         } else {
           FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error.", "No se genero el archivo PDF. Contacte al equipo de sistemas."));
@@ -182,10 +212,26 @@ public class VisitasBean implements Serializable{
   // METODO QUE GENERA EL PDF
   public boolean generarPdf(Direccion direccion, float saldoVencido) {
     try {
-      InputStream stream = new FileInputStream(GeneradorPdf.crearPdf(nombrarPdf(), creditoActual, direccion, saldoVencido));
+      GeneradorPdf generador = new GeneradorPdf();
+      InputStream stream = new FileInputStream(generador.crearPdf(nombrarPdf(), creditoActual, direccion, saldoVencido));
       archivo = new DefaultStreamedContent(stream, "application/pdf", nombrarPdf());
-      rutaPdf = "http://binah:8080/pdfs/" + archivo.getName();
-      //rutaPdf = "http://localhost:8080/pdfs/" + archivo.getName();
+      rutaPdf = "http://binah:8090/pdfs/" + archivo.getName();
+      descargarPdf = true;
+      return true;
+    } catch (Exception e) {
+      Logs.log.error("No se genero el pdf de la visita");
+      Logs.log.error(e);
+      return false;
+    }
+  }
+  
+  // METODO QUE GENERA EL PDF DE QUEBRANTO
+  public boolean generarPdfQuebranto(Direccion direccion, float capital, float intereses, float saldoVencido, float total) {
+    try {
+      GeneradorPdf generador = new GeneradorPdf();
+      InputStream stream = new FileInputStream(generador.crearPdfQuebranto(nombrarPdf(), creditoActual, direccion, capital, intereses, saldoVencido, total));
+      archivo = new DefaultStreamedContent(stream, "application/pdf", nombrarPdf());
+      rutaPdf = "http://binah:8090/pdfs/" + archivo.getName();
       descargarPdf = true;
       return true;
     } catch (Exception e) {
@@ -242,6 +288,38 @@ public class VisitasBean implements Serializable{
 
   public void setSaldoVencido(float saldoVencido) {
     this.saldoVencido = saldoVencido;
+  }
+
+  public float getMonto() {
+    return monto;
+  }
+
+  public void setMonto(float monto) {
+    this.monto = monto;
+  }
+
+  public float getCapital() {
+    return capital;
+  }
+
+  public void setCapital(float capital) {
+    this.capital = capital;
+  }
+
+  public float getIntereses() {
+    return intereses;
+  }
+
+  public void setIntereses(float intereses) {
+    this.intereses = intereses;
+  }
+
+  public float getTotal() {
+    return total;
+  }
+
+  public void setTotal(float total) {
+    this.total = total;
   }
 
 }

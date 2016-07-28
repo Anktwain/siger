@@ -50,4 +50,8 @@ public interface SubproductoDAO {
     public List<Subproducto> buscarTodo();
     
     public List<Subproducto> buscarSubproductosPorProducto(int idProducto);
+    
+    public List<Subproducto> buscarSubproductosPorFamilia(String familia);
+    
+    public List<Subproducto> buscarSubproductosPorInstitucion(int idInstitucion);
 }

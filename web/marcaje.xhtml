@@ -41,160 +41,43 @@
       <div class="padding-md">
         <div class="col-lg-10">
           <h:form id="marcajeForm">
+            <hr />
             <p:commandButton value="Habilitar periodo de impresion" oncomplete="PF('dlgPeriodoImpresion').show();"/>
             &nbsp;&nbsp;&nbsp;&nbsp;
             <p:commandButton value="Visualizar periodos activos" oncomplete="PF('dlgPeriodosActivos').show();"/>
             <br />
+            <hr />
             <br />
-            <p:accordionPanel multiple="false" activeIndex="-1" style="width:850px;">
-              <p:tab title="Correo ordinario">
-                <p:contextMenu for="tablaMarcajeSepomex" style="width:200px;">
-                  <p:menuitem value="Registrar devolucion" icon="ui-icon-alert" oncomplete="PF('dlgConfirmarDevolucionSepomex').show();" />
-                </p:contextMenu>
-                <p:dataTable id="tablaMarcajeSepomex" var="cs" value="#{marcajeBean.listaSepomex}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom" selection="#{marcajeBean.seleccionadoSepomex}" selectionMode="single" rowKey="#{cs.idCredito}" style="width:800px;">
-                  <p:column headerText="Credito" style="width:100px;"> 
-                    <h:outputText value="#{cs.numeroCredito}"/>
-                  </p:column>
-                  <p:column headerText="Deudor" style="width:400px;"> 
-                    <h:outputText value="#{cs.deudor.sujeto.nombreRazonSocial}"/>
-                  </p:column>
-                  <p:column headerText="Saldo vencido" style="width:100px;">
-                    <h:outputText value="#{cs.monto}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                    </h:outputText>
-                  </p:column>
-                  <p:column headerText="Gestor actual" style="width:100px;"> 
-                    <h:outputText value="#{cs.gestor.usuario.nombreLogin}"/>
-                  </p:column>
-                </p:dataTable>
-              </p:tab>
-              <p:tab title="Telegrama">
-                <p:dataTable id="tablaMarcajeTelegrama" var="ct" value="#{marcajeBean.listaTelegrama}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom" style="width:800px;">
-                  <p:column headerText="Credito" style="width:100px;"> 
-                    <h:outputText value="#{ct.numeroCredito}"/>
-                  </p:column>
-                  <p:column headerText="Deudor" style="width:400px;"> 
-                    <h:outputText value="#{ct.deudor.sujeto.nombreRazonSocial}"/>
-                  </p:column>
-                  <p:column headerText="Saldo vencido" style="width:100px;"> 
-                    <h:outputText value="#{ct.monto}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                    </h:outputText>
-                  </p:column>
-                  <p:column headerText="Gestor actual" style="width:100px;"> 
-                    <h:outputText value="#{ct.gestor.usuario.nombreLogin}"/>
-                  </p:column>
-                </p:dataTable>
-              </p:tab>
-              <p:tab title="Visita Domiciliaria">
-                <p:dataTable id="tablaMarcajeVisita" var="cv" value="#{marcajeBean.listaVisita}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom" style="width:800px;">
-                  <p:column headerText="Credito" style="width:100px;"> 
-                    <h:outputText value="#{cv.numeroCredito}"/>
-                  </p:column>
-                  <p:column headerText="Deudor" style="width:400px;"> 
-                    <h:outputText value="#{cv.deudor.sujeto.nombreRazonSocial}"/>
-                  </p:column>
-                  <p:column headerText="Saldo vencido" style="width:100px;"> 
-                    <h:outputText value="#{cv.monto}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                    </h:outputText>
-                  </p:column>
-                  <p:column headerText="Gestor actual" style="width:100px;"> 
-                    <h:outputText value="#{cv.gestor.usuario.nombreLogin}"/>
-                  </p:column>
-                </p:dataTable>
-              </p:tab>
-              <p:tab title="Correo electronico">
-                <p:dataTable id="tablaMarcajeCorreo" var="cc" value="#{marcajeBean.listaCorreo}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom" style="width:800px;">
-                  <p:column headerText="Credito" style="width:100px;"> 
-                    <h:outputText value="#{cc.numeroCredito}"/>
-                  </p:column>
-                  <p:column headerText="Deudor" style="width:400px;"> 
-                    <h:outputText value="#{cc.deudor.sujeto.nombreRazonSocial}"/>
-                  </p:column>
-                  <p:column headerText="Saldo vencido" style="width:100px;"> 
-                    <h:outputText value="#{cc.monto}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                    </h:outputText>
-                  </p:column>
-                  <p:column headerText="Gestor actual" style="width:100px;"> 
-                    <h:outputText value="#{cc.gestor.usuario.nombreLogin}"/>
-                  </p:column>
-                </p:dataTable>
-              </p:tab>
-              <p:tab title="Localizacion">
-                <p:dataTable id="tablaMarcajeLocalizacion" var="cl" value="#{marcajeBean.listaLocalizacion}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom" style="width:800px;">
-                  <p:column headerText="Credito" style="width:100px;"> 
-                    <h:outputText value="#{cl.numeroCredito}"/>
-                  </p:column>
-                  <p:column headerText="Deudor" style="width:400px;"> 
-                    <h:outputText value="#{cl.deudor.sujeto.nombreRazonSocial}"/>
-                  </p:column>
-                  <p:column headerText="Saldo vencido" style="width:100px;"> 
-                    <h:outputText value="#{cl.monto}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                    </h:outputText>
-                  </p:column>
-                  <p:column headerText="Gestor actual" style="width:100px;"> 
-                    <h:outputText value="#{cl.gestor.usuario.nombreLogin}"/>
-                  </p:column>
-                </p:dataTable>
-              </p:tab>
-              <p:tab title="Espera informacion el banco">
-                <p:dataTable id="tablaMarcajeInformacion" var="ci" value="#{marcajeBean.listaInformacion}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom" style="width:800px;">
-                  <p:column headerText="Credito" style="width:100px;"> 
-                    <h:outputText value="#{ci.numeroCredito}"/>
-                  </p:column>
-                  <p:column headerText="Deudor" style="width:400px;"> 
-                    <h:outputText value="#{ci.deudor.sujeto.nombreRazonSocial}"/>
-                  </p:column>
-                  <p:column headerText="Saldo vencido" style="width:100px;"> 
-                    <h:outputText value="#{ci.monto}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                    </h:outputText>
-                  </p:column>
-                  <p:column headerText="Gestor actual" style="width:100px;"> 
-                    <h:outputText value="#{ci.gestor.usuario.nombreLogin}"/>
-                  </p:column>
-                </p:dataTable>
-              </p:tab>
-              <p:tab title="Cobro en celular">
-                <p:dataTable id="tablaMarcajeCelular" var="ccel" value="#{marcajeBean.listaCobroCelular}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom" style="width:800px;">
-                  <p:column headerText="Credito" style="width:100px;"> 
-                    <h:outputText value="#{ccel.numeroCredito}"/>
-                  </p:column>
-                  <p:column headerText="Deudor" style="width:400px;"> 
-                    <h:outputText value="#{ccel.deudor.sujeto.nombreRazonSocial}"/>
-                  </p:column>
-                  <p:column headerText="Saldo vencido" style="width:100px;"> 
-                    <h:outputText value="#{ccel.monto}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                    </h:outputText>
-                  </p:column>
-                  <p:column headerText="Gestor actual" style="width:100px;"> 
-                    <h:outputText value="#{ccel.gestor.usuario.nombreLogin}"/>
-                  </p:column>
-                </p:dataTable>
-              </p:tab>
-              <p:tab title="Whatsapp">
-                <p:dataTable id="tablaMarcajeWhatsapp" var="cw" value="#{marcajeBean.listaWhatsapp}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom" style="width:800px;">
-                  <p:column headerText="Credito" style="width:100px;"> 
-                    <h:outputText value="#{cw.numeroCredito}"/>
-                  </p:column>
-                  <p:column headerText="Deudor" style="width:400px;"> 
-                    <h:outputText value="#{cw.deudor.sujeto.nombreRazonSocial}"/>
-                  </p:column>
-                  <p:column headerText="Saldo vencido" style="width:100px;"> 
-                    <h:outputText value="#{cw.monto}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
-                    </h:outputText>
-                  </p:column>
-                  <p:column headerText="Gestor actual" style="width:100px;"> 
-                    <h:outputText value="#{cw.gestor.usuario.nombreLogin}"/>
-                  </p:column>
-                </p:dataTable>
-              </p:tab>
-            </p:accordionPanel>
+            Seleccione un marcaje:
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:selectOneMenu value="#{marcajeBean.marcajeSeleccionado.idMarcaje}" style="width:200px">
+              <f:selectItem itemLabel="Todos" itemValue="0" />
+              <f:selectItems value="#{marcajeBean.listaMarcajes}" var="mar" itemLabel="#{mar.marcaje}" itemValue="#{mar.idMarcaje}" />
+            </p:selectOneMenu>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{marcajeBean.prepararCreditos()}" update="tablaMarcaje" />
+            <br />
+            <br />
+            <p:contextMenu for="tablaMarcaje" style="width:200px;">
+              <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{marcajeBean.abrirDetalleCredito()}" />
+              <p:menuitem value="Registrar devolucion" icon="ui-icon-alert" oncomplete="PF('dlgConfirmarDevolucionSepomex').show();" />
+            </p:contextMenu>
+            <p:dataTable id="tablaMarcaje" var="c" value="#{marcajeBean.listaCreditos}" emptyMessage="No existen creditos marcados." paginator="true" paginatorAlwaysVisible="false" rows="10" paginatorPosition="bottom" selection="#{marcajeBean.creditoSeleccionado}" selectionMode="single" rowKey="#{c.idCredito}" style="width:800px;">
+              <p:column headerText="Credito" style="width:100px;"> 
+                <h:outputText value="#{c.numeroCredito}"/>
+              </p:column>
+              <p:column headerText="Deudor" style="width:400px;"> 
+                <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
+              </p:column>
+              <p:column headerText="Saldo vencido" style="width:100px;">
+                <h:outputText value="#{c.monto}">
+                  <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                </h:outputText>
+              </p:column>
+              <p:column headerText="Gestor actual" style="width:100px;"> 
+                <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>
+              </p:column>
+            </p:dataTable>
           </h:form>
         </div>
       </div>

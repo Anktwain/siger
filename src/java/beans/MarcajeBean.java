@@ -12,6 +12,7 @@ import dao.GestionDAO;
 import dao.MarcajeDAO;
 import dto.Credito;
 import dto.Gestion;
+import dto.Marcaje;
 import impl.CreditoIMPL;
 import impl.EstatusInformativoIMPL;
 import impl.GestionIMPL;
@@ -33,6 +34,7 @@ import org.primefaces.context.RequestContext;
 import util.ManejadorArchivosDeTexto;
 import util.constantes.Directorios;
 import util.constantes.Marcajes;
+import util.log.Logs;
 
 /**
  *
@@ -45,6 +47,7 @@ public class MarcajeBean implements Serializable {
   // LLAMADA A OTROS BEANS
   ELContext elContext = FacesContext.getCurrentInstance().getELContext();
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+  CreditoActualBean creditoActualBean = (CreditoActualBean) elContext.getELResolver().getValue(elContext, null, "creditoActualBean");
 
   // VARIABLES DE CLASE
   private String tipoImpresionSeleccionado;
@@ -54,36 +57,26 @@ public class MarcajeBean implements Serializable {
   private Date fechaInicioImpresiones;
   private Date fechaFinImpresiones;
   private List<String> tipoImpresion;
-  private List<Credito> listaSepomex;
-  private List<Credito> listaTelegrama;
-  private List<Credito> listaVisita;
-  private List<Credito> listaCorreo;
-  private List<Credito> listaLocalizacion;
-  private List<Credito> listaInformacion;
-  private List<Credito> listaCobroCelular;
-  private List<Credito> listaWhatsapp;
+  private List<Marcaje> listaMarcajes;
+  private List<Credito> listaCreditos;
   private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
   private final EstatusInformativoDAO estatusInformativoDao;
   private final MarcajeDAO marcajeDao;
-  private Credito seleccionadoSepomex;
+  private Credito creditoSeleccionado;
+  private Marcaje marcajeSeleccionado;
 
   // CONSTRUCTOR
   public MarcajeBean() {
     tipoImpresion = new ArrayList();
-    listaSepomex = new ArrayList();
-    listaTelegrama = new ArrayList();
-    listaVisita = new ArrayList();
-    listaCorreo = new ArrayList();
-    listaLocalizacion = new ArrayList();
-    listaInformacion = new ArrayList();
-    listaCobroCelular = new ArrayList();
-    listaWhatsapp = new ArrayList();
+    listaCreditos = new ArrayList();
+    listaMarcajes = new ArrayList();
     creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     estatusInformativoDao = new EstatusInformativoIMPL();
     marcajeDao = new MarcajeIMPL();
-    seleccionadoSepomex = new Credito();
+    creditoSeleccionado = new Credito();
+    marcajeSeleccionado = new Marcaje();
     obtenerListas();
     obtenerPeriodos();
   }
@@ -91,14 +84,7 @@ public class MarcajeBean implements Serializable {
   // METODO QUE OBTIENE LAS LISTAS CON LOS CREDITOS MARCADOS
   public final void obtenerListas() {
     tipoImpresion = Arrays.asList("CORREO ORDINARIO", "VISITA DOMICILIARIA", "CORREO ELECTRONICO");
-    listaSepomex = creditoDao.buscarPorMarcaje(Marcajes.CORREO_SEPOMEX);
-    listaTelegrama = creditoDao.buscarPorMarcaje(Marcajes.TELEGRAMA);
-    listaVisita = creditoDao.buscarPorMarcaje(Marcajes.VISITA_DOMICILIARIA);
-    listaCorreo = creditoDao.buscarPorMarcaje(Marcajes.CORREO_ELECTRONICO);
-    listaLocalizacion = creditoDao.buscarPorMarcaje(Marcajes.LOCALIZACION);
-    listaInformacion = creditoDao.buscarPorMarcaje(Marcajes.ESPERA_INFORMACION_BANCO);
-    listaCobroCelular = creditoDao.buscarPorMarcaje(Marcajes.COBRO_EN_CELULAR);
-    listaWhatsapp = creditoDao.buscarPorMarcaje(Marcajes.WHATSAPP);
+    listaMarcajes = marcajeDao.buscarTodos();
   }
 
   // METODO QUE BUSCA LOS PERIODOS DE IMPRESION
@@ -158,10 +144,12 @@ public class MarcajeBean implements Serializable {
 
   // METODO QUE QUITA EL MARCAJE A LOS CREDITOS DE CORREO ORDINARIO
   public void quitarMarcaje() {
-    seleccionadoSepomex.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
-    boolean ok = creditoDao.editar(seleccionadoSepomex);
+    // TO FIX:
+    // VERIFICAR SI ES UN CREDITO CON MARCAJE DE CORREO ORDINARIO
+    creditoSeleccionado.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
+    boolean ok = creditoDao.editar(creditoSeleccionado);
     Gestion g = gestionDao.obtenerGestionAutomaticaPorAbreviatura("4CADE");
-    g.setCredito(seleccionadoSepomex);
+    g.setCredito(creditoSeleccionado);
     g.setEstatusInformativo(estatusInformativoDao.buscar(7));
     g.setUsuario(indexBean.getUsuario());
     g.setGestion("RECHAZO DE CORRESPONDENCIA SEPOMEX");
@@ -195,70 +183,46 @@ public class MarcajeBean implements Serializable {
     obtenerPeriodos();
     RequestContext.getCurrentInstance().update("periodosActivosForm");
   }
-
+  
+  // METODO QUE CARGA LA VISTA DEL CREDITO SELECCIONADO
+  public void abrirDetalleCredito() {
+      creditoActualBean.setCreditoActual(creditoSeleccionado);
+      try {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoAdmin.xhtml");
+      } catch (IOException ioe) {
+        Logs.log.error("No se pudo redirigir a la vista de credito del administrador.");
+        Logs.log.error(ioe);
+      }
+  }
+  
+  // METODO QUE OBTIENE LOS CREDITOS SEGUN EL MARCAJE SELECCIONADO
+  public void prepararCreditos(){
+    listaCreditos = creditoDao.buscarPorMarcaje(marcajeSeleccionado.getIdMarcaje());
+  }
+  
   // GETTER & SETTER
-  public List<Credito> getListaSepomex() {
-    return listaSepomex;
+  public List<Marcaje> getListaMarcajes() {
+    return listaMarcajes;
   }
 
-  public void setListaSepomex(List<Credito> listaSepomex) {
-    this.listaSepomex = listaSepomex;
+  public void setListaMarcajes(List<Marcaje> listaMarcajes) {
+    this.listaMarcajes = listaMarcajes;
   }
 
-  public List<Credito> getListaTelegrama() {
-    return listaTelegrama;
+  public List<Credito> getListaCreditos() {
+    return listaCreditos;
   }
 
-  public void setListaTelegrama(List<Credito> listaTelegrama) {
-    this.listaTelegrama = listaTelegrama;
+  public void setListaCreditos(List<Credito> listaCreditos) {  
+    this.listaCreditos = listaCreditos;
   }
 
-  public List<Credito> getListaVisita() {
-    return listaVisita;
+  public Credito getCreditoSeleccionado() {
+    return creditoSeleccionado;
   }
 
-  public void setListaVisita(List<Credito> listaVisita) {
-    this.listaVisita = listaVisita;
-  }
-
-  public List<Credito> getListaCorreo() {
-    return listaCorreo;
-  }
-
-  public void setListaCorreo(List<Credito> listaCorreo) {
-    this.listaCorreo = listaCorreo;
-  }
-
-  public List<Credito> getListaLocalizacion() {
-    return listaLocalizacion;
-  }
-
-  public void setListaLocalizacion(List<Credito> listaLocalizacion) {
-    this.listaLocalizacion = listaLocalizacion;
-  }
-
-  public List<Credito> getListaInformacion() {
-    return listaInformacion;
-  }
-
-  public void setListaInformacion(List<Credito> listaInformacion) {
-    this.listaInformacion = listaInformacion;
-  }
-
-  public List<Credito> getListaWhatsapp() {
-    return listaWhatsapp;
-  }
-
-  public void setListaWhatsapp(List<Credito> listaWhatsapp) {
-    this.listaWhatsapp = listaWhatsapp;
-  }
-
-  public Credito getSeleccionadoSepomex() {
-    return seleccionadoSepomex;
-  }
-
-  public void setSeleccionadoSepomex(Credito seleccionadoSepomex) {
-    this.seleccionadoSepomex = seleccionadoSepomex;
+  public void setCreditoSeleccionado(Credito creditoSeleccionado) {
+    this.creditoSeleccionado = creditoSeleccionado;
   }
 
   public Date getFechaInicioImpresiones() {
@@ -275,14 +239,6 @@ public class MarcajeBean implements Serializable {
 
   public void setFechaFinImpresiones(Date fechaFinImpresiones) {
     this.fechaFinImpresiones = fechaFinImpresiones;
-  }
-
-  public List<Credito> getListaCobroCelular() {
-    return listaCobroCelular;
-  }
-
-  public void setListaCobroCelular(List<Credito> listaCobroCelular) {
-    this.listaCobroCelular = listaCobroCelular;
   }
 
   public List<String> getTipoImpresion() {
@@ -323,6 +279,14 @@ public class MarcajeBean implements Serializable {
 
   public void setPeriodoActivoEmail(String periodoActivoEmail) {
     this.periodoActivoEmail = periodoActivoEmail;
+  }
+
+  public Marcaje getMarcajeSeleccionado() {
+    return marcajeSeleccionado;
+  }
+
+  public void setMarcajeSeleccionado(Marcaje marcajeSeleccionado) {
+    this.marcajeSeleccionado = marcajeSeleccionado;
   }
 
 }

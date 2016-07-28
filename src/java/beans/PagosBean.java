@@ -208,8 +208,9 @@ public class PagosBean implements Serializable {
           Logs.log.error("No existe actualizacion para este credito.");
         }
         cargarListas();
-        Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " aprobo un pago por $" + pagoSeleccionado.getMontoAprobado() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
-        GestionAutomatica.generarGestionAutomatica("16PAGSI", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE APRUEBA PAGO POR $" + pagoSeleccionado.getMontoAprobado());
+        Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " aprobo un pago por $" + pagoSeleccionado.getMontoAprobado() + " del credito " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
+        GestionAutomatica ga = new GestionAutomatica();
+        ga.generarGestionAutomatica("16PAGSI", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE APRUEBA PAGO POR $" + pagoSeleccionado.getMontoAprobado());
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se aprobo el pago."));
       } else {
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo aprobar el pago. Contacte al equipo de sistemas."));
@@ -226,7 +227,8 @@ public class PagosBean implements Serializable {
     if (ok) {
       cargarListas();
       Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " rechazo un pago por $" + pagoSeleccionado.getMontoPago() + " del credito # " + pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito().getNumeroCredito());
-      GestionAutomatica.generarGestionAutomatica("17PAGNO", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE RECHAZA PAGO POR $" + pagoSeleccionado.getMontoPago());
+      GestionAutomatica ga = new GestionAutomatica();
+      ga.generarGestionAutomatica("17PAGNO", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE RECHAZA PAGO POR $" + pagoSeleccionado.getMontoPago());
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se rechazo el pago."));
     } else {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo rechazar el pago. Contacte al equipo de sistemas."));
@@ -240,6 +242,7 @@ public class PagosBean implements Serializable {
         nombreArchivo = "PAGOS_" + df.format(fechaInicio) + "_" + df.format(fechaFin).replace(":", "-");
         listaPagos = pagoDao.pagosPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho(), df.format(fechaInicio), df.format(fechaFin));
       } else {
+        nombreArchivo = "PAGOS-" + gestorDao.buscar(gestorSeleccionado.getIdGestor()).getUsuario().getNombreLogin().toUpperCase() + "_" + df.format(fechaInicio) + "_" + df.format(fechaFin).replace(":", "-");
         listaPagos = pagoDao.pagosPorGestor(gestorSeleccionado.getIdGestor(), df.format(fechaInicio), df.format(fechaFin));
       }
       habilitaTabla = true;
@@ -358,7 +361,8 @@ public class PagosBean implements Serializable {
       t.sendMessage(mensaje, mensaje.getAllRecipients());
       pagoSeleccionado.setEstatus(Pagos.REVISION_BANCO);
       if (pagoDao.editar(pagoSeleccionado)) {
-        GestionAutomatica.generarGestionAutomatica("25VAPA", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE ENVIA PAGO PARA REVISION POR PARTE DEL BANCO");
+        GestionAutomatica ga = new GestionAutomatica();
+        ga.generarGestionAutomatica("25VAPA", pagoSeleccionado.getPromesaPago().getConvenioPago().getCredito(), indexBean.getUsuario(), "SE ENVIA PAGO PARA REVISION POR PARTE DEL BANCO");
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se envio el pago a revision."));
       }
     } catch (Exception e) {

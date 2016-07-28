@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -102,6 +103,9 @@ public class CuentasGestorBean implements Serializable {
         c.setVerdes(arreglo[2]);
         c.setAmarillas(arreglo[3]);
         c.setRojas(arreglo[4]);
+        c.setVerdesQuebranto(arreglo[5]);
+        c.setAmarillasQuebranto(arreglo[6]);
+        c.setRojasQuebranto(arreglo[7]);
         listaCreditosCampanas.add(c);
       }
     }
@@ -109,12 +113,15 @@ public class CuentasGestorBean implements Serializable {
 
   //METODO QUE CALCULA LOS CREDITOS QUE CAMBIARON DE CAMPAÑA HOY
   public int[] checarCampana(List<Credito> creditos) {
-    int[] arreglo = new int[5];
+    int[] arreglo = new int[8];
     int cambios = 0;
     int progreso = 0;
     int verdes = 0;
     int amarillas = 0;
     int rojas = 0;
+    int verdesQuebranto = 0;
+    int amarillasQuebranto = 0;
+    int rojasQuebranto = 0;
     for (int i = 0; i < (creditos.size()); i++) {
       if (historialDao.verificarCampioCampañaCredito(creditos.get(i).getIdCredito())) {
         cambios = cambios + 1;
@@ -124,13 +131,25 @@ public class CuentasGestorBean implements Serializable {
       }
       int dias = gestionDao.checarDiasSinGestionar(creditos.get(i).getIdCredito()).intValue();
       if (dias <= 3) {
-        verdes = verdes + 1;
+        if (creditos.get(i).getMarcaje().getIdMarcaje() == Marcajes.QUEBRANTO) {
+          verdesQuebranto = verdesQuebranto + 1;
+        } else {
+          verdes = verdes + 1;
+        }
       }
       if ((dias > 3) && (dias <= 7)) {
-        amarillas = amarillas + 1;
+        if (creditos.get(i).getMarcaje().getIdMarcaje() == Marcajes.QUEBRANTO) {
+          amarillasQuebranto = amarillasQuebranto + 1;
+        } else {
+          amarillas = amarillas + 1;
+        }
       }
       if (dias > 7) {
-        rojas = rojas + 1;
+        if (creditos.get(i).getMarcaje().getIdMarcaje() == Marcajes.QUEBRANTO) {
+          rojasQuebranto = rojasQuebranto + 1;
+        } else {
+          rojas = rojas + 1;
+        }
       }
     }
     arreglo[0] = cambios;
@@ -138,10 +157,14 @@ public class CuentasGestorBean implements Serializable {
     arreglo[2] = verdes;
     arreglo[3] = amarillas;
     arreglo[4] = rojas;
+    arreglo[5] = verdesQuebranto;
+    arreglo[6] = amarillasQuebranto;
+    arreglo[7] = rojasQuebranto;
     return arreglo;
   }
 
   // METODO QUE VERIFICA SI LA CAMPAÑA EN LA LISTA ES LA CAMPAÑA QUE SE ESTA GESTIONANDO
+
   public String verificarCampanaEnCurso(CreditoCampana campana) {
     if (campana == seleccion) {
       return "En curso";
@@ -172,9 +195,8 @@ public class CuentasGestorBean implements Serializable {
         } else if (creditosEnGestion.get(i).getMarcaje().getIdMarcaje() == Marcajes.URGENTE) {
           campana = Campanas.URGENTE;
         }
-      }
-      // CHECAR PROMESAS FUTURAS
-      if (!promesasFuturas.isEmpty()) {
+      } // CHECAR PROMESAS FUTURAS
+      else if (!promesasFuturas.isEmpty()) {
         // PROMESAS EN ESPERA DE CUMPLIRSE
         for (int j = 0; j < (promesasFuturas.size()); j++) {
           Calendar fecha = Calendar.getInstance();
@@ -187,13 +209,11 @@ public class CuentasGestorBean implements Serializable {
             campana = Campanas.CONVENIO_ANTICIPA_FECHA;
           }
         }
-      }
-      // CHECAR PROMESAS HOY
-      if (!promesasHoy.isEmpty()) {
+      } // CHECAR PROMESAS HOY
+      else if (!promesasHoy.isEmpty()) {
         campana = Campanas.CONVENIO_MISMA_FECHA;
-      }
-      // CHECAR PROMESAS ANTERIORES
-      if (!promesasPasadas.isEmpty()) {
+      } // CHECAR PROMESAS ANTERIORES
+      else if (!promesasPasadas.isEmpty()) {
         // CHECAR PAGOS
         if (!pagos.isEmpty()) {
           for (int j = 0; j < (pagos.size()); j++) {
@@ -207,12 +227,11 @@ public class CuentasGestorBean implements Serializable {
         } else {
           campana = Campanas.CONVENIO_INCUMPLIDO;
         }
-      }
-      // CHECAR GESTIONES
-      if (!gestionesCredito.isEmpty()) {
+      } // CHECAR GESTIONES
+      else if (!gestionesCredito.isEmpty()) {
         // CHECAR ULTIMA GESTION
-        Gestion ultima = gestionesCredito.get(gestionesCredito.size() - 1);
-        if ((ultima.getDescripcionGestion().getCalificacion() != null) && (ultima.getDescripcionGestion().getCalificacion() == 2)) {
+        Gestion ultima = gestionesCredito.get(0);
+        if ((ultima.getDescripcionGestion().getCalificacion() != null) && ((ultima.getDescripcionGestion().getCalificacion() == 2) || (ultima.getDescripcionGestion().getCalificacion() == 1))) {
           // CHECAR PAGOS
           if (!pagos.isEmpty()) {
             campana = Campanas.CON_CONTACTO_CON_PAGOS;
@@ -227,7 +246,7 @@ public class CuentasGestorBean implements Serializable {
             // CHECAR ULTIMAS 7 GESTIONES
             if (gestionesCredito.size() >= 7) {
               boolean ok = true;
-              for (int j = (gestionesCredito.size() - 7); j < (gestionesCredito.size()); j++) {
+              for (int j = 0; j < 7; j++) {
                 ok = ok & ((gestionesCredito.get(j).getDescripcionGestion().getCalificacion() != null) && (gestionesCredito.get(j).getDescripcionGestion().getCalificacion() == 3));
               }
               if (ok) {
@@ -242,7 +261,7 @@ public class CuentasGestorBean implements Serializable {
         } else {
           // CHECAR GESTIONES ANTERIORES, EN CASO DE QUE LA ACTUAL NO TENGA CALIFICACION
           for (int j = (gestionesCredito.size() - 1); j >= 0; j--) {
-            if ((gestionesCredito.get(j).getDescripcionGestion().getCalificacion() != null) && (gestionesCredito.get(j).getDescripcionGestion().getCalificacion() == 2)) {
+            if ((gestionesCredito.get(j).getDescripcionGestion().getCalificacion() != null) && ((gestionesCredito.get(j).getDescripcionGestion().getCalificacion() == 2) || (gestionesCredito.get(j).getDescripcionGestion().getCalificacion() == 1))) {
               if (!pagos.isEmpty()) {
                 if (!promesasFuturas.isEmpty()) {
                   for (int k = 0; k < (promesasFuturas.size()); k++) {
@@ -333,6 +352,36 @@ public class CuentasGestorBean implements Serializable {
         Logs.log.error("No se pudo redirigir a la vista de la campaña actual.");
         Logs.log.error(ioe);
       }
+    }
+  }
+
+  // METODO QUE PREPARA LA GESTION DE CAMPAÑAS PERO UNICAMENTE DE LAS CUENTAS DE QUEBRANTO
+  public void preparaCampanaQuebranto() {
+    List<Credito> listaQuebranto = new ArrayList();
+    List<Credito> lista = creditoDao.buscarCreditosPorCampanaGestor(seleccion.getIdCampana(), indexBean.getUsuario().getIdUsuario());
+    for (int i = 0; i < (lista.size()); i++) {
+      if (lista.get(i).getMarcaje().getIdMarcaje() == Marcajes.QUEBRANTO) {
+        listaQuebranto.add(lista.get(i));
+      }
+    }
+    posicion = 0;
+    creditosCampana = listaQuebranto;
+    if (!creditosCampana.isEmpty()) {
+      for (int i = 0; i < (creditosCampana.size()); i++) {
+        if (!gestionDao.buscarGestionHoy(creditosCampana.get(i).getIdCredito())) {
+          posicion = i;
+          break;
+        }
+      }
+      creditoActualBean.setCreditoActual(creditosCampana.get(posicion));
+      try {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCampanaActual.xhtml");
+      } catch (IOException ioe) {
+        Logs.log.error("No se pudo redirigir a la vista de la campaña actual.");
+        Logs.log.error(ioe);
+      }
+    } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "La campaña seleccionada no tiene creditos en quebranto."));
     }
   }
 
@@ -446,6 +495,9 @@ public class CuentasGestorBean implements Serializable {
     private int verdes;
     private int amarillas;
     private int rojas;
+    private int verdesQuebranto;
+    private int amarillasQuebranto;
+    private int rojasQuebranto;
 
     // CONSTRUCTOR
     public CreditoCampana() {
@@ -514,6 +566,30 @@ public class CuentasGestorBean implements Serializable {
 
     public void setRojas(int rojas) {
       this.rojas = rojas;
+    }
+
+    public int getVerdesQuebranto() {
+      return verdesQuebranto;
+    }
+
+    public void setVerdesQuebranto(int verdesQuebranto) {
+      this.verdesQuebranto = verdesQuebranto;
+    }
+
+    public int getAmarillasQuebranto() {
+      return amarillasQuebranto;
+    }
+
+    public void setAmarillasQuebranto(int amarillasQuebranto) {
+      this.amarillasQuebranto = amarillasQuebranto;
+    }
+
+    public int getRojasQuebranto() {
+      return rojasQuebranto;
+    }
+
+    public void setRojasQuebranto(int rojasQuebranto) {
+      this.rojasQuebranto = rojasQuebranto;
     }
 
   }

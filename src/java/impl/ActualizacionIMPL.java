@@ -23,6 +23,28 @@ import util.log.Logs;
 public class ActualizacionIMPL implements ActualizacionDAO {
 
   @Override
+  public boolean insertar(Actualizacion actualizacion) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
+    try {
+      sesion.save(actualizacion);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      Logs.log.error("No se pudo insertar la actualizacion");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
+  }
+
+  @Override
   public List<Actualizacion> buscarPorCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Actualizacion> actualizaciones;
@@ -45,6 +67,7 @@ public class ActualizacionIMPL implements ActualizacionDAO {
     try {
       actualizacion = (Actualizacion) sesion.createSQLQuery(consulta).addEntity(Actualizacion.class).uniqueResult();
     } catch (HibernateException he) {
+      actualizacion = null;
       Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {

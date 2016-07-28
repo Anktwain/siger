@@ -51,7 +51,7 @@ public class HistorialIMPL implements HistorialDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Historial> historial = new ArrayList();
     try {
-      historial = sesion.createSQLQuery("SELECT * FROM historial WHERE id_credito = " + idCredito + ";").addEntity(Historial.class).list();
+      historial = sesion.createSQLQuery("SELECT * FROM historial WHERE id_credito = " + idCredito + " ORDER BY id_historial DESC;").addEntity(Historial.class).list();
     } catch (HibernateException he) {
       Logs.log.error(he.getMessage());
     } finally {

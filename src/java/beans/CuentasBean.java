@@ -181,8 +181,9 @@ public class CuentasBean implements Serializable {
         // GESTION AUTOMATICA 1
         // SI EXISTE UN CONVENIO
         ConvenioPago c = convenioPagoDao.buscarConvenioEnCursoCredito(creditos.get(i).getIdCredito());
+        GestionAutomatica ga = new GestionAutomatica();
         if (c != null) {
-          GestionAutomatica.generarGestionAutomatica("13CONRE", creditos.get(i), indexBean.getUsuario(), "SE REASIGNA CONVENIO");
+          ga.generarGestionAutomatica("13CONRE", creditos.get(i), indexBean.getUsuario(), "SE REASIGNA CONVENIO");
         }
         // CAMBIAMOS EL GESTOR ASIGNADO ACTUALMENTE
         String gestorAnterior = creditos.get(i).getGestor().getUsuario().getNombreLogin();
@@ -191,7 +192,7 @@ public class CuentasBean implements Serializable {
         if (ok) {
           okGeneral = okGeneral & ok;
           // GESTION AUTOMATICA 2
-          GestionAutomatica.generarGestionAutomatica("15CTARE", creditos.get(i), indexBean.getUsuario(), "REASIGNACION DE CREDITO NO. " + creditos.get(i).getNumeroCredito());
+          ga.generarGestionAutomatica("15CTARE", creditos.get(i), indexBean.getUsuario(), "REASIGNACION DE CREDITO NO. " + creditos.get(i).getNumeroCredito());
           // GUARDAMOS EN EL LOG EL DETALLE DE LA REASIGNACION
           Logs.log.info("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + gestorAnterior + " al gestor " + creditos.get(i).getGestor().getUsuario().getNombreLogin());
           // ESCRIBIMOS EN EL HISTORIAL LA REASIGNACION

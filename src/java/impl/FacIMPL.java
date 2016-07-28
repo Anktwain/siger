@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import util.HibernateUtil;
 import util.log.Logs;
 
@@ -19,6 +20,28 @@ import util.log.Logs;
  * @author Eduardo
  */
 public class FacIMPL implements FacDAO {
+
+  @Override
+  public boolean insertar(Fac fac) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Transaction tx = sesion.beginTransaction();
+    boolean ok;
+    try {
+      sesion.save(fac);
+      tx.commit();
+      ok = true;
+    } catch (HibernateException he) {
+      ok = false;
+      if (tx != null) {
+        tx.rollback();
+      }
+      Logs.log.error("No se pudo insertar respuesta de telmex");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return ok;
+  }
 
   @Override
   public List<Fac> buscarPorCredito(int idCredito) {

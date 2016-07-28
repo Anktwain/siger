@@ -7,6 +7,7 @@ package impl;
 
 import dao.ColoniaDAO;
 import dto.Colonia;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -120,6 +121,22 @@ public class ColoniaIMPL implements ColoniaDAO {
       cerrar(sesion);
     }
     return ok;
+  }
+
+  @Override
+  public List<String> obtenerTiposColonia() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<String> asentamientos = new ArrayList();
+    String consulta = "SELECT DISTINCT tipo FROM colonia ORDER BY tipo ASC;";
+    try {
+      asentamientos = sesion.createSQLQuery(consulta).list();
+    } catch (HibernateException he) {
+      Logs.log.error("No se pudieron obtener los tipos de colonia.");
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return asentamientos;
   }
 
   private void cerrar(Session sesion) {

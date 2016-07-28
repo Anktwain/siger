@@ -257,28 +257,23 @@ public class VistaCreditoBean implements Serializable {
     listaGestores = gestorDao.buscarPorDespachoExceptoEste(indexBean.getUsuario().getDespacho().getIdDespacho(), creditoActual.getGestor().getIdGestor());
     // OBTENEMOS EL ID DEL SUJETO PARA TODAS LAS OPERACIONES
     int idSujeto = creditoActual.getDeudor().getSujeto().getIdSujeto();
-    // OBTENER LA PRIMER DIRECCION DEL DEUDOR
-    Direccion d;
-    try {
-      d = direccionDao.buscarPorSujeto(idSujeto).get(0);
-      if (d.getInterior() == null) {
-        calleNumero = d.getCalle() + " " + d.getExterior();
+    // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
+    listaDirecciones = direccionDao.buscarPorSujeto(idSujeto);
+    if(!listaDirecciones.isEmpty()){
+      // OBTENER LA PRIMER DIRECCION DEL DEUDOR
+      if (listaDirecciones.get(0).getInterior() == null) {
+        calleNumero = listaDirecciones.get(0).getCalle() + " " + listaDirecciones.get(0).getExterior();
       } else {
-        calleNumero = d.getCalle() + " " + d.getExterior() + " " + d.getInterior();
+        calleNumero = listaDirecciones.get(0).getCalle() + " " + listaDirecciones.get(0).getExterior() + " " + listaDirecciones.get(0).getInterior();
       }
-      coloniaMunicipio = d.getColonia().getTipo() + " " + d.getColonia().getNombre() + ",  " + d.getMunicipio().getNombre();
-      estadoCP = d.getEstadoRepublica().getNombre() + ",  C.P. " + d.getColonia().getCodigoPostal();
-    } catch (Exception e) {
-      Logs.log.error("No se pudo obtener la primer direccion del deudor.");
-      Logs.log.error(e);
+      coloniaMunicipio = listaDirecciones.get(0).getColonia().getTipo() + " " + listaDirecciones.get(0).getColonia().getNombre() + ",  " + listaDirecciones.get(0).getMunicipio().getNombre();
+      estadoCP = listaDirecciones.get(0).getEstadoRepublica().getNombre() + ",  C.P. " + listaDirecciones.get(0).getColonia().getCodigoPostal();
     }
-    // OBTENEMOS LAS DIFERENTES FECHAS QUE SE REQUIEREN
-    try {
+    // OBTENEMOS LA LISTA DE TELEFONOS DEL DEUDOR
+    listaTelefonos = telefonoDao.buscarPorCliente(creditoActual.getDeudor().getNumeroDeudor());
+    if(!listaTelefonos.isEmpty()){
       // OBTENER EL PRIMER TELEFONO DEL DEUDOR
-      telefono = formatoTelefono(telefonoDao.buscarPorSujeto(idSujeto).get(0));
-    } catch (Exception e) {
-      Logs.log.error("No se pudo obtener el primer telefono del deudor.");
-      Logs.log.error(e);
+      telefono = formatoTelefono(listaTelefonos.get(0));
     }
     // SE OBTIENE EL CORREO PRINCIPAL DEL DEUDOR
     Email mail = emailDao.buscarPrincipalPorSujeto(idSujeto);
@@ -314,8 +309,6 @@ public class VistaCreditoBean implements Serializable {
     saldoVencido = obtenerSaldoVencido(creditoActual.getIdCredito());
     // OBTENEMOS LA LISTA DE GESTIONES PREVIAS
     obtenerGestionesAnteriores();
-    // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
-    listaDirecciones = direccionDao.buscarPorSujeto(idSujeto);
     // OBTENEMOS LA LISTA DE CREDITOS RELACIONADOS
     creditosRelacionados = creditoDao.buscarCreditosRelacionados(creditoActual.getIdCredito(), creditoActual.getDeudor().getNumeroDeudor());
     habilitaCredsRelacionados = !creditosRelacionados.isEmpty();
@@ -328,8 +321,6 @@ public class VistaCreditoBean implements Serializable {
     } else {
       telefonoPrincipal = "";
     }
-    // OBTENEMOS LA LISTA DE TELEFONOS DEL DEUDOR
-    listaTelefonos = telefonoDao.buscarPorCliente(creditoActual.getDeudor().getNumeroDeudor());
     // OBTENEMOS LA LISTA DE CORREOS ELECTRONICOS DEL DEUDOR
     listaCorreos = emailDao.buscarPorCliente(creditoActual.getDeudor().getNumeroDeudor());
     // OBTENEMOS LA LISTA DE CONTACTOS DEL DEUDOR
@@ -381,18 +372,18 @@ public class VistaCreditoBean implements Serializable {
 
   // METODO QUE DA FORMATO A LOS TELEFONOS
   public String formatoTelefono(Telefono tel) {
-    String telefono;
+    String telef;
     if (tel.getLada() == null) {
-      telefono = tel.getNumero();
+      telef = tel.getNumero();
     } else {
-      telefono = tel.getLada() + tel.getNumero();
+      telef = tel.getLada() + tel.getNumero();
     }
-    if (telefono.length() >= 7) {
-      return "(" + telefono.substring(0, (telefono.length()) - 7) + ") - " + telefono.substring((telefono.length()) - 7, telefono.length() - 4) + " - " + telefono.substring(telefono.length() - 4, telefono.length());
-    } else if (telefono.length() > 7) {
-      return telefono.substring(0, 2) + " - " + telefono.substring(3, 7);
+    if (telef.length() >= 7) {
+      return "(" + telef.substring(0, (telef.length()) - 7) + ") - " + telef.substring((telef.length()) - 7, telef.length() - 4) + " - " + telef.substring(telef.length() - 4, telef.length());
+    } else if (telef.length() > 7) {
+      return telef.substring(0, 2) + " - " + telef.substring(3, 7);
     } else {
-      return telefono;
+      return telef;
     }
   }
 
@@ -414,7 +405,8 @@ public class VistaCreditoBean implements Serializable {
     // SI EXISTE UN CONVENIO
     ConvenioPago c = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
     if (c != null) {
-      GestionAutomatica.generarGestionAutomatica("13CONRE", creditoActual, indexBean.getUsuario(), "SE REASIGNA CONVENIO");
+      GestionAutomatica ga = new GestionAutomatica();
+      ga.generarGestionAutomatica("13CONRE", creditoActual, indexBean.getUsuario(), "SE REASIGNA CONVENIO");
     }
     // CAMBIAMOS EL GESTOR ASIGNADO ACTUALMENTE
     Credito cred = creditoActual;
@@ -432,7 +424,8 @@ public class VistaCreditoBean implements Serializable {
       ok = ok & (historialDao.insertar(h));
       if (ok) {
         // GESTION AUTOMATICA 2
-        GestionAutomatica.generarGestionAutomatica("15CTARE", creditoActual, indexBean.getUsuario(), "REASIGNACION DE CREDITO NO. " + creditoActual.getNumeroCredito());
+        GestionAutomatica ga = new GestionAutomatica();
+        ga.generarGestionAutomatica("15CTARE", creditoActual, indexBean.getUsuario(), "REASIGNACION DE CREDITO NO. " + creditoActual.getNumeroCredito());
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
         creditoActual.setGestor(nuevoGestor);
       } else {
