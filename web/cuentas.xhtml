@@ -111,21 +111,24 @@
                 </p:contextMenu>
                 <p:dataTable id="cuentas" var="c" value="#{cuentasBean.listaCreditos}" rowKey="#{c.numeroCredito}" selection="#{cuentasBean.creditosSeleccionados}" emptyMessage="No existen creditos gestionables." paginator="true" rows="15" paginatorPosition="bottom" style="width: 1100px;">
                   <p:column selectionMode="multiple" style="width:35px;text-align:center" />  
-                  <p:column headerText="Credito" style="width:150px;" sortBy="#{c.numeroCredito}">
+                  <p:column headerText="Credito" style="width:90px;" sortBy="#{c.numeroCredito}">
                     <h:outputText value="#{c.numeroCredito}" style="float:right"/>
                   </p:column>
-                  <p:column headerText="Nombre del deudor" style="width:400px;" sortBy="#{c.deudor.sujeto.nombreRazonSocial}" footerText="Total de creditos filtrados en esta busqueda:">
+                  <p:column headerText="Nombre del deudor" style="width:300px;" sortBy="#{c.deudor.sujeto.nombreRazonSocial}" footerText="Total de creditos filtrados en esta busqueda:">
                     <h:outputText value="#{c.deudor.sujeto.nombreRazonSocial}"/>
                   </p:column>
-                  <p:column headerText="Saldo vencido" style="width:150px;" sortBy="#{cuentasBean.calcularSaldoVencido(c)}" footerText="#{cuentasBean.listaCreditos.size()}"> 
+                  <p:column headerText="Saldo vencido" style="width:100px;" sortBy="#{cuentasBean.calcularSaldoVencido(c)}" footerText="#{cuentasBean.listaCreditos.size()}"> 
                     <h:outputText value="#{cuentasBean.calcularSaldoVencido(c)}" style="float:right">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
-                  <p:column headerText="Institucion" style="width:150px;" sortBy="#{c.producto.institucion.nombreCorto}">
+                  <p:column headerText="Institucion" style="width:100px;" sortBy="#{c.producto.institucion.nombreCorto}">
                     <h:outputText value="#{c.producto.institucion.nombreCorto}"/>
                   </p:column>
-                  <p:column headerText="Gestor asignado" style="width:150px;" sortBy="#{c.gestor.usuario.nombreLogin}">
+                  <p:column headerText="Producto" style="width:200px;" sortBy="#{c.producto.nombre}">
+                    <h:outputText value="#{c.subproducto.nombre}"/>
+                  </p:column>
+                  <p:column headerText="Gestor" style="width:100px;" sortBy="#{c.gestor.usuario.nombreLogin}">
                     <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>
                   </p:column>
                   <f:facet name="footer">

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Modulo de precarga</title>
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('precarga')}" type="preRenderView" />
+  </f:metadata>
+  <h:body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Precarga
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-12">
+        <h2>
+          Paso 1. Seleccione el archivo de excel (xls) y despues el tipo de archivo del que se trate.
+        </h2>
+        <br />
+        <div align="center">
+          <h:form id="cargaArchivoForm" enctype="multipart/form-data">
+            <p:fileUpload 
+              value="#{precargaBean.archivo}"
+              fileUploadListener="#{precargaBean.eventoDeCarga}" 
+              multiple="false" mode="advanced" 
+              label="Seleccionar archivo" uploadLabel="Cargar" cancelLabel="Cancelar"
+              sizeLimit="10485760" invalidSizeMessage="Error. El archivo excede 10 MB" 
+              fileLimit="1" fileLimitMessage="Error. Solo se puede cargar 1 archivo." 
+              allowTypes="/(\.|\/)(xls)$/" invalidFileMessage="Error. Solo se permiten archivos con extension xls." 
+              auto="false" 
+              style="width: 450px;" 
+              update=":growl"
+              />
+          </h:form>
+        </div>
+      </div>
+    </div>
+    <!-- DIALOGO BARRA DE CARGA -->
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+      <p:outputLabel value="Espere por favor..."/>
+      <br />
+      <div align="center">
+        <p:graphicImage library="img" name="loadingBarra.gif" />
+      </div>
+    </p:dialog>
+  </h:body>
+</html>

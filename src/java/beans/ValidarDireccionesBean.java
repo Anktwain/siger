@@ -10,9 +10,7 @@ import dao.CreditoDAO;
 import dao.DireccionDAO;
 import dao.EstadoRepublicaDAO;
 import dao.MunicipioDAO;
-import dao.SujetoDAO;
 import dto.Colonia;
-import dto.ComprobantePago;
 import dto.Credito;
 import dto.Direccion;
 import dto.EstadoRepublica;
@@ -24,7 +22,6 @@ import impl.CreditoIMPL;
 import impl.DireccionIMPL;
 import impl.EstadoRepublicaIMPL;
 import impl.MunicipioIMPL;
-import impl.SujetoIMPL;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,8 +35,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -53,13 +48,11 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
-import util.Carga.LectorArchivoDireccionesExcel;
-import util.Carga.ValidadorDirecciones;
+import util.carga.LectorArchivoDireccionesExcel;
+import util.carga.ValidadorDirecciones;
 import util.GestionAutomatica;
-import util.constantes.Pagos;
 import util.log.Logs;
 
 /**
@@ -143,7 +136,9 @@ public class ValidarDireccionesBean implements Serializable {
     String extension = archivo.getFileName().substring(archivo.getFileName().indexOf(".")).toLowerCase();
     ruta = "Direcciones" + "_" + df.format(new Date()) + extension;
     ruta = ruta.replace(" ", "-");
-    ruta = "C:\\cargasDePruebaNuevoSiger\\" + ruta;
+    // BUG:
+    // la letra de la ruta debe ser D
+    ruta = "C:\\cargasSigerWeb\\" + ruta;
     bytes = archivo.getContents();
     BufferedOutputStream stream;
     try {
@@ -155,12 +150,12 @@ public class ValidarDireccionesBean implements Serializable {
     } catch (FileNotFoundException fnfe) {
       Logs.log.error("No se cargo el archivo al servidor.");
       Logs.log.error(ruta);
-      Logs.log.error(fnfe.getStackTrace());
+      Logs.log.error(fnfe.getMessage());
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se cargo el archivo. Contacte al equipo de sistemas."));
     } catch (IOException ioe) {
       Logs.log.error("No se cargo el archivo al servidor.");
       Logs.log.error(ruta);
-      Logs.log.error(ioe.getStackTrace());
+      Logs.log.error(ioe.getMessage());
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se cargo el archivo. Contacte al equipo de sistemas."));
     }
   }
@@ -255,7 +250,8 @@ public class ValidarDireccionesBean implements Serializable {
       nuevoMunicipio = municipioDao.buscar(nuevoMunicipio.getIdMunicipio());
       nuevoEstado = estadoDao.buscar(nuevoEstado.getIdEstado());
       Direccion d = new Direccion();
-      d.setExterior("S/N");
+      d.setExterior(direccionSeleccionada.getExterior());
+      d.setInterior(direccionSeleccionada.getInterior());
       // TO FIX:
       // HACER UNA FUNCION QUE REALICE LA GEOLOCALIZACION
       d.setLatitud(BigDecimal.ZERO);
@@ -316,6 +312,8 @@ public class ValidarDireccionesBean implements Serializable {
       multiParte.addBodyPart(texto);
       mensaje.setContent(multiParte);
       Transport t = sesion.getTransport("smtp");
+      // BUG:
+      // proteger contraseña
       t.connect(remitente, "009-94-92");
       t.sendMessage(mensaje, mensaje.getAllRecipients());
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se envio el correo de localizacion."));
@@ -323,7 +321,7 @@ public class ValidarDireccionesBean implements Serializable {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se envio el correo de localizacion. Contacte al equipo de sistemas."));
       Logs.log.error("No se pudo enviar el correo de localizacion");
       Logs.log.error("Remitente: " + remitente + ", destinatario: " + destinatario);
-      Logs.log.error(e.getStackTrace());
+      Logs.log.error(e.getMessage());
     }
   }
   

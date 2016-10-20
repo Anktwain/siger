@@ -8,36 +8,50 @@ and open the template in the editor.
 
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     
-    <!--    Crea appender de tipo org.apache.log4j.ConsoleAppender y lo llama 'consola'
-    Asocia un layout de tipo org.apache.log4j.EnhancedPatternLayout al appender
-    Finalmente agrega un patrón de conversión al layout-->
+  <!--    Crea appender de tipo org.apache.log4j.ConsoleAppender y lo llama 'consola'
+  Asocia un layout de tipo org.apache.log4j.EnhancedPatternLayout al appender
+  Finalmente agrega un patrón de conversión al layout-->
 
-<appender name="consola" class="org.apache.log4j.ConsoleAppender">
+  <appender name="consola" class="org.apache.log4j.ConsoleAppender">
     <param name="target" value="System.out" />
     <layout class="org.apache.log4j.EnhancedPatternLayout">
-        <param name="ConversionPattern" value="%d{dd MMM yyyy - HH:mm:ss} [%-5p] - %m%n" />
+      <param name="ConversionPattern" value="%d{dd MMM yyyy - HH:mm:ss} [%-5p] - %m%n" />
     </layout>
-</appender>
-    
-<appender name="archivo" class="org.apache.log4j.DailyRollingFileAppender">
-    <param name="file" value="Logs/archivo.log" />
-    <!--Rota el archivo a la media noche todos los días-->
-    <param name="DatePattern" value="'.'yyyy-MM-dd" />
-    <layout class="org.apache.log4j.EnhancedPatternLayout">
-        <param name="ConversionPattern" value="%d{dd MMM yyyy - HH:mm:ss} [%-5p] - %m%n" />
+  </appender>
+  
+  <!-- EN DESARROLLO -->
+  <!--  
+  <appender name="archivo" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="encoding" value="UTF-8" />
+    <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+      <param name="activeFileName" value="Logs/logActual.log" />
+      <param name="fileNamePattern" value="Logs/logSigerWeb%d{_dd.MM.yyyy}.log" />
+    </rollingPolicy>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="conversionPattern" value="%d{dd MMM yyyy - HH:mm:ss} [%-5p] - %m%n" />
     </layout>
-</appender>
-    
-<!--    Crea los loggers necesarios para cada appender. root indica el logger principal, y
-el otro especifica el que se ha creado en util.log-->
-<logger name="util.log.Logs">
+  </appender>
+  -->
+
+  <appender name="archivo" class="org.apache.log4j.DailyRollingFileAppender">
+      <param name="file" value="Logs/logActual.log" />
+      <!-- Rota el archivo a la media noche todos los días -->
+      <param name="DatePattern" value="'.'yyyy-MM-dd" />
+      <layout class="org.apache.log4j.EnhancedPatternLayout">
+          <param name="ConversionPattern" value="%d{dd MMM yyyy - HH:mm:ss} [%-5p] - %m%n" />
+      </layout>
+  </appender>
+
+  <!--    Crea los loggers necesarios para cada appender. root indica el logger principal, y
+  el otro especifica el que se ha creado en util.log-->
+  <logger name="util.log.Logs">
     <level value="debug" />
     <appender-ref ref="archivo" />
-</logger>
+  </logger>
     
-<root>
+  <root>
     <priority value="warn" />
     <appender-ref ref="consola" />
-</root>
+  </root>
 
 </log4j:configuration>

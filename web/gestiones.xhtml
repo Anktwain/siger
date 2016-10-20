@@ -108,7 +108,7 @@
                 </p:inputSwitch>
               </td>
               <td style="padding-left: 20px;">
-                <p:selectOneMenu id="seleccionarProductosGestionesCombobox" value="#{gestionesBean.productoSeleccionado.idProducto}" style="width:300px" disabled="#{gestionesBean.habilitaProducto}">
+                  <p:selectOneMenu id="seleccionarProductosGestionesCombobox" value="#{gestionesBean.productoSeleccionado.idProducto}" style="width:300px" disabled="#{gestionesBean.habilitaProducto}">
                   <f:selectItems value="#{gestionesBean.listaProductos}" var="p" itemLabel="#{p.nombre}" itemValue="#{p.idProducto}" />
                 </p:selectOneMenu>
               </td>
@@ -142,6 +142,8 @@
                 <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{gestionesBean.buscar()}" update="growl, tablaGestiones" />
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <p:button value="Limpiar" icon="ui-icon-refresh" outcome="gestiones" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <p:commandButton value="Enviar gestiones al banco (DEL RIO)" icon="ui-icon-mail-closed" actionListener="#{gestionesBean.enviarGestionesBanco()}" rendered="#{gestionesBean.habilitaBotonEnvioGestiones}" update="growl" />
               </td>
             </tr>
           </table>
@@ -169,14 +171,14 @@
             </p:column>
             <f:facet name="footer">
               <div align="right">
-                  <h:commandLink actionListener="#{gestionesBean.reportarExportacion('xls')}">
+                <h:commandLink actionListener="#{gestionesBean.reportarExportacion('xls')}">
                   <p:graphicImage name="/img/iconos/excel.png" width="40" rendered="#{gestionesBean.permitirExport}" />
-                  <p:dataExporter type="xls" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}" />
+                  <p:dataExporter transient="true" type="xls" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}" />
                 </h:commandLink>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <h:commandLink  actionListener="#{gestionesBean.reportarExportacion('pdf')}">
+                <h:commandLink actionListener="#{gestionesBean.reportarExportacion('pdf')}">
                   <p:graphicImage name="/img/iconos/pdf.png" width="40" rendered="#{gestionesBean.permitirExport}" />
-                  <p:dataExporter type="pdf" preProcessor="#{gestionesBean.preparaPdf}" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}"/>
+                  <p:dataExporter type="pdf" preProcessor="#{gestionesBean.preparaPdf}" target="tablaGestiones" fileName="#{gestionesBean.nombreArchivo}" />
                 </h:commandLink>
               </div>
             </f:facet>

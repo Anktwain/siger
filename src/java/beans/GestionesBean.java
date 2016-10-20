@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.el.ELContext;
@@ -34,6 +35,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.constantes.Directorios;
+import util.envioGestiones.PrepararReportesGestiones;
 import util.log.Logs;
 
 /**
@@ -56,6 +59,7 @@ public class GestionesBean implements Serializable {
   private boolean habilitaInstitucion;
   private boolean habilitaProducto;
   private boolean habilitaTabla;
+  private boolean habilitaBotonEnvioGestiones;
   private String nombreArchivo;
   private String fi;
   private String ff;
@@ -83,6 +87,7 @@ public class GestionesBean implements Serializable {
     habilitaInstitucion = false;
     habilitaProducto = false;
     habilitaTabla = false;
+    habilitaBotonEnvioGestiones = verificarEnvioGestiones();
     idDespacho = indexBean.getUsuario().getDespacho().getIdDespacho();
     gestorSeleccionado = new Gestor();
     productoSeleccionado = new Producto();
@@ -98,6 +103,18 @@ public class GestionesBean implements Serializable {
     productoDao = new ProductoIMPL();
     institucionDao = new InstitucionIMPL();
     tipoGestionDao = new TipoGestionIMPL();
+  }
+
+  // METODO QUE VERIFICA SI EL DESPACHO ESTA HABILITADO PARA ENVIAR GESTIONES AL BANCO
+  public final boolean verificarEnvioGestiones() {
+    Calendar c = Calendar.getInstance();
+    if((indexBean.getUsuario().getDespacho().getIdDespacho() == 2) && (c.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)){
+      fechaInicio = new Date();
+      fechaFin = new Date();
+      return true;
+    }else{
+      return false;
+    }
   }
 
   // METODO QUE HABILITA LA LISTA DE GESTORES
@@ -188,12 +205,24 @@ public class GestionesBean implements Serializable {
     Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " exporto un reporte de gestiones en formato " + formato);
   }
 
+  // TEST METHOD
+  public void cerrarDialog() {
+    System.out.println("ENTRO AL METODO");
+    RequestContext.getCurrentInstance().closeDialog("statusDialog");
+  }
+
   // METODO QUE PREPARA EL PDF PARA QUE TENGA MEJOR ESTETICA
   public void preparaPdf(Object document) {
     Document pdf = (Document) document;
     pdf.setPageSize(PageSize.LETTER.rotate());
     pdf.setMargins(10, 10, 10, 10);
     pdf.open();
+  }
+
+  // METODO QUE ENVIA LAS GESTIONES AL BANCO
+  public void enviarGestionesBanco() {
+    PrepararReportesGestiones pcg = new PrepararReportesGestiones();
+    pcg.crearReportesExcel(Directorios.RUTA_WINDOWS_REPORTES_GESTIONES);
   }
 
   // ***********************************************************************************************************************
@@ -342,6 +371,14 @@ public class GestionesBean implements Serializable {
 
   public void setHabilitaProducto(boolean habilitaProducto) {
     this.habilitaProducto = habilitaProducto;
+  }
+
+  public boolean isHabilitaBotonEnvioGestiones() {
+    return habilitaBotonEnvioGestiones;
+  }
+
+  public void setHabilitaBotonEnvioGestiones(boolean habilitaBotonEnvioGestiones) {
+    this.habilitaBotonEnvioGestiones = habilitaBotonEnvioGestiones;
   }
 
 }

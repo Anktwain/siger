@@ -180,9 +180,7 @@ public class PagoIMPL implements PagoDAO {
     Usuario gestor = new Usuario();
     gestor.setNombre("");
     gestor.setPaterno("");
-    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    String fecha = df.format(new Date());
-    String consulta = "SELECT * FROM usuario WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = (SELECT id_gestor FROM pago WHERE fecha_deposito = '" + fecha + "' AND estatus = " + Pagos.APROBADO + " GROUP BY id_gestor ORDER BY COUNT(*) DESC LIMIT 1)) AND id_despacho = " + idDespacho + ";";
+    String consulta = "SELECT * FROM usuario WHERE id_usuario = (SELECT id_usuario FROM gestor WHERE id_gestor = (SELECT id_gestor FROM pago WHERE fecha_registro = CURDATE() AND estatus = " + Pagos.APROBADO + " GROUP BY id_gestor ORDER BY COUNT(*) DESC LIMIT 1)) AND id_despacho = " + idDespacho + ";";
     try {
       gestor = (Usuario) sesion.createSQLQuery(consulta).addEntity(Usuario.class).uniqueResult();
     } catch (HibernateException he) {
@@ -210,7 +208,7 @@ public class PagoIMPL implements PagoDAO {
   }
 
   @Override
-  public Number calcularSaldoAprobadoHoy(int idDespacho) {
+  public Number calcularMontoPagosHoy(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number saldo;
     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -430,6 +428,68 @@ public class PagoIMPL implements PagoDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Pago> pagos = new ArrayList();
     String consulta = "SELECT * FROM pago WHERE id_gestor = " + idGestor + " AND estatus = " + Pagos.APROBADO + " AND id_quincena IN (SELECT id_quincena FROM quincena WHERE (fecha_inicio BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "' OR fecha_fin BETWEEN '" + fechaInicio + "' AND '" + fechaFin + "'));";
+    try {
+      pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return pagos;
+  }
+
+  @Override
+  public float calcularSaldoPendienteDespacho(int idDespacho) {
+    // TO FIX:
+    // REDUCIR EL TIEMPO DE EJECUCION DE ESTA CONSULTA
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    double rec;
+    String consulta = "SELECT ROUND(SUM(monto_pago), 2) FROM pago WHERE id_pago IN (SELECT id_pago FROM promesa_pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + "))) AND estatus in (" + Pagos.PENDIENTE + ", " + Pagos.REVISION_BANCO + ");";
+    try {
+      if (sesion.createSQLQuery(consulta).uniqueResult() == null) {
+        rec = 0;
+      } else {
+        rec = (double) sesion.createSQLQuery(consulta).uniqueResult();
+      }
+    } catch (HibernateException he) {
+      rec = -1;
+      Logs.log.error(consulta);
+      Logs.log.error(he);
+    } finally {
+      cerrar(sesion);
+    }
+    return (float) rec;
+  }
+
+  @Override
+  public float calcularRecuperacionQuincenaDespacho(int idDespacho) {
+    // TO FIX:
+    // REDUCIR EL TIEMPO DE EJECUCION DE ESTA CONSULTA
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    double rec;
+    String consulta = "SELECT ROUND(SUM(monto_aprobado), 2) FROM pago WHERE id_pago IN (SELECT id_pago FROM promesa_pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = 0) AND id_despacho = " + idDespacho + "))) AND id_quincena = " + new QuincenaIMPL().obtenerQuincenaActual().getIdQuincena() + ";";
+    try {
+      if (sesion.createSQLQuery(consulta).uniqueResult() == null) {
+        rec = 0;
+      } else {
+        rec = (double) sesion.createSQLQuery(consulta).uniqueResult();
+      }
+    } catch (HibernateException he) {
+      rec = -1;
+      Logs.log.error(consulta);
+      Logs.log.error(he);
+    } finally {
+      cerrar(sesion);
+    }
+    return (float) rec;
+  }
+
+  @Override
+  public List<Pago> buscarPagosPorConvenio(int idConvenio) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Pago> pagos = new ArrayList();
+    String consulta = "SELECT * FROM pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM promesa_pago WHERE id_convenio_pago = " + idConvenio + ") AND estatus = " + Pagos.APROBADO + ";";
     try {
       pagos = sesion.createSQLQuery(consulta).addEntity(Pago.class).list();
     } catch (HibernateException he) {

@@ -54,4 +54,6 @@ public interface EmailDAO {
     
     public List<Email> buscarPorCliente(String numeroCliente);
     
+    public List<Email> buscarCorreosInbursa();
+    
 }

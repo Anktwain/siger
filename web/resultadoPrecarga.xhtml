@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Modulo de precarga</title>
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('precarga')}" type="preRenderView" />
+  </f:metadata>
+  <h:body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li>
+            <i class="fa fa-upload">
+            </i>
+            <a href="precarga.xhtml">Precarga</a>
+          </li>
+          <li>
+            <i class="fa fa-th-list">
+            </i>
+            <a href="precargaColumnas.xhtml">Seleccion de columnas</a>
+          </li>  
+          <li class="active">
+            Resultado de precarga
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-12">
+        <h:form id="resultadoPrecargaForm">
+          <br />
+          <h2>
+            Informacion de precarga
+          </h2>
+          <h4>
+            Aqui podra visualizar todos los eventos que suceden en el proceso de precarga.
+          </h4>
+          <br />
+          <div align="left" style="padding-left: 50px;">
+            <p:scrollPanel mode="native" style="width:800px; height:200px; color: #04B404;">
+              <h:outputText value="Texto obtenido del procesamiento del archivo" />
+            </p:scrollPanel>
+          </div>
+          <br />
+          <h2>
+            Errores en precarga
+          </h2>
+          <h4>
+            Aqui se mostrara cualquier evento que no permita que la carga se realize de forma correcta.
+          </h4>
+          <br />
+          <div align="left" style="padding-left: 50px;">
+            <p:scrollPanel mode="native" style="width:800px; height:200px; color: #FF0000;">
+              <h:outputText value="Texto obtenido del procesamiento del archivo" />
+            </p:scrollPanel>
+          </div>
+          <br />
+          <br />
+          <div align="center">
+            <p:commandButton value="Descargar log" icon="ui-icon-arrowreturnthick-1-s" rendered="#{!precargaBean.precargaValida}" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:commandButton value="Descargar archivo de precarga" icon="ui-icon-arrowreturnthick-1-s" rendered="#{precargaBean.precargaValida}" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:commandButton value="Ir al inicio" icon="ui-icon-home" />
+          </div>
+          <br />
+          <br />
+        </h:form>
+      </div>
+    </div>
+    <!-- DIALOGO PARA ELEGIR EL TIPO DE PRECARGA -->
+    <p:dialog widgetVar="dialogoSelectorPrecarga" modal="true" draggable="false" closable="false" resizable="false" header="Seleccione el tipo de carga">
+      <h:form id="tipoPrecargaForm">
+        Por favor seleccione el tipo de carga de la que se trata.
+        <br />
+        <br />
+        Una vez seleccionado, se procedera automaticamente con la generacion del archivo.
+        <br />
+        <br />
+        <div align="center">
+          <p:selectOneMenu id="tipoCarga" value="#{precargaBean.idTipoSeleccionado}" style="width:200px" required="true" requiredMessage="Seleccione el tipo de carga">
+            <f:selectItem itemLabel="" itemValue="0" />
+            <f:selectItems value="#{precargaBean.listaTipos}" var="tipoCarga" itemLabel="#{tipoCarga.tipo}" itemValue="#{tipoCarga.id}" />
+            <p:ajax event="change" listener="#{precargaBean.selectorPrecarga()}" update=":growl" />
+          </p:selectOneMenu>
+        </div>
+      </h:form>
+    </p:dialog>
+    <!-- DIALOGO BARRA DE CARGA -->
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+      <p:outputLabel value="Espere por favor..."/>
+      <br />
+      <div align="center">
+        <p:graphicImage library="img" name="loadingBarra.gif" />
+      </div>
+    </p:dialog>
+  </h:body>
+</html>

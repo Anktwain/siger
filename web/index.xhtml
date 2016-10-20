@@ -20,16 +20,16 @@
             <div id="entrada">
               Usuario:
               <br />
-              <p:inputText id="usuario" type="text" maxlength="20" required="true" requiredMessage="Debe escribir un nombre de usuario." value="#{indexBean.nombreUsuario}" validator="#{indexBean.validarNombreUsuario()}" />
+              <p:inputText id="usuario" type="text" maxlength="20" value="#{indexBean.nombreUsuario}" validator="#{indexBean.validarNombreUsuario()}" />
             </div>
             <div id="entrada">
               Contraseña:
               <br />
-              <p:inputText id="pswd" type="password" maxlength="20" required="true" requiredMessage="Debe escribir su contraseña." value="#{indexBean.password}" validator="#{indexBean.validarPassword()}" />                            
+              <p:inputText id="pswd" type="password" maxlength="20" value="#{indexBean.password}" validator="#{indexBean.validarPassword()}" />                            
             </div>
             <br />
             <div id="olvido">
-              <p:link outcome="recuperarContrasena" value="He olvidado mi contraseña..." />
+              <h:commandLink value="He olvidado mi contraseña..." action="#{indexBean.recuperarContrasena()}" />
             </div>
             <br />
             <hr class="style-eight" /> 

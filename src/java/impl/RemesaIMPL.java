@@ -19,7 +19,7 @@ public class RemesaIMPL implements RemesaDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Remesa remesa;
     int r = 0;
-    String query = "select * from remesa where id_remesa = (select max(id_remesa) from remesa)";
+    String query = "SELECT * FROM remesa WHERE id_remesa = (SELECT MAX(id_remesa) FROM remesa)";
     try {
       remesa = (Remesa) sesion.createSQLQuery(query).addEntity(Remesa.class).uniqueResult();
       if (remesa != null) {
@@ -59,7 +59,7 @@ public class RemesaIMPL implements RemesaDAO {
   public Remesa obtenerUltimaRemesa() {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Remesa remesa;
-    String consulta = "SELECT * FROM remesa WHERE DATE(fecha_carga) = CURDATE() ORDER BY fecha_carga DESC LIMIT 1;";
+    String consulta = "SELECT * FROM remesa ORDER BY fecha_carga DESC LIMIT 1;";
     try {
       remesa = (Remesa) sesion.createSQLQuery(consulta).addEntity(Remesa.class).uniqueResult();
     } catch (HibernateException he) {

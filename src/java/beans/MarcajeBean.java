@@ -82,13 +82,13 @@ public class MarcajeBean implements Serializable {
   }
 
   // METODO QUE OBTIENE LAS LISTAS CON LOS CREDITOS MARCADOS
-  public final void obtenerListas() {
+  private void obtenerListas() {
     tipoImpresion = Arrays.asList("CORREO ORDINARIO", "VISITA DOMICILIARIA", "CORREO ELECTRONICO");
     listaMarcajes = marcajeDao.buscarTodos();
   }
 
   // METODO QUE BUSCA LOS PERIODOS DE IMPRESION
-  public final void obtenerPeriodos() {
+  private void obtenerPeriodos() {
     // CORREO SEPOMEX
     try {
       String cadena = ManejadorArchivosDeTexto.leerArchivo(Directorios.RUTA_WINDOWS_PERIODO_IMPRESIONES, "CORREO_ORDINARIO.txt");

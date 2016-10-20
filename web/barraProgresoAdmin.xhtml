@@ -2,17 +2,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
-      xmlns="http://www.w3.org/1999/xhtml">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <meta charset="utf-8"></meta>
   </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('barra progreso administrativo')}" type="preRenderView" />
+  </f:metadata>
   <h:body>
     <div class="padding-md">
       <div class="row">
         <div class="col-sm-6 col-md-3">
           <div class="panel-stat3 bg-danger">
             <h2 class="m-top-none" id="userCount">
-                <p:outputLabel id="creditos1" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.calcularCreditos()}" />
+              <p:outputLabel style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.creditosActivos}" />
             </h2>
             <h5>Cuentas en gesti&oacute;n</h5>
             <div class="stat-icon">
@@ -25,14 +29,14 @@
         </div><!-- /.col -->
         <div class="col-sm-6 col-md-3">
           <div class="panel-stat3 bg-info">
-                <h2 class="m-top-none">
-                  <span id="serverloadCount">
-              <p:outputLabel id="creditos2" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.calcularVisitas()}" />
+            <h2 class="m-top-none">
+              <span id="serverloadCount">
+                <p:outputLabel style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.visitasDomiciliarias}" />
               </span>
-                </h2>
+            </h2>
             <h5>Visitas domiciliarias</h5>
             <div class="stat-icon">
-              <i class="fa fa-envelope-o fa-3x"></i>
+              <i class="fa fa-location-arrow fa-3x"></i>
             </div>
             <div class="loading-overlay">
               <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
@@ -42,7 +46,7 @@
         <div class="col-sm-6 col-md-3">
           <div class="panel-stat3 bg-warning">
             <h2 class="m-top-none" id="orderCount">
-              <p:outputLabel id="creditos3" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.calcularPagosPorAprobar()}" />
+              <p:outputLabel style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.pagosPorAprobar}" />
             </h2>
             <h5>Pagos por aprobar</h5>
             <div class="stat-icon">
@@ -56,12 +60,76 @@
         <div class="col-sm-6 col-md-3">
           <div class="panel-stat3 bg-success">
             <h2 class="m-top-none" id="visitorCount">
-              <p:outputLabel id="creditos4" style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.calcularRecuperacion()}" />
+              <p:outputLabel style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.porcentajeRecuperacion}" />
             </h2>
-            <h5>Recuperaci&oacute;n</h5>
+            <h5>Recuperaci&oacute;n total</h5>
             <div class="stat-icon">
               <i class="fa fa-bar-chart-o fa-3x"></i>
-            </div>                                
+            </div>
+            <div class="loading-overlay">
+              <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+            </div>
+          </div>
+        </div><!-- /.col -->
+      </div>
+      <div class="row">
+        <div class="col-sm-6 col-md-3">
+          <div class="panel-stat3 bg-danger">
+            <h2 class="m-top-none" id="userCount">
+              <p:outputLabel style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.creditosQuebrantoPermanencia}" />
+            </h2>
+            <h5>Cuentas quebranto y permanencia</h5>
+            <div class="stat-icon">
+              <i class="fa fa-user fa-3x"></i>
+            </div>
+            <div class="loading-overlay">
+              <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+            </div>
+          </div>
+        </div><!-- /.col -->
+        <div class="col-sm-6 col-md-3">
+          <div class="panel-stat3 bg-info">
+            <h2 class="m-top-none">
+              <span id="serverloadCount">
+                <p:outputLabel style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.impresiones}" />
+              </span>
+            </h2>
+            <h5>Impresiones de visitas</h5>
+            <div class="stat-icon">
+              <i class="fa fa-envelope-o fa-3x"></i>
+            </div>
+            <div class="loading-overlay">
+              <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+            </div>
+          </div>
+        </div><!-- /.col -->
+        <div class="col-sm-6 col-md-3">
+          <div class="panel-stat3 bg-warning">
+            <h2 class="m-top-none" id="orderCount">
+              <p:outputLabel style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.montoPagosPorAprobar}">
+                <f:convertNumber pattern="¤#,###.00" currencySymbol="$" />
+              </p:outputLabel>
+            </h2>
+            <h5>Monto por aprobar</h5>
+            <div class="stat-icon">
+              <i class="fa fa-clock-o fa-3x"></i>
+            </div>
+            <div class="loading-overlay">
+              <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
+            </div>
+          </div>
+        </div><!-- /.col -->
+        <div class="col-sm-6 col-md-3">
+          <div class="panel-stat3 bg-success">
+            <h2 class="m-top-none" id="visitorCount">
+              <p:outputLabel style="font-family: 'Open Sans',sans-serif; font-weight: 700;" value="#{progresoAdminBean.montoRecuperacionQuincena}">
+                <f:convertNumber pattern="¤#,###.00" currencySymbol="$" />
+              </p:outputLabel>
+            </h2>
+            <h5>Monto recuperaci&oacute;n quincena</h5>
+            <div class="stat-icon">
+              <i class="fa fa-money fa-3x"></i>
+            </div>
             <div class="loading-overlay">
               <i class="loading-icon fa fa-refresh fa-spin fa-lg"></i>
             </div>

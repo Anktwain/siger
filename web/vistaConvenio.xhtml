@@ -69,7 +69,9 @@
                     <h:outputText value="#{c.fecha}"/>
                   </p:column>
                   <p:column headerText="Saldo negociado" style="width:150px;"> 
-                    <h:outputText value="#{c.saldoNegociado}"/>
+                    <h:outputText value="#{c.saldoNegociado}">
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
                   </p:column>
                   <p:column headerText="Pagos prometidos" style="width:150px;"> 
                     <h:outputText value="#{c.pagosNegociados  }"/>
@@ -84,14 +86,16 @@
                 <p:accordionPanel activeIndex="0" style="width:420px;">
                   <p:tab title="Promesas en este convenio">
                     <p:contextMenu for="promesasEnCurso" style="width:200px;">
-                      <p:menuitem value="Agregar pago" icon="ui-icon-folder-collapsed" actionListener="#{conveniosBean.inicializarMontoPago()}" oncomplete="PF('agregarPagoDialog').show();" update="agregarPagoForm" />
+                      <p:menuitem value="Agregar pago" icon="ui-icon-folder-collapsed" oncomplete="PF('agregarPagoDialog').show();" update="agregarPagoForm" />
                     </p:contextMenu>
                     <p:dataTable id="promesasEnCurso" var="promesa" value="#{conveniosBean.listaPromesas}" rowKey="#{promesa.idPromesaPago}" selection="#{conveniosBean.promesaSeleccionada}" emptyMessage="No existen promesas de pago." selectionMode="single" paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width:270px;" disabledSelection="#{!conveniosBean.habilitaCargaPagos()}">
-                      <p:column headerText="Fecha de pago" style="width:100px;">
+                      <p:column headerText="Fecha prometida" style="width:130px;">
                         <h:outputText value="#{promesa.fechaPrometida}"/>
                       </p:column>
-                      <p:column headerText="Saldo negociado" style="width:150px;"> 
-                        <h:outputText value="#{promesa.cantidadPrometida}"/>
+                      <p:column headerText="Saldo prometido" style="width:130px;"> 
+                        <h:outputText value="#{promesa.cantidadPrometida}">
+                          <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                        </h:outputText>
                       </p:column>
                     </p:dataTable>
                   </p:tab>
@@ -103,16 +107,18 @@
                   <p:column headerText="Fecha de deposito" style="width:100px;">
                     <h:outputText value="#{p.fechaDeposito}"/>
                   </p:column>
-                  <p:column headerText="Monto" style="width:100px;"> 
-                    <h:outputText value="#{p.montoPago}"/>
+                  <p:column headerText="Monto" style="width:100px;">
+                    <h:outputText value="#{p.montoPago}">
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                    </h:outputText>
                   </p:column>
-                  <p:column headerText="Revisor" style="width:100px;"> 
+                  <p:column headerText="Revisor" style="width:100px;">
                     <h:outputText value="#{p.revisor}"/>
                   </p:column>
-                  <p:column headerText="Observaciones" style="width:200px;"> 
+                  <p:column headerText="Observaciones" style="width:200px;">
                     <h:outputText value="#{p.observacionRevisor}"/>
                   </p:column>
-                  <p:column headerText="Estatus" style="width:100px;"> 
+                  <p:column headerText="Estatus" style="width:100px;">
                     <h:outputText value="#{conveniosBean.etiquetarEstatus(p.estatus)}"/>
                   </p:column>
                 </p:dataTable>
@@ -123,46 +129,48 @@
               <div class="pull-left">
                 <h3>Historial de convenios</h3>
                 <br />
-                <p:accordionPanel activeIndex="-1" style="width:510px;">
-                  <p:tab title="Historial">
-                    <p:dataTable id="historialConvenios" var="c" value="#{conveniosBean.listaHistorialConvenios}" emptyMessage="No existen otros convenios." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom"  style="width:470px;">
-                      <p:column headerText="Convenio" style="width:100px;">
-                        <h:outputText value="#{c.idConvenioPago}"/>
-                      </p:column>
-                      <p:column headerText="Fecha" style="width:100px;">
+                <p:accordionPanel activeIndex="-1" style="width:520px;">
+                  <p:tab title="Historial convenios">
+                    <p:dataTable id="historialConvenios" var="c" value="#{conveniosBean.listaHistorialConvenios}" emptyMessage="No existen otros convenios." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom"  style="width: 480px;">
+                      <p:column headerText="Fecha" style="width:90px;">
                         <h:outputText value="#{c.fecha}"/>
                       </p:column>
-                      <p:column headerText="Saldo negociado" style="width:150px;"> 
-                        <h:outputText value="#{c.saldoNegociado}"/>
+                      <p:column headerText="Saldo negociado" style="width:130px;">
+                        <h:outputText value="#{c.saldoConvenio}">
+                          <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                        </h:outputText>
                       </p:column>
-                      <p:column headerText="Pagos" style="width:100px;"> 
-                        <h:outputText value="#{c.pagosNegociados}"/>
+                      <p:column headerText="Pagos realizados" style="width:130px;">
+                        <h:outputText value="#{c.pagosConvenio}"/>
+                      </p:column>
+                      <p:column headerText="Estatus" style="width:90px;">
+                        <h:outputText value="#{c.cumplimiento}"/>
                       </p:column>
                     </p:dataTable>
                   </p:tab>
                 </p:accordionPanel>
               </div>
               <div class="pull-right">
-                <!-- TO DO: -->
-                <!-- reparar la consulta, puesto que trae todos los pagos no solo los de este crtedito -->
                 <h3>Historial de pagos</h3>
                 <br />
-                <p:accordionPanel activeIndex="-1" style="width:660px;">
-                  <p:tab title="Historial">
-                    <p:dataTable id="historialPagos" var="p" value="#{conveniosBean.listaHistorialPagos}" emptyMessage="No existen otros pagos." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom"  style="width:620px;">
-                      <p:column headerText="Convenio" style="width:100px;">
-                        <h:outputText value="#{p.promesaPago.convenioPago.idConvenioPago}"/>
-                      </p:column>
-                      <p:column headerText="Fecha deposito" style="width:130px;">
+                <p:accordionPanel activeIndex="-1" style="width:650px;">
+                  <p:tab title="Historial pagos">
+                    <p:dataTable id="historialPagos" var="p" value="#{conveniosBean.listaHistorialPagos}" emptyMessage="No existen otros pagos." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom"  style="width:610px;">
+                      <p:column headerText="Fecha deposito" style="width:120px;">
                         <h:outputText value="#{p.fechaDeposito}"/>
                       </p:column>
-                      <p:column headerText="Monto" style="width:100px;"> 
-                        <h:outputText value="#{p.montoAprobado}"/>
+                      <p:column headerText="Monto" style="width:100px;">
+                        <h:outputText value="#{p.montoAprobado}">
+                          <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                        </h:outputText>
                       </p:column>
-                      <p:column headerText="Revisor" style="width:100px;"> 
+                      <p:column headerText="Estatus" style="width:90px;">
+                        <h:outputText value="#{conveniosBean.etiquetarEstatus(p.estatus)}"/>
+                      </p:column>
+                      <p:column headerText="Revisor" style="width:90px;">
                         <h:outputText value="#{p.revisor}"/>
                       </p:column>
-                      <p:column headerText="Observaciones" style="width:180px;"> 
+                      <p:column headerText="Observaciones" style="width:180px;">
                         <h:outputText value="#{p.informacionRevision}"/>
                       </p:column>
                     </p:dataTable>

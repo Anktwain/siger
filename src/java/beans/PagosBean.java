@@ -369,7 +369,7 @@ public class PagosBean implements Serializable {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se envio el pago a revision. Contacte al equipo de sistemas."));
       Logs.log.error("No se pudo enviar pago a revision con el banco");
       Logs.log.error("Remitente: " + remitente + ", destinatario: " + destinatarios + ", cco: " + copia);
-      Logs.log.error(e.getStackTrace());
+      Logs.log.error(e.getMessage());
     } finally {
       RequestContext.getCurrentInstance().execute("PF('mailPagoDialog').hide()");
     }
@@ -400,6 +400,8 @@ public class PagosBean implements Serializable {
 
   // METODO QUE OBTIENE LA CONTRASEÑA DEL REMITENTE
   public String buscaP(String remitente) {
+    // BUG:
+    // proteger contraseñas
     String p = "";
     switch (remitente) {
       case "lilia.delrio@corporativodelrio.com":

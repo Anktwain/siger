@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns:h="http://xmlns.jcp.org/jsf/html" 
       xmlns:p="http://primefaces.org/ui" 
-      xmlns="http://www.w3.org/1999/xhtml">
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <meta charset="utf-8"></meta>
   </h:head>
@@ -16,25 +17,25 @@
         <li>
           <div class="value">
             <span>Gestiones hoy:</span>
-            <h4><p:outputLabel value="#{progresoAdminBean.gestionesHoy()}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></h4>
+            <h4><p:outputLabel value="#{progresoAdminBean.gestionesHoy}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></h4>
           </div>
         </li>
         <li>
           <div class="value">
-            <span>Saldo aprobado hoy:</span>
-            <h4>$<strong><p:outputLabel value="#{progresoAdminBean.saldoAprobadoHoy()}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></strong></h4>
+            <span>Monto depositos hoy:</span>
+            <h4>$<strong><p:outputLabel value="#{progresoAdminBean.montoPagosHoy}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></strong></h4>
           </div>
         </li>
         <li>
           <div class="value">
             <span>Gestor del d&iacute;a (Pagos):</span>
-            <h4><p:outputLabel value="#{progresoAdminBean.gestorDelDiaPagos()}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></h4>
+            <h4><p:outputLabel value="#{progresoAdminBean.gestorDelDiaPagos}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></h4>
           </div>
         </li>
         <li>
           <div class="value">
             <span>Gestor del d&iacute;a (Gestiones):</span>
-            <h4><p:outputLabel value="#{progresoAdminBean.gestorDelDiaGestiones()}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></h4>
+            <h4><p:outputLabel value="#{progresoAdminBean.gestorDelDiaGestiones}" style="font-family: 'Open Sans',sans-serif; font-weight: 400;" /></h4>
           </div>
         </li>
       </ul><!-- /page-stats -->

@@ -109,7 +109,7 @@ public class CuentasBean implements Serializable {
   }
 
   // METODO QUE OBTIENE LA LISTA DE CREDITOS Y DE CONCEPTOS DE DEVOLUCION
-  public final void obtenerListas() {
+  private void obtenerListas() {
     listaGestores = gestorDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     listaCampanas = campanaDao.buscarTodas();
     listaMarcajes = marcajeDao.buscarTodos();
@@ -251,13 +251,13 @@ public class CuentasBean implements Serializable {
     if (!colorSeleccionado.equals("0")) {
       switch (colorSeleccionado) {
         case "Verde":
-          consulta = consulta + " AND id_credito IN (SELECT DISTINCT id_credito FROM gestion WHERE DATE(fecha) >= DATE_SUB(CURDATE(), INTERVAL 3 DAY) AND id_tipo_gestion != 5)";
+          consulta = consulta + " AND id_credito IN (SELECT DISTINCT id_credito FROM gestion WHERE DATE(fecha) >= DATE_SUB(CURDATE(), INTERVAL 3 DAY))";
           break;
         case "Amarillo":
-          consulta = consulta + " AND id_credito IN (SELECT DISTINCT id_credito FROM gestion WHERE DATE(fecha) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND DATE(fecha) < DATE_SUB(CURDATE(), INTERVAL 3 DAY) AND id_tipo_gestion != 5)";
+          consulta = consulta + " AND id_credito IN (SELECT DISTINCT id_credito FROM gestion WHERE DATE(fecha) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND DATE(fecha) < DATE_SUB(CURDATE(), INTERVAL 3 DAY))";
           break;
         case "Rojo":
-          consulta = consulta + " AND id_credito NOT IN (SELECT DISTINCT id_credito FROM gestion WHERE DATE(fecha) > DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND id_tipo_gestion != 5)";
+          consulta = consulta + " AND id_credito NOT IN (SELECT DISTINCT id_credito FROM gestion WHERE DATE(fecha) > DATE_SUB(CURDATE(), INTERVAL 7 DAY))";
           break;
       }
     }

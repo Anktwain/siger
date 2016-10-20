@@ -32,4 +32,6 @@ public interface DevolucionDAO {
   
   public boolean esGestionable(int idCredito);
   
+  public boolean esReactivadoRemesaActual(int idCredito);
+  
 }

@@ -63,7 +63,7 @@ public class ListaVisitasBean implements Serializable {
   }
 
   // METODO QUE CARGA LAS LISTAS INICIALES
-  public final void obtenerListas() {
+  private void obtenerListas() {
     listaVisitas = ordenarVisitas(impresionDao.buscarPorTipoImpresion(Impresiones.VISITA_DOMICILIARIA, indexBean.getUsuario().getDespacho().getIdDespacho()));
     listaCorreo = impresionDao.buscarPorTipoImpresion(Impresiones.CORREO_ORDINARIO, indexBean.getUsuario().getDespacho().getIdDespacho());
     listaVisitasEstado = obtenerVisitasEstado();

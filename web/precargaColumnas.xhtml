@@ -1,0 +1,943 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Modulo de precarga</title>
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('precarga')}" type="preRenderView" />
+  </f:metadata>
+  <h:body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none"></div>
+    <ui:include src="barraSuperior.xhtml" />
+    <ui:include src="barraLateral.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li>
+            <i class="fa fa-upload">
+            </i>
+            <a href="precarga.xhtml">Precarga</a>
+          </li>
+          <li class="active">
+            Seleccion de columnas
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-12">
+        <h:form id="columnasPrecargaForm">
+          <br />
+          <h4>
+            Por favor indique la letra de la columna en la cual se encuentran los datos y el numero de la hoja donde se encuentra la columna.
+            <br />
+            <br />
+            Se ha llenado el formulario con los datos habituales, sin embargo debera revisarlos para evitar cualquier error.
+            <br />
+            <br />
+            En caso de que una columna no se encuentre en el archivo, quitar la marca en el campo activo.
+          </h4>
+          <br />
+          <div align="center">
+            <h3>
+              Hoja de datos del credito
+            </h3>
+          </div>
+          <p:panelGrid columns="6">
+            <h:outputText value="Activo" style="font-weight: bolder;" />
+            <h:outputText value="Nombre del campo" style="font-weight: bolder;" />
+            <h:outputText value="Hoja" style="font-weight: bolder;" />
+            <h:outputText value="Columna" style="font-weight: bolder;" />
+            <h:outputText value="Longitud" style="font-weight: bolder;" />
+            <h:outputText value="Tipo" style="font-weight: bolder;" />
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[0].activo}" />
+            <h:outputText value="#{precargaBean.columnas[0].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[0].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[0].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[0].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[0].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[1].activo}" />
+            <h:outputText value="#{precargaBean.columnas[1].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[1].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[1].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[1].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[1].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[2].activo}" />
+            <h:outputText value="#{precargaBean.columnas[2].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[2].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[2].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[2].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[2].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[3].activo}" />
+            <h:outputText value="#{precargaBean.columnas[3].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[3].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[3].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[3].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[3].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[4].activo}" />
+            <h:outputText value="#{precargaBean.columnas[4].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[4].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[4].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[4].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[4].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[5].activo}" />
+            <h:outputText value="#{precargaBean.columnas[5].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[5].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[5].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[5].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[5].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[6].activo}" />
+            <h:outputText value="#{precargaBean.columnas[6].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[6].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[6].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[7].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[7].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[7].activo}" />
+            <h:outputText value="#{precargaBean.columnas[7].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[7].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[7].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[7].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[7].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[8].activo}" />
+            <h:outputText value="#{precargaBean.columnas[8].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[8].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnas[8].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[8].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[8].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[9].activo}" />
+            <h:outputText value="#{precargaBean.columnas[9].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[9].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[9].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[9].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[9].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[10].activo}" />
+            <h:outputText value="#{precargaBean.columnas[10].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[10].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[10].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[10].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[10].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[11].activo}" />
+            <h:outputText value="#{precargaBean.columnas[11].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[11].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[11].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[11].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[11].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[12].activo}" />
+            <h:outputText value="#{precargaBean.columnas[12].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[12].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[12].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[12].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[12].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[13].activo}" />
+            <h:outputText value="#{precargaBean.columnas[13].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[13].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[13].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[13].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[13].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[14].activo}" />
+            <h:outputText value="#{precargaBean.columnas[14].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[14].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[14].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[14].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[14].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[15].activo}" />
+            <h:outputText value="#{precargaBean.columnas[15].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[15].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[15].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[15].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[15].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[16].activo}" />
+            <h:outputText value="#{precargaBean.columnas[16].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[16].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[16].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[16].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[16].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+          </p:panelGrid>
+          <br />
+          <div align="center">
+            <h3>
+              Respuesta de Telmex&reg;
+            </h3>
+          </div>
+          <p:panelGrid columns="6">
+            <h:outputText value="Activo" style="font-weight: bolder;" />
+            <h:outputText value="Nombre del campo" style="font-weight: bolder;" />
+            <h:outputText value="Hoja" style="font-weight: bolder;" />
+            <h:outputText value="Columna" style="font-weight: bolder;" />
+            <h:outputText value="Longitud" style="font-weight: bolder;" />
+            <h:outputText value="Tipo" style="font-weight: bolder;" />
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[0].activo}" />
+            <h:outputText value="Respuesta Enero" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[0].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[0].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[0].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[0].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[1].activo}" />
+            <h:outputText value="Monto Enero" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[1].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[1].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[1].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[1].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[2].activo}" />
+            <h:outputText value="Respuesta Febrero" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[2].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[2].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[2].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[2].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[3].activo}" />
+            <h:outputText value="Monto Febrero" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[3].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[3].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[3].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[3].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[4].activo}" />
+            <h:outputText value="Respuesta Marzo" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[4].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[4].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[4].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[4].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[5].activo}" />
+            <h:outputText value="Monto Marzo" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[5].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[5].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[5].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[5].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[6].activo}" />
+            <h:outputText value="Respuesta Abril" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[6].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[6].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[6].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[6].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[7].activo}" />
+            <h:outputText value="Monto Abril" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[7].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[7].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[7].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[7].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[8].activo}" />
+            <h:outputText value="Respuesta Mayo" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[8].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[8].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[8].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[8].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[9].activo}" />
+            <h:outputText value="Monto Mayo" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[9].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[9].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[9].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[9].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[10].activo}" />
+            <h:outputText value="Respuesta Junio" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[10].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[10].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[10].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[10].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[11].activo}" />
+            <h:outputText value="Monto Junio" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[11].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[11].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[11].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[11].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[12].activo}" />
+            <h:outputText value="Respuesta Julio" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[12].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[12].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[12].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[12].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[13].activo}" />
+            <h:outputText value="Monto Julio" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[13].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[13].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[13].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[13].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[14].activo}" />
+            <h:outputText value="Respuesta Agosto" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[14].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[14].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[14].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[14].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[15].activo}" />
+            <h:outputText value="Monto Agosto" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[15].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[15].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[15].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[15].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[16].activo}" />
+            <h:outputText value="Respuesta Septiembre" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[16].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[16].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[16].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[16].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[17].activo}" />
+            <h:outputText value="Monto Septiembre" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[17].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[17].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[17].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[17].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[18].activo}" />
+            <h:outputText value="Respuesta Octubre" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[18].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[18].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[18].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[18].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[19].activo}" />
+            <h:outputText value="Monto Octubre" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[19].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[19].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[19].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[19].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[20].activo}" />
+            <h:outputText value="Respuesta Noviembre" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[20].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[20].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[20].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[20].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[21].activo}" />
+            <h:outputText value="Monto Noviembre" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[21].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[21].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[21].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[21].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[22].activo}" />
+            <h:outputText value="Respuesta Diciembre" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[22].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[22].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[22].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[22].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasFac[23].activo}" />
+            <h:outputText value="Monto Diciembre" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[23].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[23].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasFac[23].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasFac[23].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+          </p:panelGrid>
+          <br />
+          <div align="center">
+            <h3>
+              Ajustes de Telmex&reg;
+            </h3>
+          </div>
+          <p:panelGrid columns="6">
+            <h:outputText value="Activo" style="font-weight: bolder;" />
+            <h:outputText value="Nombre del campo" style="font-weight: bolder;" />
+            <h:outputText value="Hoja" style="font-weight: bolder;" />
+            <h:outputText value="Columna" style="font-weight: bolder;" />
+            <h:outputText value="Longitud" style="font-weight: bolder;" />
+            <h:outputText value="Tipo" style="font-weight: bolder;" />
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasAjustes[0].activo}" />
+            <h:outputText value="Ajustes Actuales" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasAjustes[0].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasAjustes[0].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasAjustes[0].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasAjustes[0].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnasAjustes[0].activo}" />
+            <h:outputText value="Ajustes Anteriores" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasAjustes[1].columna}" />
+            <p:selectOneMenu value="#{precargaBean.columnasAjustes[1].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnasAjustes[0].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnasAjustes[0].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+          </p:panelGrid>
+          <hr />
+          <div align="center">
+            <h3>
+              Hoja de datos de contacto
+            </h3>
+          </div>
+          <p:panelGrid columns="6">
+            <h:outputText value="Activo" style="font-weight: bolder;" />
+            <h:outputText value="Nombre del campo" style="font-weight: bolder;" />
+            <h:outputText value="Hoja" style="font-weight: bolder;" />
+            <h:outputText value="Columna" style="font-weight: bolder;" />
+            <h:outputText value="Longitud" style="font-weight: bolder;" />
+            <h:outputText value="Tipo" style="font-weight: bolder;" />
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[17].activo}" />
+            <h:outputText value="#{precargaBean.columnas[17].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[17].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[17].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[17].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[17].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[18].activo}" />
+            <h:outputText value="#{precargaBean.columnas[18].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[18].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[18].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[18].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[18].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[19].activo}" />
+            <h:outputText value="#{precargaBean.columnas[19].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[19].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[19].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[19].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[19].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[20].activo}" />
+            <h:outputText value="#{precargaBean.columnas[20].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[20].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[20].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[20].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[20].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[21].activo}" />
+            <h:outputText value="#{precargaBean.columnas[21].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[21].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[21].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[21].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[21].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[22].activo}" />
+            <h:outputText value="#{precargaBean.columnas[22].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[22].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[22].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[22].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[22].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[23].activo}" />
+            <h:outputText value="#{precargaBean.columnas[23].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[23].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[23].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[23].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[23].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[24].activo}" />
+            <h:outputText value="#{precargaBean.columnas[24].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[24].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[24].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[24].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[24].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[25].activo}" />
+            <h:outputText value="#{precargaBean.columnas[25].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[25].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[25].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[25].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[25].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[26].activo}" />
+            <h:outputText value="#{precargaBean.columnas[26].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[26].columna}" required="true" requiredMessage="Debe indicar una columna de excel." />
+            <p:selectOneMenu value="#{precargaBean.columnas[26].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[26].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[26].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+          </p:panelGrid>
+          <hr />
+          <div align="center">
+            <h3>
+              Hoja de datos de referencias
+            </h3>
+          </div>
+          <p:panelGrid columns="6">
+            <h:outputText value="Activo" style="font-weight: bolder;" />
+            <h:outputText value="Nombre del campo" style="font-weight: bolder;" />
+            <h:outputText value="Hoja" style="font-weight: bolder;" />
+            <h:outputText value="Columna" style="font-weight: bolder;" />
+            <h:outputText value="Longitud" style="font-weight: bolder;" />
+            <h:outputText value="Tipo" style="font-weight: bolder;" />
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[27].activo}" />
+            <h:outputText value="#{precargaBean.columnas[27].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[27].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[27].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[27].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[27].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[28].activo}" />
+            <h:outputText value="#{precargaBean.columnas[28].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[28].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[28].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[28].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[28].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+            <p:selectBooleanCheckbox value="#{precargaBean.columnas[29].activo}" />
+            <h:outputText value="#{precargaBean.columnas[29].nombre}" />
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[29].columna}" required="true" requiredMessage="Debe indicar una columna de excel."/>
+            <p:selectOneMenu value="#{precargaBean.columnas[29].hoja}">
+              <f:selectItem itemLabel="1" itemValue="1" />
+              <f:selectItem itemLabel="2" itemValue="2" />
+              <f:selectItem itemLabel="3" itemValue="3" />
+            </p:selectOneMenu>
+            <p:inputText size="3" maxlength="2" value="#{precargaBean.columnas[29].longitud}" required="true" requiredMessage="Debe indicar una longitud para el dato." />
+            <p:selectOneMenu value="#{precargaBean.columnas[29].tipo}">
+              <f:selectItem itemLabel="Texto" itemValue="1" />
+              <f:selectItem itemLabel="Numerico" itemValue="2" />
+              <f:selectItem itemLabel="Fecha" itemValue="3" />
+            </p:selectOneMenu>
+          </p:panelGrid>
+          <br />
+          <br />
+          <div align="center">
+            <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{precargaBean.procesarColumnas()}" update=":growl" />
+          </div>
+          <br />
+          <br />
+        </h:form>
+      </div>
+    </div>
+    <!-- DIALOGO PARA ELEGIR EL TIPO DE PRECARGA -->
+    <p:dialog widgetVar="dialogoSelectorPrecarga" modal="true" draggable="false" closable="false" resizable="false" header="Seleccione el tipo de carga">
+      <h:form id="tipoPrecargaForm">
+        Por favor seleccione el tipo de carga de la que se trata.
+        <br />
+        <br />
+        Una vez seleccionado, se procedera automaticamente con la generacion del archivo.
+        <br />
+        <br />
+        <div align="center">
+          <p:selectOneMenu id="tipoCarga" value="#{precargaBean.idTipoSeleccionado}" style="width:200px" required="true" requiredMessage="Seleccione el tipo de carga">
+            <f:selectItem itemLabel="" itemValue="0" />
+            <f:selectItems value="#{precargaBean.listaTipos}" var="tipoCarga" itemLabel="#{tipoCarga.tipo}" itemValue="#{tipoCarga.id}" />
+            <p:ajax event="change" listener="#{precargaBean.selectorPrecarga()}" update=":growl" />
+          </p:selectOneMenu>
+        </div>
+      </h:form>
+    </p:dialog>
+    <!-- DIALOGO BARRA DE CARGA -->
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+      <p:outputLabel value="Espere por favor..."/>
+      <br />
+      <div align="center">
+        <p:graphicImage library="img" name="loadingBarra.gif" />
+      </div>
+    </p:dialog>
+  </h:body>
+</html>

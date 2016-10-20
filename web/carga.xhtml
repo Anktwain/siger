@@ -261,7 +261,7 @@
 
                           <h:outputText value="Total monto:" />
                           <h:outputText value="#{vistaCarga.asignacionActual.montoTotal}">
-                            <f:convertNumber type="currency" currencySymbol="$" />
+                            <f:convertNumber locale="es-MX" type="currency" currencySymbol="$" />
                           </h:outputText>
 
                         </p:panelGrid>
@@ -278,7 +278,7 @@
                           </p:column>
                           <p:column headerText="Saldo vencido">
                             <h:outputText id="lblSaldoVencido" value="#{asignada.saldoVencidoFloat}">
-                              <f:convertNumber type="currency" currencySymbol="$" />
+                              <f:convertNumber locale="es-MX" type="currency" currencySymbol="$" />
                             </h:outputText>
                           </p:column>
                         </p:dataTable>
@@ -302,7 +302,7 @@
                         </p:column>
                         <p:column headerText="Monto total">
                           <h:outputText id="lblMonto" value="#{participante.montoTotal}">
-                            <f:convertNumber type="currency" currencySymbol="$" />
+                            <f:convertNumber locale="es-MX" type="currency" currencySymbol="$" />
                           </h:outputText>
                         </p:column>
                       </p:dataTable>
@@ -459,12 +459,12 @@
 
           <h:outputText value="Monto:" />
           <h:outputText value="#{vistaCarga.creditoActual.disposicionFloat}">
-            <f:convertNumber type="currency" currencySymbol="$" />
+            <f:convertNumber locale="es-MX" type="currency" currencySymbol="$" />
           </h:outputText>
 
           <h:outputText value="Saldo a recuperar:" />
           <h:outputText value="#{vistaCarga.creditoActual.saldoVencidoFloat}">
-            <f:convertNumber type="currency" currencySymbol="$" />
+            <f:convertNumber locale="es-MX" type="currency" currencySymbol="$" />
           </h:outputText>
 
           <h:outputText value="Reasignar:" />

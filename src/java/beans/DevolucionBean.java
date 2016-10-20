@@ -5,12 +5,17 @@
  */
 package beans;
 
+import dao.CreditoDAO;
 import dao.DevolucionDAO;
 import dao.HistorialDAO;
+import dao.MarcajeDAO;
+import dto.Credito;
 import dto.Devolucion;
 import dto.Historial;
+import impl.CreditoIMPL;
 import impl.DevolucionIMPL;
 import impl.HistorialIMPL;
+import impl.MarcajeIMPL;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +26,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import util.constantes.Devoluciones;
+import util.constantes.Marcajes;
 
 /**
  *
@@ -37,6 +43,8 @@ public class DevolucionBean implements Serializable {
   // VARIABLES DE CLASE
   private final DevolucionDAO devolucionDao;
   private final HistorialDAO historialDao;
+  private final CreditoDAO creditoDao;
+  private final MarcajeDAO marcajeDao;
   public List<Devolucion> retiradosSeleccionados;
   public List<Devolucion> bandejaSeleccionados;
   public List<Devolucion> devolucionesSeleccionadas;
@@ -50,6 +58,8 @@ public class DevolucionBean implements Serializable {
   public DevolucionBean() {
     devolucionDao = new DevolucionIMPL();
     historialDao = new HistorialIMPL();
+    creditoDao = new CreditoIMPL();
+    marcajeDao = new MarcajeIMPL();
     retiradosSeleccionados = new ArrayList<>();
     bandejaSeleccionados = new ArrayList<>();
     devolucionesSeleccionadas = new ArrayList<>();
@@ -160,8 +170,34 @@ public class DevolucionBean implements Serializable {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
     }
   }
+  
+  // METODO PARA DARLE A UNA CUENTA EL ESTATUS DE PERMANENCIA, ESTO IMPLICA QUE NO SE COMPARARA EN LAS SIGUIENTES REMESAS
+  public void activarPermanencia(){
+    int tam = devolucionesSeleccionadas.size();
+    if ((!devolucionesSeleccionadas.isEmpty()) && (tam >= 1)) {
+      boolean ok = true;
+      for (int i = 0; i < tam; i++) {
+        Devolucion devolucion = devolucionDao.buscarDevolucionPorNumeroCredito(devolucionesSeleccionadas.get(i).getCredito().getNumeroCredito());
+        Historial h = new Historial();
+        h.setCredito(devolucion.getCredito());
+        h.setEvento("El administrador: " + admin + ", solicito la permanencia del credito");
+        h.setFecha(new Date());
+        Credito c = devolucion.getCredito();
+        c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.PERMANENCIA));
+        ok = devolucionDao.eliminar(devolucion) && historialDao.insertar(h) && creditoDao.editar(c);
+      }
+      if (ok) {
+        obtenerListas();
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se activo la permanencia de los creditos seleccionados"));
+      } else {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se logro activar la permanencia de los creditos. Contacte con el administrador de base de datos"));
+      }
+    } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
+    }
+  }
 
-  public final void obtenerListas() {
+  private void obtenerListas() {
     // OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION
     listaDevoluciones = devolucionDao.bandejaDevolucionPorDespacho(idDespacho);
     // OBTENER LOS CREDITOS PENDIENTES O EN ESPERA DE CONSERVACION

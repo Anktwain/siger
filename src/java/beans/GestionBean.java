@@ -36,6 +36,7 @@ import impl.MarcajeIMPL;
 import impl.QuienGestionIMPL;
 import impl.TipoGestionIMPL;
 import impl.TipoQuienGestionIMPL;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,6 +48,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.constantes.Marcajes;
+import util.log.Logs;
 
 /**
  *
@@ -169,7 +171,7 @@ public class GestionBean implements Serializable {
       sujetoSeleccionado = quienGestionDao.buscarPorId(89);
       preparaEstatus();
     }
-    if(listaTipoSujetos.size()==1){
+    if (listaTipoSujetos.size() == 1) {
       tipoSujetoSeleccionado = listaTipoSujetos.get(0);
       preparaSujetos();
     }
@@ -291,6 +293,12 @@ public class GestionBean implements Serializable {
                 estatusPosibles.add(estatusInformativoDao.buscar(2));
                 break;
             }
+            break;
+          case 9:
+            estatusPosibles.add(estatusInformativoDao.buscar(13));
+            break;
+          case 10:
+            estatusPosibles.add(estatusInformativoDao.buscar(6));
             break;
         }
         break;
@@ -414,10 +422,22 @@ public class GestionBean implements Serializable {
     ok = ok & gestionDao.insertarGestion(nueva);
     if (ok) {
       limpiarCampos();
-      RequestContext.getCurrentInstance().update("@all");
-      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se guardo la gestion: "));
+      recargar();
     } else {
+      Logs.log.error("No se guardo la gestion para el credito " + creditoActual.getNumeroCredito());
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se guardo la gestion. Contacte al equipo de sistemas."));
+    }
+  }
+
+  // METODO QUE RECARGA LA PAGINA EN SU TOTALIDAD
+  public void recargar() {
+    String vista = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+    vista = vista.replace("/", "");
+    try {
+      FacesContext.getCurrentInstance().getExternalContext().redirect(vista);
+    } catch (IOException ioe) {
+      Logs.log.error("No se pudo redirigir a la vista del credito despues de la gestion.");
+      Logs.log.error(ioe);
     }
   }
 
@@ -440,12 +460,14 @@ public class GestionBean implements Serializable {
 
   // METODO QUE VERIFICA SI LA GESTION QUITA EL MARCAJE A LAS CUENTAS
   public boolean verificaMarcaje() {
+    System.out.println("ENTRO AL AREA DE VERIFICACION DE MARCAJE");
     boolean ok = false;
     // AREA DE APAGADO DE MARCAJE
     Credito c = creditoActual;
     switch (creditoActual.getMarcaje().getIdMarcaje()) {
       // CORREO ORDINARIO
       case 1:
+        System.out.println("MARCAJE ACTUAL 1");
         if (descripcionSeleccionada.getAbreviatura().equals("4CADE")) {
           c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
@@ -453,6 +475,7 @@ public class GestionBean implements Serializable {
         break;
       // TELEGRAMA
       case 2:
+        System.out.println("MARCAJE ACTUAL 2");
         if ((descripcionSeleccionada.getAbreviatura().equals("3CETE")) || (descripcionSeleccionada.getAbreviatura().equals("21TELE3"))) {
           c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
@@ -460,6 +483,7 @@ public class GestionBean implements Serializable {
         break;
       // VISITA
       case 3:
+        System.out.println("MARCAJE ACTUAL 3");
         if (nueva.getTipoGestion().getIdTipoGestion() == 1) {
           c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
@@ -467,6 +491,7 @@ public class GestionBean implements Serializable {
         break;
       // CORREO ELECTRONICO
       case 4:
+        System.out.println("MARCAJE ACTUAL 4");
         if (descripcionSeleccionada.getAbreviatura().equals("2COEL")) {
           c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
@@ -474,13 +499,19 @@ public class GestionBean implements Serializable {
         break;
       // LOCALIZACION
       case 5:
+        System.out.println("MARCAJE ACTUAL 5");
         if (((descripcionSeleccionada.getAbreviatura().contains("POSI")) && (tipoSeleccionado.getIdTipoGestion() == (1 | 2))) || (descripcionSeleccionada.getAbreviatura().equals("2SISB"))) {
           c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
+        } else if (tipoSeleccionado.getIdTipoGestion() == 1) {
+          c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
+          ok = creditoDao.editar(c);
         }
+        verificarLocalizacion();
         break;
       // INFORMACION DEL BANCO
       case 6:
+        System.out.println("MARCAJE ACTUAL 6");
         if (descripcionSeleccionada.getAbreviatura().equals("4CIAB")) {
           c.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
           ok = creditoDao.editar(c);
@@ -488,6 +519,7 @@ public class GestionBean implements Serializable {
         break;
       // PROXIMAMENTE CASO WHATSAPP
       default:
+        System.out.println("MARCAJE ACTUAL " + creditoActual.getMarcaje().getIdMarcaje());
         ok = true;
     }
     // AREA DE ENCENDIDO DE MARCAJE
@@ -534,6 +566,7 @@ public class GestionBean implements Serializable {
     return (ok & (creditoDao.editar(c)));
   }
 
+  // METODO QUE LIMPIA LOS CAMPOS DE LA GESTION
   public void limpiarCampos() {
     listaTipos = tipoGestionDao.buscarTodo();
     listaDonde = new ArrayList();
@@ -544,6 +577,17 @@ public class GestionBean implements Serializable {
     listaEstatus = new ArrayList();
     gestion = "";
     RequestContext.getCurrentInstance().update("formNuevaGestion");
+  }
+
+  // METODO QUE VERIFICA EL TIEMPO DE ENCENDIDO DEL MARCAJE DE LOCALIZACION
+  // ESTE METODO SE CREA A PETICION DEL AREA ADMINISTRATIVA, YA QUE EN LAS REGLAS DE NEGOCIO NO ESTA CONTEMPLADO
+  // SE APAGARA EL MARCAJE DE LOCALIZACION SI LA ULTIMA GESTION QUE ENCIENDE LOCALIZACION TIENE MAS DE 25 DIAS
+  public void verificarLocalizacion() {
+    int dias = gestionDao.contarDiasGestionLocalizacion(creditoActual.getIdCredito()).intValue();
+    if (dias >= 25) {
+      creditoActual.setMarcaje(marcajeDao.buscarMarcajePorId(Marcajes.SIN_MARCAJE));
+      Logs.log.info("Se apago el marcaje de localizacion para el credito " + creditoActual.getNumeroCredito());
+    }
   }
 
   // ***********************************************************************************************************************

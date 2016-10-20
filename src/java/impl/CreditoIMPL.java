@@ -53,7 +53,7 @@ public class CreditoIMPL implements CreditoDAO {
   public Number contarCreditosActivos(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number creditos;
-    String consulta = "SELECT COUNT(*) FROM credito c WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ") AND c.id_despacho = " + idDespacho + " ORDER BY numero_credito ASC;";
+    String consulta = "SELECT COUNT(*) FROM credito c WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ") AND c.id_despacho = " + idDespacho + ";";
     try {
       creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
     } catch (HibernateException he) {
@@ -323,7 +323,7 @@ public class CreditoIMPL implements CreditoDAO {
   public List<Credito> buscarCreditosPorGestor(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Credito> creditos;
-    String consulta = "SELECT * FROM credito WHERE id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ");";
+    String consulta = "SELECT * FROM credito WHERE id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + idUsuario + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE id_devolucion IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "));";
     try {
       creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
     } catch (HibernateException he) {
@@ -554,6 +554,22 @@ public class CreditoIMPL implements CreditoDAO {
       cerrar(sesion);
     }
     return ok;
+  }
+
+  @Override
+  public Number contarCreditosQuebrantoPermanencia(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number creditos;
+    String consulta = "SELECT COUNT(*) FROM credito c WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ") AND c.id_despacho = " + idDespacho + " AND id_marcaje IN (" + Marcajes.QUEBRANTO + ", " + Marcajes.PERMANENCIA + ");";
+    try {
+      creditos = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      creditos = -1;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
   }
 
   private void cerrar(Session sesion) {

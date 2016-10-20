@@ -87,7 +87,7 @@ public class InstitucionesBean implements Serializable {
   }
 
   // METODO QUE CARGA LAS LISTAS PARA PODER ACTUALIZARLAS
-  public final void cargarListas() {
+  private void cargarListas() {
     listaInstituciones = institucionDao.buscarTodo();
   }
 

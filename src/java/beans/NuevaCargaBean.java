@@ -10,6 +10,7 @@ import dto.Remesa;
 import dto.carga.ConteoCredito;
 import dto.carga.FilaCreditoClasificado;
 import dto.carga.FilaCreditoExcel;
+import dto.carga.TipoRemesa;
 import impl.RemesaIMPL;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -30,9 +32,11 @@ import javax.faces.view.ViewScoped;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
-import util.Carga.ComparadorCreditos;
-import util.Carga.LectorArchivoCreditosExcel;
+import util.carga.ComparadorCreditos;
+import util.carga.LectorArchivoCreditosExcel;
 import util.MD5;
+import util.constantes.Directorios;
+import util.constantes.TipoRemesas;
 import util.log.Logs;
 
 /**
@@ -55,10 +59,10 @@ public class NuevaCargaBean implements Serializable {
   private float saldoVencido;
   private String pswd;
   private String creditosEncontrados;
-  private String tipoSeleccionado;
+  private int idTipoSeleccionado;
   private UploadedFile archivo;
   private List<ConteoCredito> listaCreditosClasificados;
-  private List<String> listaTipos;
+  private List<TipoRemesa> listaTipos;
   private static FilaCreditoClasificado creditosClasificados;
   private static List<FilaCreditoExcel> filas;
   private static String ruta;
@@ -66,7 +70,21 @@ public class NuevaCargaBean implements Serializable {
 
   // CONSTRUCTOR
   public NuevaCargaBean() {
+    listaTipos = new ArrayList();
     remesaDao = new RemesaIMPL();
+    obtenerListas();
+  }
+
+  // METODO QUE OBTIENE LA LISTA DE TIPOS DE CARGA
+  private void obtenerListas() {
+    List<String> tipos = Arrays.asList("Asignacion Mensual", "Asignacion Complementaria", "Asignacion Quebranto");
+    List<Integer> ids = Arrays.asList(TipoRemesas.ASIGNACION_MENSUAL, TipoRemesas.ASIGNACION_COMPLEMENTARIA, TipoRemesas.ASIGNACION_QUEBRANTO);
+    for (int i = 0; i < (tipos.size()); i++) {
+      TipoRemesa tr = new TipoRemesa();
+      tr.setId(ids.get(i));
+      tr.setTipo(tipos.get(i));
+      listaTipos.add(tr);
+    }
   }
 
   // METODO AUXILIAR QUE OBTIENE EL ARCHIVO
@@ -82,7 +100,7 @@ public class NuevaCargaBean implements Serializable {
     String extension = archivo.getFileName().substring(archivo.getFileName().indexOf(".")).toLowerCase();
     ruta = "Remesa" + "_" + df.format(new Date()) + extension;
     ruta = ruta.replace(" ", "-");
-    ruta = "C:\\cargasDePruebaNuevoSiger\\" + ruta;
+    ruta = Directorios.RUTA_WINDOWS_CARGA_REMESA + ruta;
     bytes = archivo.getContents();
     BufferedOutputStream stream;
     try {
@@ -90,20 +108,26 @@ public class NuevaCargaBean implements Serializable {
       stream.write(bytes);
       Logs.log.info("Se carga archivo de remesa al servidor: " + ruta);
       leyendaCargaExitosa = true;
-      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se cargo archivo en el sistema."));
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se cargo archivo al servidor."));
     } catch (FileNotFoundException fnfe) {
       Logs.log.error("No se cargo el archivo al servidor.");
       Logs.log.error(ruta);
-      Logs.log.error(fnfe.getStackTrace());
+      Logs.log.error(fnfe.getMessage());
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se cargo el archivo. Contacte al equipo de sistemas."));
     } catch (IOException ioe) {
       Logs.log.error("No se cargo el archivo al servidor.");
       Logs.log.error(ruta);
-      Logs.log.error(ioe.getStackTrace());
+      Logs.log.error(ioe.getMessage());
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se cargo el archivo. Contacte al equipo de sistemas."));
     }
   }
 
+  // METODO QUE GUARDA EL VALOR SELECCIONADO DEL TIPO DE REMESA
+  public void guardarTipo() {
+    
+    System.out.println(idTipoSeleccionado);
+  }
+  
   // METODO QUE HACE LA LECTURA DEL ARCHIVO DE EXCEL
   public void validarCreditos() {
     leyendaCargaExitosa = true;
@@ -114,44 +138,67 @@ public class NuevaCargaBean implements Serializable {
 
   // METODO QUE HABILITA LA VISUALIZACION DE LA TABLA DE CLASIFICACION DE CREDITOS
   public void mostrarClasificacion() {
+    System.out.println("TIPO SELECCIONADO");
+    System.out.println(idTipoSeleccionado);
     leyendaCargaExitosa = true;
     leyendaValidacionExitosa = true;
     leyendaConteoExitoso = true;
     listaCreditosClasificados = new ArrayList();
-    ComparadorCreditos comparador = new ComparadorCreditos();
-    creditosClasificados = comparador.compararCreditos(filas);
-    ConteoCredito cc = new ConteoCredito();
-    cc.setTipoCredito("Creditos en gestion (Estan en la fiesta).");
-    cc.setCantidad(creditosClasificados.getCreditosEnGestion());
-    listaCreditosClasificados.add(cc);
-    cc = new ConteoCredito();
-    cc.setTipoCredito("Creditos reasignados (Regresan a la fiesta).");
-    cc.setCantidad(creditosClasificados.getReasignados().size());
-    listaCreditosClasificados.add(cc);
-    cc = new ConteoCredito();
-    cc.setTipoCredito("Creditos conservados (Siguen en la fiesta)");
-    cc.setCantidad(creditosClasificados.getConservados().size());
-    listaCreditosClasificados.add(cc);
-    cc = new ConteoCredito();
-    cc.setTipoCredito("Nuevos creditos (Con invitado en la fiesta)");
-    cc.setCantidad(creditosClasificados.getNuevosCreditos().size());
-    listaCreditosClasificados.add(cc);
-    cc = new ConteoCredito();
-    cc.setTipoCredito("Nuevos totales (Nuevos en la fiesta)");
-    cc.setCantidad(creditosClasificados.getNuevosTotales().size());
-    listaCreditosClasificados.add(cc);
-    cc = new ConteoCredito();
-    cc.setTipoCredito("Creditos retirados (Se van de la fiesta)");
-    cc.setCantidad(creditosClasificados.getRetirados().size());
-    listaCreditosClasificados.add(cc);
-    cc = new ConteoCredito();
-    cc.setTipoCredito("Total de creditos en gestion despues de carga");
-    cc.setCantidad(creditosClasificados.getConservados().size() + creditosClasificados.getReasignados().size() + creditosClasificados.getNuevosCreditos().size() + creditosClasificados.getNuevosTotales().size());
-    listaCreditosClasificados.add(cc);
+    switch (idTipoSeleccionado) {
+      case TipoRemesas.ASIGNACION_MENSUAL:
+        System.out.println("ASIGNACION MENSUAL");
+        // AQUI SI SE HACEN LAS COMPARACIONES Y SE RETIRAN CREDITOS
+        break;
+      case TipoRemesas.ASIGNACION_COMPLEMENTARIA:
+        System.out.println("ASIGNACION COMPLEMENTARIA");
+        // AQUI SOLO SE CARGAN NUEVOS CREDITOS Y NUEVOS TOTALES
+        break;
+      case TipoRemesas.ASIGNACION_QUEBRANTO:
+        System.out.println("ASIGNACION QUEBRANTO");
+        // AQUI SE VERIFICA SI EXISTEN CREDITOS ACTIVOS, SI ES ASI SE ACTUALIZAN
+        // LOS QUE NO SE CARGAN
+        break;
+      default:
+        System.out.println("NINGUNO DE LOS CASOS ANTES MENCIONADOS");
+        System.out.println("PERO PORQUE VERGA NO ESTA GUARDANDO EL VALOR");
+        break;
+    }
+    /*
+     ComparadorCreditos comparador = new ComparadorCreditos();
+     creditosClasificados = comparador.compararCreditos(filas);
+     ConteoCredito cc = new ConteoCredito();
+     cc.setTipoCredito("Creditos en gestion (Estan en la fiesta).");
+     cc.setCantidad(creditosClasificados.getCreditosEnGestion());
+     listaCreditosClasificados.add(cc);
+     cc = new ConteoCredito();
+     cc.setTipoCredito("Creditos reasignados (Regresan a la fiesta).");
+     cc.setCantidad(creditosClasificados.getReasignados().size());
+     listaCreditosClasificados.add(cc);
+     cc = new ConteoCredito();
+     cc.setTipoCredito("Creditos conservados (Siguen en la fiesta)");
+     cc.setCantidad(creditosClasificados.getConservados().size());
+     listaCreditosClasificados.add(cc);
+     cc = new ConteoCredito();
+     cc.setTipoCredito("Nuevos creditos (Con invitado en la fiesta)");
+     cc.setCantidad(creditosClasificados.getNuevosCreditos().size());
+     listaCreditosClasificados.add(cc);
+     cc = new ConteoCredito();
+     cc.setTipoCredito("Nuevos totales (Nuevos en la fiesta)");
+     cc.setCantidad(creditosClasificados.getNuevosTotales().size());
+     listaCreditosClasificados.add(cc);
+     cc = new ConteoCredito();
+     cc.setTipoCredito("Creditos retirados (Se van de la fiesta)");
+     cc.setCantidad(creditosClasificados.getRetirados().size());
+     listaCreditosClasificados.add(cc);
+     cc = new ConteoCredito();
+     cc.setTipoCredito("Total de creditos en gestion despues de carga");
+     cc.setCantidad(creditosClasificados.getConservados().size() + creditosClasificados.getReasignados().size() + creditosClasificados.getNuevosCreditos().size() + creditosClasificados.getNuevosTotales().size());
+     listaCreditosClasificados.add(cc);
+     */
   }
 
   // METODO QUE PIDE LA CONTRASEÑA PARA COMENZAR LA CARGA
-  public final void pedirContrasena() {
+  public void pedirContrasena() {
     RequestContext.getCurrentInstance().execute("PF('dialogoContrasena').show()");
   }
 
@@ -166,7 +213,7 @@ public class NuevaCargaBean implements Serializable {
     }
   }
 
-  // METODO
+  // METODO QUE CONFIRMA LA CARGA Y HACE LAS MODIFICACIONES EN LA BASE DE DATOS
   public void ejecutarCarga() {
     if (crearRemesa()) {
       leyendaCargaExitosa = true;
@@ -197,7 +244,7 @@ public class NuevaCargaBean implements Serializable {
     return remesaDao.insertar(r) != null;
   }
 
-  // METODO
+  // METODO QUE REDIRIGE AL PANEL DE CONTROL UNA VEZ INICIADA LA CARGA
   public void aceptar() {
     try {
       FacesContext.getCurrentInstance().getExternalContext().redirect(indexBean.getVista());
@@ -280,19 +327,19 @@ public class NuevaCargaBean implements Serializable {
     this.listaCreditosClasificados = listaCreditosClasificados;
   }
 
-  public String getTipoSeleccionado() {
-    return tipoSeleccionado;
+  public int getIdTipoSeleccionado() {
+    return idTipoSeleccionado;
   }
 
-  public void setTipoSeleccionado(String tipoSeleccionado) {
-    this.tipoSeleccionado = tipoSeleccionado;
+  public void setIdTipoSeleccionado(int idTipoSeleccionado) {
+    this.idTipoSeleccionado = idTipoSeleccionado;
   }
 
-  public List<String> getListaTipos() {
+  public List<TipoRemesa> getListaTipos() {
     return listaTipos;
   }
 
-  public void setListaTipos(List<String> listaTipos) {
+  public void setListaTipos(List<TipoRemesa> listaTipos) {
     this.listaTipos = listaTipos;
   }
 

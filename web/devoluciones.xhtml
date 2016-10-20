@@ -117,6 +117,7 @@
               <h:form id="formDevueltos">
                 <p:contextMenu for="devueltos" style="width:200px;">
                   <p:menuitem value="Reactivar" icon="ui-icon-refresh" actionListener="#{devolucionBean.reactivar()}" update="growl, devueltos" />
+                  <p:menuitem value="Permanencia" icon="ui-icon-check" actionListener="#{devolucionBean.activarPermanencia()}" update="growl, devueltos" />
                 </p:contextMenu>
                 <p:dataTable id="devueltos" var="dev" value="#{devolucionBean.listaDevueltos}" rowKey="#{dev.idDevolucion}" selection="#{devolucionBean.devolucionesSeleccionadas}" emptyMessage="No existen creditos devueltos."  paginator="true" rows="15" paginatorPosition="bottom">
                   <p:column selectionMode="multiple" style="width:35px;text-align:center" />
@@ -143,6 +144,8 @@
                   </p:column>
                   <f:facet name="footer">
                     <p:commandButton value="Reactivar seleccionados" icon="ui-icon-refresh" actionListener="#{devolucionBean.reactivar()}" update="growl, devueltos" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <p:commandButton value="Permanencia seleccionados" icon="ui-icon-check" actionListener="#{devolucionBean.activarPermanencia()}" update="growl, devueltos" />
                   </f:facet>
                 </p:dataTable>
               </h:form>

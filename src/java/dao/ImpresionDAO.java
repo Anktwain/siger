@@ -27,7 +27,7 @@ public interface ImpresionDAO {
   
   public List<Impresion> buscarPorTipoImpresion(int tipoImpresion, int idDespacho);
   
-  public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho);
+  public Number contarImpresionesPorDespacho(int idDespacho);
   
   public Number calcularVisitasDomiciliariasPorGestor(int idDespacho, int idUsuario);
   

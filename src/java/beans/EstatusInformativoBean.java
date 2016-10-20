@@ -37,7 +37,7 @@ public class EstatusInformativoBean implements Serializable {
   }
 
   // METODO  QUE CARGA LA LISTA DE ESTATUS INFORMATIVO
-  public final void cargarEstatus() {
+  private void cargarEstatus() {
     listaEstatus = estatusInformativoDAO.buscarTodos();
   }
 

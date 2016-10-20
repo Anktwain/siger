@@ -13,6 +13,8 @@ import dto.Quincena;
  */
 public interface QuincenaDAO {
   
+  public boolean insertar(Quincena quincena);
+  
   public Quincena obtenerQuincenaActual();
   
 }

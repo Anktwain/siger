@@ -46,10 +46,14 @@
   </mime-mapping>
   <session-config>
     <session-timeout>
-      60
+      80
     </session-timeout>
   </session-config>
   <welcome-file-list>
     <welcome-file>faces/index.xhtml</welcome-file>
   </welcome-file-list>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/faces/recursoNoEncontrado.xhtml</location>
+  </error-page>
 </web-app>

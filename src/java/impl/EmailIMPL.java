@@ -2,6 +2,7 @@ package impl;
 
 import dao.EmailDAO;
 import dto.Email;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -140,7 +141,7 @@ public class EmailIMPL implements EmailDAO {
   public Email buscarPrincipalPorSujeto(int idSujeto) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Email correo = new Email();
-    String consulta = "SELECT * FROM email WHERE id_sujeto = " + idSujeto + " AND principal = " + Correos.PRINCIPAL + ";";
+    String consulta = "SELECT * FROM email WHERE id_sujeto = " + idSujeto + " AND principal = " + Correos.PRINCIPAL + " LIMIT 1;";
     try {
       correo = (Email) sesion.createSQLQuery(consulta).addEntity(Email.class).uniqueResult();
     } catch (HibernateException he) {
@@ -161,6 +162,22 @@ public class EmailIMPL implements EmailDAO {
       listaEmails = sesion.createSQLQuery(consulta).addEntity(Email.class).list();
     } catch (HibernateException he) {
       listaEmails = null;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return listaEmails;
+  }
+
+  @Override
+  public List<Email> buscarCorreosInbursa() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Email> listaEmails = new ArrayList();
+    String consulta = "SELECT * FROM email WHERE tipo = 'Inbursa';";
+    try {
+      listaEmails = sesion.createSQLQuery(consulta).addEntity(Email.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);

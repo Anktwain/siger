@@ -87,7 +87,7 @@ public class CuentasGestorBean implements Serializable {
   }
 
   // METODO QUE OBTIENE LAS LISTAS INICIALES
-  public final void obtenerListas() {
+  private void obtenerListas() {
     listaCreditosCampanas = new ArrayList();
     List<Campana> listaCampanas = campanaDao.buscarTodas();
     for (int i = 0; i < (listaCampanas.size()); i++) {
@@ -164,7 +164,6 @@ public class CuentasGestorBean implements Serializable {
   }
 
   // METODO QUE VERIFICA SI LA CAMPAÑA EN LA LISTA ES LA CAMPAÑA QUE SE ESTA GESTIONANDO
-
   public String verificarCampanaEnCurso(CreditoCampana campana) {
     if (campana == seleccion) {
       return "En curso";
@@ -174,7 +173,7 @@ public class CuentasGestorBean implements Serializable {
   }
 
   // METODO QUE CAMBIA LAS CUENTAS DE CAMPAÑA SEGUN CORRESPONDA
-  public final void cambiarCampanas() {
+  private void cambiarCampanas() {
     // SE OBTIENE TODOS LOS CREDITOS ASIGNADOS A ESTE GESTOR
     List<Credito> creditosEnGestion = creditoDao.buscarCreditosPorGestor(indexBean.getUsuario().getIdUsuario());
     for (int i = 0; i < (creditosEnGestion.size()); i++) {
@@ -189,12 +188,12 @@ public class CuentasGestorBean implements Serializable {
       // SE OBTIENE LA LISTA DE GESTIONES
       List<Gestion> gestionesCredito = gestionDao.buscarGestionesCredito(creditosEnGestion.get(i).getIdCredito());
       // CHECAR MARCAJES
-      if (creditosEnGestion.get(i).getMarcaje().getIdMarcaje() != 9) {
-        if (creditosEnGestion.get(i).getMarcaje().getIdMarcaje() == Marcajes.LOCALIZACION) {
-          campana = Campanas.LOCALIZACION;
-        } else if (creditosEnGestion.get(i).getMarcaje().getIdMarcaje() == Marcajes.URGENTE) {
-          campana = Campanas.URGENTE;
-        }
+      // MARCAJE LOCALIZACION
+      if (creditosEnGestion.get(i).getMarcaje().getIdMarcaje() == Marcajes.LOCALIZACION) {
+        campana = Campanas.LOCALIZACION;
+      } // MARCAJE URGENTE
+      else if (creditosEnGestion.get(i).getMarcaje().getIdMarcaje() == Marcajes.URGENTE) {
+        campana = Campanas.URGENTE;
       } // CHECAR PROMESAS FUTURAS
       else if (!promesasFuturas.isEmpty()) {
         // PROMESAS EN ESPERA DE CUMPLIRSE

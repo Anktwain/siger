@@ -68,7 +68,7 @@
                   </p:column>
                   <p:column headerText="Monto" style="width:100px;" sortBy="#{pr.montoPago}"> 
                     <h:outputText value="#{pr.montoPago}" style="float:right">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
                   <p:column headerText="Fecha deposito" style="width:100px;" sortBy="#{pr.fechaDeposito}"> 
@@ -88,7 +88,7 @@
                   </p:column>
                   <p:column headerText="Mensualidad" style="width:100px;" sortBy="#{pr.promesaPago.convenioPago.credito.mensualidad}">
                     <h:outputText value="#{pr.promesaPago.convenioPago.credito.mensualidad}" style="float:right">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
                   <p:column headerText="Meses vencidos" style="width:100px;" sortBy="#{pagosBean.obtenerMesesVencidos(pr.promesaPago.convenioPago.credito.idCredito)}">
@@ -128,12 +128,12 @@
                   </p:column>
                   <p:column headerText="Monto" style="width:100px;" sortBy="#{pq.montoPago}"> 
                     <h:outputText value="#{pq.montoPago}" style="float:right">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
                   <p:column headerText="Monto aprobado" style="width:100px;" sortBy="#{pq.montoAprobado}"> 
                     <h:outputText value="#{pq.montoAprobado}" style="float:right">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
                   <p:column headerText="Fecha deposito" style="width:100px;" sortBy="#{pq.fechaDeposito}"> 
@@ -150,7 +150,7 @@
                   </p:column>
                   <p:column headerText="Mensualidad" style="width:100px;" sortBy="#{pq.promesaPago.convenioPago.credito.mensualidad}">
                     <h:outputText value="#{pq.promesaPago.convenioPago.credito.mensualidad}" style="float:right">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
                   <p:column headerText="Meses vencidos" style="width:100px;" sortBy="#{pagosBean.obtenerMesesVencidos(pq.promesaPago.convenioPago.credito.idCredito)}">
@@ -229,7 +229,7 @@
                     </p:column>
                     <p:column headerText="Monto" style="width:100px;" sortBy="#{p.montoAprobado}"> 
                       <h:outputText value="#{p.montoAprobado}">
-                        <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                        <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                       </h:outputText>
                     </p:column>
                     <p:column headerText="Observaciones" style="width:150px;" sortBy="#{p.informacionRevision}">
@@ -271,12 +271,12 @@
                     </p:column>
                     <p:column headerText="Monto pagos aprobados" style="width:200px;" footerText="#{pagosBean.sumaAprobados}">
                       <h:outputText value="#{pg.montoPagos}" style="float: right;">
-                        <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                        <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                       </h:outputText>
                     </p:column>
                     <p:column headerText="Monto creditos en gestion" style="width:200px;" footerText="#{pagosBean.sumaCreditos}">
                       <h:outputText value="#{pg.montoPrometido}" style="float: right;">
-                        <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                        <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                       </h:outputText>
                     </p:column>
                     <p:column headerText="Eficiencia" style="width:150px;" footerText="#{pagosBean.sumaEficiencia}">

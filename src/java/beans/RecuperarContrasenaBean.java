@@ -61,7 +61,7 @@ public class RecuperarContrasenaBean implements Serializable {
     if (usuario != null) {
       crearCorreo();
       try {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/SigerWeb");
       } catch (IOException ioe) {
         Logs.log.error("No se pudo redirigir al index.");
         Logs.log.error(ioe);
@@ -113,7 +113,7 @@ public class RecuperarContrasenaBean implements Serializable {
       context.addMessage(null, new FacesMessage("Operacion exitosa",
               "Revise su correo electrónico, se ha enviado un mensaje para la recuperación de su contraseña"));
       externalContext.getFlash().setKeepMessages(true);
-      FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+      FacesContext.getCurrentInstance().getExternalContext().redirect("/SigerWeb");
       // Se cierra
       t.close();
     } catch (MessagingException me) {

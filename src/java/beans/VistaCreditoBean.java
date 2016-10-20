@@ -259,7 +259,7 @@ public class VistaCreditoBean implements Serializable {
     int idSujeto = creditoActual.getDeudor().getSujeto().getIdSujeto();
     // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
     listaDirecciones = direccionDao.buscarPorSujeto(idSujeto);
-    if(!listaDirecciones.isEmpty()){
+    if (!listaDirecciones.isEmpty()) {
       // OBTENER LA PRIMER DIRECCION DEL DEUDOR
       if (listaDirecciones.get(0).getInterior() == null) {
         calleNumero = listaDirecciones.get(0).getCalle() + " " + listaDirecciones.get(0).getExterior();
@@ -271,7 +271,7 @@ public class VistaCreditoBean implements Serializable {
     }
     // OBTENEMOS LA LISTA DE TELEFONOS DEL DEUDOR
     listaTelefonos = telefonoDao.buscarPorCliente(creditoActual.getDeudor().getNumeroDeudor());
-    if(!listaTelefonos.isEmpty()){
+    if (!listaTelefonos.isEmpty()) {
       // OBTENER EL PRIMER TELEFONO DEL DEUDOR
       telefono = formatoTelefono(listaTelefonos.get(0));
     }
@@ -721,9 +721,13 @@ public class VistaCreditoBean implements Serializable {
     BigDecimal maxLon = BigDecimal.valueOf(180.000000);
     if (direccionSeleccionada.getCalle().equals("")) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe ingresar una calle."));
-    } else if (direccionSeleccionada.getExterior().equals("")) {
-      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe ingresar un numero exterior."));
-    } else if (!direccionSeleccionada.getLatitud().toString().matches("-?[0-9]{1,3}.[0-9]{6}")) {
+    } // PROBABLY BUG:
+    // se comenta porque ya no es obligatorio ingresar un numero exterior
+    /*
+     else if (direccionSeleccionada.getExterior().equals("")) {
+     FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe ingresar un numero exterior."));
+     } 
+     */ else if (!direccionSeleccionada.getLatitud().toString().matches("-?[0-9]{1,3}.[0-9]{6}")) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de latitud ingresado no es valido."));
     } else if ((direccionSeleccionada.getLatitud().compareTo(minLat) == -1) || (direccionSeleccionada.getLatitud().compareTo(maxLat) == 1)) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de latitud esta fuera de rango."));
@@ -732,6 +736,13 @@ public class VistaCreditoBean implements Serializable {
     } else if ((direccionSeleccionada.getLongitud().compareTo(minLon) == -1) || (direccionSeleccionada.getLongitud().compareTo(maxLon) == 1)) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de longitud esta fuera de rango."));
     } else {
+      if (direccionSeleccionada.getValidada() == 0) {
+        direccionSeleccionada.setValidada(1);
+        GestionAutomatica ga = new GestionAutomatica();
+        if (!ga.generarGestionAutomatica("4DOMI", creditoActual, indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL DEUDOR " + creditoActual.getDeudor().getSujeto().getNombreRazonSocial())) {
+          Logs.log.error("No se pudo insertar la gestion automatica.");
+        }
+      }
       if (direccionDao.editar(direccionSeleccionada)) {
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se edito la direccion."));
       } else {
@@ -817,6 +828,7 @@ public class VistaCreditoBean implements Serializable {
       d.setCalle(calleNuevaDireccion);
       d.setExterior(exteriorNuevaDireccion);
       d.setInterior(interiorNuevaDireccion);
+      d.setValidada(1);
       if (latitudNuevaDireccion.equals("")) {
         d.setLatitud(BigDecimal.ZERO);
       } else {
@@ -858,6 +870,11 @@ public class VistaCreditoBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se elimino la direccion. Contacte al equipo de sistemas"));
       }
     }
+  }
+
+  // METODO QUE VERIFICA SI LA DIRECCION ESTA VALIDADA O NO
+  public boolean verificarValidada() {
+    return direccionSeleccionada.getValidada() != 1;
   }
 
   // ***********************************************************************************************************************

@@ -35,7 +35,7 @@ public interface PagoDAO {
   
   public Number calcularPagosPendientes(int idDespacho);
   
-  public Number calcularSaldoAprobadoHoy(int idDespacho);
+  public Number calcularMontoPagosHoy(int idDespacho);
   
   public double calcularRecuperacionDespacho(int idDespacho);
   
@@ -58,5 +58,11 @@ public interface PagoDAO {
   public double calcularRecuperacionGestor(int idUsuario);
   
   public List<Pago> pagosPorGestor(int idGestor, String fechaInicio, String fechaFin);
+  
+  public float calcularSaldoPendienteDespacho(int idDespacho);
+  
+  public float calcularRecuperacionQuincenaDespacho(int idDespacho);
+  
+  public List<Pago> buscarPagosPorConvenio(int idConvenio);
   
 }

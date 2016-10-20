@@ -5,6 +5,7 @@
  */
 package impl;
 
+import beans.IndexBean;
 import dao.DondeGestionDAO;
 import dao.GestionDAO;
 import dao.QuienGestionDAO;
@@ -16,11 +17,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.el.ELContext;
+import javax.faces.context.FacesContext;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -33,7 +35,7 @@ import util.log.Logs;
  * @author Eduardo
  */
 public class GestionIMPL implements GestionDAO {
-  
+
   @Override
   public boolean insertarGestion(Gestion gestion) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -55,7 +57,7 @@ public class GestionIMPL implements GestionDAO {
     }
     return ok;
   }
-  
+
   @Override
   public List<Gestion> buscarGestionesCreditoGestor(int idUsuario, int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -70,7 +72,7 @@ public class GestionIMPL implements GestionDAO {
     }
     return gestiones;
   }
-  
+
   @Override
   public List<Gestion> buscarGestionesCredito(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -86,22 +88,40 @@ public class GestionIMPL implements GestionDAO {
     }
     return gestiones;
   }
-  
+
   @Override
   public List<Gestion> busquedaReporteGestiones(String consulta) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
-    List<Gestion> gestiones;
+    List<Gestion> gestiones = new ArrayList();
     try {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
     } catch (HibernateException he) {
-      gestiones = null;
+      Logs.log.error(consulta);
       Logs.log.error(he.getMessage());
     } finally {
       cerrar(sesion);
     }
     return gestiones;
   }
-  
+
+  @Override
+  public List<Gestion> busquedaReporteGestionesDespacho(String consulta) {
+    ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+    IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Gestion> gestiones = new ArrayList();
+    consulta = consulta + "AND id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + indexBean.getUsuario().getDespacho().getIdDespacho() + ") ORDER BY fecha ASC;";
+    try {
+      gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
   @Override
   public Gestion obtenerGestionAutomaticaPorAbreviatura(String abreviatura) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -133,7 +153,7 @@ public class GestionIMPL implements GestionDAO {
       return null;
     }
   }
-  
+
   @Override
   public boolean buscarGestionHoy(int idCredito) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -142,7 +162,7 @@ public class GestionIMPL implements GestionDAO {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     Date fecha = new Date();
     String f = df.format(fecha);
-    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND DATE(fecha) = '" + f + "' AND (id_tipo_gestion != 5 OR id_descripcion_gestion IN (SELECT id_descripcion_gestion FROM descripcion_gestion WHERE abreviatura = '9APROB'));";
+    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND DATE(fecha) = '" + f + "' AND id_descripcion_gestion != 117;";
     try {
       gestiones = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
       if (gestiones.size() > 0) {
@@ -156,7 +176,7 @@ public class GestionIMPL implements GestionDAO {
     }
     return ok;
   }
-  
+
   @Override
   public Number calcularGestionesHoyPorDespacho(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -174,7 +194,7 @@ public class GestionIMPL implements GestionDAO {
     }
     return gestiones;
   }
-  
+
   @Override
   public Number calcularGestionesHoyPorGestor(int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -190,7 +210,7 @@ public class GestionIMPL implements GestionDAO {
     }
     return gestiones;
   }
-  
+
   @Override
   public String obtenerGestorDelDia(int idDespacho) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
@@ -238,18 +258,16 @@ public class GestionIMPL implements GestionDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number dias;
     List<Gestion> ultima;
-    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND (id_tipo_gestion != 5 OR id_descripcion_gestion IN (SELECT id_descripcion_gestion FROM descripcion_gestion WHERE abreviatura IN ('9APROB', '32RUVD'))) ORDER BY fecha DESC LIMIT 1;";
+    String consulta = "SELECT * FROM gestion WHERE id_credito = " + idCredito + " AND id_descripcion_gestion != 117 ORDER BY fecha DESC LIMIT 1;";
     try {
       ultima = sesion.createSQLQuery(consulta).addEntity(Gestion.class).list();
-      if(!ultima.isEmpty()){
-        DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      if (!ultima.isEmpty()) {
         Date fg = ultima.get(0).getFecha();
         LocalDate fechaGestion = fg.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         Date fa = new Date();
         LocalDate fechaActual = fa.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         dias = ChronoUnit.DAYS.between(fechaGestion, fechaActual);
-      }
-      else{
+      } else {
         dias = 8;
       }
     } catch (HibernateException he) {
@@ -261,11 +279,43 @@ public class GestionIMPL implements GestionDAO {
     }
     return dias;
   }
-  
+
+  @Override
+  public Number contarVisitasPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number gestiones;
+    String consulta = "SELECT COUNT(*) FROM gestion WHERE id_estatus_informativo = 8 AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ");";
+    try {
+      gestiones = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      gestiones = -1;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return gestiones;
+  }
+
+  @Override
+  public Number contarDiasGestionLocalizacion(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number dias;
+    String consulta = "SELECT DATEDIFF(CURDATE(), DATE(fecha)) FROM gestion WHERE id_descripcion_gestion IN (SELECT id_descripcion_gestion FROM descripcion_gestion WHERE abreviatura IN ('1SECC', '3NOSB', '4CADE')) AND id_credito = " + idCredito + ";";
+    try {
+      dias = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      dias = -1;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return dias;
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();
     }
   }
-  
+
 }

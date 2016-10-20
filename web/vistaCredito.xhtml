@@ -7,6 +7,7 @@
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
+    <h:outputStylesheet library="css" name="colorFilas.css" />
   </h:head>
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
@@ -137,7 +138,7 @@
                   </td>
                   <td style="padding-left: 10px; padding-right: 10px;">
                     <h:outputText value="#{vistaCreditoBean.creditoActual.monto}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </td>
                 </tr>
@@ -149,7 +150,7 @@
                   </td>
                   <td style="padding-left: 10px; padding-right: 10px;">
                     <h:outputText value="#{vistaCreditoBean.creditoActual.saldoInsoluto}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </td>
                 </tr>
@@ -161,7 +162,7 @@
                   </td>
                   <td style="padding-left: 10px; padding-right: 10px;">
                     <h:outputText value="#{vistaCreditoBean.creditoActual.mensualidad}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </td>
                 </tr>
@@ -183,7 +184,7 @@
                   </td>
                   <td style="padding-left: 10px; padding-right: 10px;">
                     <h:outputText value="#{vistaCreditoBean.saldoVencido}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </td>
                 </tr>
@@ -258,15 +259,15 @@
               <p:tab title="Datos de contacto">
                 <p:accordionPanel multiple="true" activeIndex="-1">
                   <p:tab title="Direcciones">
-                      <!-- TO FIX: -->
-                      <!-- AGREGAR AL CONTEXT MENU -->
-                      <!-- NO SE RENDERIZA HASTA NUEVO AVISO -->
-                      <!-- <p:menuitem value="Generar carta quebranto (visita)" icon="ui-icon-document" oncomplete="PF('dialogoImpresionVisitasQuebranto').show();" rendered="false" /> -->
+                    <!-- TO FIX: -->
+                    <!-- AGREGAR AL CONTEXT MENU -->
+                    <!-- NO SE RENDERIZA HASTA NUEVO AVISO -->
+                    <!-- <p:menuitem value="Generar carta quebranto (visita)" icon="ui-icon-document" oncomplete="PF('dialogoImpresionVisitasQuebranto').show();" rendered="false" /> -->
                     <p:contextMenu for="tablaDireccionesDetalleCredito" style="width:200px;">
                       <p:menuitem value="Editar" icon="ui-icon-wrench" actionListener="#{vistaCreditoBean.prepararDireccion()}" oncomplete="PF('dialogoEditarDireccion').show();" update="editarDireccionForm" />
                       <p:menuitem value="Generar carta (visita)" icon="ui-icon-document" oncomplete="PF('dialogoImpresionVisitas').show();" />
                     </p:contextMenu>
-                    <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" selection="#{vistaCreditoBean.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idDireccion}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                    <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" selection="#{vistaCreditoBean.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idDireccion}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" rowStyleClass="#{d.validada eq 0 ? 'sinValidar' : null}">
                       <p:column headerText="Calle y numero" style="width:300px;" > 
                         <h:outputText value="#{d.calle} #{d.exterior} #{d.interior}"/>
                       </p:column>
@@ -283,6 +284,8 @@
                         <h:outputText value="#{d.colonia.codigoPostal}"/>
                       </p:column>
                       <f:facet name="footer">
+                          Las direcciones que no han sido validadas se visualizaran en color rojo. Para validarla edite la direccion.
+                          <br />
                         <p:commandButton value="Agregar nueva direccion" icon="ui-icon-plus" oncomplete="PF('dialogoNuevaDireccion').show();" />
                       </f:facet>
                     </p:dataTable>
@@ -362,12 +365,12 @@
                   </p:column>
                   <p:column headerText="Mensualidad">
                     <h:outputText value="#{cre.mensualidad}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
                   <p:column headerText="Saldo vencido" style="width:150px;" > 
                     <h:outputText value="#{vistaCreditoBean.obtenerSaldoVencido(cre.idCredito)}">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
                 </p:dataTable>
@@ -382,7 +385,7 @@
                   </p:column>
                   <p:column headerText="Monto" style="width:150px;">
                     <h:outputText value="#{fac.facPor}" style="float:right">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
                   <p:column headerText="Respuesta" style="width:250px;"> 
@@ -393,7 +396,7 @@
                   </p:column>
                   <p:column headerText="Saldo vencido" style="width:150px;"> 
                     <h:outputText value="#{fac.actualizacion.saldoVencido}" style="float:right">
-                      <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                      <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                     </h:outputText>
                   </p:column>
                 </p:dataTable>
@@ -480,7 +483,7 @@
     <h:form id="visitasForm">
       <table>
         <tr>
-          <td>
+          <td style="padding-bottom: 20px;">
             <h:outputText value="Saldo vencido:" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
             &nbsp;&nbsp;&nbsp;&nbsp;
             <p:inputText value="#{visitasBean.saldoVencido}" />
@@ -516,8 +519,7 @@
         <tr>
           <td>
             <h:outputText value="Generar carta" style="font-size: 16px; font-family: 'Open Sans',sans-serif;" />
-          </td>
-          <td style="padding-left: 10px;">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <p:commandButton value="Generar" icon="ui-icon-gear" actionListener="#{visitasBean.generarNormal()}" update=":growl, visitasForm" />
           </td>
         </tr>
@@ -847,7 +849,10 @@
       <br />
       <br />
       <div align="center">
-        <p:commandButton value="Editar direccion" icon="ui-icon-pencil" actionListener="#{vistaCreditoBean.editarDireccion()}" oncomplete="PF('dialogoEditarDireccion').hide();" update=":growl, DetalleCredito" />
+        <h:outputText value="La direccion aun no ha sido validada." style="color: #FF0000" rendered="#{vistaCreditoBean.verificarValidada()}" />
+        <br />
+        <br />
+        <p:commandButton value="Editar direccion" icon="ui-icon-pencil" actionListener="#{vistaCreditoBean.editarDireccion()}" oncomplete="PF('dialogoEditarDireccion').hide();" update=":growl, DetalleCredito, visitasForm" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoEditarDireccion').hide();" />
       </div>

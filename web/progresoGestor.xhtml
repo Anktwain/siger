@@ -90,12 +90,12 @@
                     </p:column>
                     <p:column headerText="Monto pago" style="width:100px;"> 
                       <h:outputText value="#{p.montoPago}">
-                        <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                        <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" groupingUsed="," />
                       </h:outputText>
                     </p:column>
                     <p:column headerText="Monto aprobado" style="width:100px;"> 
                       <h:outputText value="#{p.montoAprobado}">
-                        <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                        <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" groupingUsed="," />
                       </h:outputText>
                     </p:column>
                     <p:column headerText="Estatus" style="width:100px;"> 

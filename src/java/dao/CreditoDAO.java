@@ -71,4 +71,6 @@ public interface CreditoDAO {
   
   public boolean numeroCreditoExiste(String numeroCredito);
   
+  public Number contarCreditosQuebrantoPermanencia(int idDespacho);
+  
 }

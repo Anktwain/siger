@@ -22,6 +22,7 @@ public class Direccion  implements java.io.Serializable {
      private String interior;
      private BigDecimal latitud;
      private BigDecimal longitud;
+     private int validada;
      private Set impresions = new HashSet(0);
 
     public Direccion() {
@@ -120,6 +121,13 @@ public class Direccion  implements java.io.Serializable {
     
     public void setLongitud(BigDecimal longitud) {
         this.longitud = longitud;
+    }
+    public int getValidada() {
+        return this.validada;
+    }
+    
+    public void setValidada(int validada) {
+        this.validada = validada;
     }
     public Set getImpresions() {
         return this.impresions;

@@ -18,6 +18,8 @@ public interface GestionDAO {
   
   public List<Gestion> busquedaReporteGestiones (String consulta);
   
+  public List<Gestion> busquedaReporteGestionesDespacho (String consulta);
+  
   public List<Gestion> buscarGestionesCreditoGestor(int idUsuario, int idCredito);
   
   public List<Gestion> buscarGestionesCredito(int idCredito);
@@ -35,5 +37,9 @@ public interface GestionDAO {
   public boolean buscarReasignacionHoy(int idCredito);
   
   public Number checarDiasSinGestionar(int idCredito);
+  
+  public Number contarVisitasPorDespacho(int idDespacho);
+  
+  public Number contarDiasGestionLocalizacion(int idCredito);
   
 }

@@ -20,4 +20,5 @@ public interface Convenios {
   public static final int SIN_CONTACTO_EN_CURSO = 3;
   
   public static final int CON_QUITA_SIN_CONTACTO_EN_CURSO = 4;
+  
 }

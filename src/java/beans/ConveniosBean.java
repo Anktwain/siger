@@ -105,7 +105,7 @@ public class ConveniosBean implements Serializable {
   private final ComprobantePagoDAO comprobantePagoDao;
   private PromesaPago promesaSeleccionada;
   private ConvenioPago convenioActivo;
-  private List<ConvenioPago> listaHistorialConvenios;
+  private List<HistorialConvenio> listaHistorialConvenios;
   private List<PromesaPago> listaPromesas;
   private List<Pago> listaPagosConvenioActivo;
   private List<Pago> listaHistorialPagos;
@@ -142,11 +142,12 @@ public class ConveniosBean implements Serializable {
     tipoGestionSeleccionada = new TipoGestion();
     saldosNuevasPromesas = new float[7];
     fechasNuevasPromesas = new Date[7];
+    saldoNuevoPago = 0;
     cargarListas();
   }
 
-  // METODO QUE TRAE LA LISTA DE CONVENIOS
-  public final void cargarListas() {
+  // METODO QUE TRAE LAS LISTAS DE CONVENIOS Y PAGOS
+  private void cargarListas() {
     observacionesPago = "TE MANDO PAGO PARA SU VALIDACION.";
     pagosPrometidos = 1;
     fechasNuevasPromesas[0] = new Date();
@@ -156,7 +157,7 @@ public class ConveniosBean implements Serializable {
       saldoMaximo = creditoActual.getSaldoInsoluto();
     }
     convenioActivo = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
-    listaHistorialConvenios = convenioPagoDao.buscarConveniosFinalizadosCredito(creditoActual.getIdCredito());
+    listaHistorialConvenios = obtenerHistorialConvenios();
     listaHistorialPagos = pagoDao.buscarPagosPorCredito(creditoActual.getIdCredito());
     listaCuentasPago = Arrays.asList("50010911552", "50010911556", "50015025745", "50015025741", "50015025905", "50015025902", "RECIBO TELMEX", "ACTA DEFUNCION");
     List< QuienGestion> sujetos = new QuienGestionIMPL().buscarTodo();
@@ -175,6 +176,43 @@ public class ConveniosBean implements Serializable {
       listaPagosConvenioActivo = pagoDao.buscarPagosPorConvenioActivo(idConvenio);
       listaPromesas = promesaPagoDao.buscarPorConvenio(idConvenio);
     }
+  }
+
+  // METODO QUE OBTIENE EL HISTORIAL DE LOS CONVENIOS
+  public List<HistorialConvenio> obtenerHistorialConvenios() {
+    List<HistorialConvenio> historial = new ArrayList();
+    List<ConvenioPago> convenios = convenioPagoDao.buscarConveniosFinalizadosCredito(creditoActual.getIdCredito());
+    for (int i = 0; i < (convenios.size()); i++) {
+      HistorialConvenio h = new HistorialConvenio();
+      h.setIdConvenio(convenios.get(i).getIdConvenioPago());
+      h.setFecha(convenios.get(i).getFecha());
+      h.setSaldoConvenio(convenios.get(i).getSaldoNegociado());
+      List<Pago> pagos = pagoDao.buscarPagosPorConvenio(convenios.get(i).getIdConvenioPago());
+      h.setPagosConvenio(pagos.size());
+      if (pagos.isEmpty()) {
+        h.setCumplimiento("Incumplido");
+      } else {
+        if (pagos.size() == 1) {
+          if (pagos.get(0).getMontoAprobado() >= convenios.get(i).getSaldoNegociado()) {
+            h.setCumplimiento("Cumplido");
+          } else {
+            h.setCumplimiento("Incompleto");
+          }
+        } else {
+          float monto = 0;
+          for (int j = 0; j < (pagos.size()); j++) {
+            monto = monto + pagos.get(j).getMontoAprobado();
+          }
+          if (monto >= convenios.get(i).getSaldoNegociado()) {
+            h.setCumplimiento("Cumplido");
+          } else {
+            h.setCumplimiento("Incompleto");
+          }
+        }
+      }
+      historial.add(h);
+    }
+    return historial;
   }
 
   // METODO QUE AGREGA UN CONVENIO DE PAGO
@@ -294,7 +332,7 @@ public class ConveniosBean implements Serializable {
     }
     cancelar();
   }
-  
+
   // METODO QUE OBTIENE EL SALDO VENCIDO DE UN CREDITO
   public float obtenerSaldoVencido(int idCredito) {
     return creditoDao.buscarSaldoVencidoCredito(idCredito);
@@ -315,7 +353,10 @@ public class ConveniosBean implements Serializable {
   public void cargarArchivoAlServidor(UploadedFile archivo) {
     byte[] bytes;
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-    String extension = archivo.getFileName().substring(archivo.getFileName().indexOf(".")).toLowerCase();
+    String extension = archivo.getFileName().substring(archivo.getFileName().lastIndexOf(".")).toLowerCase();
+    if (extension.contains(".jpeg")) {
+      extension = ".jpg";
+    }
     String nombre = indexBean.getUsuario().getNombreLogin() + "_" + df.format(new Date()) + extension;
     nombre = nombre.replace(" ", "");
     nombre = Directorios.RUTA_WINDOWS_CARGA_COMPROBANTES + nombre;
@@ -331,12 +372,12 @@ public class ConveniosBean implements Serializable {
     } catch (FileNotFoundException fnfe) {
       Logs.log.error("No se cargo el comprobante al servidor");
       Logs.log.error(nombre);
-      Logs.log.error(fnfe.getStackTrace());
+      Logs.log.error(fnfe.getMessage());
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se cargo el comprobante. Contacte al equipo de sistemas"));
     } catch (IOException ioe) {
       Logs.log.error("No se cargo el comprobante al servidor");
       Logs.log.error(nombre);
-      Logs.log.error(ioe.getStackTrace());
+      Logs.log.error(ioe.getMessage());
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se cargo el comprobante. Contacte al equipo de sistemas"));
     }
   }
@@ -371,7 +412,7 @@ public class ConveniosBean implements Serializable {
      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pueden prometer pagos en fechas anteriores al dia de hoy."));
      } 
      */ else {
-      for (int i = 0; i < pagosPrometidos; i++) {
+      for (int i = 0; i < convenioActivo.getPagosNegociados(); i++) {
         PromesaPago p = new PromesaPago();
         p.setConvenioPago(convenioActivo);
         p.setFechaPrometida(fechasNuevasPromesas[i]);
@@ -494,9 +535,13 @@ public class ConveniosBean implements Serializable {
     return estado;
   }
 
-  // METODO QUE INICIALIZA EL MONTO DEL NUEVO PAGO
-  public void inicializarMontoPago() {
-    saldoNuevoPago = promesaSeleccionada.getCantidadPrometida();
+  // METODO QUE CONTROLA EL DIALOGO DEL MONTO DEL NUEVO PAGO
+  public void controlMontoPago() {
+    if (saldoNuevoPago == 1) {
+      saldoNuevoPago = promesaSeleccionada.getCantidadPrometida();
+    } else {
+      RequestContext.getCurrentInstance().execute("PF('montoPagoDialog').show();");
+    }
   }
 
   // METODO QUE GESTIONA LA HABILITACION DE LOS PAGOS EN VENTANILLA, A LA CUENTA DEL CREDITO Y A LAS CUENTAS CONCENTRADORAS
@@ -527,11 +572,11 @@ public class ConveniosBean implements Serializable {
     this.convenioActivo = convenioActivo;
   }
 
-  public List<ConvenioPago> getListaHistorialConvenios() {
+  public List<HistorialConvenio> getListaHistorialConvenios() {
     return listaHistorialConvenios;
   }
 
-  public void setListaHistorialConvenios(List<ConvenioPago> listaHistorialConvenios) {
+  public void setListaHistorialConvenios(List<HistorialConvenio> listaHistorialConvenios) {
     this.listaHistorialConvenios = listaHistorialConvenios;
   }
 
@@ -845,6 +890,63 @@ public class ConveniosBean implements Serializable {
 
   public void setHabilitaAsociada(boolean habilitaAsociada) {
     this.habilitaAsociada = habilitaAsociada;
+  }
+
+  // CLASE MIEMBRO QUE FUNCIONARA PARA CONOCER EL HISTORIAL DE CONVENIOS Y EL ESTATUS DE LOS MISMOS
+  public static class HistorialConvenio {
+
+    // VARIABLES DE CLASE
+    private int idConvenio;
+    private Date fecha;
+    private float saldoConvenio;
+    private int pagosConvenio;
+    private String cumplimiento;
+
+    // CONSTRUCTOR
+    public HistorialConvenio() {
+    }
+
+    //GETTERS & SETTERS
+    public int getIdConvenio() {
+      return idConvenio;
+    }
+
+    public void setIdConvenio(int idConvenio) {
+      this.idConvenio = idConvenio;
+    }
+
+    public Date getFecha() {
+      return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+      this.fecha = fecha;
+    }
+
+    public float getSaldoConvenio() {
+      return saldoConvenio;
+    }
+
+    public void setSaldoConvenio(float saldoConvenio) {
+      this.saldoConvenio = saldoConvenio;
+    }
+
+    public int getPagosConvenio() {
+      return pagosConvenio;
+    }
+
+    public void setPagosConvenio(int pagosConvenio) {
+      this.pagosConvenio = pagosConvenio;
+    }
+
+    public String getCumplimiento() {
+      return cumplimiento;
+    }
+
+    public void setCumplimiento(String cumplimiento) {
+      this.cumplimiento = cumplimiento;
+    }
+
   }
 
 }

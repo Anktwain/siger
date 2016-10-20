@@ -59,7 +59,7 @@ public class BuscadorCreditoBean implements Serializable {
     creditoActualBean.setCreditoActual(c);
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
       if (!indexBean.getUsuario().getNombreLogin().equals(c.getGestor().getUsuario().getNombreLogin())) {
-        Logs.log.warn("El gestor " + indexBean.getUsuario().getNombreLogin() + " busco un credito asignado al gestor " + datos[2] + ".");
+        Logs.log.warn("El gestor " + indexBean.getUsuario().getNombreLogin() + " busco el credito " + creditoActualBean.getCreditoActual().getNumeroCredito() + " asignado al gestor " + datos[2] + ".");
       }
       try {
         FacesContext.getCurrentInstance().getExternalContext().redirect("vistaCreditoGestor.xhtml");

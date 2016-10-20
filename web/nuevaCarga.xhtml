@@ -34,8 +34,18 @@
       <div class="col-lg-12">
         <h:form id="paso1Carga" enctype="multipart/form-data" rendered="#{!nuevaCargaBean.leyendaCargaExitosa}">
           <h2>
-            Paso 1. Seleccione el archivo de excel (xls):
+            Paso 1. Seleccione el archivo de excel (xls) y el tipo de remesa:
           </h2>
+          <h3>
+            Tipo de remesa:
+          </h3>
+          <p:selectOneMenu id="tipoCarga" value="#{nuevaCargaBean.idTipoSeleccionado}" style="width:200px" required="true" requiredMessage="Seleccione el tipo de carga">
+            <f:selectItem itemLabel="" itemValue="0" />
+            <f:selectItems value="#{nuevaCargaBean.listaTipos}" var="tipoCarga" itemLabel="#{tipoCarga.tipo}" itemValue="#{tipoCarga.id}" />
+            <p:ajax event="change" listener="#{nuevaCargaBean.guardarTipo()}" update=":growl, @this" />
+          </p:selectOneMenu>
+          <br />
+          <br />
           <p:fileUpload 
             value="#{nuevaCargaBean.archivo}"
             fileUploadListener="#{nuevaCargaBean.eventoDeCarga}" 
@@ -48,15 +58,8 @@
             fileLimit="1" fileLimitMessage="Error. Solo se puede cargar 1 archivo." 
             allowTypes="/(\.|\/)(xls)$/" invalidFileMessage="Error. Solo se permiten archivos con extension xls." 
             auto="false" 
-            process="@this" 
-            update="@all"
             style="width: 450px;" 
             />
-          <br />
-          <br />
-          <p:selectOneMenu id="tipoCarga" value="#{nuevaCargaBean.tipoSeleccionado}" style="width:200px" required="true" requiredMessage="Seleccione el tipo de carga">
-            <f:selectItems value="#{nuevaCargaBean.listaTipos}" var="t" itemLabel="#{t.tipo}" itemValue="#{t.idTipo}" />
-          </p:selectOneMenu>
         </h:form>
         <h:form id="leyendaPaso1Carga" rendered="#{nuevaCargaBean.leyendaCargaExitosa}">
           <h:outputText value="Paso 1 completado. Archivo xls cargado al servidor." style="font-size: 30px; color: #00CC33; font-family: 'Open Sans',sans-serif;" />
@@ -68,7 +71,7 @@
           <h4>
             En este paso se revisa el archivo cargado y se validan los datos de los creditos que se encuentren.
           </h4>
-          <p:commandButton value="Validar" icon="ui-icon-check" actionListener="#{nuevaCargaBean.validarCreditos()}" update="@all" />
+          <p:commandButton value="Validar" icon="ui-icon-check" actionListener="#{nuevaCargaBean.validarCreditos()}" />
         </h:form>
         <h:form id="leyendaPaso2Carga" rendered="#{nuevaCargaBean.leyendaValidacionExitosa}">
           <h:outputText value="#{nuevaCargaBean.creditosEncontrados}" style="font-size: 30px; color: #00CC33; font-family: 'Open Sans',sans-serif;" />
@@ -80,7 +83,7 @@
           <h4>
             En este paso se clasifican los creditos y se preparan para actualizarlos, registrarlos o eliminarlos del sistema.
           </h4>
-          <p:commandButton value="Clasificar" icon="ui-icon-shuffle" actionListener="#{nuevaCargaBean.mostrarClasificacion()}" update="@all" />
+          <p:commandButton value="Clasificar" icon="ui-icon-shuffle" actionListener="#{nuevaCargaBean.mostrarClasificacion()}" />
         </h:form>
         <h:form id="leyendaPaso3Carga" rendered="#{nuevaCargaBean.leyendaConteoExitoso}">
           <p:dataTable var="creds" value="#{nuevaCargaBean.listaCreditosClasificados}" emptyMessage="No existen creditos en el conteo" style="width: 510px;">

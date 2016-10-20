@@ -71,7 +71,7 @@
               </p:column>
               <p:column headerText="Saldo vencido" style="width:100px;">
                 <h:outputText value="#{c.monto}">
-                  <f:convertNumber  maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
+                  <f:convertNumber locale="es-MX" maxFractionDigits="2" currencySymbol="$" minFractionDigits="2" type="currency" />
                 </h:outputText>
               </p:column>
               <p:column headerText="Gestor actual" style="width:100px;"> 

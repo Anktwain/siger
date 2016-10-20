@@ -33,6 +33,7 @@ import impl.GestionIMPL;
 import impl.InstitucionIMPL;
 import impl.MunicipioIMPL;
 import impl.ProductoIMPL;
+import impl.RemesaIMPL;
 import impl.SubproductoIMPL;
 import impl.ZonaIMPL;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import util.constantes.Devoluciones;
 import util.constantes.Perfiles;
 import util.log.Logs;
 
@@ -172,14 +174,14 @@ public class BusquedaBean implements Serializable {
       List<Credito> listaCreds;
       if (municipioSeleccionado.getIdMunicipio() == 0) {
         if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_estado = " + estadoSeleccionado.getIdEstado() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_estado = " + estadoSeleccionado.getIdEstado() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "));";
           listaCreds = creditoDao.busquedaEspecialCreditos(consulta);
         } else {
           listaCreds = creditoDao.buscarCreditosPorEstado(estadoSeleccionado.getIdEstado());
         }
       } else {
         if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_municipio = " + municipioSeleccionado.getIdMunicipio() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+          String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto IN (SELECT id_sujeto FROM direccion WHERE id_direccion IN (SELECT id_direccion FROM direccion WHERE id_municipio = " + municipioSeleccionado.getIdMunicipio() + "))) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "));";
           listaCreds = creditoDao.busquedaEspecialCreditos(consulta);
         } else {
           listaCreds = creditoDao.buscarCreditosPorMunicipio(municipioSeleccionado.getIdMunicipio());
@@ -221,9 +223,10 @@ public class BusquedaBean implements Serializable {
 
   // METODO QUE OBTIENE LOS CREDITOS POR UN RANGO ESPECIFICO DE SU SALDO VENCIDO
   public void obtenerCreditosPorSaldoVencido() {
+    creditoSeleccionado = new Credito();
     listaCreditos2.clear();
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE saldo_vencido > " + saldoInferior + " AND saldo_vencido < " + saldoSuperior + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE saldo_vencido > " + saldoInferior + " AND saldo_vencido < " + saldoSuperior + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "));";
       listaCreditos2 = creditoDao.busquedaEspecialCreditos(consulta);
     } else {
       listaCreditos2 = creditoDao.buscarCreditosPorSaldoVencido(saldoInferior, saldoSuperior);
@@ -231,9 +234,10 @@ public class BusquedaBean implements Serializable {
   }
 
   public void obtenerCreditosPorMesesVencidos() {
+    creditoSeleccionado = new Credito();
     listaCreditos2.clear();
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
-      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE meses_vencidos = " + mesesVencidos + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion);";
+      String consulta = "SELECT DISTINCT * FROM credito WHERE id_credito IN (SELECT id_credito FROM actualizacion WHERE meses_vencidos = " + mesesVencidos + " ORDER BY id_actualizacion DESC) AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "));";
       listaCreditos2 = creditoDao.busquedaEspecialCreditos(consulta);
     } else {
       listaCreditos2 = creditoDao.buscarCreditosPorMesesVencidos(mesesVencidos);
@@ -261,27 +265,17 @@ public class BusquedaBean implements Serializable {
 
   // METODO QUE PREPARA LOS COMBOS CON LOS SUBPRODUCTOS SEGUN EL PRODUCTO SELECCIONADO
   public void preparaSubproductos() {
-    // CAMBIO EN ETAPA DE PRUEBAS
-    // EN CASO DE NO SER APROBADO, DESCOMENTAR ESTE CODIGO Y ELIMNAR EL BLOQUE INMEDIATO INFERIOR
-    /*
-     listaSubproductos = subproductoDao.buscarSubproductosPorProducto(productoSeleccionado.getIdProducto());
-     */
     listaSubproductos = subproductoDao.buscarSubproductosPorFamilia(familiaSeleccionada);
   }
 
   // METODO QUE OBTIENE LOS CREDITOS DE LOS PRODUCTOS SELECCIONADOS
   public void obtenerCreditosPorProductosCampana() {
+    creditoSeleccionado = new Credito();
     listaCreditos2.clear();
     if (institucionSeleccionada.getIdInstitucion() == 0) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "Debe seleccionar una institucion."));
     } else {
-      String consulta = "SELECT * FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion)";
-
-      /*
-       if (productoSeleccionado.getIdProducto() == 0) {
-       consulta = consulta + " AND id_producto IN (SELECT id_producto FROM producto WHERE id_institucion = " + institucionSeleccionada.getIdInstitucion() + ")";
-       }
-       */
+      String consulta = "SELECT * FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "))";
       if (!familiaSeleccionada.equals("0")) {
         consulta = consulta + " AND id_producto IN (SELECT id_producto FROM producto WHERE familia = '" + familiaSeleccionada + "')";
       }
@@ -337,10 +331,13 @@ public class BusquedaBean implements Serializable {
     }
   }
 
+  // TO FIX:
+  // SE MARCAN CUENTAS DE COLOR VERDE COMO ULTIMAS SIN GESTIONAR
   // METODO QUE OBTIENE LOS CREDITOS SEGUN LA FRECUENCIA DE GESTION SELECCIONADA
   public void obtenerCreditosPorFrecuenciaGestion() {
+    creditoSeleccionado = new Credito();
     listaCreditos2.clear();
-    String consulta = "SELECT * FROM gestion WHERE id_credito NOT IN (SELECT id_credito FROM devolucion)";
+    String consulta = "SELECT * FROM gestion WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "))";
     if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
       consulta = consulta + " AND id_usuario = " + indexBean.getUsuario().getIdUsuario() + " AND id_credito IN (SELECT id_credito FROM credito WHERE id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + "))";
     } else {
@@ -354,6 +351,19 @@ public class BusquedaBean implements Serializable {
       }
     }
     Collections.reverse(listaCreditos2);
+  }
+
+  // METODO QUE OBTIENE LOS CREDITOS QUE LLEGARON EN LA ULTIMA REMESA
+  public void obtenerCreditosUltimaRemesa() {
+    creditoSeleccionado = new Credito();
+    listaCreditos2.clear();
+    String consulta = "SELECT * FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + ")) AND id_credito IN (SELECT id_credito FROM actualizacion WHERE id_remesa = " + new RemesaIMPL().buscarRemesaActual() + ")";
+    if (indexBean.getUsuario().getPerfil() == Perfiles.GESTOR) {
+      consulta = consulta + " AND id_gestor = (SELECT id_gestor FROM gestor WHERE id_usuario = " + indexBean.getUsuario().getIdUsuario() + ");";
+    } else {
+      consulta = consulta + " AND id_gestor IN (SELECT id_gestor FROM gestor WHERE id_usuario IN (SELECT id_usuario FROM usuario WHERE id_despacho = " + indexBean.getUsuario().getDespacho().getIdDespacho() + "));";
+    }
+    listaCreditos2 = creditoDao.busquedaEspecialCreditos(consulta);
   }
 
   // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO DIRECCION
@@ -381,7 +391,7 @@ public class BusquedaBean implements Serializable {
   // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO
   public void abrirDetalleCredito() {
     if (creditoSeleccionado != null) {
-      Credito c = creditoDao.buscarCreditoPorId(creditoSeleccionado.getIdCredito());
+      Credito c = creditoDao.buscar(creditoSeleccionado.getNumeroCredito());
       if (c != null) {
         creditoActualBean.setCreditoActual(c);
         try {
@@ -396,7 +406,7 @@ public class BusquedaBean implements Serializable {
         }
       }
     } else {
-      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No ha seleccionado ningun credito"));
+      Logs.log.error("No se \"selecciono\" ningun credito.");
     }
   }
 

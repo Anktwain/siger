@@ -59,5 +59,6 @@
     <mapping resource="mapeo/Devolucion.hbm.xml"/>
     <mapping resource="mapeo/Impresion.hbm.xml"/>
     <mapping resource="mapeo/Ajuste.hbm.xml"/>
+    <mapping/>
   </session-factory>
 </hibernate-configuration>

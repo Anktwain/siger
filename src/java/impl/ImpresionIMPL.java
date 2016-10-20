@@ -94,23 +94,6 @@ public class ImpresionIMPL implements ImpresionDAO {
   }
 
   @Override
-  public Number calcularVisitasDomiciliariasPorDespacho(int idDespacho) {
-    Session sesion = HibernateUtil.getSessionFactory().openSession();
-    Number visitas;
-    String consulta = "SELECT COUNT(*) FROM impresion WHERE id_impresion NOT IN (SELECT id_impresion FROM detalle_visita) AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ") AND tipo_impresion = " + Impresiones.VISITA_DOMICILIARIA + ";";
-    try {
-      visitas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
-    } catch (HibernateException he) {
-      visitas = -1;
-      Logs.log.error(consulta);
-      Logs.log.error(he.getMessage());
-    } finally {
-      cerrar(sesion);
-    }
-    return visitas;
-  }
-
-  @Override
   public Number calcularVisitasDomiciliariasPorGestor(int idDespacho, int idUsuario) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     Number visitas;
@@ -175,6 +158,23 @@ public class ImpresionIMPL implements ImpresionDAO {
       cerrar(sesion);
     }
     return impresiones;
+  }
+
+  @Override
+  public Number contarImpresionesPorDespacho(int idDespacho) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number visitas;
+    String consulta = "SELECT COUNT(*) FROM impresion WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + ");";
+    try {
+      visitas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      visitas = -1;
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return visitas;
   }
 
   private void cerrar(Session sesion) {

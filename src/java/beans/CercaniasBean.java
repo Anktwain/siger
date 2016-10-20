@@ -55,12 +55,12 @@ public class CercaniasBean implements Serializable {
   }
 
   // METODO QUE CARGA LOS DATOS DE INICIO
-  public final void cargarDatos() {
+  private void cargarDatos() {
     checarDirecciones();
   }
 
   // METODO QUE VERIFICA SI HAY DIRECCIONES DIFERENTES
-  public final void checarDirecciones() {
+  private void checarDirecciones() {
     habilitaDirecciones = !listaVisitasBean.getListaDireccionesEncontradas().isEmpty();
   }
 

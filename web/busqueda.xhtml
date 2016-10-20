@@ -133,36 +133,39 @@
             </p:tab>
             <p:tab title="Busqueda por saldo vencido">
               Introduzca el rango en el que se buscara
-              <p:inputText value="#{busquedaBean.saldoInferior}" type="number" style="width: 100px;" /> &lt; Saldo vencido &lt; <p:inputText value="#{busquedaBean.saldoSuperior}" type="number" style="width: 100px;" />
+              <p:spinner value="#{busquedaBean.saldoInferior}" stepFactor="10000" size="10" /> &lt; Saldo vencido &lt; <p:spinner value="#{busquedaBean.saldoSuperior}" stepFactor="10000" size="10" />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorSaldoVencido()}" update="busquedaPorSaldoVencido" />
               <br />
               <br />
               <p:contextMenu for="busquedaPorSaldoVencido" style="width:200px;">
-                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{busquedaBean.abrirDetalleCredito()}" />
+                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{busquedaBean.abrirDetalleCredito()}"  />
               </p:contextMenu>
               <p:dataTable id="busquedaPorSaldoVencido" var="c3" value="#{busquedaBean.listaCreditos2}" rowKey="#{c3.idCredito}" selection="#{busquedaBean.creditoSeleccionado}" selectionMode="single" emptyMessage="No existen creditos con este rango de saldo vencido." paginator="true" rows="15" paginatorPosition="bottom">
-                <p:column headerText="Credito" style="width:100px;">
+                <p:column headerText="Credito" style="width:90px;">
                   <h:outputText value="#{c3.numeroCredito}" />
                 </p:column>
                 <p:column headerText="Deudor" style="width:400px;">
                   <h:outputText value="#{c3.deudor.sujeto.nombreRazonSocial}" />
                 </p:column>
-                <p:column headerText="Institucion" style="width:100px;">
+                <p:column headerText="Institucion" style="width:90px;">
                   <h:outputText value="#{c3.producto.institucion.nombreCorto}" />
                 </p:column>
-                <p:column headerText="Gestor" style="width:100px;">
+                <p:column headerText="Producto" style="width:220px;">
+                  <h:outputText value="#{c3.subproducto.nombre}" />
+                </p:column>
+                <p:column headerText="Gestor" style="width:90px;">
                   <h:outputText value="#{c3.gestor.usuario.nombreLogin}" />
                 </p:column>
                 <p:column headerText="Saldo vencido" style="width:100px;">
                   <h:outputText value="#{busquedaBean.obtenerSaldoVencido(c3.idCredito)}">
-                    <f:convertNumber type="currency" currencySymbol="$" />
+                    <f:convertNumber locale="es-MX" type="currency" currencySymbol="$" />
                   </h:outputText>
                 </p:column>
+                <f:facet name="footer">
+                  <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampana(busquedaBean.listaCreditos2)}" />
+                </f:facet>
               </p:dataTable>
-              <f:facet name="footer">
-                <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampana(busquedaBean.listaCreditos2)}" />
-              </f:facet>
             </p:tab>
             <p:tab title="Busqueda por tiempo con adeudo">
               Elija la cantidad de meses vencidos
@@ -203,7 +206,7 @@
                 </p:column>
                 <p:column headerText="Saldo vencido" style="width:100px;">
                   <h:outputText value="#{busquedaBean.obtenerSaldoVencido(c4.idCredito)}">
-                    <f:convertNumber type="currency" currencySymbol="$" />
+                    <f:convertNumber locale="es-MX" type="currency" currencySymbol="$" />
                   </h:outputText>
                 </p:column>
                 <p:column headerText="Meses vencidos" style="width:100px;">
@@ -220,24 +223,10 @@
               <p:selectOneMenu value="#{busquedaBean.institucionSeleccionada.idInstitucion}">
                 <f:selectItem itemLabel="" itemValue="0" />
                 <f:selectItems value="#{busquedaBean.listaInstituciones}" var="i" itemLabel="#{i.sujeto.nombreRazonSocial}" itemValue="#{i.idInstitucion}" />
-                <!-- CAMBIO EN ETAPA DE PRUEBAS -->
-              <!-- EN CASO DE NO SER APROBADO, DESCOMENTAR ESTE CODIGO Y ELIMNAR EL BLOQUE INMEDIATO INFERIOR -->
-                <!-- <p:ajax update="productoBusqueda" listener="{busquedaBean.preparaProductos()}" /> -->
                 <p:ajax update="familiaProductoBusqueda" listener="#{busquedaBean.preparaFamiliaProductos()}" />
               </p:selectOneMenu>
               <br />
               <br />
-              <!-- CAMBIO EN ETAPA DE PRUEBAS -->
-              <!-- EN CASO DE NO SER APROBADO, DESCOMENTAR ESTE CODIGO Y ELIMNAR EL BLOQUE INMEDIATO INFERIOR -->
-              <!--
-              Seleccione el producto:
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <p:selectOneMenu id="productoBusqueda" value="{busquedaBean.productoSeleccionado.idProducto}">
-                <f:selectItem itemLabel="Todos" itemValue="0" />
-                <f:selectItems value="{busquedaBean.listaProductos}" var="p" itemLabel="{p.nombre}" itemValue="{p.idProducto}" />
-                <p:ajax update="subproductoBusqueda" listener="{busquedaBean.preparaSubproductos()}" />
-              </p:selectOneMenu>
-              -->
               Seleccione la familia de productos:
               &nbsp;&nbsp;&nbsp;&nbsp;
               <p:selectOneMenu id="familiaProductoBusqueda" value="#{busquedaBean.familiaSeleccionada}">
@@ -273,7 +262,7 @@
               </p:selectOneMenu>
               <br />
               <br />
-              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorProductosCampana()}" update=":growl, busquedaPorProducto" />
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorProductosCampana()}" update="busquedaPorProducto" />
               <br />
               <br />
               <p:contextMenu for="busquedaPorProducto" style="width:200px;">
@@ -304,7 +293,7 @@
               NOTA: Esta busqueda ordena los creditos en base a la ultima gestion realizada. Es decir: el primer credito de la lista es el que tiene mas tiempo sin gestionar y el ultimo es el que se ha gestionado mas recientemente.
               <br />
               <br />
-              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorFrecuenciaGestion()}" update=":growl, busquedaPorFrecuencia" />
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosPorFrecuenciaGestion()}" update="busquedaPorFrecuencia" />
               <br />
               <br />
               <p:contextMenu for="busquedaPorFrecuencia" style="width:200px;">
@@ -330,7 +319,38 @@
                   <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampana(busquedaBean.listaCreditos2)}" />
                 </f:facet>
               </p:dataTable>
-            </p:tab>  
+            </p:tab>
+            <p:tab title="Busqueda de cuentas ultima remesa">
+              NOTA: Esta busqueda traera a los creditos nuevos que llegaron en la ultima remesa cargada al sistema.
+              <br />
+              <br />
+              <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{busquedaBean.obtenerCreditosUltimaRemesa()}" update="busquedaNuevaRemesa" />
+              <br />
+              <br />
+              <p:contextMenu for="busquedaNuevaRemesa" style="width:200px;">
+                <p:menuitem value="Ver Detalle" icon="ui-icon-check" actionListener="#{busquedaBean.abrirDetalleCredito()}" />
+              </p:contextMenu>
+              <p:dataTable id="busquedaNuevaRemesa" var="c7" value="#{busquedaBean.listaCreditos2}" rowKey="#{c7.idCredito}" selection="#{busquedaBean.creditoSeleccionado}" selectionMode="single" emptyMessage="No existen creditos con los criterios seleccionados." paginator="true" rows="15" paginatorPosition="bottom">
+                <p:column headerText="Credito" style="width:100px;">
+                  <h:outputText value="#{c7.numeroCredito}" />
+                </p:column>
+                <p:column headerText="Deudor" style="width:400px;">
+                  <h:outputText value="#{c7.deudor.sujeto.nombreRazonSocial}" />
+                </p:column>
+                <p:column headerText="Institucion" style="width:100px;">
+                  <h:outputText value="#{c7.producto.institucion.nombreCorto}" />
+                </p:column>
+                <p:column headerText="Producto" style="width:200px;">
+                  <h:outputText value="#{c7.subproducto.nombre}" />
+                </p:column>
+                <p:column headerText="Gestor" style="width:100px;">
+                  <h:outputText value="#{c7.gestor.usuario.nombreLogin}" />
+                </p:column>
+                <f:facet name="footer">
+                  <p:commandButton value="Gestionar como campaña" icon="ui-icon-bookmark" actionListener="#{busquedaBean.generarCampana(busquedaBean.listaCreditos2)}" />
+                </f:facet>
+              </p:dataTable>
+            </p:tab>
           </p:accordionPanel>
         </h:form>
       </div>  

@@ -7,6 +7,7 @@ package impl;
 
 import dao.DevolucionDAO;
 import dto.Devolucion;
+import dto.Remesa;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.HibernateException;
@@ -182,6 +183,24 @@ public class DevolucionIMPL implements DevolucionDAO {
     } finally {
       cerrar(sesion);
       ok = bandeja.isEmpty();
+    }
+    return ok;
+  }
+
+  @Override
+  public boolean esReactivadoRemesaActual(int idCredito) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Devolucion> reactivados = new ArrayList();
+    boolean ok;
+    String consulta = "SELECT * FROM devolucion WHERE id_credito = " + idCredito + " AND estatus = " + Devoluciones.CONSERVADO + " AND fecha = '" + new RemesaIMPL().obtenerUltimaRemesa().getFechaCarga() + "' AND observaciones LIKE 'Reactivada%';";
+    try {
+      reactivados = sesion.createSQLQuery(consulta).addEntity(Devolucion.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+      ok = reactivados.isEmpty();
     }
     return ok;
   }

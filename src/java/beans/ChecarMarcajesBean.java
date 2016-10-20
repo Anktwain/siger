@@ -127,4 +127,14 @@ public class ChecarMarcajesBean implements Serializable {
       return "Inactivo";
     }
   }
+  
+  // METODO QUE VERIFICA SI EL CREDITO SE REACTIVO EN ESTA ASIGNACION
+  public String verificaReactivacion(){
+    if(devolucionDao.esReactivadoRemesaActual(creditoActual.getIdCredito())){
+      return "";
+    }else{
+      return "Reactivado remesa actual";
+    }
+  }
+  
 }

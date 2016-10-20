@@ -33,4 +33,6 @@ public interface Marcajes {
   
   public static final int QUEBRANTO = 11;
   
+  public static final int PERMANENCIA = 12;
+  
 }

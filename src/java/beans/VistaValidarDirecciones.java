@@ -187,7 +187,8 @@ public class VistaValidarDirecciones implements Serializable {
     d.setEstadoRepublica(nuevoEstado);
     d.setMunicipio(nuevoMunicipio);
     d.setSujeto(sujetoDao.buscar(direccionSeleccionada.getIdSujeto()));
-    // VERIFICAR SI LA DIRECCION YA EXISTE PARA ESE CREDITO, DE SER ASI YA NO INSERTARLA
+    // TO FIX:
+    // AGREGAR UN MODULO PARA VERIFICAR SI LA DIRECCION YA EXISTE PARA ESE CREDITO, DE SER ASI YA NO INSERTARLA
     if (direccionDao.insertar(d) != null) {
       if (borrarDireccionDeArchivo()) {
         nuevaColonia = new Colonia();

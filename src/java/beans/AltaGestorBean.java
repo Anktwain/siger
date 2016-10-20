@@ -148,7 +148,7 @@ public class AltaGestorBean implements Serializable {
               "Se agrego el usuario correctamente al sistema. Espere instrucciones del administrador."));
       externalContext.getFlash().setKeepMessages(true);
       try {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("/SigerWeb");
       } catch (IOException ioe) {
         Logs.log.error("No se pudo redirigir al index");
         Logs.log.error(ioe);
