@@ -28,4 +28,6 @@ public interface ColoniaDAO {
   
   public List<String> obtenerTiposColonia();
   
+  public List<Colonia> busquedaEspecialColonias(String consulta);
+  
 }

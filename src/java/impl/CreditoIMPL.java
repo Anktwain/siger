@@ -572,6 +572,94 @@ public class CreditoIMPL implements CreditoDAO {
     return creditos;
   }
 
+  @Override
+  public List<Credito> buscarCreditosPorSujeto(int idSujeto) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Credito> creditos = new ArrayList();
+    String consulta = "SELECT * FROM credito WHERE id_deudor IN (SELECT id_deudor FROM deudor WHERE id_sujeto = " + idSujeto + ");";
+    try {
+      creditos = sesion.createSQLQuery(consulta).addEntity(Credito.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return creditos;
+  }
+
+  @Override
+  public int contarCreditosActivosSinQuebrantoPermanenciaPorGestor(int idDespacho, int idGestor) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number cuentas;
+    String consulta = "SELECT COUNT(*) FROM credito WHERE id_despacho = " + idDespacho + " AND id_gestor = " + idGestor + " AND id_marcaje NOT IN (" + Marcajes.PERMANENCIA + ", " + Marcajes.QUEBRANTO + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "));";
+    try {
+      cuentas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      cuentas = -1;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return cuentas.intValue();
+  }
+
+  @Override
+  public int contarCreditosActivosQuebrantoPermanenciaPorGestor(int idDespacho, int idGestor) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number cuentas;
+    String consulta = "SELECT COUNT(*) FROM credito WHERE id_despacho = " + idDespacho + " AND id_gestor = " + idGestor + " AND id_marcaje IN (" + Marcajes.PERMANENCIA + ", " + Marcajes.QUEBRANTO + ") AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "));";
+    try {
+      cuentas = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      cuentas = -1;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return cuentas.intValue();
+  }
+
+  @Override
+  public float calcularMontoPorRecuperarSinQuebrantoPermanenciaGestor(int idDespacho, int idGestor) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number saldoVencido;
+    String consulta = "SELECT ROUND(SUM(saldo_vencido), 2) FROM actualizacion WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + " AND id_gestor = " + idGestor + " AND id_marcaje NOT IN (" + Marcajes.PERMANENCIA + ", " + Marcajes.QUEBRANTO + ")) AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "));";
+    try {
+      saldoVencido = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+      if (saldoVencido == null) {
+        saldoVencido = 0;
+      }
+    } catch (HibernateException he) {
+      saldoVencido = -1;
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return saldoVencido.floatValue();
+  }
+
+  @Override
+  public float calcularMontoPorRecuperarQuebrantoPermanenciaGestor(int idDespacho, int idGestor) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number saldoVencido;
+    String consulta = "SELECT ROUND(SUM(saldo_vencido), 2) FROM actualizacion WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + idDespacho + " AND id_gestor = " + idGestor + " AND id_marcaje IN (" + Marcajes.PERMANENCIA + ", " + Marcajes.QUEBRANTO + ")) AND id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus IN (" + Devoluciones.DEVUELTO + ", " + Devoluciones.PENDIENTE + "));";
+    try {
+      saldoVencido = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+      if (saldoVencido == null) {
+        saldoVencido = 0;
+      }
+    } catch (HibernateException he) {
+      saldoVencido = -1;
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return saldoVencido.floatValue();
+  }
+
   private void cerrar(Session sesion) {
     if (sesion.isOpen()) {
       sesion.close();

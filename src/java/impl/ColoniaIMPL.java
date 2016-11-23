@@ -90,7 +90,7 @@ public class ColoniaIMPL implements ColoniaDAO {
   public List<Colonia> buscarPorCodigoPostal(String cp) {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Colonia> colonias;
-    String consulta = "SELECT * FROM colonia WHERE codigo_postal = '" + cp + "';";
+    String consulta = "SELECT * FROM colonia WHERE codigo_postal = '" + cp + "' ORDER BY nombre ASC;";
     try {
       colonias = sesion.createSQLQuery(consulta).addEntity(Colonia.class).list();
     } catch (HibernateException he) {
@@ -137,6 +137,21 @@ public class ColoniaIMPL implements ColoniaDAO {
       cerrar(sesion);
     }
     return asentamientos;
+  }
+
+  @Override
+  public List<Colonia> busquedaEspecialColonias(String consulta) {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Colonia> colonias = new ArrayList();
+    try {
+      colonias = sesion.createSQLQuery(consulta).addEntity(Colonia.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return colonias;
   }
 
   private void cerrar(Session sesion) {

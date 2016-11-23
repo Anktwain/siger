@@ -7,7 +7,6 @@
       xmlns="http://www.w3.org/1999/xhtml">
   <h:head>
     <meta charset="utf-8"></meta>
-    <h:outputStylesheet library="css" name="colorFilas.css" />
   </h:head>
   <h:body>
     <p:growl id="growl" showDetail="true" sticky="true" />
@@ -29,11 +28,10 @@
                   Subproducto: <p:outputLabel value="#{vistaCreditoBean.creditoActual.subproducto.nombre}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
                 </strong>
               </h4>
-              <h5>
-                <strong>
-                  Direccion:
-                </strong>
-              </h5>
+                <p:commandButton icon="ui-icon-plus" oncomplete="PF('dialogoTodasDirecciones').show();" update="todasDireccionesForm" style="width: 20px; height: 20px;" rendered="#{vistaCreditoBean.habilitaMasDirecciones}" />
+              &nbsp;&nbsp;
+              <p:outputLabel value="Direccion principal:" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <br />
               <p:outputLabel value="#{vistaCreditoBean.calleNumero}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
               <p:outputLabel value="#{vistaCreditoBean.coloniaMunicipio}" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
@@ -47,11 +45,10 @@
               </h5>
               <p:outputLabel value="#{vistaCreditoBean.telefono}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
-              <h5>
-                <strong>
-                  Telefono principal:
-                </strong>
-              </h5>
+              <p:commandButton icon="ui-icon-plus" oncomplete="PF('dialogoTodosTelefonos').show();" update="todosTelefonosForm" style="width: 20px; height: 20px;" rendered="#{vistaCreditoBean.habilitaMasTelefonos}" />
+              &nbsp;&nbsp;
+              <p:outputLabel value="Telefono principal:" style="font-size: 14px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <br />
               <p:outputLabel value="#{vistaCreditoBean.telefonoPrincipal}" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
               <br />
               <h5>
@@ -267,7 +264,7 @@
                       <p:menuitem value="Editar" icon="ui-icon-wrench" actionListener="#{vistaCreditoBean.prepararDireccion()}" oncomplete="PF('dialogoEditarDireccion').show();" update="editarDireccionForm" />
                       <p:menuitem value="Generar carta (visita)" icon="ui-icon-document" oncomplete="PF('dialogoImpresionVisitas').show();" />
                     </p:contextMenu>
-                    <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" selection="#{vistaCreditoBean.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idDireccion}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" rowStyleClass="#{d.validada eq 0 ? 'sinValidar' : null}">
+                    <p:dataTable id="tablaDireccionesDetalleCredito" var="d" value="#{vistaCreditoBean.listaDirecciones}" selection="#{vistaCreditoBean.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idDireccion}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
                       <p:column headerText="Calle y numero" style="width:300px;" > 
                         <h:outputText value="#{d.calle} #{d.exterior} #{d.interior}"/>
                       </p:column>
@@ -284,10 +281,39 @@
                         <h:outputText value="#{d.colonia.codigoPostal}"/>
                       </p:column>
                       <f:facet name="footer">
-                          Las direcciones que no han sido validadas se visualizaran en color rojo. Para validarla edite la direccion.
-                          <br />
                         <p:commandButton value="Agregar nueva direccion" icon="ui-icon-plus" oncomplete="PF('dialogoNuevaDireccion').show();" />
                       </f:facet>
+                    </p:dataTable>
+                  </p:tab>
+                  <p:tab title="Direcciones (Historico)" rendered="#{vistaCreditoBean.habilitaDireccionesHistorico}">
+                    <p:contextMenu for="tablaDireccionesSinValidarDetalleCredito" style="width:200px;">
+                      <p:menuitem value="Editar" icon="ui-icon-wrench" actionListener="#{vistaCreditoBean.prepararDireccionSinValidar()}" oncomplete="PF('dialogoEditarDireccionSinValidar').show();" update=":editarDireccionSinValidarForm" />
+                    </p:contextMenu>
+                    <p:dataTable id="tablaDireccionesSinValidarDetalleCredito" var="dsv" value="#{vistaCreditoBean.listaDireccionesSinValidar}" selection="#{vistaCreditoBean.direccionSinValidarSeleccionada}" selectionMode="single" rowKey="#{dsv.idDireccionTexto}" emptyMessage="No existen direcciones por validar asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom">
+                      <p:column headerText="Fecha adicion" style="width:90px;">
+                        <h:outputText value="#{dsv.fecha}" />
+                      </p:column>
+                      <p:column headerText="Calle" style="width:200px;">
+                        <h:outputText value="#{dsv.calle}" />
+                      </p:column>
+                      <p:column headerText="Exterior" style="width:60px;">
+                        <h:outputText value="#{dsv.exterior}" />
+                      </p:column>
+                      <p:column headerText="Interior" style="width:60px;">
+                        <h:outputText value="#{dsv.interior}" />
+                      </p:column>
+                      <p:column headerText="Colonia" style="width:150px;">
+                        <h:outputText value="#{dsv.colonia}" />
+                      </p:column>
+                      <p:column headerText="Municipio" style="width:140px;" > 
+                        <h:outputText value="#{dsv.municipio}"/>
+                      </p:column>
+                      <p:column headerText="Estado" style="width:140px;"> 
+                        <h:outputText value="#{dsv.estado}"/>
+                      </p:column>
+                      <p:column headerText="C.P." style="width:50px;" > 
+                        <h:outputText value="#{dsv.codigoPostal}"/>
+                      </p:column>
                     </p:dataTable>
                   </p:tab>
                   <p:tab title="Telefonos">
@@ -849,12 +875,126 @@
       <br />
       <br />
       <div align="center">
-        <h:outputText value="La direccion aun no ha sido validada." style="color: #FF0000" rendered="#{vistaCreditoBean.verificarValidada()}" />
-        <br />
-        <br />
         <p:commandButton value="Editar direccion" icon="ui-icon-pencil" actionListener="#{vistaCreditoBean.editarDireccion()}" oncomplete="PF('dialogoEditarDireccion').hide();" update=":growl, DetalleCredito, visitasForm" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoEditarDireccion').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA AGREGAR UNA DIRECCION SIN VALIDAR-->
+  <p:dialog id="dlgEditarDireccionSinValidar" widgetVar="dialogoEditarDireccionSinValidar" modal="true" resizable="false" header="Editar direccion para validacion">
+    <h:form id="editarDireccionSinValidarForm">
+      De lado izquierdo aparecera el dato obtenido de la remesa, de lado derecho aparecera una sugerencia
+      <br />
+      (si es el caso) a partir de los datos obtenidos.
+      <br />
+      <br />
+      <div align="center">
+        <p:outputPanel style="text-align:center;">
+          <p:panelGrid columns="3">
+            <h:outputText value="Calle:" />
+            <h:outputText value="#{vistaCreditoBean.direccionSinValidarSeleccionada.calle}" />
+            <p:inputText value="#{vistaCreditoBean.direccionPorValidar.calle}" size="30" maxlength="100" />
+            <h:outputText value="Num exterior:" />
+            <h:outputText value="#{vistaCreditoBean.direccionSinValidarSeleccionada.exterior}" />
+            <p:inputText value="#{vistaCreditoBean.direccionPorValidar.exterior}" size="5" maxlength="20" />
+            <h:outputText value="Num interior:" />
+            <h:outputText value="#{vistaCreditoBean.direccionSinValidarSeleccionada.interior}" />
+            <p:inputText value="#{vistaCreditoBean.direccionPorValidar.interior}" size="5" maxlength="20" />
+            <h:outputText value="Colonia:" />
+            <h:outputText value="#{vistaCreditoBean.direccionSinValidarSeleccionada.colonia}" />
+            <p:selectOneMenu id="comboboxColoniasDireccionPorValidar" value="#{vistaCreditoBean.direccionPorValidar.colonia.idColonia}" filter="true" filterMatchMode="contains" style="width: 300px;">
+              <f:selectItems value="#{vistaCreditoBean.listaColonias}" var="col3" itemLabel="#{col3.tipo} #{col3.nombre}" itemValue="#{col3.idColonia}"/>
+            </p:selectOneMenu>
+            <h:outputText value="Municipio:" />
+            <h:outputText value="#{vistaCreditoBean.direccionSinValidarSeleccionada.municipio}" />
+            <p:selectOneMenu id="comboboxMunicipiosDireccionPorValidar" value="#{vistaCreditoBean.direccionPorValidar.municipio.idMunicipio}" filter="true" filterMatchMode="contains" style="width: 200px;">
+              <f:selectItems value="#{vistaCreditoBean.listaMunicipios}" var="m3" itemLabel="#{m3.nombre}" itemValue="#{m3.idMunicipio}"/>
+              <p:ajax listener="#{vistaCreditoBean.obtenerColonias(vistaCreditoBean.direccionPorValidar.municipio)}" update="comboboxColoniasDireccionPorValidar" />
+            </p:selectOneMenu>
+            <h:outputText value="Estado:" />
+            <h:outputText value="#{vistaCreditoBean.direccionSinValidarSeleccionada.estado}" />
+            <p:selectOneMenu value="#{vistaCreditoBean.estadoNuevaDireccion.idEstado}" style="width: 200px;">
+              <f:selectItems value="#{vistaCreditoBean.listaEstados}" var="e3" itemLabel="#{e3.nombre}" itemValue="#{e3.idEstado}" />
+              <p:ajax listener="#{vistaCreditoBean.obtenerMunicipios(vistaCreditoBean.direccionPorValidar.estadoRepublica)}" update="comboboxMunicipiosDireccionPorValidar, comboboxColoniasDireccionPorValidar" />
+            </p:selectOneMenu>
+            <h:outputText value="Codigo Postal:" />
+            <h:outputText value="#{vistaCreditoBean.direccionSinValidarSeleccionada.codigoPostal}" />
+            <h:outputText value="#{vistaCreditoBean.direccionPorValidar.colonia.codigoPostal}" />
+          </p:panelGrid>
+        </p:outputPanel>
+      </div>
+      <hr />
+      <div align="center">
+        <p:commandButton value="Buscador" icon="ui-icon-search" oncomplete="PF('buscadorColoniasDialog').show();" update=":growl" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Validar direccion" icon="ui-icon-check" actionListener="#{vistaCreditoBean.validarDireccion(vistaCreditoBean.direccionPorValidar.colonia.idColonia)}" oncomplete="PF('dialogoEditarDireccionSinValidar').hide();" update=":growl, DetalleCredito" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoEditarDireccionSinValidar').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA BUSCAR COLONIAS PARA VALIDAR UNA DIRECCION -->
+  <p:dialog id="dlgBuscadorColonias" widgetVar="buscadorColoniasDialog" modal="true" resizable="false" header="Buscador de colonias">
+    <h:form id="buscadorColoniasForm">
+      Estado:
+      &nbsp;&nbsp;
+      <p:selectOneMenu value="#{vistaCreditoBean.estadoBuscadorColonias.idEstado}" style="width: 200px;">
+        <f:selectItem itemLabel="Seleccione" itemValue="0" />
+        <f:selectItems value="#{vistaCreditoBean.listaEstados}" var="e" itemLabel="#{e.nombre}" itemValue="#{e.idEstado}" />
+        <p:ajax listener="#{vistaCreditoBean.obtenerMunicipios(vistaCreditoBean.estadoBuscadorColonias)}" update="comboboxMunicipiosBuscadorColonias" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Municipio:
+      &nbsp;&nbsp;
+      <p:selectOneMenu id="comboboxMunicipiosBuscadorColonias" value="#{vistaCreditoBean.municipioBuscadorColonias.idMunicipio}" filter="true" filterMatchMode="contains" style="width: 200px;">
+        <f:selectItem itemLabel="Seleccione" itemValue="0" />
+        <f:selectItems value="#{vistaCreditoBean.listaMunicipios}" var="m" itemLabel="#{m.nombre}" itemValue="#{m.idMunicipio}"/>
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Colonia:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.coloniaBusqueda}" size="20" maxlength="50" />
+      <br />
+      <br />
+      Codigo postal:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaCreditoBean.cpBusqueda}" size="10" maxlength="5" />
+      <hr />
+      <div align="center">
+        <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{vistaCreditoBean.buscarColonias()}" update="buscadorColoniasForm" />
+      </div>
+      <hr />
+      <p:contextMenu for="tablaColoniasBusqueda" style="width:300px;">
+        <p:menuitem value="Validar con esta colonia" icon="ui-icon-check" actionListener="#{vistaCreditoBean.validarDireccion(vistaCreditoBean.coloniaSeleccionadaBusqueda.idColonia)}" oncomplete="PF('buscadorColoniasDialog').hide(); PF('dialogoEditarDireccionSinValidar').hide();" update=":growl, DetalleCredito" />
+      </p:contextMenu>
+      <p:dataTable id="tablaColoniasBusqueda" var="tcb" value="#{vistaCreditoBean.listaColoniasBusqueda}" selection="#{vistaCreditoBean.coloniaSeleccionadaBusqueda}" selectionMode="single" rowKey="#{tcb.idColonia}" emptyMessage="No existen colonias para la busqueda especificada." paginator="true" paginatorAlwaysVisible="false" rows="5" paginatorPosition="bottom" style="width: 840px;" rendered="#{vistaCreditoBean.habilitaColonias}">
+        <f:facet name="header">
+          Colonias encontradas
+        </f:facet>
+        <p:column headerText="Estado" style="width:150px;" > 
+          <h:outputText value="#{tcb.municipio.estadoRepublica.nombre}"/>
+        </p:column>
+        <p:column headerText="Municipio" style="width:150px;" > 
+          <h:outputText value="#{tcb.municipio.nombre}"/>
+        </p:column>
+        <p:column headerText="Asentamiento" style="width:150px;" > 
+          <h:outputText value="#{tcb.tipo}"/>
+        </p:column>
+        <p:column headerText="Nombre" style="width:250px;" > 
+          <h:outputText value="#{tcb.nombre}"/>
+        </p:column>
+        <p:column headerText="Codigo Postal" style="width:100px;" > 
+          <h:outputText value="#{tcb.codigoPostal}"/>
+        </p:column>
+      </p:dataTable>
+      <hr />
+      <div align="center">
+        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('buscadorColoniasDialog').hide();" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('buscadorColoniasDialog').hide();" />
       </div>
     </h:form>
   </p:dialog>
@@ -937,6 +1077,30 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoEliminarDireccion').hide();" />
       </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA MOSTRAR TODAS LAS DIRECCIONES -->
+  <p:dialog widgetVar="dialogoTodasDirecciones" modal="true" resizable="false" header="Todas las direcciones en el sistema">
+    <h:form id="todasDireccionesForm">
+      <p:dataTable id="tablaTodasDireccionesDetalleCredito" var="td" value="#{vistaCreditoBean.listaDirecciones}" emptyMessage="No existen direcciones asociadas a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width: 350px;">
+        <p:column headerText="Direccion">
+          <h:outputText value="#{td.calle} #{td.exterior} #{td.interior}"/>
+          <br />
+          <h:outputText value="#{td.colonia.tipo} #{td.colonia.nombre}, #{td.municipio.nombre}"/>
+          <br />
+          <h:outputText value="#{td.estadoRepublica.nombre}. #{td.colonia.codigoPostal}"/>
+        </p:column>
+      </p:dataTable>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA MOSTRAR TODOS LOS TELEFONOS -->
+  <p:dialog widgetVar="dialogoTodosTelefonos" modal="true" resizable="false" header="Todos los telefonos en el sistema">
+    <h:form id="todosTelefonosForm">
+      <p:dataTable id="tablaTodosTelefonosDetalleCredito" var="tt" value="#{vistaCreditoBean.listaTelefonos}" emptyMessage="No existen numeros telefonicos asociados a este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width: 300px;">
+        <p:column headerText="Telefono" > 
+          <h:outputText value="#{tt.lada} - #{tt.numero}" />
+        </p:column>
+      </p:dataTable>
     </h:form>
   </p:dialog>
 </html>

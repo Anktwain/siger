@@ -57,12 +57,13 @@ public class EnviarCorreoGestiones {
       Session sesion = Session.getDefaultInstance(props, null);
       MimeMessage mensaje = new MimeMessage(sesion);
       mensaje.setFrom(new InternetAddress("eduardo.chavez@corporativodelrio.com"));
-      List<Email> destinatarios = emailDao.buscarCorreosInbursa();
-      if (!destinatarios.isEmpty()) {
-        for (int i = 1; i < (destinatarios.size()); i++) {
-          mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatarios.get(i).getDireccion()));
-        }
-      }
+      mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress("bvalenciab@inbursa.com"));
+      mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress("elugoc@inbursa.com"));
+      mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress("cavilam@inbursa.com"));
+      mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress("smendozas@inbursa.com"));
+      mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress("lfloresm@inbursa.com"));
+      mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress("savilesh@inbursa.com"));
+      mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress("vmendozac@inbursa.com"));
       mensaje.addRecipient(Message.RecipientType.CC, new InternetAddress("eduardo.chavez@corporativodelrio.com"));
       mensaje.addRecipient(Message.RecipientType.CC, new InternetAddress("lilia.delrio@corporativodelrio.com"));
       mensaje.setSubject("REPORTE SEMANAL DE GESTIONES");

@@ -16,9 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -71,8 +70,10 @@ public class PrepararReportesGestiones {
     EnviarCorreoGestiones ecg = new EnviarCorreoGestiones();
     ok = ok & (ecg.enviarCorreoInbursa(rutaCT, rutaNoCT));
     if (ok) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se enviaron los reportes de gestiones automaticamente."));
       Logs.log.info("Se enviaron los reportes de gestiones automaticamente.");
     } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se enviaron los reportes de gestiones. Contacte al equipo de sistemas."));
       Logs.log.error("No se enviaron los reportes de gestiones.");
     }
     return ok;

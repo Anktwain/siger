@@ -50,9 +50,9 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
+import util.GestionAutomatica;
 import util.carga.LectorArchivoDireccionesExcel;
 import util.carga.ValidadorDirecciones;
-import util.GestionAutomatica;
 import util.log.Logs;
 
 /**
@@ -162,8 +162,8 @@ public class ValidarDireccionesBean implements Serializable {
 
   // METODO QUE VALIDA EL ARCHIVO CON LAS DIRECCIONES DE LOS CREDITOS
   public void validarArchivo() {
-    LectorArchivoDireccionesExcel lector = new LectorArchivoDireccionesExcel();
-    String[] arreglo = lector.leerArchivoExcel(ruta);
+    LectorArchivoDireccionesExcel l = new LectorArchivoDireccionesExcel();
+    String[] arreglo = l.leerArchivoExcel(ruta);
     direccionesEncontradas = arreglo[0];
     color = arreglo[1];
     habilitaValidacionArchivo = true;

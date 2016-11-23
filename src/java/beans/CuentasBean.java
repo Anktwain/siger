@@ -84,6 +84,7 @@ public class CuentasBean implements Serializable {
   private List<Gestor> listaGestores;
   private List<Campana> listaCampanas;
   private List<Marcaje> listaMarcajes;
+  private List<CuentasGestor> listaCuentasGestor;
 
   //CONSTRUCTOR
   public CuentasBean() {
@@ -105,11 +106,12 @@ public class CuentasBean implements Serializable {
     listaCreditos = new ArrayList();
     listaConceptos = new ArrayList();
     listaMotivos = new ArrayList();
+    listaCuentasGestor = new ArrayList();
     obtenerListas();
   }
 
   // METODO QUE OBTIENE LA LISTA DE CREDITOS Y DE CONCEPTOS DE DEVOLUCION
-  private void obtenerListas() {
+  public final void obtenerListas() {
     listaGestores = gestorDao.buscarPorDespacho(indexBean.getUsuario().getDespacho().getIdDespacho());
     listaCampanas = campanaDao.buscarTodas();
     listaMarcajes = marcajeDao.buscarTodos();
@@ -117,6 +119,21 @@ public class CuentasBean implements Serializable {
     conceptoSeleccionado = new ConceptoDevolucion();
     motivoSeleccionado = new MotivoDevolucion();
     observaciones = "";
+    obtenerCuentasGestor();
+  }
+  
+  // METODO QUE OBTIENE LA LISTA DE CUENTAS GESTOR
+  public void obtenerCuentasGestor(){
+    for (int i = 0; i <(listaGestores.size()); i++) {
+      CuentasGestor cg = new CuentasGestor();
+      cg.setGestor(listaGestores.get(i));
+      cg.setCuentas(creditoDao.contarCreditosActivosSinQuebrantoPermanenciaPorGestor(indexBean.getUsuario().getDespacho().getIdDespacho(), listaGestores.get(i).getIdGestor()));
+      cg.setCuentasQuebranto(creditoDao.contarCreditosActivosQuebrantoPermanenciaPorGestor(indexBean.getUsuario().getDespacho().getIdDespacho(), listaGestores.get(i).getIdGestor()));
+      cg.setMontoCuentas(creditoDao.calcularMontoPorRecuperarSinQuebrantoPermanenciaGestor(indexBean.getUsuario().getDespacho().getIdDespacho(), listaGestores.get(i).getIdGestor()));
+      cg.setMontoCuentasQuebranto(creditoDao.calcularMontoPorRecuperarQuebrantoPermanenciaGestor(indexBean.getUsuario().getDespacho().getIdDespacho(), listaGestores.get(i).getIdGestor()));
+      cg.setMontoTotal(cg.getMontoCuentas() + cg.getMontoCuentasQuebranto());
+      listaCuentasGestor.add(cg);
+    }
   }
 
   // METODO QUE ABRE LA VISTA DEL DETALLE DEL CREDITO
@@ -378,4 +395,78 @@ public class CuentasBean implements Serializable {
     this.colorSeleccionado = colorSeleccionado;
   }
 
+  public List<CuentasGestor> getListaCuentasGestor() {
+    return listaCuentasGestor;
+  }
+
+  public void setListaCuentasGestor(List<CuentasGestor> listaCuentasGestor) {
+    this.listaCuentasGestor = listaCuentasGestor;
+  }
+
+  // CLASE MIEMBRO QUE GUARDA LOS DATOS DE CUENTAS Y MONTOS POR GESTOR
+  public class CuentasGestor{
+    
+    // VARIABLES DE CLASE
+    private int cuentas;
+    private int cuentasQuebranto;
+    private float montoCuentas;
+    private float montoCuentasQuebranto;
+    private float montoTotal;
+    private Gestor gestor;
+
+    // CONSTRUCTOR
+    public CuentasGestor() {
+    }
+    
+    // GETTERS & SETTERS
+    public int getCuentas() {
+      return cuentas;
+    }
+
+    public void setCuentas(int cuentas) {
+      this.cuentas = cuentas;
+    }
+
+    public int getCuentasQuebranto() {
+      return cuentasQuebranto;
+    }
+
+    public void setCuentasQuebranto(int cuentasQuebranto) {
+      this.cuentasQuebranto = cuentasQuebranto;
+    }
+
+    public float getMontoCuentas() {
+      return montoCuentas;
+    }
+
+    public void setMontoCuentas(float montoCuentas) {
+      this.montoCuentas = montoCuentas;
+    }
+
+    public float getMontoCuentasQuebranto() {
+      return montoCuentasQuebranto;
+    }
+
+    public void setMontoCuentasQuebranto(float montoCuentasQuebranto) {
+      this.montoCuentasQuebranto = montoCuentasQuebranto;
+    }
+
+    public float getMontoTotal() {
+      return montoTotal;
+    }
+
+    public void setMontoTotal(float montoTotal) {
+      this.montoTotal = montoTotal;
+    }
+
+    public Gestor getGestor() {
+      return gestor;
+    }
+
+    public void setGestor(Gestor gestor) {
+      this.gestor = gestor;
+    }
+    
+  }
+  
 }

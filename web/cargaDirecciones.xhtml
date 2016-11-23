@@ -82,44 +82,6 @@
               </h4>
               <h:outputText value="#{validarDireccionesBean.direccionesValidadas}" style="font-size: 30px; color: #00CC33; font-family: 'Open Sans',sans-serif;" rendered="#{validarDireccionesBean.habilitaValidacionAutomatica}" />
               <p:commandButton value="Validar direcciones" icon="ui-icon-search" actionListener="#{validarDireccionesBean.validarAutomaticas()}" update="direccionesPorValidarForm" rendered="#{!validarDireccionesBean.habilitaValidacionAutomatica}" />
-              <h2>
-                Paso 4. Validacion manual de direcciones:
-              </h2>
-              <h4>
-                En este paso usted debe verificar las direcciones que el sistema no pudo validar automaticamente. Click sobre la direccion que desee validar.
-              </h4>
-              <br />
-              <br />
-              <p:dataTable id="direccionesPorValidar" var="d" value="#{validarDireccionesBean.direccionesPorValidar}" selection="#{validarDireccionesBean.direccionSeleccionada}" selectionMode="single" rowKey="#{d.id}" emptyMessage="No hay direcciones por validar." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1450px;" rendered="#{validarDireccionesBean.habilitaValidacionAutomatica}">
-                <f:facet name="header">
-                  <p:outputLabel value="Lista de direcciones por validar" />
-                </f:facet>
-                <p:column headerText="Credito" style="width: 100px;">
-                  <h:outputText value="#{d.numeroCredito}" />
-                </p:column>
-                <p:column headerText="Calle" style="width: 300px;">
-                  <h:outputText value="#{d.calle}" />
-                </p:column>
-                <p:column headerText="Exterior" style="width: 70px;">
-                  <h:outputText value="#{d.exterior}" />
-                </p:column>
-                <p:column headerText="Interior" style="width: 70px;">
-                  <h:outputText value="#{d.interior}" />
-                </p:column>
-                <p:column headerText="Colonia" style="width: 300px;">
-                  <h:outputText value="#{d.colonia}" />
-                </p:column>
-                <p:column headerText="Municipio" style="width: 250px;">
-                  <h:outputText value="#{d.municipio}" />
-                </p:column>
-                <p:column headerText="Estado" sortBy="#{d.estado}" style="width: 200px;">
-                  <h:outputText value="#{d.estado}" />
-                </p:column>
-                <p:column headerText="Codigo postal"  style="width: 120px;">
-                  <h:outputText value="#{d.cp}" />
-                </p:column>
-                <p:ajax event="rowSelect" listener="#{validarDireccionesBean.prepararDireccion()}" oncomplete="PF('validarDireccionDlg').show();" update="direccionesPorValidarForm, :validarDireccionForm, :growl" />
-              </p:dataTable>
             </h:form>
           </div>
         </div>
@@ -134,7 +96,7 @@
         <br />
         <p:outputPanel style="text-align:center;">
           <p:panelGrid columns="3">
-            <h:outputText value="Calle y numero:" />
+            <h:outputText value="Calle:" />
             <h:outputText value="#{validarDireccionesBean.direccionSeleccionada.calle}" />
             <p:inputText value="#{validarDireccionesBean.direccionSeleccionada.calle}" size="30" />
             <h:outputText value="Num exterior:" />

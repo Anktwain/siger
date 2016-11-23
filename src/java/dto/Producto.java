@@ -1,5 +1,5 @@
 package dto;
-// Generated 15/06/2016 09:53:16 AM by Hibernate Tools 4.3.1
+// Generated 20/10/2016 11:15:34 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -23,9 +23,10 @@ public class Producto  implements java.io.Serializable {
     }
 
 	
-    public Producto(Institucion institucion, String nombre) {
+    public Producto(Institucion institucion, String nombre, String familia) {
         this.institucion = institucion;
         this.nombre = nombre;
+        this.familia = familia;
     }
     public Producto(Institucion institucion, String nombre, String familia, String descripcion, Set creditos, Set subproductos) {
        this.institucion = institucion;

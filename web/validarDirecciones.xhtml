@@ -7,6 +7,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
   <h:head>
     <meta charset="utf-8"></meta>
+    <h:outputStylesheet library="css" name="colorFilas.css" />
     <title>SigerWeb - Validaci&oacute;n de direcciones</title>
   </h:head>
   <f:metadata>
@@ -42,9 +43,9 @@
         <div class="padding-md">
           <div class="col-lg-12">
             <h:form id="direccionesPorValidarForm">
-              <p:dataTable id="direccionesPorValidar" var="d" value="#{vistaValidarDirecciones.direccionesPorValidar}" selection="#{vistaValidarDirecciones.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idSujeto}" emptyMessage="No hay direcciones por validar" paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1350px;">
+              <p:dataTable id="direccionesPorValidar" var="d" value="#{vistaValidarDirecciones.direccionesPorValidar}" selection="#{vistaValidarDirecciones.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idDireccionTexto}" emptyMessage="No hay direcciones por validar" paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1350px;" rowStyleClass="#{d.idDireccionTexto ne 0 ? 'sinValidar' : null}">
                 <f:facet name="header">
-                  <p:outputLabel value="Lista de direcciones por validar de la remesa del mes de #{vistaCarga.mesCarga} para el despacho #{vistaCarga.idDespacho}" />
+                  <p:outputLabel value="Lista de direcciones por validar de la remesa del mes de #{vistaValidarDirecciones.mesCarga} para el despacho #{vistaValidarDirecciones.despacho}" />
                 </f:facet>
                 <p:column headerText="Credito" style="width: 100px;">
                   <h:outputText value="#{d.numeroCredito}" />
@@ -52,22 +53,25 @@
                 <p:column headerText="Calle" style="width: 300px;">
                   <h:outputText value="#{d.calle}" />
                 </p:column>
-                <p:column headerText="Calle" style="width: 300px;">
-                  <h:outputText value="#{d.calle}" />
+                <p:column headerText="Exterior" style="width: 70px;">
+                  <h:outputText value="#{d.exterior}" />
                 </p:column>
-                <p:column headerText="Colonia" style="width: 350px;">
+                <p:column headerText="Interior" style="width: 100px;">
+                  <h:outputText value="#{d.interior}" />
+                </p:column>
+                <p:column headerText="Colonia" style="width: 250px;">
                   <h:outputText value="#{d.colonia}" />
                 </p:column>
                 <p:column headerText="Municipio" style="width: 250px;">
                   <h:outputText value="#{d.municipio}" />
                 </p:column>
-                  <p:column headerText="Estado" sortBy="#{d.estado}" style="width: 200px;">
+                <p:column headerText="Estado" style="width: 200px;">
                   <h:outputText value="#{d.estado}" />
                 </p:column>
-                <p:column headerText="Codigo postal"  style="width: 120px;">
-                  <h:outputText value="#{d.cp}" />
+                <p:column headerText="CP"  style="width: 60px;">
+                  <h:outputText value="#{d.codigoPostal}" />
                 </p:column>
-                <p:ajax event="rowSelect" listener="#{vistaValidarDirecciones.prepararDireccion()}" oncomplete="PF('validarDireccionDlg').show();" update="validarDireccionForm, :growl" />
+                <p:ajax event="rowSelect" listener="#{vistaValidarDirecciones.prepararDireccion()}" oncomplete="PF('dialogoEditarDireccionSinValidar').show();" update="editarDireccionPorValidarForm, :growl" />
               </p:dataTable>
             </h:form>
           </div>
@@ -80,52 +84,6 @@
   <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
   <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
     <p:graphicImage library="img" name="loadingBarra.gif" />
-  </p:dialog>
-  <!-- DIALOGO DETALLE DIRECCION POR VALIDAR -->
-  <p:dialog widgetVar="validarDireccionDlg" modal="true" resizable="false" header="Validar direccion" width="700">
-    <h:form id="validarDireccionForm">
-      De lado izquierdo aparecera el dato obtenido de la remesa, de lado derecho aparecera una sugerencia (si es el caso) a partir de los datos obtenidos.
-      <br />
-      <br />
-      <p:outputPanel style="text-align:center;">
-        <p:panelGrid columns="3">
-          <h:outputText value="Calle:" />
-          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.calle}" />
-          <p:inputText value="#{vistaValidarDirecciones.direccionSeleccionada.calle}" size="30" />
-          <h:outputText value="Colonia:" />
-          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.colonia}" />
-          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevaColonia.idColonia}" style="width:350px" filter="true" filterMatchMode="contains">
-            <f:selectItems value="#{vistaValidarDirecciones.listaColonias}" var="c" itemValue="#{c.idColonia}" itemLabel="(#{c.codigoPostal}) [#{c.tipo}] #{c.nombre}" />
-            <p:ajax listener="#{vistaValidarDirecciones.obtenerColoniaCompleta()}" update="direccionesPorValidarForm:direccionesPorValidar, cpValidacion" />
-          </p:selectOneMenu>
-          <h:outputText value="Municipio:" />
-          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.municipio}" />
-          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevoMunicipio.idMunicipio}" style="width:300px">
-            <f:selectItems value="#{vistaValidarDirecciones.listaMunicipios}" var="m" itemValue="#{m.idMunicipio}" itemLabel="#{m.nombre}" />
-          </p:selectOneMenu>
-          <h:outputText value="Estado:" />
-          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.estado}" />
-          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevoEstado.idEstado}" style="width:300px">
-            <f:selectItems value="#{vistaValidarDirecciones.listaEstados}" var="e" itemValue="#{e.idEstado}" itemLabel="#{e.nombre}" />
-          </p:selectOneMenu>
-          <h:outputText value="Codigo Postal:" />
-          <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.cp}" />
-          <h:outputText id="cpValidacion" value="#{vistaValidarDirecciones.nuevaColonia.codigoPostal}" />
-        </p:panelGrid>
-      </p:outputPanel>
-      <br />
-      <div align="center">
-        <p:commandButton value="Validar" icon="ui-icon-check" actionListener="#{vistaValidarDirecciones.validar()}" oncomplete="PF('validarDireccionDlg').hide();" update=":growl, :direccionesPorValidarForm" />
-        &nbsp;&nbsp;
-        <p:commandButton value="Ver colonias" icon="ui-icon-bookmark" actionListener="#{vistaValidarDirecciones.mostrarColonias()}" />
-        &nbsp;&nbsp;
-        <p:commandButton value="Nueva colonia" icon="ui-icon-plus" actionListener="#{vistaValidarDirecciones.prepararCombos()}" oncomplete="PF('nuevaColoniaDlg').show();" update=":growl, nuevaColoniaForm, validarDireccionForm" />
-        &nbsp;&nbsp;
-        <p:commandButton value="Localizacion" icon="ui-icon-search" oncomplete="PF('localizacionDireccionDlg').show();" />
-        &nbsp;&nbsp;
-        <p:commandButton value="Cancelar" icon="ui-icon-cancel" oncomplete="PF('validarDireccionDlg').hide();" />
-      </div>
-    </h:form>
   </p:dialog>
   <!-- DIALOGO NUEVA COLONIA -->
   <p:dialog widgetVar="nuevaColoniaDlg" modal="true" header="Nueva colonia" width="800">
@@ -150,11 +108,14 @@
       <div align="center">
         <p:panelGrid columns="2">
           <h:outputText value="Estado:" />
-          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevaColoniaEstado.idEstado}" style="width:300px">
+          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevaColoniaEstado.idEstado}" style="width:300px" appendTo="@this">
+            <f:selectItem itemLabel="Seleccione..." itemValue="0" />
             <f:selectItems value="#{vistaValidarDirecciones.listaEstados}" var="e2" itemValue="#{e2.idEstado}" itemLabel="#{e2.nombre}" />
+            <p:ajax listener="#{vistaValidarDirecciones.obtenerMunicipios(vistaValidarDirecciones.nuevaColoniaEstado)}" update="comboboxMunicipiosNuevaColonia" />
           </p:selectOneMenu>
           <h:outputText value="Municipio:" />
-          <p:selectOneMenu value="#{vistaValidarDirecciones.nuevaColoniaMunicipio.idMunicipio}" style="width:300px">
+          <p:selectOneMenu id="comboboxMunicipiosNuevaColonia" value="#{vistaValidarDirecciones.nuevaColoniaMunicipio.idMunicipio}" style="width:300px"  filter="true" filterMatchMode="startsWith" appendTo="@this">
+            <f:selectItem itemLabel="Seleccione..." itemValue="0" />
             <f:selectItems value="#{vistaValidarDirecciones.listaMunicipios}" var="m2" itemValue="#{m2.idMunicipio}" itemLabel="#{m2.nombre}" />
           </p:selectOneMenu>
           <h:outputText value="Tipo de asentamiento:" />
@@ -168,9 +129,9 @@
         </p:panelGrid>
         <br />
         <br />
-        <p:commandButton value="Aceptar" actionListener="#{vistaValidarDirecciones.crearColonia()}" oncomplete="PF('nuevaColoniaDlg').hide();" update=":growl, :validarDireccionForm" />
+        <p:commandButton icon="ui-icon-check" value="Aceptar" actionListener="#{vistaValidarDirecciones.crearColonia()}" oncomplete="PF('nuevaColoniaDlg').hide();" update=":growl, editarDireccionPorValidarForm, nuevaColoniaForm" />
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <p:commandButton value="Cancelar" oncomplete="PF('nuevaColoniaDlg').hide();" />
+        <p:commandButton icon="ui-icon-close" value="Cancelar" oncomplete="PF('nuevaColoniaDlg').hide();" />
       </div>
     </h:form>
   </p:dialog>
@@ -183,6 +144,127 @@
         <p:commandButton value="Aceptar" oncomplete="PF('localizacionDireccionDlg').hide();" />
         &nbsp;&nbsp;&nbsp;&nbsp;
         <p:commandButton value="Cancelar" oncomplete="PF('localizacionDireccionDlg').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA AGREGAR UNA DIRECCION SIN VALIDAR-->
+  <p:dialog id="dlgEditarDireccionSinValidar" widgetVar="dialogoEditarDireccionSinValidar" modal="true" resizable="false" header="Editar direccion para validacion">
+    <h:form id="editarDireccionPorValidarForm">
+      De lado izquierdo aparecera el dato obtenido de la remesa, de lado derecho aparecera una sugerencia
+      <br />
+      (si es el caso) a partir de los datos obtenidos.
+      <br />
+      <br />
+      <div align="center">
+        <p:outputPanel style="text-align:center;">
+          <p:panelGrid columns="3">
+            <h:outputText value="Calle:" />
+            <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.calle}" />
+            <p:inputText value="#{vistaValidarDirecciones.direccionSeleccionada.calle}" size="30" />
+            <h:outputText value="Exterior:" />
+            <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.exterior}" />
+            <p:inputText value="#{vistaValidarDirecciones.direccionSeleccionada.exterior}" size="5" />
+            <h:outputText value="Interior:" />
+            <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.interior}" />
+            <p:inputText value="#{vistaValidarDirecciones.direccionSeleccionada.interior}" size="5" />
+            <h:outputText value="Estado:" />
+            <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.estado}" />
+            <p:selectOneMenu value="#{vistaValidarDirecciones.nuevoEstado.idEstado}" style="width:300px" appendTo="@this">
+              <f:selectItems value="#{vistaValidarDirecciones.listaEstados}" var="e" itemValue="#{e.idEstado}" itemLabel="#{e.nombre}" />
+              <p:ajax listener="#{vistaValidarDirecciones.obtenerMunicipios(vistaValidarDirecciones.nuevoEstado)}" update="comboboxMunicipiosDireccionPorValidar" />
+            </p:selectOneMenu>
+            <h:outputText value="Municipio:" />
+            <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.municipio}" />
+            <p:selectOneMenu id="comboboxMunicipiosDireccionPorValidar" value="#{vistaValidarDirecciones.nuevoMunicipio.idMunicipio}" style="width:350px" filter="true" filterMatchMode="startsWith" appendTo="@this">
+              <f:selectItems value="#{vistaValidarDirecciones.listaMunicipios}" var="m" itemValue="#{m.idMunicipio}" itemLabel="#{m.nombre}" />
+              <p:ajax listener="#{vistaValidarDirecciones.obtenerColonias(vistaValidarDirecciones.nuevoMunicipio)}" update="comboboxColoniasDireccionPorValidar" />
+            </p:selectOneMenu>
+            <h:outputText value="Colonia:" />
+            <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.colonia}" />
+            <p:selectOneMenu id="comboboxColoniasDireccionPorValidar" value="#{vistaValidarDirecciones.nuevaColonia.idColonia}" style="width:350px" filter="true" filterMatchMode="startsWith" appendTo="@this">
+              <f:selectItems value="#{vistaValidarDirecciones.listaColonias}" var="c" itemValue="#{c.idColonia}" itemLabel="#{c.nombre} [#{c.tipo}] (#{c.codigoPostal})" />
+              <p:ajax listener="#{vistaValidarDirecciones.obtenerColoniaCompleta()}" update="cpValidacion" />
+            </p:selectOneMenu>
+            <h:outputText value="Codigo Postal:" />
+            <h:outputText value="#{vistaValidarDirecciones.direccionSeleccionada.codigoPostal}" />
+            <h:outputText id="cpValidacion" value="#{vistaValidarDirecciones.nuevaColonia.codigoPostal}" />
+          </p:panelGrid>
+        </p:outputPanel>
+      </div>
+      <hr />
+      <div align="center">
+        <p:commandButton value="Validar" icon="ui-icon-check" actionListener="#{vistaValidarDirecciones.validar()}" oncomplete="PF('dialogoEditarDireccionSinValidar').hide();" update=":growl, direccionesPorValidarForm, :buscadorColoniasForm" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Buscador" icon="ui-icon-search" actionListener="#{vistaValidarDirecciones.precargarBuscador()}" oncomplete="PF('buscadorColoniasDialog').show();" update=":growl, :buscadorColoniasForm" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Nueva Colonia" icon="ui-icon-plus" oncomplete="PF('nuevaColoniaDlg').show();" update=":growl" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Sol. info. banco" icon="ui-icon-mail-closed" oncomplete="PF('localizacionDireccionDlg').show();" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('dialogoEditarDireccionSinValidar').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA BUSCAR COLONIAS PARA VALIDAR UNA DIRECCION -->
+  <p:dialog id="dlgBuscadorColonias" widgetVar="buscadorColoniasDialog" modal="true" resizable="false" header="Buscador de colonias">
+    <h:form id="buscadorColoniasForm">
+      Estado:
+      &nbsp;&nbsp;
+      <p:selectOneMenu value="#{vistaValidarDirecciones.estadoBuscadorColonias.idEstado}" style="width: 200px;" appendTo="@this">
+        <f:selectItem itemLabel="Seleccione" itemValue="0" />
+        <f:selectItems value="#{vistaValidarDirecciones.listaEstados}" var="e" itemLabel="#{e.nombre}" itemValue="#{e.idEstado}" />
+        <p:ajax listener="#{vistaValidarDirecciones.obtenerMunicipios(vistaValidarDirecciones.estadoBuscadorColonias)}" update="comboboxMunicipiosBuscadorColonias" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Municipio:
+      &nbsp;&nbsp;
+      <p:selectOneMenu id="comboboxMunicipiosBuscadorColonias" value="#{vistaValidarDirecciones.municipioBuscadorColonias.idMunicipio}" style="width: 250px;" filter="true" filterMatchMode="startsWith" appendTo="@this">
+        <f:selectItem itemLabel="Seleccione" itemValue="0" />
+        <f:selectItems value="#{vistaValidarDirecciones.listaMunicipios}" var="m" itemLabel="#{m.nombre}" itemValue="#{m.idMunicipio}"/>
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Colonia:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaValidarDirecciones.coloniaBusqueda}" size="20" maxlength="50" />
+      <br />
+      <br />
+      Codigo postal:
+      &nbsp;&nbsp;
+      <p:inputText value="#{vistaValidarDirecciones.cpBusqueda}" size="10" maxlength="5" />
+      <hr />
+      <div align="center">
+        <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{vistaValidarDirecciones.buscarColonias()}" update="buscadorColoniasForm" />
+      </div>
+      <hr />
+      <p:contextMenu for="tablaColoniasBusqueda" style="width:300px;">
+        <p:menuitem value="Validar con esta colonia" icon="ui-icon-check" actionListener="#{vistaValidarDirecciones.validarDireccion(vistaValidarDirecciones.coloniaSeleccionadaBusqueda.idColonia)}" oncomplete="PF('buscadorColoniasDialog').hide(); PF('dialogoEditarDireccionSinValidar').hide();" update=":growl, direccionesPorValidarForm" />
+      </p:contextMenu>
+      <p:dataTable id="tablaColoniasBusqueda" var="cb" value="#{vistaValidarDirecciones.listaColoniasBusqueda}" selection="#{vistaValidarDirecciones.coloniaSeleccionadaBusqueda}" selectionMode="single" rowKey="#{cb.idColonia}" emptyMessage="No existen colonias para la busqueda especificada." paginator="true" paginatorAlwaysVisible="false" rows="5" paginatorPosition="bottom" style="width: 650px;" rendered="#{vistaValidarDirecciones.habilitaColonias}">
+        <f:facet name="header">
+          Colonias encontradas
+        </f:facet>
+        <p:column headerText="Edo" style="width:70px;" > 
+          <h:outputText value="#{cb.municipio.estadoRepublica.abreviatura}"/>
+        </p:column>
+        <p:column headerText="Municipio" style="width:150px;" > 
+          <h:outputText value="#{cb.municipio.nombre}"/>
+        </p:column>
+        <p:column headerText="Tipo" style="width:150px;" > 
+          <h:outputText value="#{cb.tipo}"/>
+        </p:column>
+        <p:column headerText="Nombre" style="width:200px;" > 
+          <h:outputText value="#{cb.nombre}"/>
+        </p:column>
+        <p:column headerText="C.P." style="width:70px;" > 
+          <h:outputText value="#{cb.codigoPostal}"/>
+        </p:column>
+          <p:ajax event="rowSelect" listener="#{vistaValidarDirecciones.guardarColonia()}" />
+      </p:dataTable>
+      <hr />
+      <div align="center">
+        <p:commandButton value="Cerrar" icon="ui-icon-close" oncomplete="PF('buscadorColoniasDialog').hide();" />
       </div>
     </h:form>
   </p:dialog>

@@ -230,6 +230,7 @@ public class CuentasGestorBean implements Serializable {
       else if (!gestionesCredito.isEmpty()) {
         // CHECAR ULTIMA GESTION
         Gestion ultima = gestionesCredito.get(0);
+        insertarGestion(gestionesCredito.get(0));
         if ((ultima.getDescripcionGestion().getCalificacion() != null) && ((ultima.getDescripcionGestion().getCalificacion() == 2) || (ultima.getDescripcionGestion().getCalificacion() == 1))) {
           // CHECAR PAGOS
           if (!pagos.isEmpty()) {
@@ -310,6 +311,19 @@ public class CuentasGestorBean implements Serializable {
         } else {
           Logs.log.error("Credito " + creditosEnGestion.get(i).getNumeroCredito() + " no cambio de campaña");
         }
+      }
+    }
+  }
+
+  // METODO QUE INSERTA UNA GESTION EN CASOS ESPECIALES
+  public void insertarGestion(Gestion g) {
+    if (g.getDescripcionGestion().getAbreviatura().equals("15PRTE")) {
+      Calendar c = Calendar.getInstance();
+      c.add(Calendar.DAY_OF_MONTH, -5);
+      if (g.getFecha().before(c.getTime())) {
+        // BUG:
+        // terminar de generar la gestion
+        gestionDao.insertarGestion(new Gestion());
       }
     }
   }
@@ -444,42 +458,42 @@ public class CuentasGestorBean implements Serializable {
   public List<CreditoCampana> getListaCreditosCampanas() {
     return listaCreditosCampanas;
   }
-
+  
   public void setListaCreditosCampanas(List<CreditoCampana> listaCreditosCampanas) {
     this.listaCreditosCampanas = listaCreditosCampanas;
   }
-
+  
   public CreditoCampana getSeleccion() {
     return seleccion;
   }
-
+  
   public void setSeleccion(CreditoCampana seleccion) {
     this.seleccion = seleccion;
   }
-
+  
   public List<Credito> getCreditosCampana() {
     return creditosCampana;
   }
-
+  
   public void setCreditosCampana(List<Credito> creditosCampana) {
     this.creditosCampana = creditosCampana;
   }
-
+  
   public int getPosicion() {
     return posicion;
   }
-
+  
   public void setPosicion(int posicion) {
     this.posicion = posicion;
   }
-
+  
   public boolean isHabilitaCampanas() {
     return habilitaCampanas;
   }
-
+  
   public void setHabilitaCampanas(boolean habilitaCampanas) {
     this.habilitaCampanas = habilitaCampanas;
-
+    
   }
 
   // CLASE MIEMBRO PARA PODER LLENAR LA TABLA
@@ -506,91 +520,91 @@ public class CuentasGestorBean implements Serializable {
     public int getIdCampana() {
       return idCampana;
     }
-
+    
     public void setIdCampana(int idCampana) {
       this.idCampana = idCampana;
     }
-
+    
     public String getNombreCampana() {
       return nombreCampana;
     }
-
+    
     public void setNombreCampana(String nombreCampana) {
       this.nombreCampana = nombreCampana;
     }
-
+    
     public int getCuentasEnCampana() {
       return cuentasEnCampana;
     }
-
+    
     public void setCuentasEnCampana(int cuentasEnCampana) {
       this.cuentasEnCampana = cuentasEnCampana;
     }
-
+    
     public int getProgresoCampana() {
       return progresoCampana;
     }
-
+    
     public void setProgresoCampana(int progresoCampana) {
       this.progresoCampana = progresoCampana;
     }
-
+    
     public int getNuevasEnCampana() {
       return nuevasEnCampana;
     }
-
+    
     public void setNuevasEnCampana(int nuevasEnCampana) {
       this.nuevasEnCampana = nuevasEnCampana;
     }
-
+    
     public int getVerdes() {
       return verdes;
     }
-
+    
     public void setVerdes(int verdes) {
       this.verdes = verdes;
     }
-
+    
     public int getAmarillas() {
       return amarillas;
     }
-
+    
     public void setAmarillas(int amarillas) {
       this.amarillas = amarillas;
     }
-
+    
     public int getRojas() {
       return rojas;
     }
-
+    
     public void setRojas(int rojas) {
       this.rojas = rojas;
     }
-
+    
     public int getVerdesQuebranto() {
       return verdesQuebranto;
     }
-
+    
     public void setVerdesQuebranto(int verdesQuebranto) {
       this.verdesQuebranto = verdesQuebranto;
     }
-
+    
     public int getAmarillasQuebranto() {
       return amarillasQuebranto;
     }
-
+    
     public void setAmarillasQuebranto(int amarillasQuebranto) {
       this.amarillasQuebranto = amarillasQuebranto;
     }
-
+    
     public int getRojasQuebranto() {
       return rojasQuebranto;
     }
-
+    
     public void setRojasQuebranto(int rojasQuebranto) {
       this.rojasQuebranto = rojasQuebranto;
     }
-
+    
   }
-
+  
 }

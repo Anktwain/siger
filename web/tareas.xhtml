@@ -64,9 +64,9 @@
           <h:selectBooleanCheckbox value="#{tareasBean.evento.allDay}" />
         </h:panelGrid>
         <div align="center">
-          <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('nuevoEventoDlg').hide();" />
+          <p:commandButton value="Aceptar" icon="ui-icon-check" actionListener="#{tareasBean.agregarEvento()}" oncomplete=":growl, PF('calendario').update(); PF('nuevoEventoDlg').hide();" />
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <p:commandButton value="Aceptar" icon="ui-icon-close" actionListener="#{tareasBean.agregarEvento()}" oncomplete="PF('calendario').update();PF('nuevoEventoDlg').hide();" />
+          <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('nuevoEventoDlg').hide();" />
         </div>
       </h:form>
     </p:dialog>

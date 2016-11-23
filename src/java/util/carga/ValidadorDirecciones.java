@@ -8,6 +8,7 @@ package util.carga;
 import beans.IndexBean;
 import beans.ValidarDireccionesBean;
 import dao.ColoniaDAO;
+import dao.CreditoDAO;
 import dto.Colonia;
 import dto.Credito;
 import dto.carga.DireccionPorValidar;
@@ -17,7 +18,9 @@ import impl.CreditoIMPL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import javax.el.ELContext;
@@ -31,6 +34,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import util.GestionAutomatica;
+import util.constantes.Campanas;
+import util.constantes.Direcciones;
 import util.log.Logs;
 
 /**
@@ -49,96 +54,82 @@ public class ValidadorDirecciones {
   private final String USER = "root";
   private final String PASS = "root";
   private final ColoniaDAO coloniaDao;
+  private final CreditoDAO creditoDao;
 
   // CONSTRUCTOR
   public ValidadorDirecciones() {
     coloniaDao = new ColoniaIMPL();
+    creditoDao = new CreditoIMPL();
   }
 
   // METODO QUE INTENTA VALIDAR AUTOMATICAMENTE LAS DIRECCIONES
   // ESTE METODO VALIDA EN VARIAS ETAPAS LA DIRECCION PARA DARLE LA MAYOR COHERENCIA
   public List<DireccionPorValidar> validacionAutomatica(List<FilaDireccionExcel> direcciones) {
-    int contador = 0;
-    List<DireccionPorValidar> noValidadas = new ArrayList();
-    List<String> cambiadas = new ArrayList();
+    int contadorValidadas = 0;
+    int contadorPorValidar = 0;
     for (int i = 0; i < (direcciones.size()); i++) {
-      List<Colonia> listaColonias = coloniaDao.buscarPorCodigoPostal(direcciones.get(i).getCp());
-      if (!listaColonias.isEmpty()) {
-        // SI SOLO EXISTE UNA COLONIA, VALIDACION POR UNICA COLONIA
-        if (listaColonias.size() == 1) {
-          contador++;
-          if (!insertarDireccion(direcciones.get(i), listaColonias.get(0), 0)) {
-            Logs.log.error("No se pudo insertar la direccion validada.");
+      // SE VALIDA QUE EL CREDITO EXISTA EN EL SISTEMA
+      Credito c = creditoDao.buscar(direcciones.get(i).getNumeroCredito());
+      if (c != null) {
+        // SI EL CREDITO ESTA EN NUEVA REMESA, SE BUSCARA VALIDAR LA DIRECCION AUTOMATICAMENTE
+        if (c.getCampana().getIdCampana() == Campanas.NUEVA_REMESA) {
+          // SE BUSCAN LAS COLONIAS DE ESE CODIGO POSTAL
+          List<Colonia> listaColonias = coloniaDao.buscarPorCodigoPostal(direcciones.get(i).getCp());
+          if (!listaColonias.isEmpty()) {
+            String compuesta;
+            for (int j = 0; j < (listaColonias.size()); j++) {
+              compuesta = retiraEspeciales(listaColonias.get(j).getTipo().toLowerCase()) + " " + retiraEspeciales(listaColonias.get(j).getNombre().toLowerCase());
+              // SI LAS DOS COLONIAS COINCIDEN, VALIDACION POR COINCIDENCIA EXACTA
+              if (retiraEspeciales(listaColonias.get(j).getNombre().toLowerCase()).compareTo(retiraEspeciales(direcciones.get(i).getColonia().toLowerCase())) == 0) {
+                contadorValidadas++;
+                if (insertarDireccion(direcciones.get(i), listaColonias.get(j))) {
+                  if (!generarGestionAutomatica(direcciones.get(i).getNumeroCredito())) {
+                    Logs.log.error("No se pudo insertar la gestion automatica.");
+                  }
+                } else {
+                  Logs.log.error("No se pudo insertar la direccion validada.");
+                }
+                break;
+              }
+              // SI LA COLONIA DE LA REMESA COINCIDE CON LA COLONIA COMPUESTA (TIPO DE COLONIA + NOMBRE), VALIDACION POR COINCIDENCIA EXACTA COLONIA COMPUESTA
+              if (compuesta.compareTo(retiraEspeciales(direcciones.get(i).getColonia().toLowerCase())) == 0) {
+                contadorValidadas++;
+                if (!insertarDireccion(direcciones.get(i), listaColonias.get(j))) {
+                  Logs.log.error("No se pudo insertar la direccion validada.");
+                }
+                break;
+              }
+              // SI SE LLEGA A LA ULTIMA COLONIA Y NO EXISTEN COINCIDENCIAS AUN
+              if (j == listaColonias.size() - 1) {
+                contadorPorValidar++;
+                if (!insertarDireccionTexto(direcciones.get(i), Direcciones.SIN_VALIDAR)) {
+                  Logs.log.error("No se pudo insertar la direccion texto para el credito " + direcciones.get(i).getNumeroCredito() + ".");
+                }
+              }
+            }
+          } // SI NO EXISTEN COLONIAS EN ESTE CODIGO POSTAL
+          else {
+            contadorPorValidar++;
+            if (!insertarDireccionTexto(direcciones.get(i), Direcciones.SIN_VALIDAR)) {
+              Logs.log.error("No se pudo insertar la direccion texto para el credito " + direcciones.get(i).getNumeroCredito() + ".");
+            }
           }
-        } else {
-          for (int j = 0; j < (listaColonias.size()); j++) {
-            String compuesta = retiraEspeciales(listaColonias.get(j).getTipo().toLowerCase()) + " " + retiraEspeciales(listaColonias.get(j).getNombre().toLowerCase());
-            // SI LAS DOS COLONIAS COINCIDEN, VALIDACION POR COINCIDENCIA EXACTA
-            if (retiraEspeciales(listaColonias.get(j).getNombre().toLowerCase()).compareTo(retiraEspeciales(direcciones.get(i).getColonia().toLowerCase())) == 0) {
-              contador++;
-              if (insertarDireccion(direcciones.get(i), listaColonias.get(j), 1)) {
-                if (!generarGestionAutomatica(direcciones.get(i).getNumeroCredito())) {
-                  Logs.log.error("No se pudo insertar la gestion automatica.");
-                }
-              } else {
-                Logs.log.error("No se pudo insertar la direccion validada.");
-              }
-              break;
-            }
-            // SI LA COLONIA DE LA REMESA COINCIDE CON LA COLONIA COMPUESTA (TIPO DE COLONIA + NOMBRE), VALIDACION POR COINCIDENCIA EXACTA COLONIA COMPUESTA
-            if (compuesta.compareTo(retiraEspeciales(direcciones.get(i).getColonia().toLowerCase())) == 0) {
-              contador++;
-              if (!insertarDireccion(direcciones.get(i), listaColonias.get(j), 0)) {
-                Logs.log.error("No se pudo insertar la direccion validada.");
-              }
-              break;
-            }
-            // SI SE LLEGA A LA ULTIMA COLONIA Y NO EXISTEN COINCIDENCIAS AUN
-            if (j == listaColonias.size() - 1) {
-              for (int k = 0; k < (listaColonias.size()); k++) {
-                // SI LA COLONIA EN LA BASE DE DATOS CONTIENE LA COLONIA DE LA REMESA, VALIDACION POR CONTENER COLONIA
-                if (retiraEspeciales(listaColonias.get(k).getNombre().toLowerCase()).contains(retiraEspeciales(direcciones.get(i).getColonia().toLowerCase()))) {
-                  contador++;
-                  if (!insertarDireccion(direcciones.get(i), listaColonias.get(k), 0)) {
-                    Logs.log.error("No se pudo insertar la direccion validada.");
-                  }
-                  break;
-                }
-                // SI SE RECORRIO NUEVAMENTE LA LISTA DE COLONIAS Y NO HAY COINCIDENCIA, VALIDACION PRIMER COLONIA DEL CODIGO POSTAL
-                if (k == (listaColonias.size()) - 1) {
-                  contador++;
-                  cambiadas.add(direcciones.get(i).getNumeroCredito());
-                  if (!insertarDireccion(direcciones.get(i), listaColonias.get(0), 0)) {
-                    Logs.log.error("No se pudo insertar la direccion validada.");
-                  }
-                }
-              }
-              break;
-            }
+        } // SI ES UN NUEVO CREDITO, CONSERVADO O REACTIVADO, SOLO SE AÑADIRA LA DIRECCION A LA LISTA DIRECCIONES TEXTO
+        else {
+          contadorPorValidar++;
+          if (!insertarDireccionTexto(direcciones.get(i), Direcciones.VALIDADA)) {
+            Logs.log.error("No se pudo insertar la direccion texto para el credito " + direcciones.get(i).getNumeroCredito() + ".");
           }
         }
       } else {
-        DireccionPorValidar d = new DireccionPorValidar();
-        d.setId(i);
-        d.setNumeroCredito(direcciones.get(i).getNumeroCredito());
-        d.setCalle(direcciones.get(i).getCalle());
-        d.setExterior(direcciones.get(i).getExterior());
-        d.setInterior(direcciones.get(i).getInterior());
-        d.setColonia(direcciones.get(i).getColonia());
-        d.setMunicipio(direcciones.get(i).getMunicipio());
-        d.setEstado(direcciones.get(i).getEstado());
-        d.setCp(direcciones.get(i).getCp());
-        noValidadas.add(d);
+        Logs.log.error("Se intento ingresar una direccion para un credito que no existe en el sistema.");
       }
     }
-    if (!cambiadas.isEmpty()) {
-      if (!enviarCorreoDireccionesCambiadas(cambiadas)) {
-        Logs.log.error("No se envio el reporte de carga de direcciones.");
-      }
-    }
-    validarDireccionesBean.setDireccionesValidadas("Se validaron automaticamente " + contador + " direcciones.");
+    validarDireccionesBean.setDireccionesValidadas("Se validaron automaticamente " + contadorValidadas + " direcciones, se insertaron " + contadorPorValidar + " direcciones para su posterior validacion (en el modulo de validacion de direcciones del panel administrativo)");
     Logs.log.info(validarDireccionesBean.getDireccionesValidadas());
-    return noValidadas;
+    // BUG:
+    // el metodo no deberia regresar nada, refactorizar
+    return new ArrayList();
   }
 
   // METODO QUE RETIRA CARACTERES ESPECIALES DE ESCRITURA Y REGRESA UNA CADENA LIMPIA
@@ -156,16 +147,46 @@ public class ValidadorDirecciones {
   }
 
   // METODO QUE INSERTA LA DIRECCION EN LA BASE DE DATOS
-  public boolean insertarDireccion(FilaDireccionExcel f, Colonia col, int validada) {
+  public boolean insertarDireccion(FilaDireccionExcel f, Colonia col) {
     String consulta = "INSERT INTO direccion (id_sujeto, id_municipio, id_estado, id_colonia, calle, exterior";
     if (f.getInterior() != null) {
       consulta = consulta + ", interior";
     }
-    consulta = consulta + ", latitud, longitud, validada) SELECT id_sujeto, '" + col.getMunicipio().getIdMunicipio() + "', '" + col.getMunicipio().getEstadoRepublica().getIdEstado() + "', '" + col.getIdColonia() + "', '" + f.getCalle() + "', '" + f.getExterior();
+    consulta = consulta + ", latitud, longitud, principal) SELECT id_sujeto, '" + col.getMunicipio().getIdMunicipio() + "', '" + col.getMunicipio().getEstadoRepublica().getIdEstado() + "', '" + col.getIdColonia() + "', '" + f.getCalle() + "', '" + f.getExterior();
     if (f.getInterior() != null) {
       consulta = consulta + "', '" + f.getInterior();
     }
-    consulta = consulta + "', '0.000000', '0.000000', '" + validada + "' FROM deudor WHERE id_deudor = (SELECT id_deudor FROM credito WHERE numero_credito = '" + f.getNumeroCredito() + "');";
+    consulta = consulta + "', '0.000000', '0.000000', 0 FROM deudor WHERE id_deudor = (SELECT id_deudor FROM credito WHERE numero_credito = '" + f.getNumeroCredito() + "');";
+    try {
+      try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+        EjecutorCargaSQL ejecutor = new EjecutorCargaSQL();
+        return ejecutor.ejecutor(consulta, conn);
+      }
+    } catch (SQLException sqle) {
+      Logs.log.error("No se pudo crear la conexion.");
+      Logs.log.error(sqle.getMessage());
+      return false;
+    }
+  }
+
+  // METODO QUE INSERTA UNA DIRECCION DE TEXTO EN LA BASE DE DATOS PARA QUE POSTERIORMENTE SEA EDITADA O VALIDADA
+  public boolean insertarDireccionTexto(FilaDireccionExcel f, int validada) {
+    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    String consulta = "INSERT INTO direccion_texto (fecha, numero_credito, calle";
+    if (f.getExterior() != null) {
+      consulta = consulta + ", exterior";
+    }
+    if (f.getInterior() != null) {
+      consulta = consulta + ", interior";
+    }
+    consulta = consulta + ", colonia, municipio, estado, codigo_postal, validada) VALUES ('" + df.format(new Date()) + "', '" + f.getNumeroCredito() + "', '" + f.getCalle();
+    if (f.getExterior() != null) {
+      consulta = consulta + "', '" + f.getExterior();
+    }
+    if (f.getInterior() != null) {
+      consulta = consulta + "', '" + f.getInterior();
+    }
+    consulta = consulta + "', '" + f.getColonia() + "', '" + f.getMunicipio() + "', '" + f.getEstado() + "', '" + f.getCp() + "', " + validada + ");";
     try {
       try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
         EjecutorCargaSQL ejecutor = new EjecutorCargaSQL();
@@ -191,6 +212,8 @@ public class ValidadorDirecciones {
   }
 
   // METODO QUE CREA UN CORREO PARA ALERTAR AL ADMINISTRADOR DE LOS CREDITOS CUYA COLONIA CAMBIO
+  // DEPRECATED:
+  // este metodo no se utilizara mas
   public boolean enviarCorreoDireccionesCambiadas(List<String> cambiadas) {
     boolean ok;
     try {
@@ -204,7 +227,7 @@ public class ValidadorDirecciones {
       MimeMessage mensaje = new MimeMessage(sesion);
       mensaje.setFrom(new InternetAddress("eduardo.chavez@corporativodelrio.com"));
       // BUG:
-      // SE DEBE AGREGAR EL CORREO DE LOS LICS
+      // SE DEBE AGREGAR EL CORREO DE LOS JEFES DE JEFES (LICS)
       //mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress("lilia.delrio@corporativodelrio.com"));
       //mensaje.addRecipient(Message.RecipientType.CC, new InternetAddress("carlos.delrio@corporativodelrio.com"));
       mensaje.addRecipient(Message.RecipientType.TO, new InternetAddress("eduardo.chavez@corporativodelrio.com"));

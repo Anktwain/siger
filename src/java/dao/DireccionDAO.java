@@ -54,4 +54,7 @@ public interface DireccionDAO {
     public Direccion obtenerDireccionCompleta(int idDireccion);
     
     public List<Direccion> obtenerDireccionesPorRadio(BigDecimal latitudCentro, BigDecimal longitudCentro, int radio, int cantidad, int idDespacho);
+    
+    public Number contarDirecciones();
+    
 }

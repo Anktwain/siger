@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 15/06/2016 09:53:17 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 20/10/2016 11:15:35 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Colonia" optimistic-lock="version" table="colonia">
     <id name="idColonia" type="java.lang.Integer">
@@ -18,6 +18,9 @@
     </property>
     <property name="codigoPostal" type="string">
       <column length="5" name="codigo_postal" not-null="true"/>
+    </property>
+    <property name="claveLada" type="string">
+      <column length="3" name="clave_lada"/>
     </property>
     <set fetch="select" inverse="true" lazy="true" name="regions" table="region">
       <key>

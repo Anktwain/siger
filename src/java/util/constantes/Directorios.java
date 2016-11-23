@@ -23,9 +23,7 @@ public interface Directorios {
   public static final String RUTA_WINDOWS_CARGA_VISITAS = "D:\\ApacheSoftwareFoundation\\Tomcat9.0\\webapps\\pdfs\\";
   public static final String RUTA_WINDOWS_PERIODO_IMPRESIONES = "C:\\Periodo_Impresiones\\";
   public static final String RUTA_CORREOS = "CorreosInbursa/";
-  // BUG:
-  // ruta provisional, debera sustituirse para produccion en el servidor por la unidad D:
-  public static final String RUTA_WINDOWS_REPORTES_GESTIONES = "C:\\reportesGestiones\\";
+  public static final String RUTA_WINDOWS_REPORTES_GESTIONES = "D:\\reportesGestiones\\";
   // BUG:
   // ruta provisional, debera sustituirse para produccion en el servidor por la unidad D:
   public static final String RUTA_WINDOWS_CARGA_REMESA = "C:\\cargasDePruebaNuevoSiger\\";

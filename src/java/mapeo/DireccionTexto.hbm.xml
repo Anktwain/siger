@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 20/10/2016 11:15:35 AM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+  <class catalog="sigerbd" name="dto.DireccionTexto" optimistic-lock="version" table="direccion_texto">
+    <id name="idDireccionTexto" type="java.lang.Integer">
+      <column name="id_direccion_texto"/>
+      <generator class="identity"/>
+    </id>
+    <property name="fecha" type="date">
+      <column length="10" name="fecha" not-null="true"/>
+    </property>
+    <property name="numeroCredito" type="string">
+      <column length="30" name="numero_credito" not-null="true"/>
+    </property>
+    <property name="calle" type="string">
+      <column length="200" name="calle" not-null="true"/>
+    </property>
+    <property name="exterior" type="string">
+      <column length="20" name="exterior"/>
+    </property>
+    <property name="interior" type="string">
+      <column length="50" name="interior"/>
+    </property>
+    <property name="colonia" type="string">
+      <column length="100" name="colonia" not-null="true"/>
+    </property>
+    <property name="municipio" type="string">
+      <column length="100" name="municipio" not-null="true"/>
+    </property>
+    <property name="estado" type="string">
+      <column length="100" name="estado" not-null="true"/>
+    </property>
+    <property name="codigoPostal" type="string">
+      <column length="5" name="codigo_postal" not-null="true"/>
+    </property>
+    <property name="validada" type="int">
+      <column name="validada" not-null="true"/>
+    </property>
+  </class>
+</hibernate-mapping>

@@ -110,7 +110,18 @@ public class DireccionIMPL implements DireccionDAO {
    */
   @Override
   public Direccion buscar(int idDireccion) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Direccion completa = new Direccion();
+    String consulta = "SELECT * FROM direccion WHERE id_direccion = " + idDireccion + ";";
+    try {
+      completa = (Direccion) sesion.createSQLQuery(consulta).addEntity(Direccion.class).uniqueResult();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return completa;
   }
 
   /**
@@ -120,7 +131,18 @@ public class DireccionIMPL implements DireccionDAO {
    */
   @Override
   public List<Direccion> buscarTodo() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    List<Direccion> listaDirecciones = new ArrayList();
+    String consulta = "SELECT * FROM direccion ORDER BY id_direccion ASC;";
+    try {
+      listaDirecciones = sesion.createSQLQuery(consulta).addEntity(Direccion.class).list();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return listaDirecciones;
   }
 
   @Override
@@ -128,7 +150,6 @@ public class DireccionIMPL implements DireccionDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Direccion> listaDirecciones = new ArrayList();
     String consulta = "SELECT d.* FROM direccion d JOIN sujeto s ON s.id_sujeto = d.id_sujeto WHERE s.id_sujeto = " + idSujeto + ";";
-
     try {
       listaDirecciones = sesion.createSQLQuery(consulta).addEntity(Direccion.class).list();
     } catch (HibernateException he) {
@@ -176,6 +197,23 @@ public class DireccionIMPL implements DireccionDAO {
     return listaDirecciones;
   }
 
+  @Override
+  public Number contarDirecciones() {
+    Session sesion = HibernateUtil.getSessionFactory().openSession();
+    Number direcciones;
+    String consulta = "SELECT COUNT(*) FROM direccion;";
+    try {
+      direcciones = (Number) sesion.createSQLQuery(consulta).uniqueResult();
+    } catch (HibernateException he) {
+      Logs.log.error(consulta);
+      direcciones = -1;
+      Logs.log.error(he.getMessage());
+    } finally {
+      cerrar(sesion);
+    }
+    return direcciones;
+  }
+  
   /**
    *
    *

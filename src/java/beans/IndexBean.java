@@ -251,6 +251,7 @@ public class IndexBean implements Serializable {
         case "zonas":
         case "visitas":
         case "deudores":
+        case "validacion especial direcciones":
           redireccionar(modulo);
           break;
         default:

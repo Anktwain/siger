@@ -59,7 +59,8 @@ public class ProgresoGestorBean implements Serializable{
   }
 
   public String calcularRecuperacionPorGestor() {
-    return String.format("%,2.6f", pagoDao.calcularRecuperacionGestor(indexBean.getUsuario().getIdUsuario())) + " %";
+    return "NaN";
+    //return String.format("%,2.6f", pagoDao.calcularRecuperacionGestor(indexBean.getUsuario().getIdUsuario())) + " %";
   }
   
   public String gestionesHoy(){

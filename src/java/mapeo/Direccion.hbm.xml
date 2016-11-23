@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 15/06/2016 09:53:17 AM by Hibernate Tools 4.3.1 -->
+<!-- Generated 20/10/2016 11:15:35 AM by Hibernate Tools 4.3.1 -->
 <hibernate-mapping>
   <class catalog="sigerbd" name="dto.Direccion" optimistic-lock="version" table="direccion">
     <id name="idDireccion" type="java.lang.Integer">
@@ -34,8 +34,8 @@
     <property name="longitud" type="big_decimal">
       <column name="longitud" not-null="true" precision="9" scale="6"/>
     </property>
-    <property name="validada" type="int">
-      <column name="validada" not-null="true"/>
+    <property name="principal" type="int">
+      <column name="principal" not-null="true"/>
     </property>
     <set fetch="select" inverse="true" lazy="true" name="impresions" table="impresion">
       <key>

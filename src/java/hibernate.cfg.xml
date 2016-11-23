@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
@@ -22,6 +22,7 @@
     <mapping resource="mapeo/ConceptoDevolucion.hbm.xml"/>
     <mapping resource="mapeo/Telefono.hbm.xml"/>
     <mapping resource="mapeo/Producto.hbm.xml"/>
+    <mapping resource="mapeo/DireccionTexto.hbm.xml"/>
     <mapping resource="mapeo/EstadoRepublica.hbm.xml"/>
     <mapping resource="mapeo/Subproducto.hbm.xml"/>
     <mapping resource="mapeo/Administrativo.hbm.xml"/>
@@ -59,6 +60,5 @@
     <mapping resource="mapeo/Devolucion.hbm.xml"/>
     <mapping resource="mapeo/Impresion.hbm.xml"/>
     <mapping resource="mapeo/Ajuste.hbm.xml"/>
-    <mapping/>
   </session-factory>
 </hibernate-configuration>

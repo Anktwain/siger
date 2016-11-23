@@ -111,6 +111,7 @@ public class ProgresoAdminBean implements Serializable {
       }
       // CONSULTA DE PORCENTAJE DE RECUPERACION
       consulta = "SELECT ROUND(((SELECT ROUND(SUM(monto_aprobado), 2) FROM pago WHERE id_pago IN (SELECT id_pago FROM promesa_pago WHERE id_promesa_pago IN (SELECT id_promesa_pago FROM convenio_pago WHERE id_credito IN (SELECT id_credito FROM credito WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ") AND id_despacho = " + indexBean.getUsuario().getDespacho().getIdDespacho() + "))))*100)/(SELECT ROUND(SUM(saldo_vencido), 2) FROM actualizacion WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ") AND id_credito IN (SELECT id_credito FROM credito WHERE id_despacho = " + indexBean.getUsuario().getDespacho().getIdDespacho() + ")),6) as porcentaje;";
+      /*
       try (ResultSet rs = stmt.executeQuery(consulta)) {
         while (rs.next()) {
           if (rs.getString("porcentaje") == null) {
@@ -125,6 +126,8 @@ public class ProgresoAdminBean implements Serializable {
         Logs.log.error(sqle.getMessage());
         porcentajeRecuperacion = "% NaN";
       }
+      */
+      porcentajeRecuperacion = "% NaN";
       // CONSULTA DE CREDITOS DE QUEBRANTO Y PERMANENCIA
       consulta = "SELECT COUNT(*) AS quebrantoPermanencia FROM credito c WHERE id_credito NOT IN (SELECT id_credito FROM devolucion WHERE estatus = " + Devoluciones.DEVUELTO + ") AND c.id_despacho = " + indexBean.getUsuario().getDespacho().getIdDespacho() + " AND id_marcaje IN (" + Marcajes.QUEBRANTO + ", " + Marcajes.PERMANENCIA + ");";
       try (ResultSet rs = stmt.executeQuery(consulta)) {

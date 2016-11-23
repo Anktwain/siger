@@ -14,6 +14,7 @@ import dao.ConvenioPagoDAO;
 import dao.CreditoDAO;
 import dao.DevolucionDAO;
 import dao.DireccionDAO;
+import dao.DireccionTextoDAO;
 import dao.EmailDAO;
 import dao.EstadoRepublicaDAO;
 import dao.FacDAO;
@@ -33,6 +34,7 @@ import dto.ConvenioPago;
 import dto.Credito;
 import dto.Devolucion;
 import dto.Direccion;
+import dto.DireccionTexto;
 import dto.Email;
 import dto.EstadoRepublica;
 import dto.Fac;
@@ -53,6 +55,7 @@ import impl.ConvenioPagoIMPL;
 import impl.CreditoIMPL;
 import impl.DevolucionIMPL;
 import impl.DireccionIMPL;
+import impl.DireccionTextoIMPL;
 import impl.EmailIMPL;
 import impl.EstadoRepublicaIMPL;
 import impl.FacIMPL;
@@ -83,6 +86,7 @@ import util.GestionAutomatica;
 import util.constantes.Ajustes;
 import util.constantes.Correos;
 import util.constantes.Devoluciones;
+import util.constantes.Direcciones;
 import util.constantes.Marcajes;
 import util.constantes.Patrones;
 import util.constantes.Perfiles;
@@ -110,6 +114,10 @@ public class VistaCreditoBean implements Serializable {
   private boolean habilitaAjustes;
   private boolean principalNuevoTelefono;
   private boolean principalNuevoCorreo;
+  private boolean habilitaColonias;
+  private boolean habilitaDireccionesHistorico;
+  private boolean habilitaMasDirecciones;
+  private boolean habilitaMasTelefonos;
   private String color;
   private String observaciones;
   private String numeroCreditos;
@@ -141,6 +149,8 @@ public class VistaCreditoBean implements Serializable {
   private String interiorNuevaDireccion;
   private String latitudNuevaDireccion;
   private String longitudNuevaDireccion;
+  private String coloniaBusqueda;
+  private String cpBusqueda;
   private float saldoVencido;
   private int mesesVencidos;
   private Credito creditoActual;
@@ -151,10 +161,16 @@ public class VistaCreditoBean implements Serializable {
   private Telefono telefonoSeleccionado;
   private Email correoSeleccionado;
   private EstadoRepublica estadoNuevaDireccion;
+  private EstadoRepublica estadoBuscadorColonias;
   private Municipio municipioNuevaDireccion;
+  private Municipio municipioBuscadorColonias;
   private Colonia coloniaNuevaDireccion;
+  private Colonia coloniaSeleccionadaBusqueda;
   private Direccion direccionSeleccionada;
+  private Direccion direccionPorValidar;
+  private DireccionTexto direccionSinValidarSeleccionada;
   private final CreditoDAO creditoDao;
+  private final DireccionTextoDAO direccionTextoDao;
   private final DireccionDAO direccionDao;
   private final TelefonoDAO telefonoDao;
   private final EmailDAO emailDao;
@@ -176,6 +192,7 @@ public class VistaCreditoBean implements Serializable {
   private List<Gestion> listaGestiones;
   private List<Gestor> listaGestores;
   private List<Credito> creditosRelacionados;
+  private List<DireccionTexto> listaDireccionesSinValidar;
   private List<Direccion> listaDirecciones;
   private List<Telefono> listaTelefonos;
   private List<Email> listaCorreos;
@@ -189,8 +206,10 @@ public class VistaCreditoBean implements Serializable {
   private List<EstadoRepublica> listaEstados;
   private List<Municipio> listaMunicipios;
   private List<Colonia> listaColonias;
+  private List<Colonia> listaColoniasBusqueda;
 
   public VistaCreditoBean() {
+    habilitaColonias = false;
     telefonoSeleccionado = new Telefono();
     correoSeleccionado = new Email();
     conceptoSeleccionado = new ConceptoDevolucion();
@@ -199,10 +218,16 @@ public class VistaCreditoBean implements Serializable {
     creditoRelacionadoSeleccionado = new Credito();
     gestorSeleccionado = new Gestor();
     estadoNuevaDireccion = new EstadoRepublica();
+    estadoBuscadorColonias = new EstadoRepublica();
     municipioNuevaDireccion = new Municipio();
+    municipioBuscadorColonias = new Municipio();
     coloniaNuevaDireccion = new Colonia();
+    coloniaSeleccionadaBusqueda = new Colonia();
     direccionSeleccionada = new Direccion();
+    direccionPorValidar = new Direccion();
+    direccionSinValidarSeleccionada = new DireccionTexto();
     creditoDao = new CreditoIMPL();
+    direccionTextoDao = new DireccionTextoIMPL();
     direccionDao = new DireccionIMPL();
     telefonoDao = new TelefonoIMPL();
     emailDao = new EmailIMPL();
@@ -224,6 +249,7 @@ public class VistaCreditoBean implements Serializable {
     listaMotivos = new ArrayList();
     creditosRelacionados = new ArrayList();
     listaDirecciones = new ArrayList();
+    listaDireccionesSinValidar = new ArrayList();
     historial = new ArrayList();
     listaGestiones = new ArrayList();
     listaGestores = new ArrayList();
@@ -233,6 +259,9 @@ public class VistaCreditoBean implements Serializable {
     listaMunicipios = new ArrayList();
     listaColonias = new ArrayList();
     ajustes = new ArrayList();
+    listaColoniasBusqueda = new ArrayList();
+    coloniaBusqueda = "";
+    cpBusqueda = "";
     obtenerDatos();
     inicializarDireccion();
   }
@@ -257,6 +286,10 @@ public class VistaCreditoBean implements Serializable {
     listaGestores = gestorDao.buscarPorDespachoExceptoEste(indexBean.getUsuario().getDespacho().getIdDespacho(), creditoActual.getGestor().getIdGestor());
     // OBTENEMOS EL ID DEL SUJETO PARA TODAS LAS OPERACIONES
     int idSujeto = creditoActual.getDeudor().getSujeto().getIdSujeto();
+    // OBTENEMOS LAS DIRECCIONES SIN VALIDAR DEL DEUDOR, SI ES QUE EXISTE TAL LISTA
+    listaDireccionesSinValidar = direccionTextoDao.buscarPorCredito(creditoActual.getNumeroCredito());
+    // SE HABILITA LA VISUALIZACION DE DIRECCIONES HISTORICAS
+    habilitaDireccionesHistorico = !listaDireccionesSinValidar.isEmpty();
     // OBTENEMOS LA LISTA DE LAS DIRECCIONES DE ESTE DEUDOR, SI ES QUE EXISTE TAL LISTA
     listaDirecciones = direccionDao.buscarPorSujeto(idSujeto);
     if (!listaDirecciones.isEmpty()) {
@@ -269,11 +302,17 @@ public class VistaCreditoBean implements Serializable {
       coloniaMunicipio = listaDirecciones.get(0).getColonia().getTipo() + " " + listaDirecciones.get(0).getColonia().getNombre() + ",  " + listaDirecciones.get(0).getMunicipio().getNombre();
       estadoCP = listaDirecciones.get(0).getEstadoRepublica().getNombre() + ",  C.P. " + listaDirecciones.get(0).getColonia().getCodigoPostal();
     }
+    if(listaDirecciones.size() > 1){
+      habilitaMasDirecciones = true;
+    }
     // OBTENEMOS LA LISTA DE TELEFONOS DEL DEUDOR
     listaTelefonos = telefonoDao.buscarPorCliente(creditoActual.getDeudor().getNumeroDeudor());
     if (!listaTelefonos.isEmpty()) {
       // OBTENER EL PRIMER TELEFONO DEL DEUDOR
       telefono = formatoTelefono(listaTelefonos.get(0));
+    }
+    if(listaTelefonos.size() > 1){
+      habilitaMasTelefonos = true;
     }
     // SE OBTIENE EL CORREO PRINCIPAL DEL DEUDOR
     Email mail = emailDao.buscarPrincipalPorSujeto(idSujeto);
@@ -401,6 +440,7 @@ public class VistaCreditoBean implements Serializable {
 
   // METODO QUE REASIGNARA AL GESTOR
   public void reasignarGestor() {
+    String gestorActual = creditoActual.getGestor().getUsuario().getNombreLogin();
     // GESTION AUTOMATICA 1
     // SI EXISTE UN CONVENIO
     ConvenioPago c = convenioPagoDao.buscarConvenioEnCursoCredito(creditoActual.getIdCredito());
@@ -410,26 +450,24 @@ public class VistaCreditoBean implements Serializable {
     }
     // CAMBIAMOS EL GESTOR ASIGNADO ACTUALMENTE
     Credito cred = creditoActual;
-    Gestor nuevoGestor = gestorDao.buscar(gestorSeleccionado.getIdGestor());
-    cred.setGestor(nuevoGestor);
+    cred.setGestor(gestorDao.buscar(gestorSeleccionado.getIdGestor()));
     boolean ok = creditoDao.editar(cred);
     if (ok) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
       // GUARDAMOS EN EL LOG EL DETALLE DE LA REASIGNACION
-      Logs.log.info("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + creditoActual.getGestor().getUsuario().getNombreLogin() + " al gestor " + nuevoGestor.getUsuario().getNombreLogin());
+      Logs.log.info("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito del gestor " + gestorActual + " al gestor " + creditoActual.getGestor().getUsuario().getNombreLogin());
       // ESCRIBIMOS EN EL HISTORIAL LA REASIGNACION
       Historial h = new Historial();
       h.setCredito(creditoActual);
       h.setFecha(new Date());
-      h.setEvento("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito al gestor: " + nuevoGestor.getUsuario().getNombreLogin());
-      ok = ok & (historialDao.insertar(h));
-      if (ok) {
-        // GESTION AUTOMATICA 2
-        GestionAutomatica ga = new GestionAutomatica();
-        ga.generarGestionAutomatica("15CTARE", creditoActual, indexBean.getUsuario(), "REASIGNACION DE CREDITO NO. " + creditoActual.getNumeroCredito());
-        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se reasigno el credito."));
-        creditoActual.setGestor(nuevoGestor);
-      } else {
-        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
+      h.setEvento("El administrador: " + indexBean.getUsuario().getNombreLogin() + " reasigno el credito al gestor: " + creditoActual.getGestor().getUsuario().getNombreLogin());
+      if (!historialDao.insertar(h)) {
+        Logs.log.error("No se inserto el historial de reasignacion de credito.");
+      }
+      // GESTION AUTOMATICA 2
+      GestionAutomatica ga = new GestionAutomatica();
+      if (!ga.generarGestionAutomatica("15CTARE", creditoActual, indexBean.getUsuario(), "REASIGNACION DE CREDITO NO. " + creditoActual.getNumeroCredito())) {
+        Logs.log.error("No se genero la gestion automatica de reasignacion.");
       }
     } else {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se reasigno el credito. Contacte al equipo de sistemas."));
@@ -736,13 +774,17 @@ public class VistaCreditoBean implements Serializable {
     } else if ((direccionSeleccionada.getLongitud().compareTo(minLon) == -1) || (direccionSeleccionada.getLongitud().compareTo(maxLon) == 1)) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El valor de longitud esta fuera de rango."));
     } else {
+      // BUG:
+      // se comenta porque el campo validada ahora es el campo principal
+      /*
       if (direccionSeleccionada.getValidada() == 0) {
         direccionSeleccionada.setValidada(1);
+      */
         GestionAutomatica ga = new GestionAutomatica();
         if (!ga.generarGestionAutomatica("4DOMI", creditoActual, indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL DEUDOR " + creditoActual.getDeudor().getSujeto().getNombreRazonSocial())) {
           Logs.log.error("No se pudo insertar la gestion automatica.");
         }
-      }
+      //}
       if (direccionDao.editar(direccionSeleccionada)) {
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se edito la direccion."));
       } else {
@@ -828,7 +870,9 @@ public class VistaCreditoBean implements Serializable {
       d.setCalle(calleNuevaDireccion);
       d.setExterior(exteriorNuevaDireccion);
       d.setInterior(interiorNuevaDireccion);
-      d.setValidada(1);
+      // BUG:
+      // se comenta porque el campo validada ahora es el campo principal
+      //d.setValidada(1);
       if (latitudNuevaDireccion.equals("")) {
         d.setLatitud(BigDecimal.ZERO);
       } else {
@@ -872,9 +916,136 @@ public class VistaCreditoBean implements Serializable {
     }
   }
 
-  // METODO QUE VERIFICA SI LA DIRECCION ESTA VALIDADA O NO
-  public boolean verificarValidada() {
-    return direccionSeleccionada.getValidada() != 1;
+  // METODO QUE INTENTA PREPARAR UNA DIRECCION A PARTIR DE LA QUE NO HA SIDO VALIDADA
+  public void prepararDireccionSinValidar() {
+    listaColonias = coloniaDao.buscarPorCodigoPostal(direccionSinValidarSeleccionada.getCodigoPostal());
+    if (listaColonias.isEmpty()) {
+      listaColonias = coloniaDao.buscarPorCodigoPostal(direccionSinValidarSeleccionada.getCodigoPostal().substring(0, 2) + "00");
+    }
+    direccionPorValidar.setCalle(direccionSinValidarSeleccionada.getCalle());
+    direccionPorValidar.setExterior(direccionSinValidarSeleccionada.getExterior());
+    direccionPorValidar.setInterior(direccionSinValidarSeleccionada.getInterior());
+    direccionPorValidar.setColonia(listaColonias.get(0));
+    direccionPorValidar.setMunicipio(listaColonias.get(0).getMunicipio());
+    direccionPorValidar.setEstadoRepublica(direccionPorValidar.getMunicipio().getEstadoRepublica());
+    listaMunicipios = municipioDao.buscarMunicipiosPorEstado(listaColonias.get(0).getMunicipio().getEstadoRepublica().getIdEstado());
+    estadoNuevaDireccion = estadoRepublicaDao.buscarPorId(listaColonias.get(0).getMunicipio().getEstadoRepublica().getIdEstado());
+  }
+
+  // METODO QUE VALIDA UNA DIRECCION DE LA LISTA DE DIRECCIONES TEXTO
+  public void validarDireccion(int idColonia) {
+    Direccion d = new Direccion();
+    d.setSujeto(creditoActual.getDeudor().getSujeto());
+    d.setCalle(direccionPorValidar.getCalle());
+    d.setExterior(direccionPorValidar.getExterior());
+    d.setInterior(direccionPorValidar.getInterior());
+    Colonia c = coloniaDao.buscar(idColonia);
+    d.setColonia(c);
+    d.setMunicipio(c.getMunicipio());
+    d.setEstadoRepublica(c.getMunicipio().getEstadoRepublica());
+    d.setLatitud(BigDecimal.ZERO);
+    d.setLongitud(BigDecimal.ZERO);
+    // BUG:
+    // se comenta porque el campo validada ahora es el campo principal
+    //d.setValidada(Direcciones.VALIDADA);
+    if (direccionDao.insertar(d) != null) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se valido la direccion."));
+      if (!direccionTextoDao.eliminar(direccionSinValidarSeleccionada)) {
+        Logs.log.error("No se elimino la direccion texto id: " + direccionSinValidarSeleccionada.getIdDireccionTexto());
+      }
+      GestionAutomatica ga = new GestionAutomatica();
+      if (!ga.generarGestionAutomatica("4DOMI", creditoActual, indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL DEUDOR " + creditoActual.getDeudor().getSujeto().getNombreRazonSocial())) {
+        Logs.log.error("No se inserto la gestion automatica");
+      }
+      listaDirecciones = direccionDao.buscarPorSujeto(creditoActual.getDeudor().getSujeto().getIdSujeto());
+      listaDireccionesSinValidar = direccionTextoDao.buscarPorCredito(creditoActual.getNumeroCredito());
+    } else {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se valido la direccion. Contacte al equipo de sistemas"));
+    }
+  }
+
+  // METODO QUE REGRESA UNA LISTA DE COLONIAS SEGUN LOS CRITERIOS SELECCIONADOS
+  public void buscarColonias() {
+    String consulta = "SELECT * FROM colonia WHERE";
+    // SI SE ELIGIO UN ESTADO
+    if (estadoBuscadorColonias.getIdEstado() != 0) {
+      consulta = consulta + " id_municipio IN (SELECT id_municipio FROM municipio WHERE id_estado = " + estadoBuscadorColonias.getIdEstado() + ")";
+      // SI SE ELIGIO ALGUN MUNICIPIO
+      if (municipioBuscadorColonias.getIdMunicipio() != 0) {
+        consulta = consulta + " AND id_municipio = " + municipioBuscadorColonias.getIdMunicipio();
+        // SI SE ELIGIO ALGUN NOMBRE DE COLONIA
+        if (!coloniaBusqueda.isEmpty()) {
+          consulta = consulta + " AND nombre LIKE '%" + coloniaBusqueda + "%'";
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        } // SI NO SE ELIGIO COLONIA
+        else {
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        }
+      } // SI NO SE ELIGIO NINGUN MUNICIPIO
+      else {
+        // SI SE ELIGIO ALGUN NOMBRE DE COLONIA
+        if (!coloniaBusqueda.isEmpty()) {
+          consulta = consulta + " AND nombre LIKE '%" + coloniaBusqueda + "%'";
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        } // SI NO SE ELIGIO COLONIA
+        else {
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        }
+      }
+    } // SI NO SE ELIGIO NINGUN ESTADO
+    else {
+      // SI SE ELIGIO ALGUN MUNICIPIO
+      if (municipioBuscadorColonias.getIdMunicipio() != 0) {
+        consulta = consulta + " AND id_municipio = " + municipioBuscadorColonias.getIdMunicipio();
+        // SI SE ELIGIO ALGUN NOMBRE DE COLONIA
+        if (!coloniaBusqueda.isEmpty()) {
+          consulta = consulta + " AND nombre LIKE '%" + coloniaBusqueda + "%'";
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        } // SI NO SE ELIGIO COLONIA
+        else {
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        }
+      } // SI NO SE ELIGIO NINGUN MUNICIPIO
+      else {
+        // SI SE ELIGIO ALGUN NOMBRE DE COLONIA
+        if (!coloniaBusqueda.isEmpty()) {
+          consulta = consulta + " nombre LIKE '%" + coloniaBusqueda + "%'";
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        } // SI NO SE ELIGIO COLONIA
+        else {
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " codigo_postal = '" + cpBusqueda + "'";
+          }
+        }
+      }
+    }
+    if (!consulta.isEmpty()) {
+      consulta = consulta + ";";
+      listaColoniasBusqueda = coloniaDao.busquedaEspecialColonias(consulta);
+      habilitaColonias = true;
+    }
   }
 
   // ***********************************************************************************************************************
@@ -1417,4 +1588,108 @@ public class VistaCreditoBean implements Serializable {
     this.habilitaAjustes = habilitaAjustes;
   }
 
+  public List<DireccionTexto> getListaDireccionesSinValidar() {
+    return listaDireccionesSinValidar;
+  }
+
+  public void setListaDireccionesSinValidar(List<DireccionTexto> listaDireccionesSinValidar) {
+    this.listaDireccionesSinValidar = listaDireccionesSinValidar;
+  }
+
+  public DireccionTexto getDireccionSinValidarSeleccionada() {
+    return direccionSinValidarSeleccionada;
+  }
+
+  public void setDireccionSinValidarSeleccionada(DireccionTexto direccionSinValidarSeleccionada) {
+    this.direccionSinValidarSeleccionada = direccionSinValidarSeleccionada;
+  }
+
+  public Direccion getDireccionPorValidar() {
+    return direccionPorValidar;
+  }
+
+  public void setDireccionPorValidar(Direccion direccionPorValidar) {
+    this.direccionPorValidar = direccionPorValidar;
+  }
+
+  public String getColoniaBusqueda() {
+    return coloniaBusqueda;
+  }
+
+  public void setColoniaBusqueda(String coloniaBusqueda) {
+    this.coloniaBusqueda = coloniaBusqueda;
+  }
+
+  public String getCpBusqueda() {
+    return cpBusqueda;
+  }
+
+  public void setCpBusqueda(String cpBusqueda) {
+    this.cpBusqueda = cpBusqueda;
+  }
+
+  public List<Colonia> getListaColoniasBusqueda() {
+    return listaColoniasBusqueda;
+  }
+
+  public void setListaColoniasBusqueda(List<Colonia> listaColoniasBusqueda) {
+    this.listaColoniasBusqueda = listaColoniasBusqueda;
+  }
+
+  public boolean isHabilitaColonias() {
+    return habilitaColonias;
+  }
+
+  public void setHabilitaColonias(boolean habilitaColonias) {
+    this.habilitaColonias = habilitaColonias;
+  }
+
+  public EstadoRepublica getEstadoBuscadorColonias() {
+    return estadoBuscadorColonias;
+  }
+
+  public void setEstadoBuscadorColonias(EstadoRepublica estadoBuscadorColonias) {
+    this.estadoBuscadorColonias = estadoBuscadorColonias;
+  }
+
+  public Municipio getMunicipioBuscadorColonias() {
+    return municipioBuscadorColonias;
+  }
+
+  public void setMunicipioBuscadorColonias(Municipio municipioBuscadorColonias) {
+    this.municipioBuscadorColonias = municipioBuscadorColonias;
+  }
+
+  public Colonia getColoniaSeleccionadaBusqueda() {
+    return coloniaSeleccionadaBusqueda;
+  }
+
+  public void setColoniaSeleccionadaBusqueda(Colonia coloniaSeleccionadaBusqueda) {
+    this.coloniaSeleccionadaBusqueda = coloniaSeleccionadaBusqueda;
+  }
+
+  public boolean isHabilitaDireccionesHistorico() {
+    return habilitaDireccionesHistorico;
+  }
+
+  public void setHabilitaDireccionesHistorico(boolean habilitaDireccionesHistorico) {
+    this.habilitaDireccionesHistorico = habilitaDireccionesHistorico;
+  }
+
+  public boolean isHabilitaMasDirecciones() {
+    return habilitaMasDirecciones;
+  }
+
+  public void setHabilitaMasDirecciones(boolean habilitaMasDirecciones) {
+    this.habilitaMasDirecciones = habilitaMasDirecciones;
+  }
+
+  public boolean isHabilitaMasTelefonos() {
+    return habilitaMasTelefonos;
+  }
+
+  public void setHabilitaMasTelefonos(boolean habilitaMasTelefonos) {
+    this.habilitaMasTelefonos = habilitaMasTelefonos;
+  }
+  
 }

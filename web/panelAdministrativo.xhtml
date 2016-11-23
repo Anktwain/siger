@@ -24,8 +24,13 @@
     <ui:include src="barraSuperior.xhtml" />
     <ui:include src="barraLateral.xhtml" />
     <div id="main-container">
+      <!-- BUG: -->
+      <!-- se comenta porque ralentiza la carga de la vista, sin embargo se deben optimizar las consultas -->
       <!-- <ui:include src="barraEstadisticasAdmin.xhtml" /> -->
+      <ui:include src="barraAdministrativoCarga.xhtml" />
       <ui:include src="barraAdministrativo.xhtml" />
+      <!-- BUG: -->
+      <!-- se comenta porque ralentiza la carga de la vista, sin embargo se deben optimizar las consultas -->
       <!-- <ui:include src="barraProgresoAdmin.xhtml" /> -->
     </div><!-- /main-container -->
     <ui:include src="barraInferior.xhtml" />

@@ -3,30 +3,30 @@ package beans;
 import dao.ColoniaDAO;
 import dao.CreditoDAO;
 import dao.DireccionDAO;
+import dao.DireccionTextoDAO;
 import dao.EstadoRepublicaDAO;
 import dao.MunicipioDAO;
-import dao.SujetoDAO;
+import dao.RemesaDAO;
 import dto.Colonia;
+import dto.Credito;
 import dto.Direccion;
+import dto.DireccionTexto;
 import dto.EstadoRepublica;
 import dto.Municipio;
 import impl.ColoniaIMPL;
 import impl.CreditoIMPL;
 import impl.DireccionIMPL;
+import impl.DireccionTextoIMPL;
 import impl.EstadoRepublicaIMPL;
 import impl.MunicipioIMPL;
-import impl.SujetoIMPL;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import impl.RemesaIMPL;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import javax.el.ELContext;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -34,7 +34,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import util.GestionAutomatica;
-import util.constantes.Directorios;
+import util.constantes.Direcciones;
 import util.log.Logs;
 
 /**
@@ -50,114 +50,106 @@ public class VistaValidarDirecciones implements Serializable {
   IndexBean indexBean = (IndexBean) elContext.getELResolver().getValue(elContext, null, "indexBean");
 
   // VARIABLES DE CLASE
-  private final String nombreArchivo;
+  private boolean habilitaColonias;
+  private String mesCarga;
+  private String despacho;
+  private String coloniaBusqueda;
+  private String cpBusqueda;
   private List<String> tiposAsentamiento;
-  private List<DirsPorValidar> direccionesPorValidar;
-  private DirsPorValidar direccionSeleccionada;
-  private Colonia nuevaColonia;
-  private Municipio nuevoMunicipio;
+  private List<DireccionTexto> direccionesPorValidar;
+  private DireccionTexto direccionSeleccionada;
   private EstadoRepublica nuevoEstado;
-  private Colonia nuevaColoniaColonia;
-  private Municipio nuevaColoniaMunicipio;
   private EstadoRepublica nuevaColoniaEstado;
+  private EstadoRepublica estadoBuscadorColonias;
+  private Municipio nuevaColoniaMunicipio;
+  private Municipio nuevoMunicipio;
+  private Municipio municipioBuscadorColonias;
+  private Colonia nuevaColonia;
+  private Colonia nuevaColoniaColonia;
+  private Colonia coloniaSeleccionadaBusqueda;
   private String nombreNuevaColonia;
   private String cpNuevaColonia;
   private String tipoNuevaColonia;
   private List<EstadoRepublica> listaEstados;
   private List<Municipio> listaMunicipios;
   private List<Colonia> listaColonias;
+  private List<Colonia> listaColoniasBusqueda;
   private final EstadoRepublicaDAO estadoRepublicaDao;
   private final MunicipioDAO municipioDao;
   private final ColoniaDAO coloniaDao;
-  private final SujetoDAO sujetoDao;
   private final DireccionDAO direccionDao;
+  private final DireccionTextoDAO direccionTextoDao;
   private final CreditoDAO creditoDao;
+  private final RemesaDAO remesaDao;
 
   // CONSTRUCTOR
   public VistaValidarDirecciones() {
     tiposAsentamiento = Arrays.asList("Aeropuerto", "Ampliación", "Barrio", "Campamento", "Ciudad", "Club de golf", "Colonia", "Condominio", "Congregación", "Conjunto habitacional", "Ejido", "Equipamiento", "Estación", "Exhacienda", "Finca", "Fraccionamiento", "Gran usuario", "Granja", "Hacienda", "Ingenio", "Paraje", "Parque industrial", "Poblado comunal", "Pueblo", "Puerto", "Ranchería", "Rancho", "Residencial", "Unidad habitacional", "Villa", "Zona comercial", "Zona federal", "Zona industrial", "Zona militar");
-    nombreArchivo = "direccionar201653105250.txt";
+    habilitaColonias = false;
     nuevaColonia = new Colonia();
     nuevoMunicipio = new Municipio();
+    municipioBuscadorColonias = new Municipio();
     nuevoEstado = new EstadoRepublica();
+    estadoBuscadorColonias = new EstadoRepublica();
     nuevaColoniaColonia = new Colonia();
     nuevaColoniaMunicipio = new Municipio();
     nuevaColoniaEstado = new EstadoRepublica();
     estadoRepublicaDao = new EstadoRepublicaIMPL();
     municipioDao = new MunicipioIMPL();
     coloniaDao = new ColoniaIMPL();
-    sujetoDao = new SujetoIMPL();
     direccionDao = new DireccionIMPL();
+    direccionTextoDao = new DireccionTextoIMPL();
     creditoDao = new CreditoIMPL();
-    direccionSeleccionada = new DirsPorValidar();
-    direccionesPorValidar = obtenerListaDeDirecciones();
+    remesaDao = new RemesaIMPL();
+    direccionSeleccionada = new DireccionTexto();
+    direccionesPorValidar = new ArrayList();
+    listaColoniasBusqueda = new ArrayList();
+    obtenerDatos();
   }
 
-  /**
-   * Método que obtiene una lista de direcciones por validar.
-   *
-   * @return Una lista de las direcciones a validar
-   */
-  private List<DirsPorValidar> obtenerListaDeDirecciones() {
-    String lineaActual;
-    List<String> lineas = new ArrayList();
-    List<DirsPorValidar> lista = new ArrayList();
-    // TO FIX:
-    // CAMBIAR EL ARCHIVO PARA QUE NO SIEMPRE ABRA EL MISMO
-    // CREAR UN METODO DE APERTURA DE ARCHIVOS
-    try (BufferedReader buferLectura = new BufferedReader(new FileReader(Directorios.RUTA_REMESAS + nombreArchivo))) {
-      while ((lineaActual = buferLectura.readLine()) != null) {
-        lineas.add(lineaActual);
-      }
-      buferLectura.close();
-      for (int i = 0; i < (lineas.size()); i++) {
-        String[] arr = lineas.get(i).split(";");
-        if (arr.length == 7) {
-          DirsPorValidar d = new DirsPorValidar();
-          d.setIdSujeto(Integer.parseInt(arr[0]));
-          d.setNumeroCredito(arr[1]);
-          d.setCalle(arr[2]);
-          d.setColonia(arr[3]);
-          d.setMunicipio(arr[4]);
-          d.setEstado(arr[5]);
-          d.setCp(arr[6]);
-          lista.add(d);
-        }
-      }
-    } catch (IOException ioe) {
-      Logs.log.error("Error de lectura en archivo de direcciones");
-      Logs.log.error(ioe.getMessage());
-      lista = null;
-    }
-    return lista;
+  // METODO QUE OBTIENE LOS DATOS INICIALES
+  public final void obtenerDatos() {
+    listaEstados = estadoRepublicaDao.buscarTodo();
+    direccionesPorValidar = direccionTextoDao.buscarSinValidar();
+    Calendar c = Calendar.getInstance();
+    c.setTime(remesaDao.obtenerUltimaRemesa().getFechaCarga());
+    mesCarga = c.getDisplayName(Calendar.MONTH, Calendar.LONG, new Locale("es", "MX")).toUpperCase();
+    despacho = indexBean.getUsuario().getDespacho().getNombreCorto();
   }
 
   // METODO QUE PREPARA LA DIRECCION SELECCIONADA
   public void prepararDireccion() {
-    try {
-      listaColonias = coloniaDao.buscarPorCodigoPostal(direccionSeleccionada.getCp());
-      if (!listaColonias.isEmpty()) {
-        listaEstados = estadoRepublicaDao.buscarTodo();
-        listaMunicipios = municipioDao.buscarMunicipiosPorEstado(listaColonias.get(0).getMunicipio().getEstadoRepublica().getIdEstado());
-        nuevaColonia.setCodigoPostal(direccionSeleccionada.getCp());
-        nuevoMunicipio = listaColonias.get(0).getMunicipio();
-        nuevoEstado = listaColonias.get(0).getMunicipio().getEstadoRepublica();
-        for (int i = 0; i < (listaColonias.size()); i++) {
-          if (direccionSeleccionada.getColonia().contains(listaColonias.get(i).getNombre())) {
-            nuevaColonia = listaColonias.get(i);
-          }
+    listaColonias = coloniaDao.buscarPorCodigoPostal(direccionSeleccionada.getCodigoPostal());
+    listaEstados = estadoRepublicaDao.buscarTodo();
+    if (!listaColonias.isEmpty()) {
+      listaMunicipios = municipioDao.buscarMunicipiosPorEstado(listaColonias.get(0).getMunicipio().getEstadoRepublica().getIdEstado());
+      nuevaColonia.setCodigoPostal(direccionSeleccionada.getCodigoPostal());
+      nuevoMunicipio = listaColonias.get(0).getMunicipio();
+      nuevoEstado = listaColonias.get(0).getMunicipio().getEstadoRepublica();
+      for (int i = 0; i < (listaColonias.size()); i++) {
+        if (direccionSeleccionada.getColonia().contains(listaColonias.get(i).getNombre())) {
+          nuevaColonia = listaColonias.get(i);
         }
-      } else {
-        listaColonias = coloniaDao.buscarPorCodigoPostal(direccionSeleccionada.getCp().substring(0, 3) + "00");
-        listaEstados = estadoRepublicaDao.buscarTodo();
-        nuevaColonia.setCodigoPostal(direccionSeleccionada.getCp());
+      }
+    } else {
+      if (direccionSeleccionada.getCodigoPostal().matches("[0-9]{5}")) {
+        nuevoEstado = listaColonias.get(0).getMunicipio().getEstadoRepublica();
         listaMunicipios = municipioDao.buscarMunicipiosPorEstado(listaColonias.get(0).getMunicipio().getEstadoRepublica().getIdEstado());
         nuevoMunicipio = listaColonias.get(0).getMunicipio();
-        nuevoEstado = listaColonias.get(0).getMunicipio().getEstadoRepublica();
+        listaColonias = coloniaDao.buscarPorCodigoPostal(direccionSeleccionada.getCodigoPostal().substring(0, 3) + "00");
+        nuevaColonia.setCodigoPostal(direccionSeleccionada.getCodigoPostal());
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atencion.", "No existen colonias con este codigo postal. Elija una colonia de la lista o agregue una nueva."));
+      } else {
+        // SE BUSCARA LA PRIMER COLONIA SOLO PARA RELLENAR
+        nuevaColonia = coloniaDao.buscar(1);
+        listaColonias = coloniaDao.buscarPorCodigoPostal(nuevaColonia.getCodigoPostal());
+        nuevoEstado = listaColonias.get(0).getMunicipio().getEstadoRepublica();
+        listaMunicipios = municipioDao.buscarMunicipiosPorEstado(listaColonias.get(0).getMunicipio().getEstadoRepublica().getIdEstado());
+        nuevoMunicipio = listaColonias.get(0).getMunicipio();
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_WARN, "Atencion.", "El codigo postal no es valido, seleccione los datos."));
       }
-    } catch (Exception e) {
     }
+    System.out.println("ESTADO PRECARGADO CON ID: " + nuevoEstado.getIdEstado());
   }
 
   // METODO QUE CARGA TODA LA COLONIA
@@ -171,69 +163,94 @@ public class VistaValidarDirecciones implements Serializable {
     RequestContext.getCurrentInstance().update("validarDireccionForm");
   }
 
+  // BUG:
+  // agregar los metodos que borran las direcciones una vez validadas
   // METODO QUE VALIDA UNA DIRECCION
   public void validar() {
     nuevaColonia = coloniaDao.buscar(nuevaColonia.getIdColonia());
     nuevoMunicipio = municipioDao.buscar(nuevoMunicipio.getIdMunicipio());
     nuevoEstado = estadoRepublicaDao.buscar(nuevoEstado.getIdEstado());
     Direccion d = new Direccion();
-    // TO FIX
-    // SE DEBERAN CARGAR DESDE LA REMESA
-    d.setExterior("S/N");
+    d.setCalle(direccionSeleccionada.getCalle());
+    d.setExterior(direccionSeleccionada.getExterior());
+    d.setInterior(direccionSeleccionada.getInterior());
+    d.setColonia(nuevaColonia);
+    d.setMunicipio(nuevoMunicipio);
+    d.setEstadoRepublica(nuevoEstado);
     d.setLatitud(BigDecimal.ZERO);
     d.setLongitud(BigDecimal.ZERO);
-    d.setCalle(direccionSeleccionada.getCalle());
-    d.setColonia(nuevaColonia);
-    d.setEstadoRepublica(nuevoEstado);
-    d.setMunicipio(nuevoMunicipio);
-    d.setSujeto(sujetoDao.buscar(direccionSeleccionada.getIdSujeto()));
+    Credito c = creditoDao.buscar(direccionSeleccionada.getNumeroCredito());
+    if (c != null) {
+      d.setSujeto(c.getDeudor().getSujeto());
     // TO FIX:
-    // AGREGAR UN MODULO PARA VERIFICAR SI LA DIRECCION YA EXISTE PARA ESE CREDITO, DE SER ASI YA NO INSERTARLA
-    if (direccionDao.insertar(d) != null) {
-      if (borrarDireccionDeArchivo()) {
+      // AGREGAR UN MODULO PARA VERIFICAR SI LA DIRECCION YA EXISTE PARA ESE CREDITO, DE SER ASI YA NO INSERTARLA
+      if (direccionDao.insertar(d) != null) {
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se ha validado la direccion"));
+        direccionSeleccionada.setValidada(Direcciones.VALIDADA);
+        if (!direccionTextoDao.editar(direccionSeleccionada)) {
+          Logs.log.error("No se marco como validada la direccion texto con id:" + direccionSeleccionada.getIdDireccionTexto());
+        }
         nuevaColonia = new Colonia();
         nuevoMunicipio = new Municipio();
         nuevoEstado = new EstadoRepublica();
-        direccionesPorValidar = obtenerListaDeDirecciones();
+        direccionesPorValidar = direccionTextoDao.buscarSinValidar();
         Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " valido una direccion asociada al sujeto " + d.getSujeto().getNombreRazonSocial());
         GestionAutomatica ga = new GestionAutomatica();
-        ga.generarGestionAutomatica("4DOMI", creditoDao.buscarPorSujeto(direccionSeleccionada.getIdSujeto()), indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL DEUDOR " + d.getSujeto().getNombreRazonSocial());
-        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se ha validado la direccion"));
+        if (!ga.generarGestionAutomatica("4DOMI", c, indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL DEUDOR " + d.getSujeto().getNombreRazonSocial())) {
+          Logs.log.error("No se inserto la gestion automatica");
+        }
       } else {
-        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se actualizo el archivo. Contacte al equipo de sistemas"));
+        FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se valido la direccion. Contacte al equipo de sistemas"));
+      }
+      limpiarBuscador();
+    }else{
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El credito en esta direccion no existe."));
+    }
+  }
+
+  // METODO QUE VALIDA UNA DIRECCION DE LA LISTA DE DIRECCIONES TEXTO
+  public void validarDireccion(int idColonia) {
+    Direccion d = new Direccion();
+    Credito cre = creditoDao.buscar(direccionSeleccionada.getNumeroCredito());
+    d.setSujeto(cre.getDeudor().getSujeto());
+    d.setCalle(direccionSeleccionada.getCalle());
+    d.setExterior(direccionSeleccionada.getExterior());
+    d.setInterior(direccionSeleccionada.getInterior());
+    Colonia c = coloniaDao.buscar(idColonia);
+    d.setColonia(c);
+    d.setMunicipio(c.getMunicipio());
+    d.setEstadoRepublica(c.getMunicipio().getEstadoRepublica());
+    d.setLatitud(BigDecimal.ZERO);
+    d.setLongitud(BigDecimal.ZERO);
+    // BUG:
+    // se comenta porque el campo validada ahora es el campo principal
+    // d.setValidada(Direcciones.VALIDADA);
+    if (direccionDao.insertar(d) != null) {
+      FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se valido la direccion."));
+      direccionSeleccionada.setValidada(Direcciones.VALIDADA);
+      if (!direccionTextoDao.editar(direccionSeleccionada)) {
+        Logs.log.error("No se marco como validada la direccion texto id: " + direccionSeleccionada.getIdDireccionTexto());
+      } else {
+        direccionesPorValidar = direccionTextoDao.buscarSinValidar();
+      }
+      GestionAutomatica ga = new GestionAutomatica();
+      if (!ga.generarGestionAutomatica("4DOMI", cre, indexBean.getUsuario(), "SE VALIDA DIRECCION ASOCIADA AL DEUDOR " + cre.getDeudor().getSujeto().getNombreRazonSocial())) {
+        Logs.log.error("No se inserto la gestion automatica");
       }
     } else {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se valido la direccion. Contacte al equipo de sistemas"));
     }
+    limpiarBuscador();
   }
 
-  // METODO QUE ELIMINA DEL ARCHIVO LA DIRECCION QUE YA FUE VALIDADA
-  public boolean borrarDireccionDeArchivo() {
-    // SE CONSTRUYE LA CADENA DE TEXTO A BUSCAR
-    String direccion = Integer.toString(direccionSeleccionada.getIdSujeto()) + ";" + direccionSeleccionada.getNumeroCredito() + ";";
-    // SE ESCRIBE UN NUEVO ARCHIVO SIN ESCRIBIR LA COINCIDENCIA
-    File inputFile = new File(Directorios.RUTA_REMESAS + nombreArchivo);
-    File tempFile = new File(Directorios.RUTA_REMESAS + "tmp" + nombreArchivo);
-    try {
-      try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-        String currentLine;
-        while ((currentLine = reader.readLine()) != null) {
-          if (currentLine.contains(direccion)) {
-            continue;
-          }
-          writer.write(currentLine + System.getProperty("line.separator"));
-        }
-        writer.close();
-      }
-    } catch (Exception e) {
-      Logs.log.error("Error de lectura/escritura en archivo de direcciones");
-      Logs.log.error(e.getMessage());
-    }
-    // SE ELIMINA EL ARCHIVO ORIGINAL
-    inputFile.delete();
-    // SE RENOMBRA EL ARCHIVO CON EL NOMBRE ORIGINAL
-    return tempFile.renameTo(inputFile);
+  // METODO QUE LIMPIA EL BUSCADOR DE COLONIAS
+  public void limpiarBuscador() {
+    estadoBuscadorColonias = new EstadoRepublica();
+    municipioBuscadorColonias = new Municipio();
+    coloniaBusqueda = "";
+    cpBusqueda = "";
+    habilitaColonias = false;
+    listaColoniasBusqueda = new ArrayList();
   }
 
   // METODO QUE PREPARA LAS LISTAS PARA UNA NUEVA COLONIA
@@ -246,7 +263,7 @@ public class VistaValidarDirecciones implements Serializable {
   public void crearColonia() {
     if (!cpNuevaColonia.matches("(\\d)+")) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal debe ser numerico."));
-    } else if (!cpNuevaColonia.substring(0, 3).equals(direccionSeleccionada.getCp().substring(0, 3))) {
+    } else if (!cpNuevaColonia.substring(0, 3).equals(direccionSeleccionada.getCodigoPostal().substring(0, 3))) {
       FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "El codigo postal introducido no pertenece a este municipio."));
     } else {
       nuevaColoniaColonia.setCodigoPostal(cpNuevaColonia);
@@ -254,31 +271,137 @@ public class VistaValidarDirecciones implements Serializable {
       nuevaColoniaColonia.setNombre(nombreNuevaColonia);
       nuevaColoniaColonia.setTipo(tipoNuevaColonia);
       if (coloniaDao.insertar(nuevaColoniaColonia)) {
-        listaColonias = coloniaDao.buscarPorCodigoPostal(cpNuevaColonia);
-        nombreNuevaColonia = "";
-        cpNuevaColonia = "";
         Logs.log.info("El administrador " + indexBean.getUsuario().getNombreLogin() + " agrego la colonia " + nuevaColoniaColonia.getTipo() + " " + nuevaColoniaColonia.getNombre());
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_INFO, "Operacion exitosa.", "Se creo la nueva colonia. Ahora valide la direccion."));
+        prepararDireccion();
+        nuevaColonia = nuevaColoniaColonia;
       } else {
         FacesContext.getCurrentInstance().addMessage("", new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error.", "No se pudo agregar la nueva colonia. Contacte al equipo de sistemas."));
       }
     }
   }
 
-  // GETTERS & SETTERS
-  public void setDireccionesPorValidar(List<DirsPorValidar> direccionesPorValidar) {
-    this.direccionesPorValidar = direccionesPorValidar;
+  // METODO QUE REGRESA UNA LISTA DE COLONIAS SEGUN LOS CRITERIOS SELECCIONADOS
+  public void buscarColonias() {
+    String consulta = "SELECT * FROM colonia WHERE";
+    // SI SE ELIGIO UN ESTADO
+    if (estadoBuscadorColonias.getIdEstado() != 0) {
+      consulta = consulta + " id_municipio IN (SELECT id_municipio FROM municipio WHERE id_estado = " + estadoBuscadorColonias.getIdEstado() + ")";
+      // SI SE ELIGIO ALGUN MUNICIPIO
+      if (municipioBuscadorColonias.getIdMunicipio() != 0) {
+        consulta = consulta + " AND id_municipio = " + municipioBuscadorColonias.getIdMunicipio();
+        // SI SE ELIGIO ALGUN NOMBRE DE COLONIA
+        if (!coloniaBusqueda.isEmpty()) {
+          consulta = consulta + " AND nombre LIKE '%" + coloniaBusqueda + "%'";
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        } // SI NO SE ELIGIO COLONIA
+        else {
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        }
+      } // SI NO SE ELIGIO NINGUN MUNICIPIO
+      else {
+        // SI SE ELIGIO ALGUN NOMBRE DE COLONIA
+        if (!coloniaBusqueda.isEmpty()) {
+          consulta = consulta + " AND nombre LIKE '%" + coloniaBusqueda + "%'";
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        } // SI NO SE ELIGIO COLONIA
+        else {
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        }
+      }
+    } // SI NO SE ELIGIO NINGUN ESTADO
+    else {
+      // SI SE ELIGIO ALGUN MUNICIPIO
+      if (municipioBuscadorColonias.getIdMunicipio() != 0) {
+        consulta = consulta + " AND id_municipio = " + municipioBuscadorColonias.getIdMunicipio();
+        // SI SE ELIGIO ALGUN NOMBRE DE COLONIA
+        if (!coloniaBusqueda.isEmpty()) {
+          consulta = consulta + " AND nombre LIKE '%" + coloniaBusqueda + "%'";
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        } // SI NO SE ELIGIO COLONIA
+        else {
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        }
+      } // SI NO SE ELIGIO NINGUN MUNICIPIO
+      else {
+        // SI SE ELIGIO ALGUN NOMBRE DE COLONIA
+        if (!coloniaBusqueda.isEmpty()) {
+          consulta = consulta + " nombre LIKE '%" + coloniaBusqueda + "%'";
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " AND codigo_postal = '" + cpBusqueda + "'";
+          }
+        } // SI NO SE ELIGIO COLONIA
+        else {
+          // SI SE ELIGIO ALGUN CODIGO POSTAL
+          if (!cpBusqueda.isEmpty()) {
+            consulta = consulta + " codigo_postal = '" + cpBusqueda + "'";
+          }
+        }
+      }
+    }
+    if (!consulta.isEmpty()) {
+      consulta = consulta + " ORDER BY nombre ASC;";
+      listaColoniasBusqueda = coloniaDao.busquedaEspecialColonias(consulta);
+      habilitaColonias = true;
+    }
   }
 
-  public List<DirsPorValidar> getDireccionesPorValidar() {
+  // METODO QUE PREPARA LA LISTA DE MUNICIPIOS DE ACUERDO AL ESTADO SELECCIONADO
+  public void obtenerMunicipios(EstadoRepublica estado) {
+    listaMunicipios = municipioDao.buscarMunicipiosPorEstado(estado.getIdEstado());
+  }
+
+  // METODO QUE PREPARA UNA LISTA DE COLONIAS DE ACUERDO AL MUNICIPIO SELECCIONADO
+  public void obtenerColonias(Municipio m) {
+    listaColonias = coloniaDao.buscarColoniasPorMunicipio(m.getIdMunicipio());
+  }
+
+  // METODO QUE PRECARGA DATOS EN BASE A LA DIRECCION SELECCIONADA EN EL BUSCADOR DE COLONIAS
+  public void precargarBuscador() {
+    estadoBuscadorColonias = nuevoEstado;
+  }
+
+  // METODO QUE GUARDA LA COLONIA SELECCIONADA EN EL BUSCADOR
+  public void guardarColonia() {
+    nuevaColonia = coloniaSeleccionadaBusqueda;
+    nuevoMunicipio = coloniaSeleccionadaBusqueda.getMunicipio();
+    RequestContext.getCurrentInstance().update("editarDireccionPorValidarForm:comboboxMunicipiosDireccionPorValidar");
+    RequestContext.getCurrentInstance().update("editarDireccionPorValidarForm:comboboxColoniasDireccionPorValidar");
+  }
+
+  // GETTERS & SETTERS
+  public List<DireccionTexto> getDireccionesPorValidar() {
     return direccionesPorValidar;
   }
 
-  public DirsPorValidar getDireccionSeleccionada() {
+  public void setDireccionesPorValidar(List<DireccionTexto> direccionesPorValidar) {
+    this.direccionesPorValidar = direccionesPorValidar;
+  }
+
+  public DireccionTexto getDireccionSeleccionada() {
     return direccionSeleccionada;
   }
 
-  public void setDireccionSeleccionada(DirsPorValidar direccionSeleccionada) {
+  public void setDireccionSeleccionada(DireccionTexto direccionSeleccionada) {
     this.direccionSeleccionada = direccionSeleccionada;
   }
 
@@ -386,76 +509,76 @@ public class VistaValidarDirecciones implements Serializable {
     this.tipoNuevaColonia = tipoNuevaColonia;
   }
 
-  // CLASE MIEMBRO QUE PREPARA LAS DIRECCIONES PARA VALIDAR
-  public static class DirsPorValidar {
+  public String getMesCarga() {
+    return mesCarga;
+  }
 
-    private int idSujeto;
-    private String numeroCredito;
-    private String calle;
-    private String colonia;
-    private String municipio;
-    private String estado;
-    private String cp;
+  public void setMesCarga(String mesCarga) {
+    this.mesCarga = mesCarga;
+  }
 
-    public DirsPorValidar() {
-    }
+  public String getDespacho() {
+    return despacho;
+  }
 
-    public int getIdSujeto() {
-      return idSujeto;
-    }
+  public void setDespacho(String despacho) {
+    this.despacho = despacho;
+  }
 
-    public void setIdSujeto(int idSujeto) {
-      this.idSujeto = idSujeto;
-    }
+  public EstadoRepublica getEstadoBuscadorColonias() {
+    return estadoBuscadorColonias;
+  }
 
-    public String getNumeroCredito() {
-      return numeroCredito;
-    }
+  public void setEstadoBuscadorColonias(EstadoRepublica estadoBuscadorColonias) {
+    this.estadoBuscadorColonias = estadoBuscadorColonias;
+  }
 
-    public void setNumeroCredito(String numeroCredito) {
-      this.numeroCredito = numeroCredito;
-    }
+  public Municipio getMunicipioBuscadorColonias() {
+    return municipioBuscadorColonias;
+  }
 
-    public String getCalle() {
-      return calle;
-    }
+  public void setMunicipioBuscadorColonias(Municipio municipioBuscadorColonias) {
+    this.municipioBuscadorColonias = municipioBuscadorColonias;
+  }
 
-    public void setCalle(String calle) {
-      this.calle = calle;
-    }
+  public List<Colonia> getListaColoniasBusqueda() {
+    return listaColoniasBusqueda;
+  }
 
-    public String getColonia() {
-      return colonia;
-    }
+  public void setListaColoniasBusqueda(List<Colonia> listaColoniasBusqueda) {
+    this.listaColoniasBusqueda = listaColoniasBusqueda;
+  }
 
-    public void setColonia(String colonia) {
-      this.colonia = colonia;
-    }
+  public String getColoniaBusqueda() {
+    return coloniaBusqueda;
+  }
 
-    public String getMunicipio() {
-      return municipio;
-    }
+  public void setColoniaBusqueda(String coloniaBusqueda) {
+    this.coloniaBusqueda = coloniaBusqueda;
+  }
 
-    public void setMunicipio(String municipio) {
-      this.municipio = municipio;
-    }
+  public String getCpBusqueda() {
+    return cpBusqueda;
+  }
 
-    public String getEstado() {
-      return estado;
-    }
+  public void setCpBusqueda(String cpBusqueda) {
+    this.cpBusqueda = cpBusqueda;
+  }
 
-    public void setEstado(String estado) {
-      this.estado = estado;
-    }
+  public Colonia getColoniaSeleccionadaBusqueda() {
+    return coloniaSeleccionadaBusqueda;
+  }
 
-    public String getCp() {
-      return cp;
-    }
+  public void setColoniaSeleccionadaBusqueda(Colonia coloniaSeleccionadaBusqueda) {
+    this.coloniaSeleccionadaBusqueda = coloniaSeleccionadaBusqueda;
+  }
 
-    public void setCp(String cp) {
-      this.cp = cp;
-    }
+  public boolean isHabilitaColonias() {
+    return habilitaColonias;
+  }
 
+  public void setHabilitaColonias(boolean habilitaColonias) {
+    this.habilitaColonias = habilitaColonias;
   }
 
 }

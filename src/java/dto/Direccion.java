@@ -1,5 +1,5 @@
 package dto;
-// Generated 15/06/2016 09:53:16 AM by Hibernate Tools 4.3.1
+// Generated 20/10/2016 11:15:34 AM by Hibernate Tools 4.3.1
 
 
 import java.math.BigDecimal;
@@ -22,24 +22,23 @@ public class Direccion  implements java.io.Serializable {
      private String interior;
      private BigDecimal latitud;
      private BigDecimal longitud;
-     private int validada;
+     private int principal;
      private Set impresions = new HashSet(0);
 
     public Direccion() {
     }
-
 	
-    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle, String exterior, BigDecimal latitud, BigDecimal longitud) {
+    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle, BigDecimal latitud, BigDecimal longitud, int principal) {
         this.colonia = colonia;
         this.estadoRepublica = estadoRepublica;
         this.municipio = municipio;
         this.sujeto = sujeto;
         this.calle = calle;
-        this.exterior = exterior;
         this.latitud = latitud;
         this.longitud = longitud;
+        this.principal = principal;
     }
-    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle, String exterior, String interior, BigDecimal latitud, BigDecimal longitud, Set impresions) {
+    public Direccion(Colonia colonia, EstadoRepublica estadoRepublica, Municipio municipio, Sujeto sujeto, String calle, String exterior, String interior, BigDecimal latitud, BigDecimal longitud, int principal, Set impresions) {
        this.colonia = colonia;
        this.estadoRepublica = estadoRepublica;
        this.municipio = municipio;
@@ -49,6 +48,7 @@ public class Direccion  implements java.io.Serializable {
        this.interior = interior;
        this.latitud = latitud;
        this.longitud = longitud;
+       this.principal = principal;
        this.impresions = impresions;
     }
    
@@ -122,12 +122,12 @@ public class Direccion  implements java.io.Serializable {
     public void setLongitud(BigDecimal longitud) {
         this.longitud = longitud;
     }
-    public int getValidada() {
-        return this.validada;
+    public int getPrincipal() {
+        return this.principal;
     }
     
-    public void setValidada(int validada) {
-        this.validada = validada;
+    public void setPrincipal(int principal) {
+        this.principal = principal;
     }
     public Set getImpresions() {
         return this.impresions;

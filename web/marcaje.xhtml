@@ -41,6 +41,8 @@
       <div class="padding-md">
         <div class="col-lg-10">
           <h:form id="marcajeForm">
+            <!-- SE COMENTA HASTA NUEVO AVISO -->
+            <!--
             <hr />
             <p:commandButton value="Habilitar periodo de impresion" oncomplete="PF('dlgPeriodoImpresion').show();"/>
             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -48,6 +50,7 @@
             <br />
             <hr />
             <br />
+            -->
             Seleccione un marcaje:
             &nbsp;&nbsp;&nbsp;&nbsp;
             <p:selectOneMenu value="#{marcajeBean.marcajeSeleccionado.idMarcaje}" style="width:200px">
@@ -78,6 +81,15 @@
                 <h:outputText value="#{c.gestor.usuario.nombreLogin}"/>
               </p:column>
             </p:dataTable>
+            <hr />
+            <h:outputText value="Seleccione la bandeja de cuentas con errores en la direccion:" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <p:selectOneMenu value="#{marcajeBean.marcajeSeleccionado.idMarcaje}" style="width:200px">
+              <f:selectItem itemLabel="Todos" itemValue="0" />
+              <f:selectItems value="#{marcajeBean.listaMarcajes}" var="mar" itemLabel="#{mar.marcaje}" itemValue="#{mar.idMarcaje}" />
+            </p:selectOneMenu>
+            <br />
+            <h:outputText value="Aqui existira la bandeja de cuentas con probolemas en la direccion, es importante diseñarla bien en la base de datos" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
           </h:form>
         </div>
       </div>

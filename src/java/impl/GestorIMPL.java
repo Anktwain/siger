@@ -101,7 +101,7 @@ public class GestorIMPL implements GestorDAO {
     Session sesion = HibernateUtil.getSessionFactory().openSession();
     List<Gestor> gestores;
     try {
-      gestores = sesion.createSQLQuery("SELECT g.* FROM usuario u JOIN gestor g ON u.id_usuario = g.id_usuario AND u.id_despacho = " + idDespacho + " AND g.id_gestor != " + idGestor + ";").addEntity(Gestor.class).list();
+      gestores = sesion.createSQLQuery("SELECT g.* FROM usuario u JOIN gestor g ON u.id_usuario = g.id_usuario AND u.id_despacho = " + idDespacho + " AND g.id_gestor != " + idGestor + " AND u.perfil != " + Perfiles.ELIMINADO + ";").addEntity(Gestor.class).list();
     } catch (HibernateException he) {
       gestores = null;
       Logs.log.error(he.getMessage());

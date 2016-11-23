@@ -1,5 +1,5 @@
 package dto;
-// Generated 15/06/2016 09:53:16 AM by Hibernate Tools 4.3.1
+// Generated 20/10/2016 11:15:34 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,6 +16,7 @@ public class Colonia  implements java.io.Serializable {
      private String tipo;
      private String nombre;
      private String codigoPostal;
+     private String claveLada;
      private Set regions = new HashSet(0);
      private Set direccions = new HashSet(0);
 
@@ -72,6 +73,13 @@ public class Colonia  implements java.io.Serializable {
     public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
+    public String getClaveLada() {
+      return claveLada;
+    }
+
+    public void setClaveLada(String claveLada) {
+      this.claveLada = claveLada;
+    }    
     public Set getRegions() {
         return this.regions;
     }

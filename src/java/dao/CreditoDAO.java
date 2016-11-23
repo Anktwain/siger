@@ -73,4 +73,14 @@ public interface CreditoDAO {
   
   public Number contarCreditosQuebrantoPermanencia(int idDespacho);
   
+  public List<Credito> buscarCreditosPorSujeto(int idSujeto);
+  
+  public int contarCreditosActivosSinQuebrantoPermanenciaPorGestor(int idDespacho, int idGestor);
+  
+  public int contarCreditosActivosQuebrantoPermanenciaPorGestor(int idDespacho, int idGestor);
+  
+  public float calcularMontoPorRecuperarSinQuebrantoPermanenciaGestor(int idDespacho, int idGestor);
+  
+  public float calcularMontoPorRecuperarQuebrantoPermanenciaGestor(int idDespacho, int idGestor);
+  
 }

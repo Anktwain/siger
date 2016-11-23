@@ -1,12 +1,14 @@
 package beans;
 
 import dao.DevolucionDAO;
+import dao.DireccionDAO;
 import java.io.Serializable;
 import dto.Usuario;
 import impl.UsuarioIMPL;
 import dao.UsuarioDAO;
 import dto.Devolucion;
 import impl.DevolucionIMPL;
+import impl.DireccionIMPL;
 import java.util.List;
 import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
@@ -34,6 +36,7 @@ public class BarraAdministrativoBean implements Serializable {
   // VARIABLES DE CLASE
   private final UsuarioDAO usuarioDao;
   private final DevolucionDAO devolucionDao;
+  private final DireccionDAO direccionDao;
 
   /**
    *
@@ -41,6 +44,7 @@ public class BarraAdministrativoBean implements Serializable {
   public BarraAdministrativoBean() {
     usuarioDao = new UsuarioIMPL();
     devolucionDao = new DevolucionIMPL();
+    direccionDao = new DireccionIMPL();
   }
 
   /**
@@ -74,4 +78,9 @@ public class BarraAdministrativoBean implements Serializable {
     return "+1";
   }
 
+  // METODO QUE CUENTA LAS DIRECCIONES QUE HAY EN EL SISTEMA
+  public String contarDireccionesSistema(){
+    return direccionDao.contarDirecciones().toString();
+  }
+  
 }

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+  <h:head>
+    <meta charset="utf-8"></meta>
+    <title>SigerWeb - Validaci&oacute;n de direcciones</title>
+  </h:head>
+  <f:metadata>
+    <f:event listener="#{indexBean.verificarAcceso('validacion especial direcciones')}" type="preRenderView" />
+  </f:metadata>
+  <h:body>
+    <p:growl id="growl" showDetail="true" sticky="true" />
+    <!-- Overlay Div -->
+    <div id="overlay" class="transparent" style="display: none;" />
+    <ui:include src="barraLateral.xhtml" />
+    <ui:include src="barraSuperior.xhtml" />
+    <div id="main-container">
+      <div id="breadcrumb">
+        <ul class="breadcrumb">
+          <li>
+            <i class="fa fa-home">
+            </i>
+            <a href="#{indexBean.vista}">Inicio</a>
+          </li>
+          <li class="active">
+            Validaci&oacute;n de direcciones
+          </li>
+        </ul>
+      </div>
+      <div class="main-header clearfix">
+        <div class="page-title">
+          <h3 class="no-margin">Validaci&oacute;n de direcciones</h3>
+          <span>Valide y corrija las direcciones de los deudores </span>
+          <span>Seleccione con un click la direcci&oacute;n que desea validar </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="padding-md">
+          <div class="col-lg-12">
+            <h:form id="direccionesEnSistemaForm">
+              <p:dataTable id="direccionesEnSistema" var="d" value="#{validacionEspecialDireccionesBean.listaDirecciones}" selection="#{validacionEspecialDireccionesBean.direccionSeleccionada}" selectionMode="single" rowKey="#{d.idDireccion}" emptyMessage="No existen direcciones en el sistema." paginator="true" rows="15" paginatorPosition="bottom" paginatorAlwaysVisible="false" style="width: 1350px;">
+                <f:facet name="header">
+                  <p:outputLabel value="Lista de direcciones en el sistema" />
+                </f:facet>
+                <p:column headerText="Id" style="width: 70px;">
+                  <h:outputText value="#{d.idDireccion}" />
+                </p:column>
+                <p:column headerText="Calle" style="width: 200px;">
+                  <h:outputText value="#{d.calle}" />
+                </p:column>
+                <p:column headerText="Exterior" style="width: 100px;">
+                  <h:outputText value="#{d.exterior}" />
+                </p:column>
+                <p:column headerText="Interior" style="width: 100px;">
+                  <h:outputText value="#{d.interior}" />
+                </p:column>
+                <p:column headerText="Colonia" style="width: 250px;">
+                  <h:outputText value="#{d.colonia.tipo} #{d.colonia.nombre}" />
+                </p:column>
+                <p:column headerText="Municipio" style="width: 200px;">
+                  <h:outputText value="#{d.municipio.nombre}" />
+                </p:column>
+                <p:column headerText="Estado" style="width: 200px;">
+                  <h:outputText value="#{d.estadoRepublica.nombre}" />
+                </p:column>
+                <p:column headerText="C.P."  style="width: 60px;">
+                  <h:outputText value="#{d.colonia.codigoPostal}" />
+                </p:column>
+                <p:ajax event="rowSelect" listener="#{validacionEspecialDireccionesBean.prepararDireccion()}" oncomplete="PF('dialogoEditarDireccionValidacionEspecial').show();" update="editarDireccionValidacionEspecialForm" />
+              </p:dataTable>
+              <br />
+              <br />
+              <h:outputText value="Abrir la direccion con id:" style="font-size: 16px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              &nbsp;&nbsp;
+              <p:inputText value="#{validacionEspecialDireccionesBean.idDireccionDirecta}" size="5" maxlength="5" />
+              &nbsp;&nbsp;
+              <p:commandButton icon="ui-icon-search" value="Buscar" actionListener="#{validacionEspecialDireccionesBean.abrirDireccionEspecifica()}" update=":growl" />
+            </h:form>
+          </div>
+        </div>
+      </div>
+    </div> <!-- main-container -->
+    <ui:include src="barraInferior.xhtml"/>
+  </h:body>
+  <!-- DIALOGO BARRA DE CARGA -->
+  <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+  <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+    <p:graphicImage library="img" name="loadingBarra.gif" />
+  </p:dialog>
+  <!-- DIALOGO PARA EDITAR UNA DIRECCION -->
+  <p:dialog id="dlgEditarDireccionSinValidar" widgetVar="dialogoEditarDireccionValidacionEspecial" modal="true" resizable="false" header="Editar direccion para validacion">
+    <h:form id="editarDireccionValidacionEspecialForm">
+      <div align="center">
+        <table>
+          <tr>
+            <td style="padding-left: 40px; padding-right: 40px;">
+              <p:commandLink actionListener="#{validacionEspecialDireccionesBean.anterior()}" update="editarDireccionValidacionEspecialForm">
+                <p:graphicImage library="img" name="iconos/flecha_izq.png" width="70" height="70" />
+              </p:commandLink>
+            </td>
+            <td>
+              <p:outputLabel value="Direccion id #{validacionEspecialDireccionesBean.direccionSeleccionada.idDireccion}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+              <br />
+              <p:outputLabel value="Direccion #{validacionEspecialDireccionesBean.posicion + 1} de #{validacionEspecialDireccionesBean.totalCuentas}" style="font-size: 20px; color: #777; background: #f9f9f9; font-family: 'Open Sans',sans-serif;" />
+            </td>
+            <td style="padding-left: 40px; padding-right: 40px;">
+              <p:commandLink actionListener="#{validacionEspecialDireccionesBean.siguiente()}" update="editarDireccionValidacionEspecialForm">
+                <p:graphicImage library="img" name="iconos/flecha_der.png" width="70" height="70" />
+              </p:commandLink>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <br />
+      <p:messages id="mensajes" showDetail="true" autoUpdate="true" closable="true" />
+      <div align="center">
+        <p:outputPanel style="margin-right: auto; margin-left: auto;">
+          <p:panelGrid columns="2">
+            <h:outputText value="Calle:" />
+            <p:inputText value="#{validacionEspecialDireccionesBean.direccionSeleccionada.calle}" size="30" />
+            <h:outputText value="Exterior:" />
+            <p:inputText value="#{validacionEspecialDireccionesBean.direccionSeleccionada.exterior}" size="30" />
+            <h:outputText value="Interior:" />
+            <p:inputText value="#{validacionEspecialDireccionesBean.direccionSeleccionada.interior}" size="30" />
+            <h:outputText value="Colonia:" />
+            <p:selectOneMenu id="comboboxColoniasDireccionPorValidar" value="#{validacionEspecialDireccionesBean.direccionSeleccionada.colonia.idColonia}" style="width:350px" filter="true" filterMatchMode="contains">
+              <f:selectItems value="#{validacionEspecialDireccionesBean.listaColonias}" var="c" itemValue="#{c.idColonia}" itemLabel="(#{c.codigoPostal}) [#{c.tipo}] #{c.nombre}" />
+            </p:selectOneMenu>
+            <h:outputText value="Municipio:" />
+            <p:selectOneMenu id="comboboxMunicipiosDireccionPorValidar" value="#{validacionEspecialDireccionesBean.direccionSeleccionada.municipio.idMunicipio}" style="width:300px">
+              <f:selectItems value="#{validacionEspecialDireccionesBean.listaMunicipios}" var="m" itemValue="#{m.idMunicipio}" itemLabel="#{m.nombre}" />
+              <p:ajax listener="#{validacionEspecialDireccionesBean.obtenerColonias(direccionSeleccionada.municipio)}" update="comboboxColoniasDireccionPorValidar" />
+            </p:selectOneMenu>
+            <h:outputText value="Estado:" />
+            <p:selectOneMenu value="#{validacionEspecialDireccionesBean.direccionSeleccionada.estadoRepublica.idEstado}" style="width:300px">
+              <f:selectItems value="#{validacionEspecialDireccionesBean.listaEstados}" var="e" itemValue="#{e.idEstado}" itemLabel="#{e.nombre}" />
+              <p:ajax listener="#{validacionEspecialDireccionesBean.obtenerMunicipios(direccionSeleccionada.estadoRepublica)}" update="comboboxMunicipiosDireccionPorValidar" />
+            </p:selectOneMenu>
+            <h:outputText value="Codigo Postal:" />
+            <h:outputText value="#{validacionEspecialDireccionesBean.direccionSeleccionada.colonia.codigoPostal}" />
+          </p:panelGrid>
+        </p:outputPanel>
+      </div>
+      <hr />
+      Historico de direcciones de la remesa
+      <br />
+      <p:dataTable id="tablaDireccionesSinValidarDetalleCredito" var="dsv" value="#{validacionEspecialDireccionesBean.listaDireccionesTexto}" emptyMessage="No existe historico de direcciones para este credito." paginator="true" paginatorAlwaysVisible="false" rows="15" paginatorPosition="bottom" style="width: 950px;">
+        <p:column headerText="Fecha adicion" style="width:100px;">
+          <h:outputText value="#{dsv.fecha}" />
+        </p:column>
+        <p:column headerText="Calle" style="width:200px;">
+          <h:outputText value="#{dsv.calle}" />
+        </p:column>
+        <p:column headerText="Exterior" style="width:70px;">
+          <h:outputText value="#{dsv.exterior}" />
+        </p:column>
+        <p:column headerText="Interior" style="width:70px;">
+          <h:outputText value="#{dsv.interior}" />
+        </p:column>
+        <p:column headerText="Colonia" style="width:150px;">
+          <h:outputText value="#{dsv.colonia}" />
+        </p:column>
+        <p:column headerText="Municipio" style="width:140px;" > 
+          <h:outputText value="#{dsv.municipio}"/>
+        </p:column>
+        <p:column headerText="Estado" style="width:140px;"> 
+          <h:outputText value="#{dsv.estado}"/>
+        </p:column>
+        <p:column headerText="C.P." style="width:60px;" > 
+          <h:outputText value="#{dsv.codigoPostal}"/>
+        </p:column>
+      </p:dataTable>
+      <hr />
+      <div align="center">
+        <p:commandButton value="Editar" icon="ui-icon-check" actionListener="#{validacionEspecialDireccionesBean.editarDireccion()}" update="mensajes" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Buscador" icon="ui-icon-search" oncomplete="PF('buscadorColoniasDialog').show();" />
+        &nbsp;&nbsp;
+        <p:commandButton value="Cerrar" icon="ui-icon-close" oncomplete="PF('dialogoEditarDireccionValidacionEspecial').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+  <!-- DIALOGO PARA BUSCAR COLONIAS PARA VALIDAR UNA DIRECCION -->
+  <p:dialog id="dlgBuscadorColonias" widgetVar="buscadorColoniasDialog" modal="true" resizable="false" header="Buscador de colonias">
+    <h:form id="buscadorColoniasForm">
+      Estado:
+      &nbsp;&nbsp;
+      <p:selectOneMenu value="#{validacionEspecialDireccionesBean.estadoBuscadorColonias.idEstado}" style="width: 200px;">
+        <f:selectItem itemLabel="Seleccione" itemValue="0" />
+        <f:selectItems value="#{validacionEspecialDireccionesBean.listaEstados}" var="e" itemLabel="#{e.nombre}" itemValue="#{e.idEstado}" />
+        <p:ajax listener="#{validacionEspecialDireccionesBean.obtenerMunicipios(validacionEspecialDireccionesBean.estadoBuscadorColonias)}" update="comboboxMunicipiosBuscadorColonias" />
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Municipio:
+      &nbsp;&nbsp;
+      <p:selectOneMenu id="comboboxMunicipiosBuscadorColonias" value="#{validacionEspecialDireccionesBean.municipioBuscadorColonias.idMunicipio}" filter="true" filterMatchMode="contains" style="width: 200px;">
+        <f:selectItem itemLabel="Seleccione" itemValue="0" />
+        <f:selectItems value="#{validacionEspecialDireccionesBean.listaMunicipios}" var="m" itemLabel="#{m.nombre}" itemValue="#{m.idMunicipio}"/>
+      </p:selectOneMenu>
+      <br />
+      <br />
+      Colonia:
+      &nbsp;&nbsp;
+      <p:inputText value="#{validacionEspecialDireccionesBean.coloniaBusqueda}" size="20" maxlength="50" />
+      <br />
+      <br />
+      Codigo postal:
+      &nbsp;&nbsp;
+      <p:inputText value="#{validacionEspecialDireccionesBean.cpBusqueda}" size="10" maxlength="5" />
+      <hr />
+      <div align="center">
+        <p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{validacionEspecialDireccionesBean.buscarColonias()}" update="buscadorColoniasForm" />
+      </div>
+      <hr />
+      <p:contextMenu for="tablaColoniasBusquedaValidacionEspecial" style="width:300px;">
+        <p:menuitem value="Validar con esta colonia" icon="ui-icon-check" actionListener="#{validacionEspecialDireccionesBean.editarDireccionBuscador(validacionEspecialDireccionesBean.coloniaSeleccionadaBusqueda.idColonia)}" oncomplete="PF('buscadorColoniasDialog').hide();" update="editarDireccionValidacionEspecialForm" />
+      </p:contextMenu>
+      <p:dataTable id="tablaColoniasBusquedaValidacionEspecial" var="cb" value="#{validacionEspecialDireccionesBean.listaColoniasBusqueda}" selection="#{validacionEspecialDireccionesBean.coloniaSeleccionadaBusqueda}" selectionMode="single" rowKey="#{cb.idColonia}" emptyMessage="No existen colonias para la busqueda especificada." paginator="true" paginatorAlwaysVisible="false" rows="5" paginatorPosition="bottom" style="width: 650px;" rendered="#{validacionEspecialDireccionesBean.habilitaColonias}">
+        <f:facet name="header">
+          Colonias encontradas
+        </f:facet>
+        <p:column headerText="Edo" style="width:70px;" > 
+          <h:outputText value="#{cb.municipio.estadoRepublica.abreviatura}"/>
+        </p:column>
+        <p:column headerText="Municipio" style="width:150px;" > 
+          <h:outputText value="#{cb.municipio.nombre}"/>
+        </p:column>
+        <p:column headerText="Tipo" style="width:150px;" > 
+          <h:outputText value="#{cb.tipo}"/>
+        </p:column>
+        <p:column headerText="Nombre" style="width:200px;" > 
+          <h:outputText value="#{cb.nombre}"/>
+        </p:column>
+        <p:column headerText="C.P." style="width:70px;" > 
+          <h:outputText value="#{cb.codigoPostal}"/>
+        </p:column>
+      </p:dataTable>
+      <hr />
+      <div align="center">
+        <p:commandButton value="Aceptar" icon="ui-icon-check" oncomplete="PF('buscadorColoniasDialog').hide();" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <p:commandButton value="Cancelar" icon="ui-icon-close" oncomplete="PF('buscadorColoniasDialog').hide();" />
+      </div>
+    </h:form>
+  </p:dialog>
+</html>

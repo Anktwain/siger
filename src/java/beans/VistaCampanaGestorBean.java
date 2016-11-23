@@ -38,12 +38,10 @@ public class VistaCampanaGestorBean implements Serializable {
   private int posicion;
   private int totalCuentas;
   private Credito creditoActual;
-  private final CreditoDAO creditoDao;
   private final GestionDAO gestionDao;
 
   // CONSTRUCTOR
   public VistaCampanaGestorBean() {
-    creditoDao = new CreditoIMPL();
     gestionDao = new GestionIMPL();
     obtenerDatos();
   }
